@@ -4,11 +4,20 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { SYSTEM_PROMPT_V1 } from "@/lib/ai/system-prompt";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 const FREE_MONTHLY_LIMIT = 30;
+const IS_DEV = process.env.NODE_ENV === "development";
+
+function serverError(label: string, err: unknown): NextResponse {
+  const msg = err instanceof Error ? err.message : String(err);
+  console.error(`[chat/route] ${label}:`, err instanceof Error ? err.stack : err);
+  return NextResponse.json(
+    { error: IS_DEV ? `${label}: ${msg}` : "Eroare internă. Încearcă din nou." },
+    { status: 500 }
+  );
+}
 
 export async function POST(req: NextRequest) {
+  // ── Auth ────────────────────────────────────────────────────────
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const supabase = (await createClient()) as any;
   const {
@@ -19,10 +28,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Neautentificat" }, { status: 401 });
   }
 
+  // ── Parse body ──────────────────────────────────────────────────
   let body: { message: string; conversationId?: string };
   try {
     body = await req.json();
-  } catch {
+  } catch (err) {
+    console.error("[chat/route] body parse:", err);
     return NextResponse.json({ error: "Body invalid" }, { status: 400 });
   }
 
@@ -31,23 +42,45 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Mesaj gol" }, { status: 400 });
   }
 
-  // ── Rate limit check ────────────────────────────────────────────
-  const { data: profile } = await supabase
+  // ── Lazy Anthropic init (not at module level) ───────────────────
+  if (!process.env.ANTHROPIC_API_KEY) {
+    console.error("[chat/route] ANTHROPIC_API_KEY is not set");
+    return NextResponse.json({ error: "AI not configured" }, { status: 500 });
+  }
+  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+  // ── Profile + premium check ─────────────────────────────────────
+  const { data: profile, error: profileErr } = await supabase
     .from("profiles")
-    .select("subscription_status, messages_used_this_month, messages_reset_at")
+    .select("subscription_status")
     .eq("id", user.id)
     .single();
+
+  if (profileErr) {
+    return serverError("profile fetch", profileErr);
+  }
 
   const isPremium =
     (profile?.subscription_status ?? "") === "premium" ||
     (profile?.subscription_status ?? "").startsWith("family");
 
+  // ── Rate limit check ────────────────────────────────────────────
   if (!isPremium) {
-    const { data: allowed } = await supabase.rpc("check_rate_limit", {
-      p_user_id: user.id,
-      p_action_type: "message",
-    });
-    if (!allowed) {
+    let allowed: boolean | null = null;
+    try {
+      const { data, error: rpcErr } = await supabase.rpc("check_rate_limit", {
+        p_user_id: user.id,
+        p_action_type: "message",
+      });
+      if (rpcErr) throw rpcErr;
+      allowed = data as boolean;
+    } catch (err) {
+      console.error("[chat/route] check_rate_limit error:", err instanceof Error ? err.stack : err);
+      // Fail open — nu blocăm userul dacă funcția de rate limit eșuează
+      allowed = true;
+    }
+
+    if (allowed === false) {
       return NextResponse.json(
         { error: "RATE_LIMIT_EXCEEDED", limit: FREE_MONTHLY_LIMIT },
         { status: 429 }
@@ -63,32 +96,44 @@ export async function POST(req: NextRequest) {
       .insert({ user_id: user.id, title: message.slice(0, 60) })
       .select("id")
       .single();
+
     if (convErr || !conv) {
-      return NextResponse.json({ error: "Nu pot crea conversația" }, { status: 500 });
+      return serverError("conversations insert", convErr ?? new Error("no data returned"));
     }
     convId = conv.id as string;
   }
 
   // ── Load history (last 20 messages) ────────────────────────────
-  const { data: history } = await supabase
+  const { data: history, error: historyErr } = await supabase
     .from("messages")
     .select("role, content")
     .eq("conversation_id", convId)
     .order("created_at", { ascending: true })
     .limit(20);
 
-  const priorMessages: Anthropic.MessageParam[] = ((history as { role: string; content: string | null }[]) ?? [])
+  if (historyErr) {
+    console.error("[chat/route] history fetch:", historyErr);
+    // Non-fatal — continuăm fără history
+  }
+
+  const priorMessages: Anthropic.MessageParam[] = (
+    (history as { role: string; content: string | null }[] | null) ?? []
+  )
     .filter((m) => m.role === "user" || m.role === "assistant")
     .map((m) => ({ role: m.role as "user" | "assistant", content: m.content ?? "" }));
 
   // ── Save user message ───────────────────────────────────────────
-  await supabase.from("messages").insert({
+  const { error: userMsgErr } = await supabase.from("messages").insert({
     conversation_id: convId,
     role: "user",
     content: message,
   });
 
-  // ── Stream from Claude ──────────────────────────────────────────
+  if (userMsgErr) {
+    return serverError("user message insert", userMsgErr);
+  }
+
+  // ── SSE stream ─────────────────────────────────────────────────
   const encoder = new TextEncoder();
   let assistantText = "";
   let inputTokens = 0;
@@ -96,15 +141,13 @@ export async function POST(req: NextRequest) {
 
   const stream = new ReadableStream({
     async start(controller) {
+      // ── Anthropic streaming ─────────────────────────────────────
       try {
         const claudeStream = anthropic.messages.stream({
           model: "claude-sonnet-4-6",
           max_tokens: 2048,
           system: SYSTEM_PROMPT_V1,
-          messages: [
-            ...priorMessages,
-            { role: "user", content: message },
-          ],
+          messages: [...priorMessages, { role: "user", content: message }],
         });
 
         for await (const event of claudeStream) {
@@ -133,36 +176,62 @@ export async function POST(req: NextRequest) {
         );
         controller.close();
       } catch (err) {
+        console.error("[chat/route] anthropic stream error:", err instanceof Error ? err.stack : err);
         const msg = err instanceof Error ? err.message : "Eroare AI";
         controller.enqueue(
           encoder.encode(`data: ${JSON.stringify({ error: msg })}\n\n`)
         );
         controller.close();
-      } finally {
-        // ── Post-stream: save assistant message + increment rate limit ─
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const service = createServiceClient() as any;
-        await service.from("messages").insert({
+      }
+
+      // ── Post-stream saves (wrapped independently) ───────────────
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let service: any;
+      try {
+        service = createServiceClient();
+      } catch (err) {
+        console.error("[chat/route] createServiceClient error:", err instanceof Error ? err.stack : err);
+        return;
+      }
+
+      // Save assistant message
+      if (assistantText) {
+        const { error: asstErr } = await service.from("messages").insert({
           conversation_id: convId,
           role: "assistant",
           content: assistantText,
           tokens_input: inputTokens,
           tokens_output: outputTokens,
         });
+        if (asstErr) {
+          console.error("[chat/route] assistant message insert:", asstErr);
+        }
+      }
 
-        await service.from("api_usage_log").insert({
-          user_id: user.id,
-          model: "claude-sonnet-4-6",
-          tokens_input: inputTokens,
-          tokens_output: outputTokens,
-          action_type: "chat_message",
-        });
+      // Log API usage
+      const { error: logErr } = await service.from("api_usage_log").insert({
+        user_id: user.id,
+        model: "claude-sonnet-4-6",
+        tokens_input: inputTokens,
+        tokens_output: outputTokens,
+        action_type: "chat_message",
+      });
+      if (logErr) {
+        console.error("[chat/route] api_usage_log insert:", logErr);
+      }
 
-        if (!isPremium) {
-          await supabase.rpc("increment_rate_limit", {
+      // Increment rate limit
+      if (!isPremium) {
+        try {
+          const { error: rlErr } = await supabase.rpc("increment_rate_limit", {
             p_user_id: user.id,
             p_action_type: "message",
           });
+          if (rlErr) {
+            console.error("[chat/route] increment_rate_limit error:", rlErr);
+          }
+        } catch (err) {
+          console.error("[chat/route] increment_rate_limit threw:", err instanceof Error ? err.stack : err);
         }
       }
     },
