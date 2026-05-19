@@ -27,10 +27,8 @@ export async function POST(req: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    console.log("[chat/route] unauthenticated");
     return NextResponse.json({ error: "Neautentificat" }, { status: 401 });
   }
-  console.log("[chat/route] user:", user.id);
 
   // ── Parse body ──────────────────────────────────────────────────
   let body: { message: string; conversationId?: string };
@@ -42,14 +40,11 @@ export async function POST(req: NextRequest) {
   }
 
   const { message, conversationId } = body;
-  console.log("[chat/route] message length:", message?.length, "convId:", conversationId ?? "new");
-
   if (!message?.trim()) {
     return NextResponse.json({ error: "Mesaj gol" }, { status: 400 });
   }
 
   // ── Anthropic init ──────────────────────────────────────────────
-  console.log("[chat] using anthropic key prefix:", process.env.ANTHROPIC_API_KEY?.substring(0, 13));
   if (!process.env.ANTHROPIC_API_KEY) {
     console.error("[chat/route] ANTHROPIC_API_KEY is not set");
     return NextResponse.json({ error: "AI not configured" }, { status: 500 });
@@ -66,7 +61,6 @@ export async function POST(req: NextRequest) {
   if (profileErr) {
     return serverError("profile fetch", profileErr);
   }
-  console.log("[chat/route] profile subscription_status:", profile?.subscription_status);
 
   const isPremium =
     (profile?.subscription_status ?? "") === "premium" ||
@@ -82,7 +76,6 @@ export async function POST(req: NextRequest) {
       });
       if (rpcErr) throw rpcErr;
       allowed = data as boolean;
-      console.log("[chat/route] check_rate_limit result:", allowed);
     } catch (err) {
       console.error("[chat/route] check_rate_limit threw:", err instanceof Error ? err.stack : err);
       allowed = true; // fail-open
@@ -109,9 +102,6 @@ export async function POST(req: NextRequest) {
       return serverError("conversations insert", convErr ?? new Error("no data returned"));
     }
     convId = conv.id as string;
-    console.log("[chat/route] new conversation created:", convId);
-  } else {
-    console.log("[chat/route] using existing conversation:", convId);
   }
 
   // ── Load history ────────────────────────────────────────────────
@@ -125,7 +115,6 @@ export async function POST(req: NextRequest) {
   if (historyErr) {
     console.error("[chat/route] history fetch error:", historyErr);
   }
-  console.log("[chat/route] history loaded:", (history ?? []).length, "messages");
 
   const priorMessages: Anthropic.MessageParam[] = (
     (history as { role: string; content: string | null }[] | null) ?? []
@@ -143,7 +132,6 @@ export async function POST(req: NextRequest) {
   if (userMsgErr) {
     return serverError("user message insert", userMsgErr);
   }
-  console.log("[chat/route] user message saved");
 
   // ── SSE stream ─────────────────────────────────────────────────
   const encoder = new TextEncoder();
@@ -153,21 +141,13 @@ export async function POST(req: NextRequest) {
 
   const MODEL = "claude-sonnet-4-5";
 
-  console.log("[chat/route] returning SSE response, model:", MODEL);
-
   const stream = new ReadableStream({
     async start(controller) {
-      console.log("[chat/route] stream start() called");
-
       // Ping inițial — confirmă că streaming-ul funcționează
       controller.enqueue(encoder.encode(`data: ${JSON.stringify({ ping: true })}\n\n`));
-      console.log("[chat/route] ping enqueued");
 
       // ── Anthropic streaming ─────────────────────────────────────
       try {
-        console.log("[DEBUG] priorMessages:", JSON.stringify(priorMessages, null, 2));
-        console.log("[DEBUG] new message:", message);
-        console.log("[chat/route] calling anthropic.messages.stream...");
         const claudeStream = anthropic.messages.stream({
           model: MODEL,
           max_tokens: 2048,
@@ -177,8 +157,6 @@ export async function POST(req: NextRequest) {
 
         let chunkCount = 0;
         for await (const event of claudeStream) {
-          console.log("[DEBUG] event type:", event.type);
-          if (event.type === "message_start") console.log("[DEBUG] full message_start:", JSON.stringify(event, null, 2));
           if (
             event.type === "content_block_delta" &&
             event.delta.type === "text_delta"
@@ -186,9 +164,6 @@ export async function POST(req: NextRequest) {
             const chunk = event.delta.text;
             assistantText += chunk;
             chunkCount++;
-            if (chunkCount === 1) {
-              console.log("[chat/route] first chunk received:", JSON.stringify(chunk.slice(0, 50)));
-            }
             controller.enqueue(
               encoder.encode(`data: ${JSON.stringify({ text: chunk })}\n\n`)
             );
@@ -210,8 +185,7 @@ export async function POST(req: NextRequest) {
         controller.close();
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Eroare AI";
-        const stack = err instanceof Error ? err.stack : String(err);
-        console.error("[chat/route] anthropic stream error:", stack);
+        console.error("[chat/route] anthropic stream error:", err instanceof Error ? err.stack : err);
         controller.enqueue(
           encoder.encode(`data: ${JSON.stringify({ error: msg })}\n\n`)
         );
@@ -238,8 +212,6 @@ export async function POST(req: NextRequest) {
         });
         if (asstErr) {
           console.error("[chat/route] assistant message insert error:", JSON.stringify(asstErr, null, 2));
-        } else {
-          console.log("[chat/route] assistant message saved, length:", assistantText.length);
         }
       }
 
@@ -262,15 +234,11 @@ export async function POST(req: NextRequest) {
           });
           if (rlErr) {
             console.error("[chat/route] increment_rate_limit error:", JSON.stringify(rlErr, null, 2));
-          } else {
-            console.log("[chat/route] rate limit incremented");
           }
         } catch (err) {
           console.error("[chat/route] increment_rate_limit threw:", err instanceof Error ? err.stack : err);
         }
       }
-
-      console.log("[chat/route] start() finished");
     },
   });
 
