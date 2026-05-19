@@ -476,7 +476,7 @@ VALUES
 WITH real_course AS (SELECT id FROM public.courses WHERE slug = 'bac-mate-real-md')
 INSERT INTO public.course_modules (course_id, name, order_index, description)
 SELECT
-  real_course.id, m.name, m.ord, m.desc
+  real_course.id, m.name, m.ord, m.description
 FROM real_course, (VALUES
   ('Mulțimi și relații',             1, 'Operații cu mulțimi, relații de ordine și echivalență'),
   ('Algebră și funcții',             2, 'Funcții, ecuații, inecuații, sisteme; funcții elementare'),
@@ -486,15 +486,15 @@ FROM real_course, (VALUES
   ('Calcul diferențial',             6, 'Limite, continuitate, derivate și aplicații'),
   ('Calcul integral',                7, 'Primitive, integrala definită, aplicații'),
   ('Numere complexe',                8, 'Forma algebrică și trigonometrică, operații')
-) AS m(name, ord, desc);
+) AS m(name, ord, description);
 
 -- Module pentru BAC Umanist
 WITH umanist_course AS (SELECT id FROM public.courses WHERE slug = 'bac-mate-umanist-md')
 INSERT INTO public.course_modules (course_id, name, order_index, description)
 SELECT
-  umanist_course.id, m.name, m.ord, m.desc
+  umanist_course.id, m.name, m.ord, m.description
 FROM umanist_course, (VALUES
   ('Algebră',                        1, 'Ecuații, inecuații, funcții de bază'),
   ('Geometrie',                      2, 'Elemente de geometrie plană și în spațiu'),
   ('Probabilități și statistică',    3, 'Evenimente, probabilitate, elemente de statistică')
-) AS m(name, ord, desc);
+) AS m(name, ord, description);
