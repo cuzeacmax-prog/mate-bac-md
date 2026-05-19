@@ -1,0 +1,64 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import { MessageBubble } from "./MessageBubble";
+
+export interface ChatMessage {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+}
+
+interface Props {
+  messages: ChatMessage[];
+  streamingContent?: string;
+  isStreaming?: boolean;
+}
+
+export function ChatMessages({ messages, streamingContent, isStreaming }: Props) {
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, streamingContent]);
+
+  if (messages.length === 0 && !isStreaming) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center gap-3 text-muted-foreground px-4 text-center">
+        <p className="text-2xl">🎯</p>
+        <p className="font-medium">Bun venit! Sunt Profesor Maxim.</p>
+        <p className="text-sm max-w-sm">
+          Pune-mi orice întrebare despre matematica BAC — de la algebră și analiză
+          până la geometrie și statistică.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
+      {messages.map((msg) => (
+        <MessageBubble key={msg.id} role={msg.role} content={msg.content} />
+      ))}
+      {isStreaming && streamingContent !== undefined && (
+        <MessageBubble
+          role="assistant"
+          content={streamingContent || ""}
+          isStreaming
+        />
+      )}
+      {isStreaming && !streamingContent && (
+        <div className="flex justify-start">
+          <div className="bg-muted rounded-2xl rounded-bl-sm px-4 py-3">
+            <div className="flex gap-1 items-center">
+              <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce [animation-delay:-0.3s]" />
+              <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce [animation-delay:-0.15s]" />
+              <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce" />
+            </div>
+          </div>
+        </div>
+      )}
+      <div ref={bottomRef} />
+    </div>
+  );
+}

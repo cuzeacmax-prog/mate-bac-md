@@ -6,13 +6,18 @@ import { LogOut, BookOpen } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+
+const FREE_MONTHLY_LIMIT = 30;
 
 interface HeaderProps {
   userEmail: string | null;
   userName: string | null;
+  messagesUsed?: number;
+  isPremium?: boolean;
 }
 
-export function Header({ userEmail, userName }: HeaderProps) {
+export function Header({ userEmail, userName, messagesUsed, isPremium }: HeaderProps) {
   const router = useRouter();
   const displayName = userName ?? userEmail?.split("@")[0] ?? "Elev";
 
@@ -23,6 +28,9 @@ export function Header({ userEmail, userName }: HeaderProps) {
     router.refresh();
   }
 
+  const remaining = FREE_MONTHLY_LIMIT - (messagesUsed ?? 0);
+  const showCounter = !isPremium && messagesUsed !== undefined;
+
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur-sm">
       <div className="flex h-14 items-center justify-between px-4">
@@ -32,6 +40,19 @@ export function Header({ userEmail, userName }: HeaderProps) {
         </Link>
 
         <div className="flex items-center gap-3">
+          {showCounter && (
+            <Badge
+              variant={remaining <= 5 ? "destructive" : "secondary"}
+              className="hidden sm:flex text-xs"
+            >
+              {remaining} mesaje rămase
+            </Badge>
+          )}
+          {isPremium && (
+            <Badge variant="default" className="hidden sm:flex text-xs">
+              Premium
+            </Badge>
+          )}
           <span className="text-sm text-muted-foreground hidden sm:block">
             Bună, {displayName}!
           </span>

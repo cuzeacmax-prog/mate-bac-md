@@ -1,7 +1,11 @@
-export default function ChatPage() {
+import { ChatSidebarPanel } from "./_components/ChatSidebarPanel";
+import { ChatView } from "./_components/ChatView";
+
+export default function NewChatPage() {
   return (
-    <div className="flex items-center justify-center h-full p-8 text-muted-foreground text-sm">
-      Chatbot-ul vine în Faza 2. 🚧
-    </div>
+    <>
+      <ChatSidebarPanel />
+      <ChatView />
+    </>
   );
 }
