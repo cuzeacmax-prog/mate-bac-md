@@ -18,11 +18,15 @@ export default async function AppLayout({
     redirect("/auth/login");
   }
 
-  const { data: profile } = await supabase
+  // Cast explicit — tipurile placeholder din supabase.ts vor fi înlocuite cu cele generate
+  const { data: profile } = (await supabase
     .from("profiles")
     .select("full_name, email, subscription_status")
     .eq("id", user.id)
-    .single();
+    .single()) as unknown as {
+    data: { full_name: string | null; email: string | null; subscription_status: string | null } | null;
+    error: unknown;
+  };
 
   return (
     <div className="flex flex-col h-screen">
