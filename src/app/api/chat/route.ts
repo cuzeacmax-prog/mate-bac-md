@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
   if (!isPremium) {
     const { data: allowed } = await supabase.rpc("check_rate_limit", {
       p_user_id: user.id,
-      p_action_type: "chat_message",
+      p_action_type: "message",
     });
     if (!allowed) {
       return NextResponse.json(
@@ -161,7 +161,7 @@ export async function POST(req: NextRequest) {
         if (!isPremium) {
           await supabase.rpc("increment_rate_limit", {
             p_user_id: user.id,
-            p_action_type: "chat_message",
+            p_action_type: "message",
           });
         }
       }
