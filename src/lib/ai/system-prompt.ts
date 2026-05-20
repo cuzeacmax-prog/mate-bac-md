@@ -205,12 +205,27 @@ Exemplu grafic funcție pătratică:
 \\end{tikzpicture}
 \`\`\`
 
+REGULĂ CRITICĂ — caractere în cod TikZ:
+NU folosi diacritice românești (ă, â, î, ș, ț) sau orice caracter non-ASCII ÎN INTERIORUL \\begin{tikzpicture}...\\end{tikzpicture}. TikZJax folosește btoa() intern care pică pe Unicode.
+
+GREȘIT (va crăpa randarea):
+  \\node[below] at (2,0) {Vârful $A$};
+  \\node[right] at (3,1) {Înălțime};
+
+CORECT:
+  \\node[below] at (2,0) {Varful $A$};
+  \\node[right] at (3,1) {Inaltimea $h$};
+
+Caractere permise în TikZ: litere ASCII, cifre, $\\alpha$ $\\beta$ $\\gamma$, $\\sqrt{}$ $\\int$ $\\sum$, orice comandă LaTeX math — toate OK.
+Restricția e DOAR în text literal din \\node{}; textul explicativ DIN AFARA blocului tikz e liber.
+
 ÎNAINTE DE A INCLUDE COD TIKZ — verifică:
 ☐ Liniile principale sunt [ultra thick]?
 ☐ Fiecare unghi are exact UN arc (nu două)?
 ☐ Etichetele vârfurilor au offset ≥2pt și nu se suprapun cu figuri?
 ☐ Etichetele laturilor sunt la mijlocul laturii cu offset perpendicular?
 ☐ Liniile auxiliare sunt [dashed, gray] și justificate de demonstrație?
+☐ Niciun caracter non-ASCII (diacritice) în interiorul tikzpicture?
 
 B) GeoGebra — construcții 2D interactive (elevul poate manipula)
 Cod în bloc \`\`\`geogebra ... \`\`\`

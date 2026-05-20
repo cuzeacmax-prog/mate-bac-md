@@ -12,12 +12,23 @@ interface Props {
 
 type Status = "loading" | "done" | "error";
 
+function sanitizeTikz(code: string): string {
+  return code
+    .replace(/ă/g, "a").replace(/â/g, "a").replace(/î/g, "i")
+    .replace(/ș/g, "s").replace(/ț/g, "t")
+    .replace(/Ă/g, "A").replace(/Â/g, "A").replace(/Î/g, "I")
+    .replace(/Ș/g, "S").replace(/Ț/g, "T");
+}
+
 function buildIframeHtml(code: string, id: string, origin: string): string {
   const safe = code.replace(/<\/script>/gi, "<\\/script>");
   return `<!DOCTYPE html>
 <html>
 <head>
   <link rel="stylesheet" href="${origin}/tikzjax/fonts.css">
+  <script>
+    window.btoa = function(s) { return btoa(unescape(encodeURIComponent(s))); };
+  </script>
   <script src="${origin}/tikzjax/tikzjax.js"></script>
   <style>
     html, body { margin: 0; padding: 8px; background: transparent; overflow: hidden; }
@@ -59,7 +70,7 @@ export function TikZRenderer({ code }: Props) {
   );
 
   const iframeSrc = useMemo(
-    () => buildIframeHtml(code, instanceId, window.location.origin),
+    () => buildIframeHtml(sanitizeTikz(code), instanceId, window.location.origin),
     [code, instanceId]
   );
 
