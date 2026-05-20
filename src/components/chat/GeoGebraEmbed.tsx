@@ -50,8 +50,8 @@ export function GeoGebraEmbed({ commands }: Props) {
 
     const params: Record<string, unknown> = {
       appName: "geometry",
-      width: "100%",
-      height: "100%",
+      width: 640,
+      height: 480,
       showToolBar: false,
       showAlgebraInput: false,
       showMenuBar: false,
@@ -124,12 +124,11 @@ export function GeoGebraEmbed({ commands }: Props) {
       </div>
       <div
         className="relative w-full overflow-hidden rounded-lg border border-slate-200 bg-white"
-        style={{ paddingBottom: "75%" }}
+        style={{ height: 480 }}
       >
         <div
           ref={containerRef}
           className="absolute inset-0"
-          style={{ opacity: ready ? 1 : 0.3, transition: "opacity 0.3s" }}
         />
         {!ready && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-sm text-slate-500">
