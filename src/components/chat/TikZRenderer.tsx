@@ -13,11 +13,14 @@ interface Props {
 type Status = "loading" | "done" | "error";
 
 function sanitizeTikz(code: string): string {
-  return code
-    .replace(/ă/g, "a").replace(/â/g, "a").replace(/î/g, "i")
-    .replace(/ș/g, "s").replace(/ț/g, "t")
-    .replace(/Ă/g, "A").replace(/Â/g, "A").replace(/Î/g, "I")
-    .replace(/Ș/g, "S").replace(/Ț/g, "T");
+  const map: Record<string, string> = {
+    "ă":"a","â":"a","î":"i","ș":"s","ş":"s","ț":"t","ţ":"t",
+    "Ă":"A","Â":"A","Î":"I","Ș":"S","Ş":"S","Ț":"T","Ţ":"T",
+    "à":"a","è":"e","é":"e","í":"i","ó":"o","ú":"u",
+  };
+  let s = code;
+  for (const [k, v] of Object.entries(map)) s = s.replaceAll(k, v);
+  return s.replace(/[^\x00-\xFF]/g, "?");
 }
 
 function buildIframeHtml(code: string, id: string, origin: string): string {
@@ -27,7 +30,13 @@ function buildIframeHtml(code: string, id: string, origin: string): string {
 <head>
   <link rel="stylesheet" href="${origin}/tikzjax/fonts.css">
   <script>
-    window.btoa = function(s) { return btoa(unescape(encodeURIComponent(s))); };
+    (function() {
+      var _orig = window.btoa.bind(window);
+      window.btoa = function(s) {
+        try { return _orig(s); }
+        catch(e) { return _orig(unescape(encodeURIComponent(s))); }
+      };
+    })();
   </script>
   <script src="${origin}/tikzjax/tikzjax.js"></script>
   <style>
