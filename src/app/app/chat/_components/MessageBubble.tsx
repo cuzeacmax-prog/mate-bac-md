@@ -25,7 +25,7 @@ export function MessageBubble({ role, content, isStreaming }: Props) {
         {isUser ? (
           <p className="text-sm whitespace-pre-wrap break-words">{content}</p>
         ) : (
-          <MessageRenderer content={content} />
+          <MessageRenderer content={content} isStreaming={isStreaming} />
         )}
         {isStreaming && (
           <span className="inline-block w-1.5 h-4 bg-current opacity-70 animate-pulse ml-0.5 align-middle" />
