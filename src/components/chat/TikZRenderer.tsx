@@ -12,13 +12,13 @@ interface Props {
 
 type Status = "loading" | "done" | "error";
 
-function buildIframeHtml(code: string, id: string): string {
+function buildIframeHtml(code: string, id: string, origin: string): string {
   const safe = code.replace(/<\/script>/gi, "<\\/script>");
   return `<!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="/tikzjax/fonts.css">
-  <script src="/tikzjax/tikzjax.js"></script>
+  <link rel="stylesheet" href="${origin}/tikzjax/fonts.css">
+  <script src="${origin}/tikzjax/tikzjax.js"></script>
   <style>
     html, body { margin: 0; padding: 8px; background: transparent; overflow: hidden; }
     svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
@@ -58,7 +58,10 @@ export function TikZRenderer({ code }: Props) {
     () => heightCache.get(code) ?? 0
   );
 
-  const iframeSrc = useMemo(() => buildIframeHtml(code, instanceId), [code, instanceId]);
+  const iframeSrc = useMemo(
+    () => buildIframeHtml(code, instanceId, window.location.origin),
+    [code, instanceId]
+  );
 
   useEffect(() => {
     if (heightCache.has(code)) {
@@ -99,7 +102,7 @@ export function TikZRenderer({ code }: Props) {
 
       {status === "error" && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">
-          <p className="font-medium mb-1">Desen indisponibil (TikZJax CDN)</p>
+          <p className="font-medium mb-1">Desen indisponibil (eroare TikZ)</p>
           <details className="cursor-pointer">
             <summary className="text-xs text-red-500 select-none">Cod TikZ</summary>
             <pre className="mt-1 overflow-x-auto text-xs text-red-700 whitespace-pre-wrap">{code}</pre>
