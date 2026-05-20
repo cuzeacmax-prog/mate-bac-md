@@ -31,6 +31,7 @@ export default async function AppLayout({
     error: unknown;
   };
 
+  const isAdmin = profile?.subscription_status === "admin";
   const isPremium =
     profile?.subscription_status === "premium" ||
     (profile?.subscription_status ?? "").startsWith("family");
@@ -60,6 +61,7 @@ export default async function AppLayout({
         userName={profile?.full_name ?? null}
         messagesUsed={messagesUsed}
         isPremium={isPremium}
+        isAdmin={isAdmin}
       />
       <div className="flex flex-1 min-h-0">
         <Sidebar />

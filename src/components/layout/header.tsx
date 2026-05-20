@@ -15,9 +15,10 @@ interface HeaderProps {
   userName: string | null;
   messagesUsed?: number;
   isPremium?: boolean;
+  isAdmin?: boolean;
 }
 
-export function Header({ userEmail, userName, messagesUsed, isPremium }: HeaderProps) {
+export function Header({ userEmail, userName, messagesUsed, isPremium, isAdmin }: HeaderProps) {
   const router = useRouter();
   const displayName = userName ?? userEmail?.split("@")[0] ?? "Elev";
 
@@ -29,7 +30,7 @@ export function Header({ userEmail, userName, messagesUsed, isPremium }: HeaderP
   }
 
   const remaining = FREE_MONTHLY_LIMIT - (messagesUsed ?? 0);
-  const showCounter = !isPremium && messagesUsed !== undefined;
+  const showCounter = !isPremium && !isAdmin && messagesUsed !== undefined;
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur-sm">
@@ -51,6 +52,14 @@ export function Header({ userEmail, userName, messagesUsed, isPremium }: HeaderP
           {isPremium && (
             <Badge variant="default" className="hidden sm:flex text-xs">
               Premium
+            </Badge>
+          )}
+          {isAdmin && (
+            <Badge
+              variant="outline"
+              className="hidden sm:flex text-xs border-violet-500 text-violet-600"
+            >
+              Admin
             </Badge>
           )}
           <span className="text-sm text-muted-foreground hidden sm:block">
