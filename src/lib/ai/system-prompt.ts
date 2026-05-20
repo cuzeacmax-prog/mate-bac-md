@@ -155,14 +155,29 @@ Cod în bloc \`\`\`tikz ... \`\`\`
 Folosește pentru: triunghiuri, cercuri, paralele, perpendiculare, vectori în plan, axe de coordonate, demonstrații sintetice, grafice funcții.
 Format: conținut complet \\begin{tikzpicture}...\\end{tikzpicture} (fără \\documentclass).
 
-Exemplu triunghi cu unghi marcat:
+CALITATE GRAFICĂ TikZ — RESPECTĂ OBLIGATORIU:
+A) Grosime linii: figură principală → [ultra thick, blue] sau [ultra thick]; linii auxiliare → [thick, dashed, gray]; axe → [->] standard.
+B) Etichete vârfuri: \\node[below left=2pt], \\node[below right=2pt], \\node[above=2pt] — minim 4pt depărtare de geometrie. NU suprapune etichete cu figuri.
+C) Arcuri unghi: UN SINGUR arc per unghi, raza 0.4–0.6; eticheta ÎNĂUNTRUL arcului (\\node la raza*0.7 pe bisectoarea unghiului). NU desena două arce pentru același unghi.
+D) Demonstrații unghi corespondent/altern: linie transversală cu offset clar; culori consistente pentru perechi de unghiuri; etichete cu prim (β') pentru unghiurile translate.
+E) Linii auxiliare: DOAR dacă sunt justificate de demonstrație. NU adăuga linii decorative.
+F) Etichete laturi: la mijlocul laturii, perpendicular pe latură, offset 5pt, folosind pos=0.5 pe draw sau \\node la coordonatele midpoint.
+
+Exemplu triunghi corect (standard de calitate):
 \`\`\`tikz
-\\begin{tikzpicture}[scale=1.2]
-  \\draw[thick, blue] (0,0) -- (4,0) -- (2,3) -- cycle;
-  \\node[below left] at (0,0) {$A$};
-  \\node[below right] at (4,0) {$B$};
-  \\node[above] at (2,3) {$C$};
-  \\draw (0.5,0) arc (0:56:0.5) node[midway, right] {$60°$};
+\\begin{tikzpicture}[scale=1.2, line cap=round, line join=round]
+  \\coordinate (A) at (0,0);
+  \\coordinate (B) at (4,0);
+  \\coordinate (C) at (2,3);
+  \\draw[ultra thick, blue] (A) -- (B) -- (C) -- cycle;
+  \\node[below left=2pt] at (A) {$A$};
+  \\node[below right=2pt] at (B) {$B$};
+  \\node[above=2pt] at (C) {$C$};
+  \\draw[thick] (0.5,0) arc (0:56:0.5);
+  \\node at (0.65,0.18) {$60°$};
+  \\node[below] at (2,0) {$c$};
+  \\node[above left=3pt] at (1,1.5) {$b$};
+  \\node[above right=3pt] at (3,1.5) {$a$};
 \\end{tikzpicture}
 \`\`\`
 
@@ -189,6 +204,13 @@ Exemplu grafic funcție pătratică:
   \\node[right, blue] at (2.2, 2.24) {$f(x)=(x-1)^2$};
 \\end{tikzpicture}
 \`\`\`
+
+ÎNAINTE DE A INCLUDE COD TIKZ — verifică:
+☐ Liniile principale sunt [ultra thick]?
+☐ Fiecare unghi are exact UN arc (nu două)?
+☐ Etichetele vârfurilor au offset ≥2pt și nu se suprapun cu figuri?
+☐ Etichetele laturilor sunt la mijlocul laturii cu offset perpendicular?
+☐ Liniile auxiliare sunt [dashed, gray] și justificate de demonstrație?
 
 B) GeoGebra — construcții 2D interactive (elevul poate manipula)
 Cod în bloc \`\`\`geogebra ... \`\`\`
