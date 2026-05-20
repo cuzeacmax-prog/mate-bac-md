@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Loader2 } from "lucide-react";
 
 // Session-level cache: instanceId → height (avoids re-compiling in same session)
@@ -11,6 +11,12 @@ interface Props {
 }
 
 type Status = "loading" | "done" | "error";
+
+function hashCode(s: string): string {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; }
+  return "tikz-" + Math.abs(h).toString(36);
+}
 
 function sanitizeTikz(code: string): string {
   const map: Record<string, string> = {
@@ -69,14 +75,22 @@ function buildIframeHtml(code: string, id: string, origin: string): string {
 }
 
 export function TikZRenderer({ code }: Props) {
-  const instanceId = useRef(Math.random().toString(36).slice(2)).current;
+  const instanceId = useMemo(() => hashCode(sanitizeTikz(code)), [code]);
 
-  const [status, setStatus] = useState<Status>(() =>
-    heightCache.has(code) ? "done" : "loading"
-  );
-  const [iframeHeight, setIframeHeight] = useState<number>(
-    () => heightCache.get(code) ?? 0
-  );
+  const [status, setStatus] = useState<Status>(() => {
+    if (heightCache.has(instanceId)) return "done";
+    try { if (sessionStorage.getItem(instanceId) !== null) return "done"; } catch {}
+    return "loading";
+  });
+
+  const [iframeHeight, setIframeHeight] = useState<number>(() => {
+    if (heightCache.has(instanceId)) return heightCache.get(instanceId)!;
+    try {
+      const s = sessionStorage.getItem(instanceId);
+      if (s !== null) { const h = parseInt(s, 10); heightCache.set(instanceId, h); return h; }
+    } catch {}
+    return 0;
+  });
 
   const iframeSrc = useMemo(
     () => buildIframeHtml(sanitizeTikz(code), instanceId, window.location.origin),
@@ -84,8 +98,8 @@ export function TikZRenderer({ code }: Props) {
   );
 
   useEffect(() => {
-    if (heightCache.has(code)) {
-      setIframeHeight(heightCache.get(code)!);
+    if (heightCache.has(instanceId)) {
+      setIframeHeight(heightCache.get(instanceId)!);
       setStatus("done");
       return;
     }
@@ -96,7 +110,8 @@ export function TikZRenderer({ code }: Props) {
       if (!e.data || e.data.tikzId !== instanceId) return;
       if (e.data.type === "done") {
         const h = (e.data.height as number) || 200;
-        heightCache.set(code, h);
+        heightCache.set(instanceId, h);
+        try { sessionStorage.setItem(instanceId, String(h)); } catch {}
         setIframeHeight(h);
         setStatus("done");
       } else if (e.data.type === "error") {
@@ -106,7 +121,7 @@ export function TikZRenderer({ code }: Props) {
 
     window.addEventListener("message", handler);
     return () => window.removeEventListener("message", handler);
-  }, [code, instanceId]);
+  }, [instanceId]);
 
   return (
     <div className="my-3 w-full rounded-lg overflow-hidden">

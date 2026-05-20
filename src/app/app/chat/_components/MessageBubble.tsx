@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { cn } from "@/lib/utils";
 import { MessageRenderer } from "./MessageRenderer";
 
@@ -9,7 +10,7 @@ interface Props {
   isStreaming?: boolean;
 }
 
-export function MessageBubble({ role, content, isStreaming }: Props) {
+export const MessageBubble = React.memo(function MessageBubble({ role, content, isStreaming }: Props) {
   const isUser = role === "user";
 
   return (
@@ -33,4 +34,4 @@ export function MessageBubble({ role, content, isStreaming }: Props) {
       </div>
     </div>
   );
-}
+});
