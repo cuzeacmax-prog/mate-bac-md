@@ -75,31 +75,35 @@ export function useChat({
 
           for (const line of lines) {
             if (!line.startsWith("data: ")) continue;
+            let json: Record<string, unknown>;
             try {
-              const json = JSON.parse(line.slice(6));
-              if (json.error) throw new Error(json.error);
-              if (json.text) {
-                accumulated += json.text;
-                setStreamingContent(accumulated);
-              }
-              if (json.done) {
-                const assistantMsg: ChatMessage = {
-                  id: crypto.randomUUID(),
-                  role: "assistant",
-                  content: accumulated,
-                };
-                setMessages((prev) => [...prev, assistantMsg]);
-                setStreamingContent("");
-              }
+              json = JSON.parse(line.slice(6));
             } catch {
-              // Partial chunk — ignore
+              // Chunk parțial sau linie goală — normal în SSE
+              continue;
+            }
+            if (json.ping) continue; // heartbeat inițial
+            if (json.error) {
+              // Eroare explicită din server — surfacează în UI
+              throw new Error(json.error as string);
+            }
+            if (json.text) {
+              accumulated += json.text as string;
+              setStreamingContent(accumulated);
+            }
+            if (json.done) {
+              const assistantMsg: ChatMessage = {
+                id: crypto.randomUUID(),
+                role: "assistant",
+                content: accumulated,
+              };
+              setMessages((prev) => [...prev, assistantMsg]);
+              setStreamingContent("");
             }
           }
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Eroare necunoscută");
-        // Remove optimistic user message on fatal error
-        setMessages((prev) => prev.filter((m) => m.id !== userMsg.id));
       } finally {
         setIsStreaming(false);
         setStreamingContent("");

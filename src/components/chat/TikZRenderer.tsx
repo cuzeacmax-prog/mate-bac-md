@@ -9,7 +9,6 @@ declare global {
   }
 }
 
-// Module-level SVG cache: avoids re-compiling the same code in the same session
 const svgCache = new Map<string, string>();
 
 interface Props {
@@ -18,67 +17,10 @@ interface Props {
 
 type Status = "loading" | "done" | "error";
 
-export function TikZRenderer({ code }: Props) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [status, setStatus] = useState<Status>(() =>
-    svgCache.has(code) ? "done" : "loading"
-  );
+function loadTikZJax(): Promise<void> {
+  if (window.__tikzjaxLoaded) return Promise.resolve();
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    // Use cached SVG instantly
-    const cached = svgCache.get(code);
-    if (cached) {
-      container.innerHTML = cached;
-      setStatus("done");
-      return;
-    }
-
-    container.innerHTML = "";
-    setStatus("loading");
-
-    let cleanup: (() => void) | undefined;
-
-    const injectAndObserve = () => {
-      if (!container) return;
-
-      // Create TikZ script element
-      const tikzEl = document.createElement("script");
-      tikzEl.type = "text/tikz";
-      tikzEl.textContent = code;
-      container.appendChild(tikzEl);
-
-      const observer = new MutationObserver(() => {
-        const svg = container.querySelector("svg");
-        if (svg) {
-          svgCache.set(code, container.innerHTML);
-          setStatus("done");
-          observer.disconnect();
-        }
-      });
-
-      observer.observe(container, { childList: true, subtree: true });
-
-      // 30s timeout — TikZJax WASM can be slow on first load
-      const timer = setTimeout(() => {
-        observer.disconnect();
-        setStatus("error");
-      }, 30_000);
-
-      cleanup = () => {
-        observer.disconnect();
-        clearTimeout(timer);
-      };
-    };
-
-    if (window.__tikzjaxLoaded) {
-      injectAndObserve();
-      return () => cleanup?.();
-    }
-
-    // Load TikZJax CDN script once
+  return new Promise((resolve, reject) => {
     let scriptEl = document.querySelector(
       'script[src*="tikzjax"]'
     ) as HTMLScriptElement | null;
@@ -90,20 +32,93 @@ export function TikZRenderer({ code }: Props) {
       document.head.appendChild(scriptEl);
     }
 
-    const onLoad = () => {
+    // Script might have already fired 'load' in a prior React render cycle;
+    // track readiness via the global flag set in the onload below.
+    if (window.__tikzjaxLoaded) {
+      resolve();
+      return;
+    }
+
+    scriptEl.addEventListener("load", () => {
       window.__tikzjaxLoaded = true;
-      injectAndObserve();
+      resolve();
+    });
+    scriptEl.addEventListener("error", reject);
+  });
+}
+
+export function TikZRenderer({ code }: Props) {
+  const displayRef = useRef<HTMLDivElement>(null);
+  const [status, setStatus] = useState<Status>(() =>
+    svgCache.has(code) ? "done" : "loading"
+  );
+
+  useEffect(() => {
+    // Use cached SVG instantly — no re-compile
+    const cached = svgCache.get(code);
+    if (cached && displayRef.current) {
+      displayRef.current.innerHTML = cached;
+      setStatus("done");
+      return;
+    }
+
+    setStatus("loading");
+    let cancelled = false;
+
+    // Processing zone lives outside React's tree to avoid reconciler interference
+    const zone = document.createElement("div");
+    zone.style.cssText =
+      "position:absolute;left:-9999px;top:-9999px;visibility:hidden;pointer-events:none;";
+    document.body.appendChild(zone);
+
+    const compile = () => {
+      if (cancelled) return;
+
+      const tikzEl = document.createElement("script");
+      tikzEl.type = "text/tikz";
+      tikzEl.textContent = code;
+      zone.appendChild(tikzEl);
+
+      // Poll until TikZJax replaces the script element with SVG
+      const interval = setInterval(() => {
+        const svg = zone.querySelector("svg");
+        if (svg) {
+          clearInterval(interval);
+          clearTimeout(timer);
+          if (!cancelled) {
+            const html = svg.outerHTML;
+            svgCache.set(code, html);
+            if (displayRef.current) displayRef.current.innerHTML = html;
+            setStatus("done");
+          }
+        }
+      }, 200);
+
+      const timer = setTimeout(() => {
+        clearInterval(interval);
+        if (!cancelled) setStatus("error");
+      }, 20_000);
+
+      return () => {
+        clearInterval(interval);
+        clearTimeout(timer);
+      };
     };
 
-    const onError = () => setStatus("error");
+    let innerCleanup: (() => void) | undefined;
 
-    scriptEl.addEventListener("load", onLoad);
-    scriptEl.addEventListener("error", onError);
+    loadTikZJax()
+      .then(() => {
+        if (!cancelled) innerCleanup = compile();
+      })
+      .catch(() => {
+        if (!cancelled) setStatus("error");
+      });
 
     return () => {
-      scriptEl?.removeEventListener("load", onLoad);
-      scriptEl?.removeEventListener("error", onError);
-      cleanup?.();
+      cancelled = true;
+      innerCleanup?.();
+      if (document.body.contains(zone)) zone.remove();
     };
   }, [code]);
 
@@ -121,13 +136,12 @@ export function TikZRenderer({ code }: Props) {
       {status === "error" && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600">
           <span className="font-medium">Eroare TikZ</span> — verifică sintaxa. Cod:
-          <pre className="mt-1 overflow-x-auto text-xs text-red-700">{code}</pre>
+          <pre className="mt-1 overflow-x-auto text-xs text-red-700 whitespace-pre-wrap">{code}</pre>
         </div>
       )}
       <div
-        ref={containerRef}
-        className={status === "done" ? "flex justify-center" : "hidden"}
-        style={{ minHeight: status === "done" ? undefined : 200 }}
+        ref={displayRef}
+        className={status === "done" ? "flex justify-center [&_svg]:max-w-full" : "hidden"}
       />
     </div>
   );
