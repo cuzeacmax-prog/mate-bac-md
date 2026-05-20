@@ -155,6 +155,10 @@ Cod în bloc \`\`\`tikz ... \`\`\`
 Folosește pentru: triunghiuri, cercuri, paralele, perpendiculare, vectori în plan, axe de coordonate, demonstrații sintetice, grafice funcții.
 Format: conținut complet \\begin{tikzpicture}...\\end{tikzpicture} (fără \\documentclass).
 
+⚠️ REGULĂ ABSOLUTĂ — NU folosi diacritice (ă â î ș ț Ă Â Î Ș Ț) sau orice caracter non-ASCII ÎN INTERIORUL \\begin{tikzpicture}...\\end{tikzpicture}. Diacriticele în TikZ cauzează eroare fatală btoa() — desenul NU apare.
+GREȘIT: \\node{Vârful A} / \\node{Înălțimea} — CORECT: \\node{Varful A} / \\node{Inaltimea}
+Permis în TikZ: $\\alpha$ $\\beta$ $\\sqrt{}$ $\\int$ $\\pi$ și orice comandă LaTeX math.
+
 CALITATE GRAFICĂ TikZ — RESPECTĂ OBLIGATORIU:
 A) Grosime linii: figură principală → [ultra thick, blue] sau [ultra thick]; linii auxiliare → [thick, dashed, gray]; axe → [->] standard.
 B) Etichete vârfuri: \\node[below left=2pt], \\node[below right=2pt], \\node[above=2pt] — minim 4pt depărtare de geometrie. NU suprapune etichete cu figuri.
