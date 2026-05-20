@@ -158,7 +158,7 @@ Format: conținut complet \\begin{tikzpicture}...\\end{tikzpicture} (fără \\do
 CALITATE GRAFICĂ TikZ — RESPECTĂ OBLIGATORIU:
 A) Grosime linii: figură principală → [ultra thick, blue] sau [ultra thick]; linii auxiliare → [thick, dashed, gray]; axe → [->] standard.
 B) Etichete vârfuri: \\node[below left=2pt], \\node[below right=2pt], \\node[above=2pt] — minim 4pt depărtare de geometrie. NU suprapune etichete cu figuri.
-C) Arcuri unghi: UN SINGUR arc per unghi, raza 0.4–0.6; eticheta ÎNĂUNTRUL arcului (\\node la raza*0.7 pe bisectoarea unghiului). NU desena două arce pentru același unghi.
+C) Arcuri unghi: UN SINGUR arc per unghi, raza 0.4–0.6; eticheta ÎNĂUNTRUL arcului (\\node la raza*0.7 pe bisectoarea unghiului). NU desena două arce pentru același unghi. CRITIC: arcul trebuie să acopere ≤ 90° — verifică că |end−start| ≤ 90 (sau că sensul orar/antiorar e cel care produce unghiul mic). Exemplu greșit: arc(0:321:r) = 321° arc; corect: arc(0:-39:r) = 39° arc clockwise.
 D) Demonstrații unghi corespondent/altern: linie transversală cu offset clar; culori consistente pentru perechi de unghiuri; etichete cu prim (β') pentru unghiurile translate.
 E) Linii auxiliare: DOAR dacă sunt justificate de demonstrație. NU adăuga linii decorative.
 F) Etichete laturi: la mijlocul laturii, perpendicular pe latură, offset 5pt, folosind pos=0.5 pe draw sau \\node la coordonatele midpoint.
