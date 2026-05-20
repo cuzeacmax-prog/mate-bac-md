@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import dynamic from "next/dynamic";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
@@ -21,6 +22,8 @@ const ThreeRenderer = dynamic(
   { ssr: false }
 );
 
+const VIZ_LANGS = new Set(["tikz", "geogebra", "three"]);
+
 interface Props {
   content: string;
   isStreaming?: boolean;
@@ -28,35 +31,68 @@ interface Props {
 
 export function MessageRenderer({ content, isStreaming }: Props) {
   const components: Components = {
-    a: ({ href, children }) => (
-      <a href={href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
-        {children}
-      </a>
-    ),
+    // pre handles block code — intercepts visualization languages before the prose wrapper
+    pre: ({ children }) => {
+      const childArray = React.Children.toArray(children);
+      if (childArray.length === 1) {
+        const child = childArray[0];
+        if (React.isValidElement(child)) {
+          // If code override returned a visualization component, skip the <pre> wrapper
+          if (typeof child.type !== "string") {
+            return <>{children}</>;
+          }
+          // If code override returned null (streaming + viz lang), hide the entire block
+          if (child.type === null) {
+            return null;
+          }
+        }
+      }
+      // Check for null/undefined children (code returned null during streaming)
+      if (!children || (Array.isArray(children) && children.every((c) => c == null))) {
+        return null;
+      }
+      return (
+        <pre className="bg-muted rounded p-3 text-sm font-mono overflow-x-auto">
+          {children}
+        </pre>
+      );
+    },
+
+    // code handles both inline and block code
     code: ({ className, children }) => {
       const lang = className?.replace("language-", "") ?? "";
       const codeContent = String(children).trimEnd();
 
-      // Don't render visualizations mid-stream — code is partial and changes every chunk
-      if (!isStreaming) {
+      if (VIZ_LANGS.has(lang)) {
+        // During streaming: code is partial — hide entirely (pre will receive null and hide too)
+        if (isStreaming) return null;
         if (lang === "tikz")     return <TikZRenderer code={codeContent} />;
         if (lang === "geogebra") return <GeoGebraEmbed commands={codeContent} />;
         if (lang === "three")    return <ThreeRenderer spec={codeContent} />;
       }
 
+      // Other fenced code blocks
       if (className?.includes("language-")) {
         return (
-          <code className="block bg-muted rounded p-3 text-sm font-mono overflow-x-auto">
+          <code className="block text-sm font-mono">
             {children}
           </code>
         );
       }
+
+      // Inline code
       return (
         <code className="bg-muted rounded px-1 py-0.5 text-sm font-mono">
           {children}
         </code>
       );
     },
+
+    a: ({ href, children }) => (
+      <a href={href} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+        {children}
+      </a>
+    ),
   };
 
   return (

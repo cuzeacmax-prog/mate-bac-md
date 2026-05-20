@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { Loader2 } from "lucide-react";
 
-// Session-level cache: avoids re-compiling same TikZ code
-const svgCache = new Map<string, string>();
+// Session-level cache: instanceId → height (avoids re-compiling in same session)
+const heightCache = new Map<string, number>();
 
 interface Props {
   code: string;
@@ -12,17 +12,15 @@ interface Props {
 
 type Status = "loading" | "done" | "error";
 
-function buildIframeHtml(code: string, instanceId: string): string {
-  // Escape </script> inside the TikZ content to prevent breaking the iframe HTML
+function buildIframeHtml(code: string, id: string): string {
   const safe = code.replace(/<\/script>/gi, "<\\/script>");
-
   return `<!DOCTYPE html>
 <html>
 <head>
   <link rel="stylesheet" href="https://tikzjax.com/v1/fonts.css">
   <script src="https://tikzjax.com/v1/tikzjax.js"></script>
   <style>
-    html, body { margin: 0; padding: 4px; background: transparent; overflow: hidden; }
+    html, body { margin: 0; padding: 8px; background: transparent; overflow: hidden; }
     svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
   </style>
 </head>
@@ -30,16 +28,17 @@ function buildIframeHtml(code: string, instanceId: string): string {
 <script type="text/tikz">${safe}</script>
 <script>
   (function() {
-    var id = ${JSON.stringify(instanceId)};
-    var attempts = 0;
-    var timer = setInterval(function() {
+    var id = ${JSON.stringify(id)};
+    var n = 0;
+    var t = setInterval(function() {
       var svg = document.querySelector('svg');
       if (svg) {
-        clearInterval(timer);
-        parent.postMessage({ tikzId: id, type: 'done', html: svg.outerHTML }, '*');
+        clearInterval(t);
+        var h = document.body.scrollHeight;
+        parent.postMessage({ tikzId: id, type: 'done', height: h }, '*');
       }
-      if (++attempts > 150) {
-        clearInterval(timer);
+      if (++n > 150) {
+        clearInterval(t);
         parent.postMessage({ tikzId: id, type: 'error' }, '*');
       }
     }, 200);
@@ -51,38 +50,34 @@ function buildIframeHtml(code: string, instanceId: string): string {
 
 export function TikZRenderer({ code }: Props) {
   const instanceId = useRef(Math.random().toString(36).slice(2)).current;
-  const [status, setStatus] = useState<Status>(() =>
-    svgCache.has(code) ? "done" : "loading"
-  );
-  const [svgHtml, setSvgHtml] = useState<string>(() => svgCache.get(code) ?? "");
-  const [iframeSrc, setIframeSrc] = useState<string | null>(null);
 
-  // Build iframe content (only once when code is stable — never during streaming)
+  const [status, setStatus] = useState<Status>(() =>
+    heightCache.has(code) ? "done" : "loading"
+  );
+  const [iframeHeight, setIframeHeight] = useState<number>(
+    () => heightCache.get(code) ?? 0
+  );
+
+  const iframeSrc = useMemo(() => buildIframeHtml(code, instanceId), [code, instanceId]);
+
   useEffect(() => {
-    const cached = svgCache.get(code);
-    if (cached) {
-      setSvgHtml(cached);
+    if (heightCache.has(code)) {
+      setIframeHeight(heightCache.get(code)!);
       setStatus("done");
       return;
     }
 
     setStatus("loading");
-    setIframeSrc(buildIframeHtml(code, instanceId));
-  }, [code, instanceId]);
 
-  // Listen for postMessage from iframe
-  useEffect(() => {
     const handler = (e: MessageEvent) => {
       if (!e.data || e.data.tikzId !== instanceId) return;
       if (e.data.type === "done") {
-        const html = e.data.html as string;
-        svgCache.set(code, html);
-        setSvgHtml(html);
+        const h = (e.data.height as number) || 200;
+        heightCache.set(code, h);
+        setIframeHeight(h);
         setStatus("done");
-        setIframeSrc(null); // Remove iframe once we have the SVG
       } else if (e.data.type === "error") {
         setStatus("error");
-        setIframeSrc(null);
       }
     };
 
@@ -91,7 +86,7 @@ export function TikZRenderer({ code }: Props) {
   }, [code, instanceId]);
 
   return (
-    <div className="my-3 w-full">
+    <div className="my-3 w-full rounded-lg overflow-hidden">
       {status === "loading" && (
         <div
           className="flex flex-col items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 text-sm text-slate-500"
@@ -112,23 +107,19 @@ export function TikZRenderer({ code }: Props) {
         </div>
       )}
 
-      {status === "done" && svgHtml && (
-        <div
-          className="flex justify-center [&_svg]:max-w-full"
-          dangerouslySetInnerHTML={{ __html: svgHtml }}
-        />
-      )}
-
-      {/* Hidden iframe compiles TikZ — removed once SVG is received */}
-      {iframeSrc && (
-        <iframe
-          srcDoc={iframeSrc}
-          sandbox="allow-scripts"
-          title="tikz-compile"
-          style={{ display: "none", width: 0, height: 0, border: "none" }}
-          aria-hidden="true"
-        />
-      )}
+      {/* Iframe stays mounted — SVG renders in its own document context (no positioning issues) */}
+      <iframe
+        srcDoc={iframeSrc}
+        sandbox="allow-scripts allow-same-origin"
+        title="tikz"
+        style={{
+          display: status === "done" ? "block" : "none",
+          width: "100%",
+          height: iframeHeight ? `${iframeHeight + 16}px` : "auto",
+          border: "none",
+          background: "transparent",
+        }}
+      />
     </div>
   );
 }
