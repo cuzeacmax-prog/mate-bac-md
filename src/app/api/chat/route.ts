@@ -64,7 +64,8 @@ export async function POST(req: NextRequest) {
 
   const isPremium =
     (profile?.subscription_status ?? "") === "premium" ||
-    (profile?.subscription_status ?? "").startsWith("family");
+    (profile?.subscription_status ?? "").startsWith("family") ||
+    (profile?.subscription_status ?? "") === "admin";
 
   // ── Rate limit check ────────────────────────────────────────────
   if (!isPremium) {
@@ -138,8 +139,12 @@ export async function POST(req: NextRequest) {
   let assistantText = "";
   let inputTokens = 0;
   let outputTokens = 0;
+  let cachedTokens = 0;
 
-  const MODEL = "claude-sonnet-4-5";
+  const modelToUse =
+    profile?.subscription_status === "free"
+      ? "claude-haiku-4-5-20251001"
+      : "claude-sonnet-4-5";
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -149,9 +154,15 @@ export async function POST(req: NextRequest) {
       // ── Anthropic streaming ─────────────────────────────────────
       try {
         const claudeStream = anthropic.messages.stream({
-          model: MODEL,
+          model: modelToUse,
           max_tokens: 2048,
-          system: SYSTEM_PROMPT_V1,
+          system: [
+            {
+              type: "text",
+              text: SYSTEM_PROMPT_V1,
+              cache_control: { type: "ephemeral" },
+            },
+          ],
           messages: [...priorMessages, { role: "user", content: message }],
         });
 
@@ -169,14 +180,19 @@ export async function POST(req: NextRequest) {
             );
           }
           if (event.type === "message_start" && event.message.usage) {
-            inputTokens = event.message.usage.input_tokens;
+            const usage = event.message.usage as {
+              input_tokens: number;
+              cache_read_input_tokens?: number;
+            };
+            inputTokens = usage.input_tokens;
+            cachedTokens = usage.cache_read_input_tokens ?? 0;
           }
           if (event.type === "message_delta" && event.usage) {
             outputTokens = event.usage.output_tokens;
           }
         }
 
-        console.log(`[chat/route] stream complete. chunks=${chunkCount} in=${inputTokens} out=${outputTokens}`);
+        console.log(`[chat/route] stream complete. model=${modelToUse} chunks=${chunkCount} in=${inputTokens} cached=${cachedTokens} out=${outputTokens}`);
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({ done: true, conversationId: convId })}\n\n`
@@ -215,11 +231,21 @@ export async function POST(req: NextRequest) {
         }
       }
 
+      const isHaiku = modelToUse.includes("haiku");
+      const inputPrice = isHaiku ? 1 : 3;
+      const outputPrice = isHaiku ? 5 : 15;
+      const regularInputTokens = inputTokens - cachedTokens;
+      const cost =
+        (regularInputTokens / 1_000_000) * inputPrice +
+        (cachedTokens / 1_000_000) * inputPrice * 0.1 +
+        (outputTokens / 1_000_000) * outputPrice;
+
       const { error: logErr } = await service.from("api_usage_log").insert({
         user_id: user.id,
-        model: MODEL,
+        model: modelToUse,
         tokens_input: inputTokens,
         tokens_output: outputTokens,
+        cost_usd: cost,
         endpoint: "/api/chat",
       });
       if (logErr) {
