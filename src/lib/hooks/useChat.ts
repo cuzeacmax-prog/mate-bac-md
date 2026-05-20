@@ -54,10 +54,11 @@ export function useChat({
           throw new Error(data.error ?? `HTTP ${res.status}`);
         }
 
+        // Capture conversation ID from header but don't navigate yet —
+        // router.replace during streaming would unmount ChatView and lose messages
         const newConvId = res.headers.get("X-Conversation-Id");
         if (newConvId && newConvId !== convId) {
           setConvId(newConvId);
-          onConversationCreated?.(newConvId);
         }
 
         const reader = res.body?.getReader();
@@ -99,6 +100,10 @@ export function useChat({
               };
               setMessages((prev) => [...prev, assistantMsg]);
               setStreamingContent("");
+              // Navigate only after streaming completes — server has saved messages by now
+              if (newConvId) {
+                onConversationCreated?.(newConvId);
+              }
             }
           }
         }
