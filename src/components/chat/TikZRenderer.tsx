@@ -17,8 +17,8 @@ function buildIframeHtml(code: string, id: string): string {
   return `<!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="https://tikzjax.com/v1/fonts.css">
-  <script src="https://tikzjax.com/v1/tikzjax.js"></script>
+  <link rel="stylesheet" href="/tikzjax/fonts.css">
+  <script src="/tikzjax/tikzjax.js"></script>
   <style>
     html, body { margin: 0; padding: 8px; background: transparent; overflow: hidden; }
     svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
