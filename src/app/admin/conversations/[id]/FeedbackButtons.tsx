@@ -25,14 +25,8 @@ export function FeedbackButtons({ messageId }: Props) {
 
     if (!user) return;
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("id", user.id)
-      .single();
-
     await supabase.from("admin_feedback").insert({
-      admin_id: profile?.id,
+      admin_id: user.id,
       message_id: messageId,
       rating,
       ideal_response: ideal || null,

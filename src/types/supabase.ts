@@ -71,6 +71,27 @@ type RateLimitRow = {
   updated_at: string | null;
 };
 
+type ApiUsageLogRow = {
+  id: string;
+  user_id: string;
+  model: string | null;
+  tokens_input: number | null;
+  tokens_output: number | null;
+  cost_usd: number | null;
+  endpoint: string | null;
+  created_at: string | null;
+};
+
+type AdminFeedbackRow = {
+  id: string;
+  admin_id: string | null;
+  message_id: string | null;
+  rating: "good" | "bad" | "needs_improvement";
+  ideal_response: string | null;
+  notes: string | null;
+  created_at: string | null;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -81,16 +102,19 @@ export type Database = {
           updated_at?: string | null;
         };
         Update: Partial<Omit<ProfileRow, "id">>;
+        Relationships: [];
       };
       courses: {
         Row: CourseRow;
         Insert: Omit<CourseRow, "id" | "created_at"> & { id?: string; created_at?: string | null };
         Update: Partial<Omit<CourseRow, "id">>;
+        Relationships: [];
       };
       course_modules: {
         Row: CourseModuleRow;
         Insert: Omit<CourseModuleRow, "id"> & { id?: string };
         Update: Partial<Omit<CourseModuleRow, "id">>;
+        Relationships: [];
       };
       conversations: {
         Row: ConversationRow;
@@ -100,16 +124,31 @@ export type Database = {
           updated_at?: string | null;
         };
         Update: Partial<Omit<ConversationRow, "id">>;
+        Relationships: [];
       };
       messages: {
         Row: MessageRow;
         Insert: Omit<MessageRow, "id" | "created_at"> & { id?: string; created_at?: string | null };
         Update: Partial<Omit<MessageRow, "id">>;
+        Relationships: [];
       };
       rate_limits: {
         Row: RateLimitRow;
         Insert: Omit<RateLimitRow, "id"> & { id?: string };
         Update: Partial<Omit<RateLimitRow, "id">>;
+        Relationships: [];
+      };
+      api_usage_log: {
+        Row: ApiUsageLogRow;
+        Insert: Omit<ApiUsageLogRow, "id" | "created_at"> & { id?: string; created_at?: string | null };
+        Update: Partial<Omit<ApiUsageLogRow, "id">>;
+        Relationships: [];
+      };
+      admin_feedback: {
+        Row: AdminFeedbackRow;
+        Insert: Omit<AdminFeedbackRow, "id" | "created_at"> & { id?: string; created_at?: string | null };
+        Update: Partial<Omit<AdminFeedbackRow, "id">>;
+        Relationships: [];
       };
     };
     Views: Record<string, never>;
