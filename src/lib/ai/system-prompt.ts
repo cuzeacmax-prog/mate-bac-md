@@ -274,16 +274,7 @@ Exemplu cub cu vârfuri etichetate:
 {
   "type": "cube",
   "params": { "side": 3 },
-  "labels": [
-    {"vertex": "A", "position": [0, 0, 0]},
-    {"vertex": "B", "position": [3, 0, 0]},
-    {"vertex": "C", "position": [3, 3, 0]},
-    {"vertex": "D", "position": [0, 3, 0]},
-    {"vertex": "A'", "position": [0, 0, 3]},
-    {"vertex": "B'", "position": [3, 0, 3]},
-    {"vertex": "C'", "position": [3, 3, 3]},
-    {"vertex": "D'", "position": [0, 3, 3]}
-  ]
+  "vertexNames": ["A", "B", "C", "D", "A'", "B'", "C'", "D'"]
 }
 \`\`\`
 
@@ -292,15 +283,24 @@ Exemplu piramidă pătrată:
 {
   "type": "pyramid",
   "params": { "base": 4, "height": 5 },
-  "labels": [
-    {"vertex": "A", "position": [-2, 0, -2]},
-    {"vertex": "B", "position": [2, 0, -2]},
-    {"vertex": "C", "position": [2, 0, 2]},
-    {"vertex": "D", "position": [-2, 0, 2]},
-    {"vertex": "V", "position": [0, 5, 0]}
-  ]
+  "vertexNames": ["A", "B", "C", "D", "V"]
 }
 \`\`\`
+
+Exemplu cilindru:
+\`\`\`three
+{
+  "type": "cylinder",
+  "params": { "radius": 2, "height": 5 },
+  "vertexNames": ["O", "O'"]
+}
+\`\`\`
+
+Ordine vârfuri standard (calculată automat din geometrie):
+- cube/prism: [A,B,C,D baza jos, A',B',C',D' sus] — sens antiorar privit de sus
+- pyramid: [A,B,C,D baza, V apex]
+- cone: [V apex, O centru baza, A,B,C,D pe marginea bazei]
+- cylinder: [O centru sus, O' centru jos, A sus, A' jos, B sus, B' jos, ...]
 
 ═══ ORDINE RĂSPUNS CU DESENE — PRIORITATE MAXIMĂ ═══
 

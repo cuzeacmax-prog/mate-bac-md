@@ -8,12 +8,51 @@ import * as THREE from "three";
 type LabelSpec = { vertex: string; position: [number, number, number] };
 
 type ShapeSpec =
-  | { type: "cube"; params: { side: number }; labels?: LabelSpec[] }
-  | { type: "sphere"; params: { radius: number }; labels?: LabelSpec[] }
-  | { type: "cylinder"; params: { radius: number; height: number }; labels?: LabelSpec[] }
-  | { type: "cone"; params: { radius: number; height: number }; labels?: LabelSpec[] }
-  | { type: "prism"; params: { base: number; height: number; depth: number }; labels?: LabelSpec[] }
-  | { type: "pyramid"; params: { base: number; height: number }; labels?: LabelSpec[] };
+  | { type: "cube"; params: { side: number }; vertexNames?: string[]; labels?: LabelSpec[] }
+  | { type: "sphere"; params: { radius: number }; vertexNames?: string[]; labels?: LabelSpec[] }
+  | { type: "cylinder"; params: { radius: number; height: number }; vertexNames?: string[]; labels?: LabelSpec[] }
+  | { type: "cone"; params: { radius: number; height: number }; vertexNames?: string[]; labels?: LabelSpec[] }
+  | { type: "prism"; params: { base: number; height: number; depth: number }; vertexNames?: string[]; labels?: LabelSpec[] }
+  | { type: "pyramid"; params: { base: number; height: number }; vertexNames?: string[]; labels?: LabelSpec[] };
+
+function getCanonicalVertices(spec: ShapeSpec): [number, number, number][] {
+  switch (spec.type) {
+    case "cube": {
+      const L = spec.params.side, h = L / 2;
+      return [[-h,0,-h],[h,0,-h],[h,0,h],[-h,0,h],[-h,L,-h],[h,L,-h],[h,L,h],[-h,L,h]];
+    }
+    case "pyramid": {
+      const b = spec.params.base / 2, ht = spec.params.height;
+      return [[-b,0,-b],[b,0,-b],[b,0,b],[-b,0,b],[0,ht,0]];
+    }
+    case "cone": {
+      const { radius: r, height: ht } = spec.params;
+      return [[0,ht,0],[0,0,0],[r,0,0],[-r,0,0],[0,0,r],[0,0,-r]];
+    }
+    case "cylinder": {
+      const { radius: r, height: ht } = spec.params;
+      return [[0,ht,0],[0,0,0],[r,ht,0],[r,0,0],[-r,ht,0],[-r,0,0],[0,ht,r],[0,0,r]];
+    }
+    case "prism": {
+      const { base: bx, height: ht, depth: bz } = spec.params;
+      const hx = bx / 2, hz = bz / 2;
+      return [[-hx,0,-hz],[hx,0,-hz],[hx,0,hz],[-hx,0,hz],[-hx,ht,-hz],[hx,ht,-hz],[hx,ht,hz],[-hx,ht,hz]];
+    }
+    case "sphere": return [];
+  }
+}
+
+function resolveLabels(spec: ShapeSpec): LabelSpec[] {
+  if (spec.vertexNames && spec.vertexNames.length > 0) {
+    const positions = getCanonicalVertices(spec);
+    return spec.vertexNames.map((vertex, i) => ({
+      vertex,
+      position: (positions[i] ?? [0, 0, 0]) as [number, number, number],
+    }));
+  }
+  if (spec.labels && spec.labels.length > 0) return spec.labels;
+  return [];
+}
 
 interface Props {
   spec: ShapeSpec;
@@ -139,6 +178,7 @@ function Labels({ labels }: { labels: LabelSpec[] }) {
 }
 
 export function ThreeScene({ spec }: Props) {
+  const resolvedLabels = useMemo(() => resolveLabels(spec), [spec]);
   const maxParam = useMemo(() => {
     switch (spec.type) {
       case "cube":        return spec.params.side;
@@ -160,7 +200,7 @@ export function ThreeScene({ spec }: Props) {
         <directionalLight position={[-5, 5, -5]} intensity={0.5} />
         <RotatingGroup>
           <ShapeMesh spec={spec} />
-          {spec.labels && <Labels labels={spec.labels} />}
+          {resolvedLabels.length > 0 && <Labels labels={resolvedLabels} />}
         </RotatingGroup>
         <OrbitControls enablePan={false} />
         <gridHelper args={[maxParam * 3, 10, "#cccccc", "#eeeeee"]} />
