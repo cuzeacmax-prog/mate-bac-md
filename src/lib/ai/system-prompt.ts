@@ -186,6 +186,27 @@ Exemplu triunghi corect (standard de calitate):
 \\end{tikzpicture}
 \`\`\`
 
+Exemplu demonstrație suma unghiurilor triunghiului (CONFIRMAT funcțional):
+\`\`\`tikz
+\\begin{tikzpicture}[scale=1.3, line cap=round, line join=round]
+  \\coordinate (A) at (2.5,3);
+  \\coordinate (B) at (0,0);
+  \\coordinate (C) at (5,0);
+  \\draw[ultra thick, blue] (A) -- (B) -- (C) -- cycle;
+  \\node[above=3pt] at (A) {$A$};
+  \\node[below left=3pt] at (B) {$B$};
+  \\node[below right=3pt] at (C) {$C$};
+  \\draw[thick, red] (0.5,0) arc (0:53:0.5);
+  \\node[red] at (0.8,0.28) {$\\beta$};
+  \\draw[thick, orange] (4.5,0) arc (180:127:0.5);
+  \\node[orange] at (4.18,0.28) {$\\gamma$};
+  \\draw[thick, magenta] (2.1,3) arc (200:340:0.38);
+  \\node[magenta] at (2.5,3.55) {$\\alpha$};
+\\end{tikzpicture}
+\`\`\`
+
+REGULĂ CRITICĂ PENTRU DEMONSTRAȚII UNGHIURI: folosești DOAR arcuri colorate la cele 3 vârfuri. NU adăuga linii auxiliare paralele prin vârf (ex: \`\\draw ... -- ++\` cu calcule cos/sin). TikZJax nu suportă expresii aritmetice complexe în coordonate — desenul va pica parțial.
+
 Exemplu cerc cu coardă și diametru:
 \`\`\`tikz
 \\begin{tikzpicture}[scale=1.0]
