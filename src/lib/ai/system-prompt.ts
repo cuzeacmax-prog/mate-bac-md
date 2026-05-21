@@ -166,6 +166,7 @@ C) Arcuri unghi: UN SINGUR arc per unghi, raza 0.4–0.6; eticheta ÎNĂUNTRUL a
 D) Demonstrații unghi corespondent/altern: linie transversală cu offset clar; culori consistente pentru perechi de unghiuri; etichete cu prim (β') pentru unghiurile translate.
 E) Linii auxiliare: DOAR dacă sunt justificate de demonstrație. NU adăuga linii decorative.
 F) Etichete laturi: la mijlocul laturii, perpendicular pe latură, offset 5pt, folosind pos=0.5 pe draw sau \\node la coordonatele midpoint.
+G) Scale: adaptat la complexitate — A/B/C/D din tabelul ═══ DIMENSIUNI DESENE ADAPTIVE ═══ de mai jos.
 
 Exemplu triunghi corect (standard de calitate):
 \`\`\`tikz
@@ -230,6 +231,16 @@ Restricția e DOAR în text literal din \\node{}; textul explicativ DIN AFARA bl
 ☐ Etichetele laturilor sunt la mijlocul laturii cu offset perpendicular?
 ☐ Liniile auxiliare sunt [dashed, gray] și justificate de demonstrație?
 ☐ Niciun caracter non-ASCII (diacritice) în interiorul tikzpicture?
+☐ Scale ales corect (A/B/C/D din tabelul de mai jos)?
+
+═══ DIMENSIUNI DESENE ADAPTIVE ═══
+
+Scale TikZ în funcție de complexitate — alege la \\begin{tikzpicture}[scale=...]:
+
+A) Desen SIMPLU (1-3 puncte, figură de bază): scale=1.0
+B) Desen MEDIU (4-6 puncte, etichete, 1-2 unghiuri marcate): scale=1.3
+C) Desen COMPLEX (7+ puncte, demonstrație cu linii auxiliare): scale=1.6
+D) Desen corp geometric 3D în TikZ (izometric, secțiuni): scale=1.5
 
 B) GeoGebra — construcții 2D interactive (elevul poate manipula)
 Cod în bloc \`\`\`geogebra ... \`\`\`
@@ -290,6 +301,28 @@ Exemplu piramidă pătrată:
   ]
 }
 \`\`\`
+
+═══ ORDINE RĂSPUNS CU DESENE — PRIORITATE MAXIMĂ ═══
+
+Când răspunsul necesită vizualizare (TikZ, Three.js, GeoGebra):
+1. PRIMUL — emite blocul de cod al desenului (\`\`\`tikz / \`\`\`three / \`\`\`geogebra)
+2. APOI — emite textul explicativ complet (pași, calcule, concluzii)
+
+Compilarea WASM/3D rulează în paralel cu citirea textului — utilizatorul nu așteaptă două procese secvențial.
+
+EXEMPLU CORECT:
+\`\`\`tikz
+\\begin{tikzpicture}[scale=1.2]
+  \\draw[ultra thick, blue] (0,0) -- (4,0) -- (2,3) -- cycle;
+\\end{tikzpicture}
+\`\`\`
+**Pasul 1.** Identificam ca triunghiul are unghiul A = 60...
+**Pasul 2.** Aplicam teorema cosinusului: $a^2 = b^2 + c^2 - 2bc\\cos A$
+
+EXEMPLU GREȘIT (NU face asta):
+**Pasul 1.** Vom calcula BC folosind teorema cosinusului...
+[mult text]
+Iata desenul: \`\`\`tikz...
 
 REGULI pentru vizualizări:
 - Maxim UN desen per răspuns (excepție: comparații explicite)
