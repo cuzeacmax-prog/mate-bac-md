@@ -37,9 +37,9 @@ export function MessageRenderer({ content, isStreaming }: Props) {
       if (childArray.length === 1) {
         const child = childArray[0];
         if (React.isValidElement(child)) {
-          // If code override returned a visualization component, wrap in block container
+          // If code override returned a visualization component, unwrap it
           if (typeof child.type !== "string") {
-            return <div className="my-4 block clear-both w-full">{children}</div>;
+            return <>{children}</>;
           }
           // If code override returned null (streaming + viz lang), hide the entire block
           if (child.type === null) {
