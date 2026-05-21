@@ -2,7 +2,7 @@
 
 import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Text, Edges } from "@react-three/drei";
+import { OrbitControls, Text, Edges, OrthographicCamera, PerspectiveCamera } from "@react-three/drei";
 import * as THREE from "three";
 
 type LabelSpec = { vertex: string; position: [number, number, number] };
@@ -54,8 +54,15 @@ function resolveLabels(spec: ShapeSpec): LabelSpec[] {
   return [];
 }
 
+export type ViewMode = "2d-cabinet" | "3d-interactive";
+
+interface SpecProps {
+  spec: ShapeSpec;
+}
+
 interface Props {
   spec: ShapeSpec;
+  mode: ViewMode;
 }
 
 const FILL_COLOR = "#6366f1";
@@ -99,7 +106,7 @@ function PyramidMesh({ base, height }: { base: number; height: number }) {
   );
 }
 
-function ShapeMesh({ spec }: Props) {
+function ShapeMesh({ spec }: SpecProps) {
   switch (spec.type) {
     case "cube": {
       const s = spec.params.side;
@@ -177,7 +184,7 @@ function Labels({ labels }: { labels: LabelSpec[] }) {
   );
 }
 
-export function ThreeScene({ spec }: Props) {
+export function ThreeScene({ spec, mode }: Props) {
   const resolvedLabels = useMemo(() => resolveLabels(spec), [spec]);
   const maxParam = useMemo(() => {
     switch (spec.type) {
@@ -191,18 +198,31 @@ export function ThreeScene({ spec }: Props) {
   }, [spec]);
 
   const camDist = maxParam * 2.5;
+  const camPos: [number, number, number] = [camDist, camDist * 0.8, camDist];
 
   return (
     <div style={{ height: 400, width: "100%", borderRadius: 8, overflow: "hidden", background: "#f8f8fc" }}>
-      <Canvas camera={{ position: [camDist, camDist * 0.8, camDist], fov: 45 }}>
+      <Canvas>
+        {mode === "2d-cabinet" ? (
+          <OrthographicCamera makeDefault position={camPos} zoom={50 / maxParam} near={0.1} far={10000} />
+        ) : (
+          <PerspectiveCamera makeDefault position={camPos} fov={45} near={0.1} far={10000} />
+        )}
         <ambientLight intensity={0.7} />
         <directionalLight position={[10, 10, 5]} intensity={1.5} />
         <directionalLight position={[-5, 5, -5]} intensity={0.5} />
-        <RotatingGroup>
-          <ShapeMesh spec={spec} />
-          {resolvedLabels.length > 0 && <Labels labels={resolvedLabels} />}
-        </RotatingGroup>
-        <OrbitControls enablePan={false} />
+        {mode === "3d-interactive" ? (
+          <RotatingGroup>
+            <ShapeMesh spec={spec} />
+            {resolvedLabels.length > 0 && <Labels labels={resolvedLabels} />}
+          </RotatingGroup>
+        ) : (
+          <group>
+            <ShapeMesh spec={spec} />
+            {resolvedLabels.length > 0 && <Labels labels={resolvedLabels} />}
+          </group>
+        )}
+        {mode === "3d-interactive" && <OrbitControls enablePan={false} />}
         <gridHelper args={[maxParam * 3, 10, "#cccccc", "#eeeeee"]} />
       </Canvas>
     </div>
