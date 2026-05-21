@@ -46,7 +46,7 @@ function buildIframeHtml(code: string, id: string, origin: string): string {
   </script>
   <script src="${origin}/tikzjax/tikzjax.js"></script>
   <style>
-    html, body { margin: 0; padding: 16px 8px 32px 8px; background: transparent; overflow: hidden; }
+    html, body { margin: 0; padding: 20px; background: transparent; overflow: hidden; }
     svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
   </style>
 </head>
@@ -61,7 +61,7 @@ function buildIframeHtml(code: string, id: string, origin: string): string {
       if (svg) {
         clearInterval(t);
         var rect = svg.getBoundingClientRect();
-        var h = Math.ceil(rect.bottom) + 32;
+        var h = Math.ceil(rect.bottom - rect.top) + 40;
         parent.postMessage({ tikzId: id, type: 'done', height: h }, '*');
       }
       if (++n > 150) {
@@ -154,7 +154,7 @@ export function TikZRenderer({ code }: Props) {
         style={{
           display: status === "done" ? "block" : "none",
           width: "100%",
-          height: iframeHeight ? `${iframeHeight + 24}px` : "auto",
+          height: iframeHeight ? `${iframeHeight}px` : "auto",
           border: "none",
           background: "transparent",
         }}
