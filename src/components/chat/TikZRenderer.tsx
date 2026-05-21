@@ -125,11 +125,12 @@ export function TikZRenderer({ code }: Props) {
   }, [instanceId]);
 
   return (
-    <div className="my-3 w-full rounded-lg overflow-hidden">
+    <div className="my-3 w-full rounded-lg overflow-hidden relative">
+      {/* Loading/error overlays sit on top of the always-present iframe */}
       {status === "loading" && (
         <div
-          className="flex flex-col items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 text-sm text-slate-500"
-          style={{ minHeight: 200 }}
+          className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-50 text-sm text-slate-500"
+          style={{ zIndex: 1, minHeight: 200 }}
         >
           <Loader2 className="h-6 w-6 animate-spin text-indigo-500" />
           <span>Compilez desenul...</span>
@@ -146,19 +147,24 @@ export function TikZRenderer({ code }: Props) {
         </div>
       )}
 
-      {/* Iframe stays mounted — SVG renders in its own document context (no positioning issues) */}
-      <iframe
-        srcDoc={iframeSrc}
-        sandbox="allow-scripts allow-same-origin"
-        title="tikz"
-        style={{
-          display: status === "done" ? "block" : "none",
-          width: "100%",
-          height: iframeHeight ? `${iframeHeight}px` : "auto",
-          border: "none",
-          background: "transparent",
-        }}
-      />
+      {/* Iframe is always display:block so its viewport has real dimensions.
+          display:none collapses the viewport to 0×0, making getBoundingClientRect()
+          inside the iframe return 0 and breaking the height measurement. */}
+      {status !== "error" && (
+        <iframe
+          srcDoc={iframeSrc}
+          sandbox="allow-scripts allow-same-origin"
+          title="tikz"
+          style={{
+            display: "block",
+            width: "100%",
+            height: iframeHeight ? `${iframeHeight}px` : "200px",
+            border: "none",
+            background: "transparent",
+            visibility: status === "done" ? "visible" : "hidden",
+          }}
+        />
+      )}
     </div>
   );
 }
