@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
-import type { ViewMode } from "./ThreeScene";
+import { CabinetSVG } from "./CabinetSVG";
 
 const ThreeScene = dynamic(
   () => import("./ThreeScene").then((m) => ({ default: m.ThreeScene })),
@@ -27,7 +27,7 @@ interface Props {
 }
 
 export function ThreeRenderer({ spec }: Props) {
-  const [mode, setMode] = useState<ViewMode>("2d-cabinet");
+  const [mode, setMode] = useState<"2d-cabinet" | "3d-interactive">("2d-cabinet");
 
   const parsed = useMemo(() => {
     try {
@@ -46,8 +46,8 @@ export function ThreeRenderer({ spec }: Props) {
   }
 
   return (
-    <div>
-      <div className="flex justify-end mb-1">
+    <div className="rounded-lg overflow-hidden border border-slate-200 bg-slate-50">
+      <div className="flex justify-end px-2 pt-1.5 pb-0">
         <button
           onClick={() => setMode(m => m === "2d-cabinet" ? "3d-interactive" : "2d-cabinet")}
           className="text-xs px-2 py-1 rounded border border-slate-300 bg-white text-slate-600 hover:bg-slate-50 transition-colors select-none"
@@ -55,7 +55,13 @@ export function ThreeRenderer({ spec }: Props) {
           {mode === "2d-cabinet" ? "↻ 3D interactiv" : "◫ 2D BAC"}
         </button>
       </div>
-      <ThreeScene spec={parsed.data} mode={mode} />
+      <div className="p-2">
+        {mode === "2d-cabinet" ? (
+          <CabinetSVG spec={parsed.data} id={spec.slice(0, 16)} />
+        ) : (
+          <ThreeScene spec={parsed.data} mode="3d-interactive" />
+        )}
+      </div>
     </div>
   );
 }
