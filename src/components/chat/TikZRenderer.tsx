@@ -153,7 +153,7 @@ export function TikZRenderer({ code }: Props) {
       {status !== "error" && (
         <iframe
           srcDoc={iframeSrc}
-          sandbox="allow-scripts allow-same-origin"
+          sandbox="allow-scripts"
           title="tikz"
           style={{
             display: "block",
