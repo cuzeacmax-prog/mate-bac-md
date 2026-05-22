@@ -75,11 +75,39 @@ type ApiUsageLogRow = {
   id: string;
   user_id: string;
   model: string | null;
+  task_name: string | null;
   tokens_input: number | null;
   tokens_output: number | null;
   cost_usd: number | null;
   endpoint: string | null;
   created_at: string | null;
+};
+
+type AiModelConfigRow = {
+  id: string;
+  task_name: string;
+  display_name: string;
+  provider: 'anthropic' | 'google' | 'openai';
+  model_name: string;
+  max_tokens: number;
+  temperature: number;
+  system_prompt_key: string | null;
+  price_input_per_1m: number;
+  price_output_per_1m: number;
+  description: string | null;
+  is_active: boolean;
+  fallback_task_name: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+type SystemConfigRow = {
+  id: string;
+  key: string;
+  value: Json;
+  description: string | null;
+  updated_by: string | null;
+  updated_at: string;
 };
 
 type AdminFeedbackRow = {
@@ -148,6 +176,22 @@ export type Database = {
         Row: AdminFeedbackRow;
         Insert: Omit<AdminFeedbackRow, "id" | "created_at"> & { id?: string; created_at?: string | null };
         Update: Partial<Omit<AdminFeedbackRow, "id">>;
+        Relationships: [];
+      };
+      ai_model_config: {
+        Row: AiModelConfigRow;
+        Insert: Omit<AiModelConfigRow, "id" | "created_at" | "updated_at"> & {
+          id?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Omit<AiModelConfigRow, "id" | "created_at">>;
+        Relationships: [];
+      };
+      system_config: {
+        Row: SystemConfigRow;
+        Insert: Omit<SystemConfigRow, "id" | "updated_at"> & { id?: string; updated_at?: string };
+        Update: Partial<Omit<SystemConfigRow, "id">>;
         Relationships: [];
       };
     };
