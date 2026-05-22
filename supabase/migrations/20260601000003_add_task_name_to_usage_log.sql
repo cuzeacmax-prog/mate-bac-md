@@ -1,0 +1,1 @@
+ALTER TABLE api_usage_log ADD COLUMN IF NOT EXISTS task_name TEXT;
