@@ -1,7 +1,7 @@
 import { streamText, generateText } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { google } from "@ai-sdk/google";
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import type { AiMessage, ModelConfig } from "./router.types";
 
 const configCache = new Map<string, { config: ModelConfig; expires: number }>();
@@ -10,8 +10,7 @@ async function getModelConfig(taskName: string): Promise<ModelConfig> {
   const cached = configCache.get(taskName);
   if (cached && cached.expires > Date.now()) return cached.config;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = (await createClient()) as any;
+  const supabase = createServiceClient();
   const { data, error } = await supabase
     .from("ai_model_config")
     .select("task_name, provider, model_name, max_tokens, temperature, price_input_per_1m, price_output_per_1m, fallback_task_name")
@@ -20,7 +19,8 @@ async function getModelConfig(taskName: string): Promise<ModelConfig> {
     .single();
 
   if (error || !data) {
-    throw new Error(`Model config not found for task: ${taskName}`);
+    console.error("[AI Router] getModelConfig failed:", { taskName, errorMessage: error?.message, errorCode: error?.code });
+    throw new Error(`Model config not found for task: ${taskName}${error ? ` (${error.message})` : ""}`);
   }
 
   configCache.set(taskName, { config: data as ModelConfig, expires: Date.now() + 60_000 });
