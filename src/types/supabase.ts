@@ -110,6 +110,67 @@ type SystemConfigRow = {
   updated_at: string;
 };
 
+type TikzTemplateRow = {
+  id: string;
+  name: string;
+  display_name: string;
+  description: string | null;
+  category: string;
+  subcategory: string | null;
+  latex_source: string;
+  required_params: Json;
+  optional_params: Json;
+  calculator_function: string | null;
+  preview_svg: string | null;
+  default_params: Json | null;
+  pedagogical_notes: Json;
+  search_keywords: Json;
+  example_problems: Json;
+  is_active: boolean | null;
+  version: number | null;
+  created_by: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+};
+
+type SolvedExerciseRow = {
+  id: string;
+  template_id: string | null;
+  statement: string;
+  solution: string;
+  tikz_source: string | null;
+  svg_static: string | null;
+  svg_thumbnail: string | null;
+  topic: string;
+  subtopic: string | null;
+  difficulty: number | null;
+  grade_level: number | null;
+  source: string | null;
+  tags: Json;
+  reviewed_by_admin: boolean | null;
+  needs_review: boolean | null;
+  view_count: number | null;
+  helpful_count: number | null;
+  not_helpful_count: number | null;
+  created_by: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+};
+
+type GapAnalysisRow = {
+  id: string;
+  query: string;
+  user_id: string | null;
+  conversation_id: string | null;
+  max_similarity_found: number | null;
+  top_match_id: string | null;
+  detected_topic: string | null;
+  detected_subtopic: string | null;
+  resolved: boolean | null;
+  resolved_with_exercise_id: string | null;
+  created_at: string | null;
+};
+
 type AdminFeedbackRow = {
   id: string;
   admin_id: string | null;
@@ -192,6 +253,35 @@ export type Database = {
         Row: SystemConfigRow;
         Insert: Omit<SystemConfigRow, "id" | "updated_at"> & { id?: string; updated_at?: string };
         Update: Partial<Omit<SystemConfigRow, "id">>;
+        Relationships: [];
+      };
+      tikz_templates: {
+        Row: TikzTemplateRow;
+        Insert: Omit<TikzTemplateRow, "id" | "created_at" | "updated_at"> & {
+          id?: string;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Update: Partial<Omit<TikzTemplateRow, "id">>;
+        Relationships: [];
+      };
+      solved_exercises: {
+        Row: SolvedExerciseRow;
+        Insert: Omit<SolvedExerciseRow, "id" | "created_at" | "updated_at"> & {
+          id?: string;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Update: Partial<Omit<SolvedExerciseRow, "id">>;
+        Relationships: [];
+      };
+      gap_analysis: {
+        Row: GapAnalysisRow;
+        Insert: Omit<GapAnalysisRow, "id" | "created_at"> & {
+          id?: string;
+          created_at?: string | null;
+        };
+        Update: Partial<Omit<GapAnalysisRow, "id">>;
         Relationships: [];
       };
     };
