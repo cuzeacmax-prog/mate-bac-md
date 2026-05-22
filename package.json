@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.78",
+    "@ai-sdk/google": "^3.0.79",
     "@anthropic-ai/sdk": "^0.97.0",
     "@hookform/resolvers": "^5.2.2",
     "@react-three/drei": "^10.7.7",
@@ -16,6 +18,7 @@
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.106.0",
     "@types/three": "^0.184.1",
+    "ai": "^6.0.190",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "katex": "^0.16.47",
