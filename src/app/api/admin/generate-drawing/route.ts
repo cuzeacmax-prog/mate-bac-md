@@ -79,14 +79,20 @@ export async function POST(req: NextRequest) {
   console.log('[generate-drawing] Looking up template:', template_name);
   const { data: template, error: tplError } = await serviceClient
     .from('tikz_templates')
-    .select('name, latex_source, calculator_function')
+    .select('name, latex_source, calculator_function, is_active')
     .eq('name', template_name)
-    .eq('is_active', true)
     .single();
-  console.log('[generate-drawing] Template found:', !!template, 'error:', tplError?.message);
+  console.log('[generate-drawing] Template found:', !!template, 'is_active:', template?.is_active, 'error:', tplError?.message);
 
   if (tplError || !template) {
-    return NextResponse.json({ error: `Template not found: ${template_name}` }, { status: 404 });
+    return NextResponse.json({
+      error: `Template not found: ${template_name}`,
+      db_error: tplError?.message,
+    }, { status: 404 });
+  }
+
+  if (template.is_active === false) {
+    return NextResponse.json({ error: `Template is inactive: ${template_name}` }, { status: 400 });
   }
 
   let computedParams: ParamMap = params as ParamMap;
