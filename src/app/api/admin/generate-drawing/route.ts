@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
 import { compileTikz } from '@/lib/tikz/compile';
 import { applyTemplate, type TemplateValue } from '@/lib/templates/engine';
 import * as Geometry from '@/lib/geometry';
@@ -74,12 +75,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing or invalid params object' }, { status: 400 });
   }
 
-  const { data: template, error: tplError } = await supabase
+  const serviceClient = createServiceClient();
+  console.log('[generate-drawing] Looking up template:', template_name);
+  const { data: template, error: tplError } = await serviceClient
     .from('tikz_templates')
     .select('name, latex_source, calculator_function')
     .eq('name', template_name)
     .eq('is_active', true)
     .single();
+  console.log('[generate-drawing] Template found:', !!template, 'error:', tplError?.message);
 
   if (tplError || !template) {
     return NextResponse.json({ error: `Template not found: ${template_name}` }, { status: 404 });
