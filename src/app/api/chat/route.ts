@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { SYSTEM_PROMPT_V1 } from "@/lib/ai/system-prompt";
+import { callAIStream, getTaskPricing } from "@/lib/ai/router";
 
 const FREE_MONTHLY_LIMIT = 30;
 const IS_DEV = process.env.NODE_ENV === "development";
@@ -44,14 +44,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Mesaj gol" }, { status: 400 });
   }
 
-  // ── Anthropic init ──────────────────────────────────────────────
-  if (!process.env.ANTHROPIC_API_KEY) {
-    console.error("[chat/route] ANTHROPIC_API_KEY is not set");
-    return NextResponse.json({ error: "AI not configured" }, { status: 500 });
-  }
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-  // ── Profile + premium check ─────────────────────────────────────
+  // ── Profile + tier check ────────────────────────────────────────
   const { data: profile, error: profileErr } = await supabase
     .from("profiles")
     .select("subscription_status")
@@ -62,10 +55,15 @@ export async function POST(req: NextRequest) {
     return serverError("profile fetch", profileErr);
   }
 
+  const status: string = profile?.subscription_status ?? "free";
   const isPremium =
-    (profile?.subscription_status ?? "") === "premium" ||
-    (profile?.subscription_status ?? "").startsWith("family") ||
-    (profile?.subscription_status ?? "") === "admin";
+    status === "premium" || status.startsWith("family") || status === "admin";
+
+  // ── Task name based on tier ─────────────────────────────────────
+  const taskName =
+    status === "admin" ? "chat_admin"
+    : status === "premium" || status.startsWith("family") ? "chat_premium"
+    : "chat_free";
 
   // ── Rate limit check ────────────────────────────────────────────
   if (!isPremium) {
@@ -117,7 +115,7 @@ export async function POST(req: NextRequest) {
     console.error("[chat/route] history fetch error:", historyErr);
   }
 
-  const priorMessages: Anthropic.MessageParam[] = (
+  const priorMessages = (
     (history as { role: string; content: string | null }[] | null) ?? []
   )
     .filter((m) => m.role === "user" || m.role === "assistant")
@@ -139,60 +137,32 @@ export async function POST(req: NextRequest) {
   let assistantText = "";
   let inputTokens = 0;
   let outputTokens = 0;
-  let cachedTokens = 0;
-
-  const modelToUse =
-    profile?.subscription_status === "free"
-      ? "claude-haiku-4-5-20251001"
-      : "claude-sonnet-4-5";
 
   const stream = new ReadableStream({
     async start(controller) {
-      // Ping inițial — confirmă că streaming-ul funcționează
       controller.enqueue(encoder.encode(`data: ${JSON.stringify({ ping: true })}\n\n`));
 
-      // ── Anthropic streaming ─────────────────────────────────────
       try {
-        const claudeStream = anthropic.messages.stream({
-          model: modelToUse,
-          max_tokens: 2048,
-          system: [
-            {
-              type: "text",
-              text: SYSTEM_PROMPT_V1,
-              cache_control: { type: "ephemeral" },
-            },
-          ],
-          messages: [...priorMessages, { role: "user", content: message }],
-        });
+        const result = await callAIStream(
+          taskName,
+          [...priorMessages, { role: "user", content: message }],
+          { system: SYSTEM_PROMPT_V1 }
+        );
 
         let chunkCount = 0;
-        for await (const event of claudeStream) {
-          if (
-            event.type === "content_block_delta" &&
-            event.delta.type === "text_delta"
-          ) {
-            const chunk = event.delta.text;
-            assistantText += chunk;
-            chunkCount++;
-            controller.enqueue(
-              encoder.encode(`data: ${JSON.stringify({ text: chunk })}\n\n`)
-            );
-          }
-          if (event.type === "message_start" && event.message.usage) {
-            const usage = event.message.usage as {
-              input_tokens: number;
-              cache_read_input_tokens?: number;
-            };
-            inputTokens = usage.input_tokens;
-            cachedTokens = usage.cache_read_input_tokens ?? 0;
-          }
-          if (event.type === "message_delta" && event.usage) {
-            outputTokens = event.usage.output_tokens;
-          }
+        for await (const chunk of result.textStream) {
+          assistantText += chunk;
+          chunkCount++;
+          controller.enqueue(
+            encoder.encode(`data: ${JSON.stringify({ text: chunk })}\n\n`)
+          );
         }
 
-        console.log(`[chat/route] stream complete. model=${modelToUse} chunks=${chunkCount} in=${inputTokens} cached=${cachedTokens} out=${outputTokens}`);
+        const usage = await result.usage;
+        inputTokens = usage.inputTokens ?? 0;
+        outputTokens = usage.outputTokens ?? 0;
+
+        console.log(`[chat/route] stream complete. task=${taskName} chunks=${chunkCount} in=${inputTokens} out=${outputTokens}`);
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({ done: true, conversationId: convId })}\n\n`
@@ -201,7 +171,7 @@ export async function POST(req: NextRequest) {
         controller.close();
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Eroare AI";
-        console.error("[chat/route] anthropic stream error:", err instanceof Error ? err.stack : err);
+        console.error("[chat/route] stream error:", err instanceof Error ? err.stack : err);
         controller.enqueue(
           encoder.encode(`data: ${JSON.stringify({ error: msg })}\n\n`)
         );
@@ -231,25 +201,28 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      const isHaiku = modelToUse.includes("haiku");
-      const inputPrice = isHaiku ? 1 : 3;
-      const outputPrice = isHaiku ? 5 : 15;
-      const regularInputTokens = inputTokens - cachedTokens;
-      const cost =
-        (regularInputTokens / 1_000_000) * inputPrice +
-        (cachedTokens / 1_000_000) * inputPrice * 0.1 +
-        (outputTokens / 1_000_000) * outputPrice;
+      // Cost calculation from DB config
+      let cost = 0;
+      try {
+        const pricing = await getTaskPricing(taskName);
+        cost =
+          (inputTokens / 1_000_000) * pricing.price_input_per_1m +
+          (outputTokens / 1_000_000) * pricing.price_output_per_1m;
 
-      const { error: logErr } = await service.from("api_usage_log").insert({
-        user_id: user.id,
-        model: modelToUse,
-        tokens_input: inputTokens,
-        tokens_output: outputTokens,
-        cost_usd: cost,
-        endpoint: "/api/chat",
-      });
-      if (logErr) {
-        console.error("[chat/route] api_usage_log insert error:", JSON.stringify(logErr, null, 2));
+        const { error: logErr } = await service.from("api_usage_log").insert({
+          user_id: user.id,
+          model: pricing.model_name,
+          task_name: taskName,
+          tokens_input: inputTokens,
+          tokens_output: outputTokens,
+          cost_usd: cost,
+          endpoint: "/api/chat",
+        });
+        if (logErr) {
+          console.error("[chat/route] api_usage_log insert error:", JSON.stringify(logErr, null, 2));
+        }
+      } catch (err) {
+        console.error("[chat/route] pricing/log error:", err instanceof Error ? err.stack : err);
       }
 
       if (!isPremium) {

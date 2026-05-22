@@ -50,7 +50,7 @@ export async function callAIStream(
     model,
     system: options?.system,
     messages,
-    maxTokens: config.max_tokens || undefined,
+    maxOutputTokens: config.max_tokens || undefined,
     temperature: config.temperature,
   });
 }
@@ -59,7 +59,7 @@ export async function callAI(
   taskName: string,
   messages: AiMessage[],
   options?: { system?: string }
-): Promise<{ text: string; promptTokens: number; completionTokens: number }> {
+): Promise<{ text: string; inputTokens: number; outputTokens: number }> {
   const config = await getModelConfig(taskName);
   const model = buildModel(config);
 
@@ -67,14 +67,14 @@ export async function callAI(
     model,
     system: options?.system,
     messages,
-    maxTokens: config.max_tokens || undefined,
+    maxOutputTokens: config.max_tokens || undefined,
     temperature: config.temperature,
   });
 
   return {
     text: result.text,
-    promptTokens: result.usage.promptTokens,
-    completionTokens: result.usage.completionTokens,
+    inputTokens: result.usage.inputTokens ?? 0,
+    outputTokens: result.usage.outputTokens ?? 0,
   };
 }
 
