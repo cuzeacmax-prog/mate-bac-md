@@ -1,26 +1,24 @@
 "use client";
 
 import React from "react";
-import dynamic from "next/dynamic";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import type { Components } from "react-markdown";
 
-const TikZRenderer = dynamic(
-  () => import("@/components/chat/TikZRenderer").then((m) => ({ default: m.TikZRenderer })),
-  { ssr: false }
-);
-
-const GeoGebraEmbed = dynamic(
-  () => import("@/components/chat/GeoGebraEmbed").then((m) => ({ default: m.GeoGebraEmbed })),
-  { ssr: false }
-);
-
-const ThreeRenderer = dynamic(
-  () => import("@/components/chat/ThreeRenderer").then((m) => ({ default: m.ThreeRenderer })),
-  { ssr: false }
-);
+// Viz renderers disabled — moving to library-based static SVG approach (Phase 3)
+// const TikZRenderer = dynamic(
+//   () => import("@/components/chat/TikZRenderer").then((m) => ({ default: m.TikZRenderer })),
+//   { ssr: false }
+// );
+// const GeoGebraEmbed = dynamic(
+//   () => import("@/components/chat/GeoGebraEmbed").then((m) => ({ default: m.GeoGebraEmbed })),
+//   { ssr: false }
+// );
+// const ThreeRenderer = dynamic(
+//   () => import("@/components/chat/ThreeRenderer").then((m) => ({ default: m.ThreeRenderer })),
+//   { ssr: false }
+// );
 
 const VIZ_LANGS = new Set(["tikz", "geogebra", "three"]);
 
@@ -64,11 +62,16 @@ export function MessageRenderer({ content, isStreaming }: Props) {
       const codeContent = String(children).trimEnd();
 
       if (VIZ_LANGS.has(lang)) {
-        // During streaming: code is partial — hide entirely (pre will receive null and hide too)
         if (isStreaming) return null;
-        if (lang === "tikz")     return <TikZRenderer code={codeContent} />;
-        if (lang === "geogebra") return <GeoGebraEmbed commands={codeContent} />;
-        if (lang === "three")    return <ThreeRenderer spec={codeContent} />;
+        // Viz renderers disabled — will serve from library (Phase 3)
+        // if (lang === "tikz")     return <TikZRenderer code={codeContent} />;
+        // if (lang === "geogebra") return <GeoGebraEmbed commands={codeContent} />;
+        // if (lang === "three")    return <ThreeRenderer spec={codeContent} />;
+        return (
+          <span className="text-xs text-muted-foreground italic">
+            [Vizualizare disponibilă curând în bibliotecă]
+          </span>
+        );
       }
 
       // Other fenced code blocks
