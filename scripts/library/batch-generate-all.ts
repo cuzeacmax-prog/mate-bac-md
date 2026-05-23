@@ -6,6 +6,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
+import { fileURLToPath } from 'url';
 import { createServiceClient } from '../../src/lib/supabase/service';
 import { generateExerciseFromTriangle } from '../../src/lib/library/exerciseGenerator';
 import { generateEmbedding, EMBEDDING_DIMENSIONS } from '../../src/lib/embeddings/gemini';
@@ -40,7 +41,7 @@ if (LIMIT === 0) {
   process.exit(0);
 }
 
-const PROGRESS_FILE = path.join(path.dirname(new URL(import.meta.url).pathname), 'batch-progress.json');
+const PROGRESS_FILE = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'batch-progress.json');
 const MAX_RETRIES = 3;
 const RATE_LIMIT_MS = 800;
 
@@ -54,12 +55,19 @@ interface ProgressFile {
 }
 
 function loadProgress(): ProgressFile {
+  const defaults: ProgressFile = { completed_hashes: [], last_run: '', total_success: 0, total_failed: 0 };
   if (fs.existsSync(PROGRESS_FILE)) {
     try {
-      return JSON.parse(fs.readFileSync(PROGRESS_FILE, 'utf8')) as ProgressFile;
+      const raw = JSON.parse(fs.readFileSync(PROGRESS_FILE, 'utf8')) as Partial<ProgressFile>;
+      return {
+        completed_hashes: Array.isArray(raw.completed_hashes) ? raw.completed_hashes : [],
+        last_run: typeof raw.last_run === 'string' ? raw.last_run : '',
+        total_success: Number.isFinite(raw.total_success) ? raw.total_success! : 0,
+        total_failed: Number.isFinite(raw.total_failed) ? raw.total_failed! : 0,
+      };
     } catch { /* ignore */ }
   }
-  return { completed_hashes: [], last_run: '', total_success: 0, total_failed: 0 };
+  return defaults;
 }
 
 function saveProgress(p: ProgressFile) {
