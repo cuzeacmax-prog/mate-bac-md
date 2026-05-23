@@ -46,6 +46,27 @@ function lineIntersection(p1: Point, p2: Point, p3: Point, p4: Point): Point | n
   return [p1[0] + t * dx1, p1[1] + t * dy1];
 }
 
+// Computes absolute position + rotation for a label placed exterior to the triangle,
+// parallel to the side P1P2. Works for any triangle orientation.
+function exteriorLabelPosition(
+  P1: Point,
+  P2: Point,
+  centroid: Point,
+  offset: number = 0.3,
+): { x: number; y: number; rotation: number } {
+  const midX = (P1[0] + P2[0]) / 2;
+  const midY = (P1[1] + P2[1]) / 2;
+  let extX = midX - centroid[0];
+  let extY = midY - centroid[1];
+  const len = Math.sqrt(extX * extX + extY * extY);
+  if (len > 0) { extX /= len; extY /= len; }
+  const dx = P2[0] - P1[0];
+  const dy = P2[1] - P1[1];
+  let rotation = (Math.atan2(dy, dx) * 180) / Math.PI;
+  if (rotation > 90 || rotation < -90) rotation += 180;
+  return { x: midX + extX * offset, y: midY + extY * offset, rotation };
+}
+
 // Parses "BC" / "AD" / "AM_a" into [Point, Point] (longest-name-first to handle "M_a").
 function parseSegment(segment: string, points: Record<string, Point>): [Point, Point] | null {
   const validNames = Object.keys(points).sort((a, b) => b.length - a.length);
@@ -468,8 +489,8 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
     const mergeNote = groupLabels && groupLabels.length > 1
       ? ` Notă: ${groupLabels.join(', ')} coincid în acest triunghi special.`
       : '';
-    const frac = footFraction(foot, line.sideStart, line.sideEnd);
-    cumulativeTikz += `  \\path (${line.sideStart[0].toFixed(3)},${line.sideStart[1].toFixed(3)}) -- (${line.sideEnd[0].toFixed(3)},${line.sideEnd[1].toFixed(3)}) node[pos=${frac.toFixed(3)}, sloped, below=4pt] {$${displayLabel}$};\n`;
+    const footLP = exteriorLabelPosition(foot, foot, centroidPoint, 0.22);
+    cumulativeTikz += `  \\node at (${footLP.x.toFixed(3)},${footLP.y.toFixed(3)}) {$${displayLabel}$};\n`;
 
     steps.push({
       step: steps.length + 1,
@@ -480,17 +501,20 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
     });
   }
 
-  // Side labels at midway; extra offset (14pt) when a foot-point letter sits above.
-  // Paths B→C, C→A, A→B ensure "below" is exterior for our CCW triangle.
+  // Side labels using centroid-relative exterior position — always outside triangle,
+  // parallel to each side. Extra offset when a foot-point letter already sits near the side.
   if (input.show_sides) {
     const fmt = input.side_label_format ?? 'value_only';
     const cons = input.constructions ?? [];
-    const oA = cons.some(con => con.from === 'A') ? '14pt' : '8pt';
-    const oB = cons.some(con => con.from === 'B') ? '14pt' : '8pt';
-    const oC = cons.some(con => con.from === 'C') ? '14pt' : '8pt';
-    cumulativeTikz += `  \\path (${B[0].toFixed(3)},${B[1].toFixed(3)}) -- (${C[0].toFixed(3)},${C[1].toFixed(3)}) node[pos=0.5, sloped, below=${oA}] {$${formatSideLabel('a', a, fmt)}$};\n`;
-    cumulativeTikz += `  \\path (${C[0].toFixed(3)},${C[1].toFixed(3)}) -- (${A[0].toFixed(3)},${A[1].toFixed(3)}) node[pos=0.5, sloped, below=${oB}] {$${formatSideLabel('b', b, fmt)}$};\n`;
-    cumulativeTikz += `  \\path (${A[0].toFixed(3)},${A[1].toFixed(3)}) -- (${B[0].toFixed(3)},${B[1].toFixed(3)}) node[pos=0.5, sloped, below=${oC}] {$${formatSideLabel('c', c, fmt)}$};\n`;
+    const offsetA = cons.some(con => con.from === 'A') ? 0.55 : 0.3;
+    const offsetB = cons.some(con => con.from === 'B') ? 0.55 : 0.3;
+    const offsetC = cons.some(con => con.from === 'C') ? 0.55 : 0.3;
+    const lpA = exteriorLabelPosition(B, C, centroidPoint, offsetA);
+    const lpB = exteriorLabelPosition(C, A, centroidPoint, offsetB);
+    const lpC = exteriorLabelPosition(A, B, centroidPoint, offsetC);
+    cumulativeTikz += `  \\node[rotate=${lpA.rotation.toFixed(2)}] at (${lpA.x.toFixed(3)},${lpA.y.toFixed(3)}) {$${formatSideLabel('a', a, fmt)}$};\n`;
+    cumulativeTikz += `  \\node[rotate=${lpB.rotation.toFixed(2)}] at (${lpB.x.toFixed(3)},${lpB.y.toFixed(3)}) {$${formatSideLabel('b', b, fmt)}$};\n`;
+    cumulativeTikz += `  \\node[rotate=${lpC.rotation.toFixed(2)}] at (${lpC.x.toFixed(3)},${lpC.y.toFixed(3)}) {$${formatSideLabel('c', c, fmt)}$};\n`;
   }
 
   // Angle labels: show_angle_values auto-fills, angle_labels allows custom/override.
