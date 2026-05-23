@@ -41,6 +41,12 @@ export default async function AdminLayout({
         <Link href="/admin/library/review" className="text-sm text-gray-600 hover:text-gray-900">
           Library
         </Link>
+        <Link href="/admin/health" className="text-sm text-gray-600 hover:text-gray-900">
+          Health
+        </Link>
+        <Link href="/admin/library/preview" className="text-sm text-gray-600 hover:text-gray-900">
+          Preview
+        </Link>
         <Link href="/app" className="text-sm text-gray-600 hover:text-gray-900 ml-auto">
           ← App
         </Link>

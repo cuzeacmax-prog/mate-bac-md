@@ -1,9 +1,9 @@
 -- match_exercises RPC: cosine similarity search for RAG
 -- Apply manually via Supabase SQL Editor AFTER running batch generator.
--- NOTE: embedding column is vector(3072) — matching dimension used here.
+-- NOTE: embedding column is vector(1536) after 20260602050000 migration.
 
 CREATE OR REPLACE FUNCTION match_exercises(
-  query_embedding vector(3072),
+  query_embedding vector(1536),
   match_threshold float DEFAULT 0.5,
   match_count int DEFAULT 5
 )

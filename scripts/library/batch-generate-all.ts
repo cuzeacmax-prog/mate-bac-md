@@ -3,9 +3,12 @@
 //
 // BATCH_LIMIT=0 (default) = ZERO executare. Setează explicit pentru a rula.
 
+import * as fs from 'fs';
+import * as path from 'path';
+import * as crypto from 'crypto';
 import { createServiceClient } from '../../src/lib/supabase/service';
 import { generateExerciseFromTriangle } from '../../src/lib/library/exerciseGenerator';
-import { generateEmbedding } from '../../src/lib/embeddings/gemini';
+import { generateEmbedding, EMBEDDING_DIMENSIONS } from '../../src/lib/embeddings/gemini';
 import {
   generateTriangleVariations,
   generateCircleVariations,
@@ -37,227 +40,201 @@ if (LIMIT === 0) {
   process.exit(0);
 }
 
+const PROGRESS_FILE = path.join(path.dirname(new URL(import.meta.url).pathname), 'batch-progress.json');
+const MAX_RETRIES = 3;
+const RATE_LIMIT_MS = 800;
+
+// ─── Progress persistence ─────────────────────────────────────────────────────
+
+interface ProgressFile {
+  completed_hashes: string[];
+  last_run: string;
+  total_success: number;
+  total_failed: number;
+}
+
+function loadProgress(): ProgressFile {
+  if (fs.existsSync(PROGRESS_FILE)) {
+    try {
+      return JSON.parse(fs.readFileSync(PROGRESS_FILE, 'utf8')) as ProgressFile;
+    } catch { /* ignore */ }
+  }
+  return { completed_hashes: [], last_run: '', total_success: 0, total_failed: 0 };
+}
+
+function saveProgress(p: ProgressFile) {
+  fs.writeFileSync(PROGRESS_FILE, JSON.stringify(p, null, 2), 'utf8');
+}
+
+function paramsHash(shape: string, params: unknown): string {
+  return crypto.createHash('sha1').update(`${shape}:${JSON.stringify(params)}`).digest('hex').slice(0, 12);
+}
+
+// ─── Retry with exponential backoff ──────────────────────────────────────────
+
+async function withRetry<T>(fn: () => Promise<T>, label: string): Promise<T> {
+  let lastErr: Error = new Error('unknown');
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      return await fn();
+    } catch (e) {
+      lastErr = e instanceof Error ? e : new Error(String(e));
+      if (attempt < MAX_RETRIES) {
+        const delay = 1000 * Math.pow(2, attempt - 1);
+        console.log(`    ♻️  Retry ${attempt}/${MAX_RETRIES} ${label} în ${delay}ms…`);
+        await new Promise((r) => setTimeout(r, delay));
+      }
+    }
+  }
+  throw lastErr;
+}
+
 // ─── Shape entry types ────────────────────────────────────────────────────────
 
 type ShapeEntry = {
   shape: string;
   subtopic: string;
   params: unknown;
+  hash: string;
   generate: (p: unknown) => { tikz: string; computed: Record<string, unknown> };
 };
 
 function buildVariations(): ShapeEntry[] {
   const entries: ShapeEntry[] = [];
 
+  const add = (shape: string, subtopic: string, params: unknown, fn: (p: unknown) => { tikz: string; computed: Record<string, unknown> }) => {
+    entries.push({ shape, subtopic, params, hash: paramsHash(shape, params), generate: fn });
+  };
+
   for (const v of generateTriangleVariations()) {
-    entries.push({
-      shape: 'triangle',
-      subtopic: 'triunghi',
-      params: v,
-      generate: (p) => {
-        const r = generateTriangleAdvanced(p as typeof v);
-        return { tikz: r.tikz, computed: r.computed as Record<string, unknown> };
-      },
-    });
+    add('triangle', 'triunghi', v, (p) => { const r = generateTriangleAdvanced(p as typeof v); return { tikz: r.tikz, computed: r.computed as Record<string, unknown> }; });
   }
-
   for (const v of generateCircleVariations()) {
-    entries.push({
-      shape: 'circle',
-      subtopic: 'cerc',
-      params: v,
-      generate: (p) => {
-        const r = generateCircleAdvanced(p as typeof v);
-        return { tikz: r.tikz, computed: r.computed as Record<string, unknown> };
-      },
-    });
+    add('circle', 'cerc', v, (p) => { const r = generateCircleAdvanced(p as typeof v); return { tikz: r.tikz, computed: r.computed as Record<string, unknown> }; });
   }
-
   for (const v of generateParallelogramVariations()) {
-    entries.push({
-      shape: 'parallelogram',
-      subtopic: 'paralelogram',
-      params: v,
-      generate: (p) => {
-        const r = generateParallelogramAdvanced(p as typeof v);
-        return { tikz: r.tikz, computed: r.computed as Record<string, unknown> };
-      },
-    });
+    add('parallelogram', 'paralelogram', v, (p) => { const r = generateParallelogramAdvanced(p as typeof v); return { tikz: r.tikz, computed: r.computed as Record<string, unknown> }; });
   }
-
   for (const v of generateTrapezoidVariations()) {
-    entries.push({
-      shape: 'trapezoid',
-      subtopic: 'trapez',
-      params: v,
-      generate: (p) => {
-        const r = generateTrapezoidAdvanced(p as typeof v);
-        return { tikz: r.tikz, computed: r.computed as Record<string, unknown> };
-      },
-    });
+    add('trapezoid', 'trapez', v, (p) => { const r = generateTrapezoidAdvanced(p as typeof v); return { tikz: r.tikz, computed: r.computed as Record<string, unknown> }; });
   }
-
   for (const v of generatePolygonVariations()) {
-    entries.push({
-      shape: 'regular_polygon',
-      subtopic: 'poligon_regulat',
-      params: v,
-      generate: (p) => {
-        const r = generateRegularPolygonAdvanced(p as typeof v);
-        return { tikz: r.tikz, computed: r.computed as Record<string, unknown> };
-      },
-    });
+    add('regular_polygon', 'poligon_regulat', v, (p) => { const r = generateRegularPolygonAdvanced(p as typeof v); return { tikz: r.tikz, computed: r.computed as Record<string, unknown> }; });
   }
-
   for (const v of generateCubeVariations()) {
-    entries.push({
-      shape: 'cube',
-      subtopic: 'cub',
-      params: v,
-      generate: (p) => {
-        const r = generateCubeAdvanced(p as Parameters<typeof generateCubeAdvanced>[0]);
-        return { tikz: r.tikz, computed: r.computed as Record<string, unknown> };
-      },
-    });
+    add('cube', 'cub', v, (p) => { const r = generateCubeAdvanced(p as Parameters<typeof generateCubeAdvanced>[0]); return { tikz: r.tikz, computed: r.computed as Record<string, unknown> }; });
   }
-
   for (const v of generatePrismVariations()) {
-    entries.push({
-      shape: 'prism',
-      subtopic: 'paralelipiped',
-      params: v,
-      generate: (p) => {
-        const r = generateRectangularPrismAdvanced(p as typeof v);
-        return { tikz: r.tikz, computed: r.computed as Record<string, unknown> };
-      },
-    });
+    add('prism', 'paralelipiped', v, (p) => { const r = generateRectangularPrismAdvanced(p as typeof v); return { tikz: r.tikz, computed: r.computed as Record<string, unknown> }; });
   }
-
   for (const v of generatePyramidVariations()) {
-    entries.push({
-      shape: 'pyramid',
-      subtopic: 'piramida',
-      params: v,
-      generate: (p) => {
-        const r = generateRegularPyramidAdvanced(p as typeof v);
-        return { tikz: r.tikz, computed: r.computed as Record<string, unknown> };
-      },
-    });
+    add('pyramid', 'piramida', v, (p) => { const r = generateRegularPyramidAdvanced(p as typeof v); return { tikz: r.tikz, computed: r.computed as Record<string, unknown> }; });
   }
-
   for (const v of generateCylinderVariations()) {
-    entries.push({
-      shape: 'cylinder',
-      subtopic: 'cilindru',
-      params: v,
-      generate: (p) => {
-        const r = generateCylinderAdvanced(p as typeof v);
-        return { tikz: r.tikz, computed: r.computed as Record<string, unknown> };
-      },
-    });
+    add('cylinder', 'cilindru', v, (p) => { const r = generateCylinderAdvanced(p as typeof v); return { tikz: r.tikz, computed: r.computed as Record<string, unknown> }; });
   }
-
   for (const v of generateConeVariations()) {
-    entries.push({
-      shape: 'cone',
-      subtopic: 'con',
-      params: v,
-      generate: (p) => {
-        const r = generateConeAdvanced(p as typeof v);
-        return { tikz: r.tikz, computed: r.computed as Record<string, unknown> };
-      },
-    });
+    add('cone', 'con', v, (p) => { const r = generateConeAdvanced(p as typeof v); return { tikz: r.tikz, computed: r.computed as Record<string, unknown> }; });
   }
-
   for (const v of generateSphereVariations()) {
-    entries.push({
-      shape: 'sphere',
-      subtopic: 'sfera',
-      params: v,
-      generate: (p) => {
-        const r = generateSphereAdvanced(p as typeof v);
-        return { tikz: r.tikz, computed: r.computed as Record<string, unknown> };
-      },
-    });
+    add('sphere', 'sfera', v, (p) => { const r = generateSphereAdvanced(p as typeof v); return { tikz: r.tikz, computed: r.computed as Record<string, unknown> }; });
   }
 
   return entries;
 }
 
 async function main() {
-  const allVariations = buildVariations();
-  const variations = allVariations.slice(0, LIMIT);
+  const progress = loadProgress();
+  const completedSet = new Set(progress.completed_hashes);
 
-  console.log(`\n🚀 Batch generator pornit. Limit: ${LIMIT} / ${allVariations.length} variații totale.\n`);
-  console.log(`📋 Procesăm ${variations.length} variații.\n`);
+  const allVariations = buildVariations();
+  const pending = allVariations.filter((v) => !completedSet.has(v.hash)).slice(0, LIMIT);
+
+  const skipped = allVariations.length - allVariations.filter((v) => !completedSet.has(v.hash)).length;
+
+  console.log(`\n🚀 Batch generator pornit. Limit: ${LIMIT} / ${allVariations.length} variații totale.`);
+  if (skipped > 0) console.log(`♻️  Resume: ${skipped} variații deja procesate (din progress.json), omise.`);
+  console.log(`📋 De procesat: ${pending.length} variații.\n`);
 
   const supabase = createServiceClient();
   let success = 0;
   let failed = 0;
+  const startTime = Date.now();
 
-  for (let i = 0; i < variations.length; i++) {
-    const entry = variations[i];
-    const start = Date.now();
-    console.log(`[${i + 1}/${variations.length}] Procesare variație ${entry.shape}...`);
+  for (let i = 0; i < pending.length; i++) {
+    const entry = pending[i];
+    const itemStart = Date.now();
+    console.log(`[${i + 1}/${pending.length}] Procesare ${entry.shape} (hash: ${entry.hash})…`);
 
     try {
-      // Step 1: Generate geometry
-      console.log('  ⚙️  Calculator geometric...');
+      console.log('  ⚙️  Calculator geometric…');
       const geo = entry.generate(entry.params);
 
-      // Step 2: Compile TikZ → SVG
-      console.log('  🎨 Compilare TikZ → SVG...');
-      const compiled = await compileTikz(geo.tikz);
+      console.log('  🎨 Compilare TikZ → SVG…');
+      const compiled = await withRetry(() => compileTikz(geo.tikz), 'compileTikz');
 
-      // Step 3: Generate statement + solution via Sonnet
-      console.log('  🤖 Generare enunț + soluție (Sonnet)...');
-      const exercise = await generateExerciseFromTriangle({
-        shape: entry.shape,
-        params: entry.params,
-        computed: geo.computed,
-      });
+      console.log('  🤖 Generare enunț + soluție (Sonnet)…');
+      const exercise = await withRetry(() =>
+        generateExerciseFromTriangle({ shape: entry.shape, params: entry.params, computed: geo.computed }),
+        'generateExercise'
+      );
 
-      // Step 4: Generate embedding via Gemini
-      console.log('  🧠 Generare embedding (Gemini 3072d)...');
+      console.log(`  🧠 Generare embedding (Gemini ${EMBEDDING_DIMENSIONS}d)…`);
       const embeddingText = `${exercise.statement} ${exercise.tags.join(' ')}`;
-      const embedding = await generateEmbedding(embeddingText);
+      const embedding = await withRetry(() => generateEmbedding(embeddingText), 'generateEmbedding');
 
-      if (embedding.length !== 3072) {
-        throw new Error(`Embedding dimension mismatch: got ${embedding.length}, expected 3072`);
+      if (embedding.length !== EMBEDDING_DIMENSIONS) {
+        throw new Error(`Embedding dimension mismatch: got ${embedding.length}, expected ${EMBEDDING_DIMENSIONS}`);
       }
 
-      // Step 5: Insert into DB
-      console.log('  💾 Insert în DB...');
-      const { error } = await supabase.from('solved_exercises').insert({
-        statement: exercise.statement,
-        solution: exercise.solution,
-        topic: exercise.topic,
-        subtopic: entry.subtopic,
-        difficulty: exercise.difficulty,
-        grade_level: exercise.grade_level,
-        tags: exercise.tags,
-        tikz_source: geo.tikz,
-        svg_static: compiled.svg,
-        embedding,
-        needs_review: true,
-        source: 'batch_generator_v2',
-      });
+      console.log('  💾 Insert în DB…');
+      const { error } = await withRetry(async () => {
+        const res = await supabase.from('solved_exercises').insert({
+          statement: exercise.statement,
+          solution: exercise.solution,
+          topic: exercise.topic,
+          subtopic: entry.subtopic,
+          difficulty: exercise.difficulty,
+          grade_level: exercise.grade_level,
+          tags: exercise.tags,
+          tikz_source: geo.tikz,
+          svg_static: compiled.svg,
+          embedding,
+          needs_review: true,
+          source: 'batch_generator_v2',
+        });
+        return res;
+      }, 'db:insert');
 
       if (error) throw new Error(`DB insert error: ${error.message}`);
 
-      const elapsed = ((Date.now() - start) / 1000).toFixed(1);
+      progress.completed_hashes.push(entry.hash);
+      progress.total_success++;
+      saveProgress({ ...progress, last_run: new Date().toISOString() });
+
+      const elapsed = ((Date.now() - itemStart) / 1000).toFixed(1);
       console.log(`  ✅ Success în ${elapsed}s\n`);
       success++;
+
+      // Rate limiting
+      if (i < pending.length - 1) {
+        await new Promise((r) => setTimeout(r, RATE_LIMIT_MS));
+      }
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       console.error(`  ❌ Failed: ${msg}\n`);
+      progress.total_failed++;
+      saveProgress({ ...progress, last_run: new Date().toISOString() });
       failed++;
     }
   }
 
+  const totalSec = ((Date.now() - startTime) / 1000).toFixed(0);
   console.log('🏁 Batch complet:');
   console.log(`   ✅ Success: ${success}`);
-  console.log(`   ❌ Failed: ${failed}\n`);
+  console.log(`   ❌ Failed: ${failed}`);
+  console.log(`   ⏱️  Timp total: ${totalSec}s`);
+  console.log(`   📊 Total cumulat: ${progress.total_success} succes, ${progress.total_failed} eșuate\n`);
 }
 
 main().catch((err) => {

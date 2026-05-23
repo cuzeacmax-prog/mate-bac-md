@@ -9,7 +9,13 @@
     "lint": "eslint",
     "batch:triangles": "tsx --env-file=.env.local scripts/library/batch-generate-triangles.ts",
     "batch:test": "BATCH_LIMIT=2 tsx --env-file=.env.local scripts/library/batch-generate-all.ts",
-    "batch:full": "BATCH_LIMIT=200 tsx --env-file=.env.local scripts/library/batch-generate-all.ts"
+    "batch:full": "BATCH_LIMIT=200 tsx --env-file=.env.local scripts/library/batch-generate-all.ts",
+    "test:embedding": "tsx --env-file=.env.local scripts/library/test-embedding.ts",
+    "db:apply-rpc": "tsx --env-file=.env.local scripts/db/apply-rpc.ts",
+    "backup:export": "tsx --env-file=.env.local scripts/backup/export-library.ts",
+    "backup:import": "tsx --env-file=.env.local scripts/backup/import-library.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.78",
@@ -52,6 +58,7 @@
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
     "tsx": "^4.22.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.7"
   }
 }

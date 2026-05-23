@@ -3,9 +3,24 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { SYSTEM_PROMPT_V1 } from "@/lib/ai/system-prompt";
 import { callAIStream, getTaskPricing } from "@/lib/ai/router";
+import { generateEmbeddingForQuery } from "@/lib/embeddings/gemini";
 
 const FREE_MONTHLY_LIMIT = 30;
 const IS_DEV = process.env.NODE_ENV === "development";
+
+const RAG_DIRECT_THRESHOLD = 0.85;
+const RAG_CONTEXT_THRESHOLD = 0.65;
+
+interface RagMatch {
+  id: string;
+  statement: string;
+  solution: string;
+  topic: string;
+  subtopic: string;
+  similarity: number;
+  svg_static: string | null;
+  tags: string[];
+}
 
 function serverError(label: string, err: unknown): NextResponse {
   const msg = err instanceof Error ? err.message : String(err);
@@ -14,6 +29,23 @@ function serverError(label: string, err: unknown): NextResponse {
     { error: IS_DEV ? `${label}: ${msg}` : "Eroare internă. Încearcă din nou." },
     { status: 500 }
   );
+}
+
+async function lookupLibrary(message: string): Promise<{ match: RagMatch | null; embedding: number[] | null }> {
+  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) return { match: null, embedding: null };
+  try {
+    const embedding = await generateEmbeddingForQuery(message);
+    const service = createServiceClient();
+    const { data } = await service.rpc("match_exercises", {
+      query_embedding: embedding,
+      match_threshold: RAG_CONTEXT_THRESHOLD,
+      match_count: 1,
+    });
+    const match = data && data.length > 0 ? (data[0] as RagMatch) : null;
+    return { match, embedding };
+  } catch {
+    return { match: null, embedding: null };
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -88,6 +120,11 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // ── RAG library lookup (Gemini free tier — non-blocking) ────────
+  const { match: ragMatch, embedding: queryEmbedding } = await lookupLibrary(message);
+  const isDirectMatch = ragMatch !== null && ragMatch.similarity >= RAG_DIRECT_THRESHOLD;
+  const isContextMatch = ragMatch !== null && ragMatch.similarity >= RAG_CONTEXT_THRESHOLD && !isDirectMatch;
+
   // ── Conversation create or load ─────────────────────────────────
   let convId: string = conversationId ?? "";
   if (!convId) {
@@ -132,6 +169,11 @@ export async function POST(req: NextRequest) {
     return serverError("user message insert", userMsgErr);
   }
 
+  // ── System prompt — inject RAG context if partial match ─────────
+  const systemPrompt = isContextMatch && ragMatch
+    ? `${SYSTEM_PROMPT_V1}\n\n---\nContext relevant din biblioteca de exerciții (similaritate ${(ragMatch.similarity * 100).toFixed(0)}%):\nExercițiu: ${ragMatch.statement}\nSoluție: ${ragMatch.solution}`
+    : SYSTEM_PROMPT_V1;
+
   // ── SSE stream ─────────────────────────────────────────────────
   const encoder = new TextEncoder();
   let assistantText = "";
@@ -142,40 +184,58 @@ export async function POST(req: NextRequest) {
     async start(controller) {
       controller.enqueue(encoder.encode(`data: ${JSON.stringify({ ping: true })}\n\n`));
 
-      try {
-        const result = await callAIStream(
-          taskName,
-          [...priorMessages, { role: "user", content: message }],
-          { system: SYSTEM_PROMPT_V1 }
+      // ── Direct library match — no AI call ───────────────────────
+      if (isDirectMatch && ragMatch) {
+        console.log(`[chat/route] RAG direct match (similarity=${ragMatch.similarity.toFixed(3)}) — skipping AI`);
+        assistantText = ragMatch.solution;
+        controller.enqueue(
+          encoder.encode(`data: ${JSON.stringify({ text: ragMatch.solution, source: "library" })}\n\n`)
         );
+        controller.enqueue(
+          encoder.encode(`data: ${JSON.stringify({ done: true, conversationId: convId, source: "library" })}\n\n`)
+        );
+        controller.close();
+      } else {
+        // ── AI stream (with optional context) ──────────────────────
+        try {
+          if (isContextMatch) {
+            console.log(`[chat/route] RAG context match (similarity=${ragMatch!.similarity.toFixed(3)}) — context injected`);
+          }
 
-        let chunkCount = 0;
-        for await (const chunk of result.textStream) {
-          assistantText += chunk;
-          chunkCount++;
-          controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify({ text: chunk })}\n\n`)
+          const result = await callAIStream(
+            taskName,
+            [...priorMessages, { role: "user", content: message }],
+            { system: systemPrompt }
           );
+
+          let chunkCount = 0;
+          for await (const chunk of result.textStream) {
+            assistantText += chunk;
+            chunkCount++;
+            controller.enqueue(
+              encoder.encode(`data: ${JSON.stringify({ text: chunk })}\n\n`)
+            );
+          }
+
+          const usage = await result.usage;
+          inputTokens = usage.inputTokens ?? 0;
+          outputTokens = usage.outputTokens ?? 0;
+
+          console.log(`[chat/route] stream complete. task=${taskName} chunks=${chunkCount} in=${inputTokens} out=${outputTokens}`);
+          controller.enqueue(
+            encoder.encode(
+              `data: ${JSON.stringify({ done: true, conversationId: convId })}\n\n`
+            )
+          );
+          controller.close();
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : "Eroare AI";
+          console.error("[chat/route] stream error:", err instanceof Error ? err.stack : err);
+          controller.enqueue(
+            encoder.encode(`data: ${JSON.stringify({ error: msg })}\n\n`)
+          );
+          controller.close();
         }
-
-        const usage = await result.usage;
-        inputTokens = usage.inputTokens ?? 0;
-        outputTokens = usage.outputTokens ?? 0;
-
-        console.log(`[chat/route] stream complete. task=${taskName} chunks=${chunkCount} in=${inputTokens} out=${outputTokens}`);
-        controller.enqueue(
-          encoder.encode(
-            `data: ${JSON.stringify({ done: true, conversationId: convId })}\n\n`
-          )
-        );
-        controller.close();
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : "Eroare AI";
-        console.error("[chat/route] stream error:", err instanceof Error ? err.stack : err);
-        controller.enqueue(
-          encoder.encode(`data: ${JSON.stringify({ error: msg })}\n\n`)
-        );
-        controller.close();
       }
 
       // ── Post-stream saves ───────────────────────────────────────
@@ -201,28 +261,42 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      // Cost calculation from DB config
-      let cost = 0;
-      try {
-        const pricing = await getTaskPricing(taskName);
-        cost =
-          (inputTokens / 1_000_000) * pricing.price_input_per_1m +
-          (outputTokens / 1_000_000) * pricing.price_output_per_1m;
-
-        const { error: logErr } = await service.from("api_usage_log").insert({
+      // ── Log gap if no library match ─────────────────────────────
+      if (!ragMatch && queryEmbedding) {
+        service.from("gap_analysis").insert({
+          query: message,
+          query_embedding: queryEmbedding,
           user_id: user.id,
-          model: pricing.model_name,
-          task_name: taskName,
-          tokens_input: inputTokens,
-          tokens_output: outputTokens,
-          cost_usd: cost,
-          endpoint: "/api/chat",
+          conversation_id: convId,
+          max_similarity_found: 0,
+        }).then(({ error }: { error: unknown }) => {
+          if (error) console.error("[chat/route] gap_analysis insert error:", error);
         });
-        if (logErr) {
-          console.error("[chat/route] api_usage_log insert error:", JSON.stringify(logErr, null, 2));
+      }
+
+      // ── Cost log (only for AI calls) ────────────────────────────
+      if (!isDirectMatch && inputTokens > 0) {
+        try {
+          const pricing = await getTaskPricing(taskName);
+          const cost =
+            (inputTokens / 1_000_000) * pricing.price_input_per_1m +
+            (outputTokens / 1_000_000) * pricing.price_output_per_1m;
+
+          const { error: logErr } = await service.from("api_usage_log").insert({
+            user_id: user.id,
+            model: pricing.model_name,
+            task_name: taskName,
+            tokens_input: inputTokens,
+            tokens_output: outputTokens,
+            cost_usd: cost,
+            endpoint: "/api/chat",
+          });
+          if (logErr) {
+            console.error("[chat/route] api_usage_log insert error:", JSON.stringify(logErr, null, 2));
+          }
+        } catch (err) {
+          console.error("[chat/route] pricing/log error:", err instanceof Error ? err.stack : err);
         }
-      } catch (err) {
-        console.error("[chat/route] pricing/log error:", err instanceof Error ? err.stack : err);
       }
 
       if (!isPremium) {
