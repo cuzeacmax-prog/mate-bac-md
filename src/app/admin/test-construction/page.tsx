@@ -5,12 +5,14 @@ import { ConstructionTriggerButton } from '@/components/construction/Constructio
 import type { ConstructionStep } from '@/components/construction/ConstructionViewer';
 
 type Vertex = 'A' | 'B' | 'C' | '';
+type SideLabelFormat = 'value_only' | 'name_value' | 'name_only';
 
 export default function TestConstructionPage() {
   const [a, setA] = useState(5);
   const [b, setB] = useState(4);
   const [c, setC] = useState(3);
   const [showSides, setShowSides] = useState(true);
+  const [sideLabelFormat, setSideLabelFormat] = useState<SideLabelFormat>('value_only');
   const [autoRightAngle, setAutoRightAngle] = useState(true);
   const [autoEqualAngles, setAutoEqualAngles] = useState(false);
   const [autoEqualSides, setAutoEqualSides] = useState(false);
@@ -19,6 +21,8 @@ export default function TestConstructionPage() {
   const [bisectorFrom, setBisectorFrom] = useState<Vertex>('');
   const [medianFrom, setMedianFrom] = useState<Vertex>('');
   const [altitudeFrom, setAltitudeFrom] = useState<Vertex>('');
+  const [customLabelsJson, setCustomLabelsJson] = useState('');
+  const [customLabelsError, setCustomLabelsError] = useState('');
 
   const [steps, setSteps] = useState<ConstructionStep[]>([]);
   const [mainSvg, setMainSvg] = useState('');
@@ -28,8 +32,23 @@ export default function TestConstructionPage() {
   async function handleGenerate() {
     setLoading(true);
     setError('');
+    setCustomLabelsError('');
     setSteps([]);
     setMainSvg('');
+
+    // Validate custom labels JSON
+    let customLabels: unknown[] | undefined;
+    if (customLabelsJson.trim()) {
+      try {
+        const parsed = JSON.parse(customLabelsJson.trim());
+        if (!Array.isArray(parsed)) throw new Error('Trebuie să fie un array JSON');
+        customLabels = parsed;
+      } catch (e) {
+        setCustomLabelsError(e instanceof Error ? e.message : 'JSON invalid');
+        setLoading(false);
+        return;
+      }
+    }
 
     const constructions: Array<{ type: string; from: string }> = [];
     if (bisectorFrom) constructions.push({ type: 'bisector', from: bisectorFrom });
@@ -47,12 +66,14 @@ export default function TestConstructionPage() {
             b,
             c,
             show_sides: showSides,
+            side_label_format: sideLabelFormat,
             auto_detect_right_angles: autoRightAngle,
             auto_detect_equal_angles: autoEqualAngles,
             auto_detect_equal_sides: autoEqualSides,
             show_incircle: showIncircle,
             show_circumcircle: showCircumcircle,
             constructions: constructions.length > 0 ? constructions : undefined,
+            custom_labels: customLabels,
           },
         }),
       });
@@ -88,6 +109,12 @@ export default function TestConstructionPage() {
     { value: 'C', label: 'C' },
   ];
 
+  const sideLabelOptions: Array<{ value: SideLabelFormat; label: string; example: string }> = [
+    { value: 'value_only', label: 'Valoare', example: '"5"' },
+    { value: 'name_value', label: 'Nume=Val', example: '"a=5"' },
+    { value: 'name_only', label: 'Nume', example: '"a"' },
+  ];
+
   return (
     <div>
       <h1 className="text-xl font-semibold text-gray-900 mb-1">Test Construction Viewer</h1>
@@ -121,9 +148,40 @@ export default function TestConstructionPage() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">Afișare</h3>
+            <h3 className="text-sm font-semibold text-gray-700 mb-2">Afișare laturi</h3>
+            <label className="flex items-center gap-2 mb-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showSides}
+                onChange={(e) => setShowSides(e.target.checked)}
+                className="rounded"
+              />
+              <span className="text-sm text-gray-700">Afișează măsuri laturi</span>
+            </label>
+            {showSides && (
+              <div className="flex gap-4 ml-6">
+                {sideLabelOptions.map((opt) => (
+                  <label key={opt.value} className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="sideLabelFormat"
+                      value={opt.value}
+                      checked={sideLabelFormat === opt.value}
+                      onChange={() => setSideLabelFormat(opt.value)}
+                    />
+                    <span className="text-sm text-gray-700">
+                      {opt.label}{' '}
+                      <span className="text-gray-400 text-xs">{opt.example}</span>
+                    </span>
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-2">Cercuri</h3>
             {[
-              { label: 'Măsuri laturi (a, b, c)', checked: showSides, set: setShowSides },
               { label: 'Cerc înscris (centru I)', checked: showIncircle, set: setShowIncircle },
               { label: 'Cerc circumscris (centru O)', checked: showCircumcircle, set: setShowCircumcircle },
             ].map(({ label, checked, set }) => (
@@ -182,6 +240,26 @@ export default function TestConstructionPage() {
                 </div>
               ))}
             </div>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-1">
+              Custom labels{' '}
+              <span className="font-normal text-gray-400 text-xs">(JSON opțional)</span>
+            </h3>
+            <textarea
+              value={customLabelsJson}
+              onChange={(e) => {
+                setCustomLabelsJson(e.target.value);
+                setCustomLabelsError('');
+              }}
+              rows={3}
+              placeholder={`[\n  {"segment":"BC","text":"a"},\n  {"segment":"AD","text":"x"}\n]`}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            />
+            {customLabelsError && (
+              <p className="text-xs text-red-600 mt-1">{customLabelsError}</p>
+            )}
           </div>
 
           <button

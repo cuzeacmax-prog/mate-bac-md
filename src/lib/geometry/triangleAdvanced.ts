@@ -2,6 +2,61 @@ import * as Tri from './triangle';
 import * as Markers from './markers';
 import type { Point, Triangle } from './types';
 
+// ─── Private helpers ───────────────────────────────────────────────────────────
+
+function formatSideLabel(name: string, value: number, format: string): string {
+  if (format === 'name_value') return `${name}=${value}`;
+  if (format === 'name_only') return name;
+  return String(value); // 'value_only' default
+}
+
+// Returns the perpendicular exterior offset vector for a point lying on a side.
+// The offset direction is away from the triangle centroid.
+function labelOffsetForPointOnSide(
+  pointOnSide: Point,
+  sideStart: Point,
+  sideEnd: Point,
+  triangleCentroid: Point,
+  offset = 0.25,
+): { nx: number; ny: number } {
+  const dx = sideEnd[0] - sideStart[0];
+  const dy = sideEnd[1] - sideStart[1];
+  const len = Math.sqrt(dx * dx + dy * dy);
+  let perpX = -dy / len;
+  let perpY = dx / len;
+  // If perp points toward centroid, flip to exterior
+  const toCentroidX = triangleCentroid[0] - pointOnSide[0];
+  const toCentroidY = triangleCentroid[1] - pointOnSide[1];
+  if (perpX * toCentroidX + perpY * toCentroidY > 0) {
+    perpX = -perpX;
+    perpY = -perpY;
+  }
+  return { nx: perpX * offset, ny: perpY * offset };
+}
+
+function sideOppositeVertex(vertex: 'A' | 'B' | 'C', t: Triangle): [Point, Point] {
+  if (vertex === 'A') return [t.B, t.C];
+  if (vertex === 'B') return [t.C, t.A];
+  return [t.A, t.B];
+}
+
+// Parses "BC" or "AD" or "AM_a" into [Point, Point] using the named-points dict.
+// Tries longest names first to handle multi-char labels like "M_a".
+function parseSegment(segment: string, points: Record<string, Point>): [Point, Point] | null {
+  const validNames = Object.keys(points).sort((a, b) => b.length - a.length);
+  for (const name1 of validNames) {
+    if (segment.startsWith(name1)) {
+      const rest = segment.substring(name1.length);
+      if (points[rest] !== undefined) {
+        return [points[name1], points[rest]];
+      }
+    }
+  }
+  return null;
+}
+
+// ─── Public interfaces ──────────────────────────────────────────────────────────
+
 export interface TriangleAdvancedInput {
   a: number;
   b: number;
@@ -10,6 +65,9 @@ export interface TriangleAdvancedInput {
   show_sides?: boolean;
   show_angles?: boolean;
   show_vertices?: boolean;
+
+  /** Format for side measurement labels. Default: 'value_only' → "5" */
+  side_label_format?: 'value_only' | 'name_value' | 'name_only';
 
   auto_detect_right_angles?: boolean;
   auto_detect_equal_angles?: boolean;
@@ -24,6 +82,15 @@ export interface TriangleAdvancedInput {
     label?: string;
     color?: string;
     show_label?: boolean;
+  }>;
+
+  /** Custom segment labels for AI-generated exercises. Points must exist in the points dict. */
+  custom_labels?: Array<{
+    segment: string;
+    text: string;
+    position?: 'midway' | 'start' | 'end' | number;
+    side?: 'above' | 'below';
+    color?: string;
   }>;
 }
 
@@ -50,10 +117,17 @@ export interface TriangleAdvancedOutput {
   }>;
 }
 
+// ─── Main generator ─────────────────────────────────────────────────────────────
+
 export function generateTriangleAdvanced(input: TriangleAdvancedInput): TriangleAdvancedOutput {
   const triangle: Triangle = Tri.triangleVerticesFromSides(input.a, input.b, input.c);
   const { A, B, C } = triangle;
   const angles = Tri.triangleAngles(triangle);
+
+  const centroidPoint: Point = [
+    (A[0] + B[0] + C[0]) / 3,
+    (A[1] + B[1] + C[1]) / 3,
+  ];
 
   const rightAngles = input.auto_detect_right_angles ? Tri.detectRightAngles(angles) : [];
   const equalAngles = input.auto_detect_equal_angles ? Tri.detectEqualAngles(angles) : [];
@@ -68,7 +142,14 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
   if (incenter) points['I'] = incenter;
   if (circumcenter) points['O'] = circumcenter;
 
-  type ConstructionLine = { tikz: string; label: string; description: string };
+  type ConstructionLine = {
+    tikz: string;
+    label: string;
+    description: string;
+    footPoint: Point;
+    sideStart: Point;
+    sideEnd: Point;
+  };
   const constructionLines: ConstructionLine[] = [];
 
   if (input.constructions) {
@@ -97,10 +178,14 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
       const label = con.label ?? defaultLabel;
       points[label] = footPoint;
       const vertexPos = con.from === 'A' ? A : con.from === 'B' ? B : C;
+      const [sideStart, sideEnd] = sideOppositeVertex(con.from, triangle);
       constructionLines.push({
         tikz: `\\draw[thick, ${color}] (${vertexPos[0].toFixed(3)},${vertexPos[1].toFixed(3)}) -- (${footPoint[0].toFixed(3)},${footPoint[1].toFixed(3)});`,
         label,
         description,
+        footPoint,
+        sideStart,
+        sideEnd,
       });
     }
   }
@@ -190,14 +275,15 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
     });
   }
 
-  // Steps: constructions (one per line)
+  // Steps: constructions — foot point labels placed exterior to the side
   for (const line of constructionLines) {
     cumulativeTikz += '  ' + line.tikz + '\n';
-    const foot = points[line.label];
-    if (foot) {
-      cumulativeTikz += `  \\fill[black] (${foot[0].toFixed(3)},${foot[1].toFixed(3)}) circle (0.04);\n`;
-      cumulativeTikz += `  \\node[below=2pt] at (${foot[0].toFixed(3)},${foot[1].toFixed(3)}) {$${line.label}$};\n`;
-    }
+    const foot = line.footPoint;
+    cumulativeTikz += `  \\fill[black] (${foot[0].toFixed(3)},${foot[1].toFixed(3)}) circle (0.04);\n`;
+    const offset = labelOffsetForPointOnSide(foot, line.sideStart, line.sideEnd, centroidPoint, 0.25);
+    const labelX = (foot[0] + offset.nx).toFixed(3);
+    const labelY = (foot[1] + offset.ny).toFixed(3);
+    cumulativeTikz += `  \\node at (${labelX},${labelY}) {$${line.label}$};\n`;
     steps.push({
       step: steps.length + 1,
       title: line.description,
@@ -207,11 +293,31 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
     });
   }
 
-  // Side annotations (not a separate step — included in final tikz only)
+  // Side labels with sloped orientation (exterior, parallel to each side).
+  // Path directions B→C, C→A, A→B ensure "below" is always exterior for our geometry.
   if (input.show_sides) {
-    cumulativeTikz += `  \\node[below=4pt] at (${((B[0] + C[0]) / 2).toFixed(3)},${((B[1] + C[1]) / 2).toFixed(3)}) {$a=${input.a}$};\n`;
-    cumulativeTikz += `  \\node[above left=2pt] at (${((A[0] + B[0]) / 2).toFixed(3)},${((A[1] + B[1]) / 2).toFixed(3)}) {$c=${input.c}$};\n`;
-    cumulativeTikz += `  \\node[above right=2pt] at (${((A[0] + C[0]) / 2).toFixed(3)},${((A[1] + C[1]) / 2).toFixed(3)}) {$b=${input.b}$};\n`;
+    const fmt = input.side_label_format ?? 'value_only';
+    cumulativeTikz += `  \\path (${B[0].toFixed(3)},${B[1].toFixed(3)}) -- (${C[0].toFixed(3)},${C[1].toFixed(3)}) node[midway, sloped, below=3pt] {$${formatSideLabel('a', input.a, fmt)}$};\n`;
+    cumulativeTikz += `  \\path (${C[0].toFixed(3)},${C[1].toFixed(3)}) -- (${A[0].toFixed(3)},${A[1].toFixed(3)}) node[midway, sloped, below=3pt] {$${formatSideLabel('b', input.b, fmt)}$};\n`;
+    cumulativeTikz += `  \\path (${A[0].toFixed(3)},${A[1].toFixed(3)}) -- (${B[0].toFixed(3)},${B[1].toFixed(3)}) node[midway, sloped, below=3pt] {$${formatSideLabel('c', input.c, fmt)}$};\n`;
+  }
+
+  // Custom labels on arbitrary named segments (for AI-authored exercises).
+  for (const cl of input.custom_labels ?? []) {
+    const seg = parseSegment(cl.segment, points);
+    if (!seg) continue;
+    const [p1, p2] = seg;
+    const pos =
+      typeof cl.position === 'number'
+        ? cl.position.toFixed(2)
+        : cl.position === 'start'
+          ? '0.15'
+          : cl.position === 'end'
+            ? '0.85'
+            : '0.5';
+    const sideStr = (cl.side ?? 'above') + '=3pt';
+    const colorStr = cl.color ? `, ${cl.color}` : '';
+    cumulativeTikz += `  \\path (${p1[0].toFixed(3)},${p1[1].toFixed(3)}) -- (${p2[0].toFixed(3)},${p2[1].toFixed(3)}) node[pos=${pos}, sloped, ${sideStr}${colorStr}] {$${cl.text}$};\n`;
   }
 
   cumulativeTikz += '\\end{tikzpicture}';
@@ -225,6 +331,7 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
       inradius,
       circumcenter,
       circumradius,
+      centroid: centroidPoint,
       detected_right_angles: rightAngles,
       detected_equal_angles: equalAngles,
       detected_equal_sides: equalSides,
