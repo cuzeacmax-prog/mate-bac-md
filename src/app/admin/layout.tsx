@@ -38,6 +38,9 @@ export default async function AdminLayout({
         <Link href="/admin/test-construction" className="text-sm text-gray-600 hover:text-gray-900">
           Test Constr.
         </Link>
+        <Link href="/admin/library/review" className="text-sm text-gray-600 hover:text-gray-900">
+          Library
+        </Link>
         <Link href="/app" className="text-sm text-gray-600 hover:text-gray-900 ml-auto">
           ← App
         </Link>

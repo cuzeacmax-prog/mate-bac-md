@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "batch:triangles": "tsx --env-file=.env.local scripts/library/batch-generate-triangles.ts"
+    "batch:triangles": "tsx --env-file=.env.local scripts/library/batch-generate-triangles.ts",
+    "batch:test": "BATCH_LIMIT=2 tsx --env-file=.env.local scripts/library/batch-generate-all.ts",
+    "batch:full": "BATCH_LIMIT=200 tsx --env-file=.env.local scripts/library/batch-generate-all.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.78",
