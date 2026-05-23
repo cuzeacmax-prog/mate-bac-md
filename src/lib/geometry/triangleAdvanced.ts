@@ -2,16 +2,25 @@ import * as Tri from './triangle';
 import * as Markers from './markers';
 import type { Point, Triangle } from './types';
 
-// ─── Private helpers ───────────────────────────────────────────────────────────
+// ─── Private helpers ────────────────────────────────────────────────────────────
 
-function formatSideLabel(name: string, value: number, format: string): string {
-  if (format === 'name_value') return `${name}=${value}`;
-  if (format === 'name_only') return name;
-  return String(value); // 'value_only' default
+function roundForDisplay(v: number): string {
+  if (Math.abs(v - Math.round(v)) < 0.001) return String(Math.round(v));
+  return parseFloat(v.toFixed(2)).toString();
 }
 
-// Returns the perpendicular exterior offset vector for a point lying on a side.
-// The offset direction is away from the triangle centroid.
+function formatAngle(deg: number): string {
+  const rounded = Math.abs(deg - Math.round(deg)) < 0.05 ? Math.round(deg) : parseFloat(deg.toFixed(1));
+  return `${rounded}^\\circ`;
+}
+
+function formatSideLabel(name: string, value: number, format: string): string {
+  if (format === 'name_value') return `${name}=${roundForDisplay(value)}`;
+  if (format === 'name_only') return name;
+  return roundForDisplay(value);
+}
+
+// Perpendicular exterior offset for a point on a side.
 function labelOffsetForPointOnSide(
   pointOnSide: Point,
   sideStart: Point,
@@ -24,7 +33,6 @@ function labelOffsetForPointOnSide(
   const len = Math.sqrt(dx * dx + dy * dy);
   let perpX = -dy / len;
   let perpY = dx / len;
-  // If perp points toward centroid, flip to exterior
   const toCentroidX = triangleCentroid[0] - pointOnSide[0];
   const toCentroidY = triangleCentroid[1] - pointOnSide[1];
   if (perpX * toCentroidX + perpY * toCentroidY > 0) {
@@ -40,33 +48,166 @@ function sideOppositeVertex(vertex: 'A' | 'B' | 'C', t: Triangle): [Point, Point
   return [t.A, t.B];
 }
 
-// Parses "BC" or "AD" or "AM_a" into [Point, Point] using the named-points dict.
-// Tries longest names first to handle multi-char labels like "M_a".
+// Returns true if any construction foot-point lands on the given side.
+function sideHasConstructedPoint(
+  side: 'BC' | 'CA' | 'AB',
+  constructions: Array<{ from: 'A' | 'B' | 'C' }>,
+): boolean {
+  for (const con of constructions) {
+    if (con.from === 'A' && side === 'BC') return true;
+    if (con.from === 'B' && side === 'CA') return true;
+    if (con.from === 'C' && side === 'AB') return true;
+  }
+  return false;
+}
+
+// Parses "BC" / "AD" / "AM_a" into [Point, Point] (longest-name-first to handle "M_a").
 function parseSegment(segment: string, points: Record<string, Point>): [Point, Point] | null {
   const validNames = Object.keys(points).sort((a, b) => b.length - a.length);
   for (const name1 of validNames) {
     if (segment.startsWith(name1)) {
       const rest = segment.substring(name1.length);
-      if (points[rest] !== undefined) {
-        return [points[name1], points[rest]];
-      }
+      if (points[rest] !== undefined) return [points[name1], points[rest]];
     }
   }
   return null;
 }
 
+// Groups construction feet that land within `tol` of each other.
+// Returns: canonicals (canonical → all labels), canonicalFor (non-canon → canon).
+function detectCoincidences(
+  lines: Array<{ label: string; footPoint: Point }>,
+  tol = 0.05,
+): { canonicals: Map<string, string[]>; canonicalFor: Map<string, string> } {
+  const canonicals = new Map<string, string[]>();
+  const canonicalFor = new Map<string, string>();
+  const processed = new Set<string>();
+
+  for (let i = 0; i < lines.length; i++) {
+    if (processed.has(lines[i].label)) continue;
+    const group = [lines[i].label];
+    for (let j = i + 1; j < lines.length; j++) {
+      if (processed.has(lines[j].label)) continue;
+      const dx = lines[i].footPoint[0] - lines[j].footPoint[0];
+      const dy = lines[i].footPoint[1] - lines[j].footPoint[1];
+      if (Math.sqrt(dx * dx + dy * dy) < tol) group.push(lines[j].label);
+    }
+    for (const label of group) processed.add(label);
+    if (group.length > 1) {
+      canonicals.set(group[0], group);
+      for (let k = 1; k < group.length; k++) canonicalFor.set(group[k], group[0]);
+    }
+  }
+  return { canonicals, canonicalFor };
+}
+
+// Deduces {a, b, c} from any valid combination of sides and angles.
+function deduceTriangleSides(input: TriangleAdvancedInput): { a: number; b: number; c: number } {
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  let { a, b, c } = input;
+  let A = input.angle_A;
+  let B = input.angle_B;
+  let C = input.angle_C;
+
+  // Complete missing angle from two known
+  if (A != null && B != null && C == null) C = 180 - A - B;
+  else if (A != null && C != null && B == null) B = 180 - A - C;
+  else if (B != null && C != null && A == null) A = 180 - B - C;
+
+  // All 3 sides
+  if (a != null && b != null && c != null) return { a, b, c };
+
+  // 1 side + all 3 angles → law of sines
+  if (A != null && B != null && C != null) {
+    if (a != null) {
+      const r = a / Math.sin(toRad(A));
+      return { a, b: r * Math.sin(toRad(B)), c: r * Math.sin(toRad(C)) };
+    }
+    if (b != null) {
+      const r = b / Math.sin(toRad(B));
+      return { a: r * Math.sin(toRad(A)), b, c: r * Math.sin(toRad(C)) };
+    }
+    if (c != null) {
+      const r = c / Math.sin(toRad(C));
+      return { a: r * Math.sin(toRad(A)), b: r * Math.sin(toRad(B)), c };
+    }
+  }
+
+  // SAS: 2 sides + included angle → law of cosines
+  if (a != null && b != null && C != null)
+    return { a, b, c: Math.sqrt(a * a + b * b - 2 * a * b * Math.cos(toRad(C))) };
+  if (a != null && c != null && B != null)
+    return { a, b: Math.sqrt(a * a + c * c - 2 * a * c * Math.cos(toRad(B))), c };
+  if (b != null && c != null && A != null)
+    return { a: Math.sqrt(b * b + c * c - 2 * b * c * Math.cos(toRad(A))), b, c };
+
+  // SSA: 2 sides + non-included angle → law of sines (first solution)
+  const ssaSolve = (
+    knownSide: number,
+    knownAngleDeg: number,
+    otherSide: number,
+  ): number => {
+    const sinOther = (otherSide * Math.sin(toRad(knownAngleDeg))) / knownSide;
+    if (sinOther > 1) throw new Error('Triunghi imposibil (SSA fără soluție)');
+    return (Math.asin(sinOther) * 180) / Math.PI;
+  };
+
+  if (a != null && b != null && A != null) {
+    const Bcalc = ssaSolve(a, A, b);
+    const Ccalc = 180 - A - Bcalc;
+    if (Ccalc <= 0) throw new Error('Triunghi imposibil');
+    return { a, b, c: (a * Math.sin(toRad(Ccalc))) / Math.sin(toRad(A)) };
+  }
+  if (a != null && b != null && B != null) {
+    const Acalc = ssaSolve(b, B, a);
+    const Ccalc = 180 - Acalc - B;
+    if (Ccalc <= 0) throw new Error('Triunghi imposibil');
+    return { a, b, c: (b * Math.sin(toRad(Ccalc))) / Math.sin(toRad(B)) };
+  }
+  if (a != null && c != null && A != null) {
+    const Ccalc = ssaSolve(a, A, c);
+    const Bcalc = 180 - A - Ccalc;
+    if (Bcalc <= 0) throw new Error('Triunghi imposibil');
+    return { a, b: (a * Math.sin(toRad(Bcalc))) / Math.sin(toRad(A)), c };
+  }
+  if (a != null && c != null && C != null) {
+    const Acalc = ssaSolve(c, C, a);
+    const Bcalc = 180 - Acalc - C;
+    if (Bcalc <= 0) throw new Error('Triunghi imposibil');
+    return { a, b: (c * Math.sin(toRad(Bcalc))) / Math.sin(toRad(C)), c };
+  }
+  if (b != null && c != null && B != null) {
+    const Ccalc = ssaSolve(b, B, c);
+    const Acalc = 180 - B - Ccalc;
+    if (Acalc <= 0) throw new Error('Triunghi imposibil');
+    return { a: (b * Math.sin(toRad(Acalc))) / Math.sin(toRad(B)), b, c };
+  }
+  if (b != null && c != null && C != null) {
+    const Bcalc = ssaSolve(c, C, b);
+    const Acalc = 180 - Bcalc - C;
+    if (Acalc <= 0) throw new Error('Triunghi imposibil');
+    return { a: (c * Math.sin(toRad(Acalc))) / Math.sin(toRad(C)), b, c };
+  }
+
+  throw new Error('Date insuficiente pentru determinarea triunghiului (minim 3 valori: laturi și/sau unghiuri)');
+}
+
 // ─── Public interfaces ──────────────────────────────────────────────────────────
 
 export interface TriangleAdvancedInput {
-  a: number;
-  b: number;
-  c: number;
+  // At least 3 of the following (sides + angles) must be provided.
+  a?: number;
+  b?: number;
+  c?: number;
+  angle_A?: number;
+  angle_B?: number;
+  angle_C?: number;
 
   show_sides?: boolean;
   show_angles?: boolean;
   show_vertices?: boolean;
 
-  /** Format for side measurement labels. Default: 'value_only' → "5" */
+  /** Format for side labels. Default: 'value_only' → "5" */
   side_label_format?: 'value_only' | 'name_value' | 'name_only';
 
   auto_detect_right_angles?: boolean;
@@ -84,7 +225,19 @@ export interface TriangleAdvancedInput {
     show_label?: boolean;
   }>;
 
-  /** Custom segment labels for AI-generated exercises. Points must exist in the points dict. */
+  /** Auto-label all three angles with their degree values. */
+  show_angle_values?: boolean;
+
+  /** Custom angle labels at specific vertices. */
+  angle_labels?: Array<{
+    vertex: 'A' | 'B' | 'C';
+    text: string;
+    show_arc?: boolean;
+    arc_radius?: number;
+    color?: string;
+  }>;
+
+  /** Custom segment labels for AI-authored exercises. */
   custom_labels?: Array<{
     segment: string;
     text: string;
@@ -120,7 +273,8 @@ export interface TriangleAdvancedOutput {
 // ─── Main generator ─────────────────────────────────────────────────────────────
 
 export function generateTriangleAdvanced(input: TriangleAdvancedInput): TriangleAdvancedOutput {
-  const triangle: Triangle = Tri.triangleVerticesFromSides(input.a, input.b, input.c);
+  const { a, b, c } = deduceTriangleSides(input);
+  const triangle: Triangle = Tri.triangleVerticesFromSides(a, b, c);
   const { A, B, C } = triangle;
   const angles = Tri.triangleAngles(triangle);
 
@@ -190,6 +344,9 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
     }
   }
 
+  // Detect coincident foot-points (e.g. bisector = median = altitude in isosceles)
+  const { canonicals, canonicalFor } = detectCoincidences(constructionLines);
+
   const steps: TriangleAdvancedOutput['construction_steps'] = [];
   let cumulativeTikz = '\\begin{tikzpicture}[scale=1.3, line cap=round, line join=round]\n';
 
@@ -204,12 +361,12 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
   steps.push({
     step: 1,
     title: 'Construim triunghiul ABC',
-    explanation: `Trasăm triunghiul ABC cu laturile a=${input.a}, b=${input.b}, c=${input.c}.`,
+    explanation: `Trasăm triunghiul ABC cu laturile a=${roundForDisplay(a)}, b=${roundForDisplay(b)}, c=${roundForDisplay(c)}.`,
     elements_added: ['triangle', 'vertex_labels'],
     cumulative_tikz: cumulativeTikz + '\\end{tikzpicture}',
   });
 
-  // Step 2: pedagogical markers
+  // Step 2: pedagogical markers + angle labels
   let markersTikz = '';
   for (const ra of rightAngles) {
     const V = ra === 'A' ? A : ra === 'B' ? B : C;
@@ -255,7 +412,7 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
     steps.push({
       step: steps.length + 1,
       title: 'Construim cercul înscris',
-      explanation: `Cercul înscris are centrul I (incentrul triunghiului) și raza r=${inradius.toFixed(3)}.`,
+      explanation: `Cercul înscris are centrul I și raza r=${roundForDisplay(inradius)}.`,
       elements_added: ['incircle', 'I'],
       cumulative_tikz: cumulativeTikz + '\\end{tikzpicture}',
     });
@@ -269,21 +426,37 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
     steps.push({
       step: steps.length + 1,
       title: 'Construim cercul circumscris',
-      explanation: `Cercul circumscris are centrul O (circumcentrul) și raza R=${circumradius.toFixed(3)}.`,
+      explanation: `Cercul circumscris are centrul O și raza R=${roundForDisplay(circumradius)}.`,
       elements_added: ['circumcircle', 'O'],
       cumulative_tikz: cumulativeTikz + '\\end{tikzpicture}',
     });
   }
 
-  // Steps: constructions — foot point labels placed exterior to the side
+  // Steps: construction lines — coincident feet rendered once with merged label
   for (const line of constructionLines) {
     cumulativeTikz += '  ' + line.tikz + '\n';
+
+    if (canonicalFor.has(line.label)) {
+      // Non-canonical: draw the line but skip dot+label (already rendered with canonical)
+      const canon = canonicalFor.get(line.label)!;
+      steps.push({
+        step: steps.length + 1,
+        title: `${line.description}`,
+        explanation: `${line.description} — coincide cu ${canon} (punct comun în acest triunghi).`,
+        elements_added: [line.label],
+        cumulative_tikz: cumulativeTikz + '\\end{tikzpicture}',
+      });
+      continue;
+    }
+
     const foot = line.footPoint;
     cumulativeTikz += `  \\fill[black] (${foot[0].toFixed(3)},${foot[1].toFixed(3)}) circle (0.04);\n`;
+
+    const groupLabels = canonicals.get(line.label);
+    const displayLabel = groupLabels ? groupLabels.join(' = ') : line.label;
     const offset = labelOffsetForPointOnSide(foot, line.sideStart, line.sideEnd, centroidPoint, 0.25);
-    const labelX = (foot[0] + offset.nx).toFixed(3);
-    const labelY = (foot[1] + offset.ny).toFixed(3);
-    cumulativeTikz += `  \\node at (${labelX},${labelY}) {$${line.label}$};\n`;
+    cumulativeTikz += `  \\node at (${(foot[0] + offset.nx).toFixed(3)},${(foot[1] + offset.ny).toFixed(3)}) {$${displayLabel}$};\n`;
+
     steps.push({
       step: steps.length + 1,
       title: line.description,
@@ -293,16 +466,43 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
     });
   }
 
-  // Side labels with sloped orientation (exterior, parallel to each side).
-  // Path directions B→C, C→A, A→B ensure "below" is always exterior for our geometry.
+  // Side labels: sloped, 8pt offset, position adaptive to avoid foot-point overlap.
+  // Paths B→C, C→A, A→B ensure "below" is exterior for our geometry.
   if (input.show_sides) {
     const fmt = input.side_label_format ?? 'value_only';
-    cumulativeTikz += `  \\path (${B[0].toFixed(3)},${B[1].toFixed(3)}) -- (${C[0].toFixed(3)},${C[1].toFixed(3)}) node[midway, sloped, below=3pt] {$${formatSideLabel('a', input.a, fmt)}$};\n`;
-    cumulativeTikz += `  \\path (${C[0].toFixed(3)},${C[1].toFixed(3)}) -- (${A[0].toFixed(3)},${A[1].toFixed(3)}) node[midway, sloped, below=3pt] {$${formatSideLabel('b', input.b, fmt)}$};\n`;
-    cumulativeTikz += `  \\path (${A[0].toFixed(3)},${A[1].toFixed(3)}) -- (${B[0].toFixed(3)},${B[1].toFixed(3)}) node[midway, sloped, below=3pt] {$${formatSideLabel('c', input.c, fmt)}$};\n`;
+    const cons = input.constructions ?? [];
+    const posA = sideHasConstructedPoint('BC', cons) ? '0.15' : '0.5';
+    const posB = sideHasConstructedPoint('CA', cons) ? '0.15' : '0.5';
+    const posC = sideHasConstructedPoint('AB', cons) ? '0.15' : '0.5';
+    cumulativeTikz += `  \\path (${B[0].toFixed(3)},${B[1].toFixed(3)}) -- (${C[0].toFixed(3)},${C[1].toFixed(3)}) node[pos=${posA}, sloped, below=8pt] {$${formatSideLabel('a', a, fmt)}$};\n`;
+    cumulativeTikz += `  \\path (${C[0].toFixed(3)},${C[1].toFixed(3)}) -- (${A[0].toFixed(3)},${A[1].toFixed(3)}) node[pos=${posB}, sloped, below=8pt] {$${formatSideLabel('b', b, fmt)}$};\n`;
+    cumulativeTikz += `  \\path (${A[0].toFixed(3)},${A[1].toFixed(3)}) -- (${B[0].toFixed(3)},${B[1].toFixed(3)}) node[pos=${posC}, sloped, below=8pt] {$${formatSideLabel('c', c, fmt)}$};\n`;
   }
 
-  // Custom labels on arbitrary named segments (for AI-authored exercises).
+  // Angle labels: show_angle_values auto-fills, angle_labels allows custom/override.
+  const effectiveAngleLabels = [...(input.angle_labels ?? [])];
+  if (input.show_angle_values) {
+    for (const v of ['A', 'B', 'C'] as const) {
+      if (!effectiveAngleLabels.some((al) => al.vertex === v)) {
+        effectiveAngleLabels.push({ vertex: v, text: formatAngle(angles[v]) });
+      }
+    }
+  }
+  for (const al of effectiveAngleLabels) {
+    const V = al.vertex === 'A' ? A : al.vertex === 'B' ? B : C;
+    const [P1, P2]: [Point, Point] =
+      al.vertex === 'A' ? [B, C] : al.vertex === 'B' ? [A, C] : [A, B];
+    cumulativeTikz +=
+      '  ' +
+      Markers.angleLabelTikz(V, P1, P2, al.text, {
+        show_arc: al.show_arc,
+        arc_radius: al.arc_radius,
+        color: al.color,
+      }) +
+      '\n';
+  }
+
+  // Custom segment labels (AI-authored).
   for (const cl of input.custom_labels ?? []) {
     const seg = parseSegment(cl.segment, points);
     if (!seg) continue;

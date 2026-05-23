@@ -8,9 +8,14 @@ type Vertex = 'A' | 'B' | 'C' | '';
 type SideLabelFormat = 'value_only' | 'name_value' | 'name_only';
 
 export default function TestConstructionPage() {
-  const [a, setA] = useState(5);
-  const [b, setB] = useState(4);
-  const [c, setC] = useState(3);
+  const [a, setA] = useState<string>('5');
+  const [b, setB] = useState<string>('4');
+  const [c, setC] = useState<string>('3');
+  const [angleA, setAngleA] = useState<string>('');
+  const [angleB, setAngleB] = useState<string>('');
+  const [angleC, setAngleC] = useState<string>('');
+  const [showAnglesSection, setShowAnglesSection] = useState(false);
+
   const [showSides, setShowSides] = useState(true);
   const [sideLabelFormat, setSideLabelFormat] = useState<SideLabelFormat>('value_only');
   const [autoRightAngle, setAutoRightAngle] = useState(true);
@@ -18,11 +23,14 @@ export default function TestConstructionPage() {
   const [autoEqualSides, setAutoEqualSides] = useState(false);
   const [showIncircle, setShowIncircle] = useState(true);
   const [showCircumcircle, setShowCircumcircle] = useState(false);
+  const [showAngleValues, setShowAngleValues] = useState(false);
   const [bisectorFrom, setBisectorFrom] = useState<Vertex>('');
   const [medianFrom, setMedianFrom] = useState<Vertex>('');
   const [altitudeFrom, setAltitudeFrom] = useState<Vertex>('');
   const [customLabelsJson, setCustomLabelsJson] = useState('');
   const [customLabelsError, setCustomLabelsError] = useState('');
+  const [angleLabelsJson, setAngleLabelsJson] = useState('');
+  const [angleLabelsError, setAngleLabelsError] = useState('');
 
   const [steps, setSteps] = useState<ConstructionStep[]>([]);
   const [mainSvg, setMainSvg] = useState('');
@@ -33,10 +41,10 @@ export default function TestConstructionPage() {
     setLoading(true);
     setError('');
     setCustomLabelsError('');
+    setAngleLabelsError('');
     setSteps([]);
     setMainSvg('');
 
-    // Validate custom labels JSON
     let customLabels: unknown[] | undefined;
     if (customLabelsJson.trim()) {
       try {
@@ -50,10 +58,30 @@ export default function TestConstructionPage() {
       }
     }
 
+    let angleLabels: unknown[] | undefined;
+    if (angleLabelsJson.trim()) {
+      try {
+        const parsed = JSON.parse(angleLabelsJson.trim());
+        if (!Array.isArray(parsed)) throw new Error('Trebuie să fie un array JSON');
+        angleLabels = parsed;
+      } catch (e) {
+        setAngleLabelsError(e instanceof Error ? e.message : 'JSON invalid');
+        setLoading(false);
+        return;
+      }
+    }
+
     const constructions: Array<{ type: string; from: string }> = [];
     if (bisectorFrom) constructions.push({ type: 'bisector', from: bisectorFrom });
     if (medianFrom) constructions.push({ type: 'median', from: medianFrom });
     if (altitudeFrom) constructions.push({ type: 'altitude', from: altitudeFrom });
+
+    const aNum = a.trim() ? parseFloat(a) : undefined;
+    const bNum = b.trim() ? parseFloat(b) : undefined;
+    const cNum = c.trim() ? parseFloat(c) : undefined;
+    const angleANum = angleA.trim() ? parseFloat(angleA) : undefined;
+    const angleBNum = angleB.trim() ? parseFloat(angleB) : undefined;
+    const angleCNum = angleC.trim() ? parseFloat(angleC) : undefined;
 
     try {
       const response = await fetch('/api/admin/generate-advanced', {
@@ -62,9 +90,12 @@ export default function TestConstructionPage() {
         body: JSON.stringify({
           shape: 'triangle',
           input: {
-            a,
-            b,
-            c,
+            a: aNum,
+            b: bNum,
+            c: cNum,
+            angle_A: angleANum,
+            angle_B: angleBNum,
+            angle_C: angleCNum,
             show_sides: showSides,
             side_label_format: sideLabelFormat,
             auto_detect_right_angles: autoRightAngle,
@@ -72,8 +103,10 @@ export default function TestConstructionPage() {
             auto_detect_equal_sides: autoEqualSides,
             show_incircle: showIncircle,
             show_circumcircle: showCircumcircle,
+            show_angle_values: showAngleValues,
             constructions: constructions.length > 0 ? constructions : undefined,
             custom_labels: customLabels,
+            angle_labels: angleLabels,
           },
         }),
       });
@@ -115,6 +148,9 @@ export default function TestConstructionPage() {
     { value: 'name_only', label: 'Nume', example: '"a"' },
   ];
 
+  const knownCount = [a, b, c].filter((v) => v.trim()).length +
+    [angleA, angleB, angleC].filter((v) => v.trim()).length;
+
   return (
     <div>
       <h1 className="text-xl font-semibold text-gray-900 mb-1">Test Construction Viewer</h1>
@@ -127,26 +163,72 @@ export default function TestConstructionPage() {
         <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-6">
           <h2 className="font-semibold text-gray-800">Parametri triunghi</h2>
 
-          <div className="grid grid-cols-3 gap-3">
-            {[
-              { label: 'Latura a (BC)', val: a, set: setA },
-              { label: 'Latura b (CA)', val: b, set: setB },
-              { label: 'Latura c (AB)', val: c, set: setC },
-            ].map(({ label, val, set }) => (
-              <div key={label}>
-                <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  min="0.1"
-                  value={val}
-                  onChange={(e) => set(parseFloat(e.target.value) || 0)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            ))}
+          {/* Sides */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-2">Laturi (opțional)</h3>
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { label: 'a (BC)', val: a, set: setA },
+                { label: 'b (CA)', val: b, set: setB },
+                { label: 'c (AB)', val: c, set: setC },
+              ].map(({ label, val, set }) => (
+                <div key={label}>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0.1"
+                    value={val}
+                    onChange={(e) => set(e.target.value)}
+                    placeholder="—"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
+          {/* Angles collapsible */}
+          <div>
+            <button
+              type="button"
+              onClick={() => setShowAnglesSection((v) => !v)}
+              className="flex items-center gap-1.5 text-sm font-semibold text-gray-700 hover:text-gray-900"
+            >
+              <span>{showAnglesSection ? '▾' : '▸'}</span>
+              Unghiuri (opțional)
+            </button>
+            {showAnglesSection && (
+              <div className="mt-2 space-y-2">
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { label: 'A (°)', val: angleA, set: setAngleA },
+                    { label: 'B (°)', val: angleB, set: setAngleB },
+                    { label: 'C (°)', val: angleC, set: setAngleC },
+                  ].map(({ label, val, set }) => (
+                    <div key={label}>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
+                      <input
+                        type="number"
+                        step="1"
+                        min="1"
+                        max="178"
+                        value={val}
+                        onChange={(e) => set(e.target.value)}
+                        placeholder="—"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <p className={`text-xs ${knownCount >= 3 ? 'text-green-600' : 'text-amber-600'}`}>
+                  {knownCount} valori completate — minim 3 necesare pentru a determina triunghiul
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Side label display */}
           <div>
             <h3 className="text-sm font-semibold text-gray-700 mb-2">Afișare laturi</h3>
             <label className="flex items-center gap-2 mb-3 cursor-pointer">
@@ -179,6 +261,7 @@ export default function TestConstructionPage() {
             )}
           </div>
 
+          {/* Circles */}
           <div>
             <h3 className="text-sm font-semibold text-gray-700 mb-2">Cercuri</h3>
             {[
@@ -197,6 +280,7 @@ export default function TestConstructionPage() {
             ))}
           </div>
 
+          {/* Auto-detect */}
           <div>
             <h3 className="text-sm font-semibold text-gray-700 mb-2">Detectare automată</h3>
             {[
@@ -216,6 +300,40 @@ export default function TestConstructionPage() {
             ))}
           </div>
 
+          {/* Angle labels */}
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-2">Etichete unghiuri</h3>
+            <label className="flex items-center gap-2 mb-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showAngleValues}
+                onChange={(e) => setShowAngleValues(e.target.checked)}
+                className="rounded"
+              />
+              <span className="text-sm text-gray-700">Afișează valori unghiuri (60°, 37°...)</span>
+            </label>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">
+                Etichete custom unghiuri{' '}
+                <span className="font-normal text-gray-400">(JSON opțional)</span>
+              </label>
+              <textarea
+                value={angleLabelsJson}
+                onChange={(e) => {
+                  setAngleLabelsJson(e.target.value);
+                  setAngleLabelsError('');
+                }}
+                rows={3}
+                placeholder={`[\n  {"vertex":"A","text":"\\\\alpha"},\n  {"vertex":"B","text":"60°"}\n]`}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              />
+              {angleLabelsError && (
+                <p className="text-xs text-red-600 mt-1">{angleLabelsError}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Constructions */}
           <div>
             <h3 className="text-sm font-semibold text-gray-700 mb-2">Construcții (opțional)</h3>
             <div className="grid grid-cols-3 gap-3">
@@ -242,6 +360,7 @@ export default function TestConstructionPage() {
             </div>
           </div>
 
+          {/* Custom labels */}
           <div>
             <h3 className="text-sm font-semibold text-gray-700 mb-1">
               Custom labels{' '}
@@ -291,7 +410,7 @@ export default function TestConstructionPage() {
               {steps.length > 0 ? (
                 <ConstructionTriggerButton
                   steps={steps}
-                  title={`Triunghi cu laturile a=${a}, b=${b}, c=${c}`}
+                  title={`Triunghi — ${[a && `a=${a}`, b && `b=${b}`, c && `c=${c}`, angleA && `A=${angleA}°`, angleB && `B=${angleB}°`, angleC && `C=${angleC}°`].filter(Boolean).join(', ')}`}
                 />
               ) : (
                 <p className="text-sm text-gray-400">

@@ -63,3 +63,36 @@ export function equalSegmentMarksTikz(P1: Point, P2: Point, count = 1, markSize 
   }
   return marks.join('\n');
 }
+
+export function angleLabelTikz(
+  V: Point,
+  P1: Point,
+  P2: Point,
+  text: string,
+  opts: { show_arc?: boolean; arc_radius?: number; color?: string } = {},
+): string {
+  const radius = opts.arc_radius ?? 0.4;
+  const color = opts.color ?? 'black';
+  const u1 = unitVector(V, P1);
+  const u2 = unitVector(V, P2);
+  const angle1 = Math.atan2(u1[1], u1[0]) * (180 / Math.PI);
+  const angle2 = Math.atan2(u2[1], u2[0]) * (180 / Math.PI);
+  let startAngle = angle1;
+  let endAngle = angle2;
+  if (endAngle < startAngle) endAngle += 360;
+  if (endAngle - startAngle > 180) {
+    [startAngle, endAngle] = [angle2, angle1 + (angle1 < angle2 ? 360 : 0)];
+  }
+  const midAngle = (startAngle + endAngle) / 2;
+  const labelDist = radius * 1.6;
+  const labelX = V[0] + labelDist * Math.cos((midAngle * Math.PI) / 180);
+  const labelY = V[1] + labelDist * Math.sin((midAngle * Math.PI) / 180);
+
+  let result = '';
+  if (opts.show_arc !== false) {
+    result += `\\draw[thick, ${color}] (${V[0].toFixed(3)},${V[1].toFixed(3)}) ++(${startAngle.toFixed(2)}:${radius.toFixed(3)}) arc (${startAngle.toFixed(2)}:${endAngle.toFixed(2)}:${radius.toFixed(3)});`;
+    result += `\n  `;
+  }
+  result += `\\node[${color}] at (${labelX.toFixed(3)},${labelY.toFixed(3)}) {$${text}$};`;
+  return result;
+}
