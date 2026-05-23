@@ -20,45 +20,30 @@ function formatSideLabel(name: string, value: number, format: string): string {
   return roundForDisplay(value);
 }
 
-// Perpendicular exterior offset for a point on a side.
-function labelOffsetForPointOnSide(
-  pointOnSide: Point,
-  sideStart: Point,
-  sideEnd: Point,
-  triangleCentroid: Point,
-  offset = 0.25,
-): { nx: number; ny: number } {
-  const dx = sideEnd[0] - sideStart[0];
-  const dy = sideEnd[1] - sideStart[1];
-  const len = Math.sqrt(dx * dx + dy * dy);
-  let perpX = -dy / len;
-  let perpY = dx / len;
-  const toCentroidX = triangleCentroid[0] - pointOnSide[0];
-  const toCentroidY = triangleCentroid[1] - pointOnSide[1];
-  if (perpX * toCentroidX + perpY * toCentroidY > 0) {
-    perpX = -perpX;
-    perpY = -perpY;
-  }
-  return { nx: perpX * offset, ny: perpY * offset };
-}
-
 function sideOppositeVertex(vertex: 'A' | 'B' | 'C', t: Triangle): [Point, Point] {
   if (vertex === 'A') return [t.B, t.C];
   if (vertex === 'B') return [t.C, t.A];
   return [t.A, t.B];
 }
 
-// Returns true if any construction foot-point lands on the given side.
-function sideHasConstructedPoint(
-  side: 'BC' | 'CA' | 'AB',
-  constructions: Array<{ from: 'A' | 'B' | 'C' }>,
-): boolean {
-  for (const con of constructions) {
-    if (con.from === 'A' && side === 'BC') return true;
-    if (con.from === 'B' && side === 'CA') return true;
-    if (con.from === 'C' && side === 'AB') return true;
-  }
-  return false;
+// Fractional position of foot along sideStart→sideEnd (clamped to [0,1]).
+function footFraction(foot: Point, sideStart: Point, sideEnd: Point): number {
+  const dx = sideEnd[0] - sideStart[0];
+  const dy = sideEnd[1] - sideStart[1];
+  const len2 = dx * dx + dy * dy;
+  return Math.max(0, Math.min(1,
+    ((foot[0] - sideStart[0]) * dx + (foot[1] - sideStart[1]) * dy) / len2,
+  ));
+}
+
+// Intersection of infinite lines p1p2 and p3p4. Returns null if parallel.
+function lineIntersection(p1: Point, p2: Point, p3: Point, p4: Point): Point | null {
+  const dx1 = p2[0] - p1[0], dy1 = p2[1] - p1[1];
+  const dx2 = p4[0] - p3[0], dy2 = p4[1] - p3[1];
+  const denom = dx1 * dy2 - dy1 * dx2;
+  if (Math.abs(denom) < 1e-10) return null;
+  const t = ((p3[0] - p1[0]) * dy2 - (p3[1] - p1[1]) * dx2) / denom;
+  return [p1[0] + t * dx1, p1[1] + t * dy1];
 }
 
 // Parses "BC" / "AD" / "AM_a" into [Point, Point] (longest-name-first to handle "M_a").
@@ -75,10 +60,22 @@ function parseSegment(segment: string, points: Record<string, Point>): [Point, P
 
 // Groups construction feet that land within `tol` of each other.
 // Returns: canonicals (canonical → all labels), canonicalFor (non-canon → canon).
+// Canonical is chosen by priority: non-subscripted name first, then D/E/F/H/M order.
 function detectCoincidences(
   lines: Array<{ label: string; footPoint: Point }>,
   tol = 0.05,
 ): { canonicals: Map<string, string[]>; canonicalFor: Map<string, string> } {
+  function pickCanonical(group: string[]): string {
+    const nonSub = group.filter(l => !l.includes('_'));
+    if (nonSub.length > 0) return nonSub[0];
+    const priority = ['I', 'O', 'G', 'H', 'M', 'D', 'E', 'F'];
+    for (const p of priority) {
+      const m = group.find(l => l.startsWith(p));
+      if (m) return m;
+    }
+    return group[0];
+  }
+
   const canonicals = new Map<string, string[]>();
   const canonicalFor = new Map<string, string>();
   const processed = new Set<string>();
@@ -94,8 +91,10 @@ function detectCoincidences(
     }
     for (const label of group) processed.add(label);
     if (group.length > 1) {
-      canonicals.set(group[0], group);
-      for (let k = 1; k < group.length; k++) canonicalFor.set(group[k], group[0]);
+      const canonical = pickCanonical(group);
+      const ordered = [canonical, ...group.filter(l => l !== canonical)];
+      canonicals.set(canonical, ordered);
+      for (const m of ordered.slice(1)) canonicalFor.set(m, canonical);
     }
   }
   return { canonicals, canonicalFor };
@@ -245,6 +244,15 @@ export interface TriangleAdvancedInput {
     side?: 'above' | 'below';
     color?: string;
   }>;
+
+  /** Angle labels at the intersection of two named construction lines. */
+  intersection_angle_labels?: Array<{
+    between: [string, string]; // e.g. ["bisector_A", "median_B"]
+    text: string;
+    show_arc?: boolean;
+    arc_radius?: number;
+    color?: string;
+  }>;
 }
 
 export interface TriangleAdvancedOutput {
@@ -305,6 +313,7 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
     sideEnd: Point;
   };
   const constructionLines: ConstructionLine[] = [];
+  const conEndpoints = new Map<string, [Point, Point]>();
 
   if (input.constructions) {
     for (const con of input.constructions) {
@@ -333,6 +342,7 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
       points[label] = footPoint;
       const vertexPos = con.from === 'A' ? A : con.from === 'B' ? B : C;
       const [sideStart, sideEnd] = sideOppositeVertex(con.from, triangle);
+      conEndpoints.set(`${con.type}_${con.from}`, [vertexPos, footPoint]);
       constructionLines.push({
         tikz: `\\draw[thick, ${color}] (${vertexPos[0].toFixed(3)},${vertexPos[1].toFixed(3)}) -- (${footPoint[0].toFixed(3)},${footPoint[1].toFixed(3)});`,
         label,
@@ -452,37 +462,42 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
     const foot = line.footPoint;
     cumulativeTikz += `  \\fill[black] (${foot[0].toFixed(3)},${foot[1].toFixed(3)}) circle (0.04);\n`;
 
+    // Single canonical name (priority: non-subscripted > D/E/F/H/M order)
     const groupLabels = canonicals.get(line.label);
-    const displayLabel = groupLabels ? groupLabels.join(' = ') : line.label;
-    const offset = labelOffsetForPointOnSide(foot, line.sideStart, line.sideEnd, centroidPoint, 0.25);
-    cumulativeTikz += `  \\node at (${(foot[0] + offset.nx).toFixed(3)},${(foot[1] + offset.ny).toFixed(3)}) {$${displayLabel}$};\n`;
+    const displayLabel = line.label;
+    const mergeNote = groupLabels && groupLabels.length > 1
+      ? ` Notă: ${groupLabels.join(', ')} coincid în acest triunghi special.`
+      : '';
+    const frac = footFraction(foot, line.sideStart, line.sideEnd);
+    cumulativeTikz += `  \\path (${line.sideStart[0].toFixed(3)},${line.sideStart[1].toFixed(3)}) -- (${line.sideEnd[0].toFixed(3)},${line.sideEnd[1].toFixed(3)}) node[pos=${frac.toFixed(3)}, sloped, below=4pt] {$${displayLabel}$};\n`;
 
     steps.push({
       step: steps.length + 1,
       title: line.description,
-      explanation: line.description,
+      explanation: line.description + mergeNote,
       elements_added: [line.label],
       cumulative_tikz: cumulativeTikz + '\\end{tikzpicture}',
     });
   }
 
-  // Side labels: sloped, 8pt offset, position adaptive to avoid foot-point overlap.
-  // Paths B→C, C→A, A→B ensure "below" is exterior for our geometry.
+  // Side labels at midway; extra offset (14pt) when a foot-point letter sits above.
+  // Paths B→C, C→A, A→B ensure "below" is exterior for our CCW triangle.
   if (input.show_sides) {
     const fmt = input.side_label_format ?? 'value_only';
     const cons = input.constructions ?? [];
-    const posA = sideHasConstructedPoint('BC', cons) ? '0.15' : '0.5';
-    const posB = sideHasConstructedPoint('CA', cons) ? '0.15' : '0.5';
-    const posC = sideHasConstructedPoint('AB', cons) ? '0.15' : '0.5';
-    cumulativeTikz += `  \\path (${B[0].toFixed(3)},${B[1].toFixed(3)}) -- (${C[0].toFixed(3)},${C[1].toFixed(3)}) node[pos=${posA}, sloped, below=8pt] {$${formatSideLabel('a', a, fmt)}$};\n`;
-    cumulativeTikz += `  \\path (${C[0].toFixed(3)},${C[1].toFixed(3)}) -- (${A[0].toFixed(3)},${A[1].toFixed(3)}) node[pos=${posB}, sloped, below=8pt] {$${formatSideLabel('b', b, fmt)}$};\n`;
-    cumulativeTikz += `  \\path (${A[0].toFixed(3)},${A[1].toFixed(3)}) -- (${B[0].toFixed(3)},${B[1].toFixed(3)}) node[pos=${posC}, sloped, below=8pt] {$${formatSideLabel('c', c, fmt)}$};\n`;
+    const oA = cons.some(con => con.from === 'A') ? '14pt' : '8pt';
+    const oB = cons.some(con => con.from === 'B') ? '14pt' : '8pt';
+    const oC = cons.some(con => con.from === 'C') ? '14pt' : '8pt';
+    cumulativeTikz += `  \\path (${B[0].toFixed(3)},${B[1].toFixed(3)}) -- (${C[0].toFixed(3)},${C[1].toFixed(3)}) node[pos=0.5, sloped, below=${oA}] {$${formatSideLabel('a', a, fmt)}$};\n`;
+    cumulativeTikz += `  \\path (${C[0].toFixed(3)},${C[1].toFixed(3)}) -- (${A[0].toFixed(3)},${A[1].toFixed(3)}) node[pos=0.5, sloped, below=${oB}] {$${formatSideLabel('b', b, fmt)}$};\n`;
+    cumulativeTikz += `  \\path (${A[0].toFixed(3)},${A[1].toFixed(3)}) -- (${B[0].toFixed(3)},${B[1].toFixed(3)}) node[pos=0.5, sloped, below=${oC}] {$${formatSideLabel('c', c, fmt)}$};\n`;
   }
 
   // Angle labels: show_angle_values auto-fills, angle_labels allows custom/override.
   const effectiveAngleLabels = [...(input.angle_labels ?? [])];
   if (input.show_angle_values) {
     for (const v of ['A', 'B', 'C'] as const) {
+      if (rightAngles.includes(v)) continue; // right angle already marked with square
       if (!effectiveAngleLabels.some((al) => al.vertex === v)) {
         effectiveAngleLabels.push({ vertex: v, text: formatAngle(angles[v]) });
       }
@@ -498,6 +513,23 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
         show_arc: al.show_arc,
         arc_radius: al.arc_radius,
         color: al.color,
+      }) +
+      '\n';
+  }
+
+  // Intersection angle labels: arc + text at the crossing of two construction lines.
+  for (const ial of (input.intersection_angle_labels ?? [])) {
+    const ep1 = conEndpoints.get(ial.between[0]);
+    const ep2 = conEndpoints.get(ial.between[1]);
+    if (!ep1 || !ep2) continue;
+    const P = lineIntersection(ep1[0], ep1[1], ep2[0], ep2[1]);
+    if (!P) continue;
+    cumulativeTikz +=
+      '  ' +
+      Markers.angleLabelTikz(P as Point, ep1[0], ep2[0], ial.text, {
+        show_arc: ial.show_arc,
+        arc_radius: ial.arc_radius,
+        color: ial.color,
       }) +
       '\n';
   }

@@ -31,6 +31,8 @@ export default function TestConstructionPage() {
   const [customLabelsError, setCustomLabelsError] = useState('');
   const [angleLabelsJson, setAngleLabelsJson] = useState('');
   const [angleLabelsError, setAngleLabelsError] = useState('');
+  const [intersectionAngleLabelsJson, setIntersectionAngleLabelsJson] = useState('');
+  const [intersectionAngleLabelsError, setIntersectionAngleLabelsError] = useState('');
 
   const [steps, setSteps] = useState<ConstructionStep[]>([]);
   const [mainSvg, setMainSvg] = useState('');
@@ -42,6 +44,7 @@ export default function TestConstructionPage() {
     setError('');
     setCustomLabelsError('');
     setAngleLabelsError('');
+    setIntersectionAngleLabelsError('');
     setSteps([]);
     setMainSvg('');
 
@@ -66,6 +69,19 @@ export default function TestConstructionPage() {
         angleLabels = parsed;
       } catch (e) {
         setAngleLabelsError(e instanceof Error ? e.message : 'JSON invalid');
+        setLoading(false);
+        return;
+      }
+    }
+
+    let intersectionAngleLabels: unknown[] | undefined;
+    if (intersectionAngleLabelsJson.trim()) {
+      try {
+        const parsed = JSON.parse(intersectionAngleLabelsJson.trim());
+        if (!Array.isArray(parsed)) throw new Error('Trebuie să fie un array JSON');
+        intersectionAngleLabels = parsed;
+      } catch (e) {
+        setIntersectionAngleLabelsError(e instanceof Error ? e.message : 'JSON invalid');
         setLoading(false);
         return;
       }
@@ -107,6 +123,7 @@ export default function TestConstructionPage() {
             constructions: constructions.length > 0 ? constructions : undefined,
             custom_labels: customLabels,
             angle_labels: angleLabels,
+            intersection_angle_labels: intersectionAngleLabels,
           },
         }),
       });
@@ -303,7 +320,7 @@ export default function TestConstructionPage() {
           {/* Angle labels */}
           <div>
             <h3 className="text-sm font-semibold text-gray-700 mb-2">Etichete unghiuri</h3>
-            <label className="flex items-center gap-2 mb-3 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={showAngleValues}
@@ -312,24 +329,48 @@ export default function TestConstructionPage() {
               />
               <span className="text-sm text-gray-700">Afișează valori unghiuri (60°, 37°...)</span>
             </label>
-            <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">
-                Etichete custom unghiuri{' '}
-                <span className="font-normal text-gray-400">(JSON opțional)</span>
-              </label>
-              <textarea
-                value={angleLabelsJson}
-                onChange={(e) => {
-                  setAngleLabelsJson(e.target.value);
-                  setAngleLabelsError('');
-                }}
-                rows={3}
-                placeholder={`[\n  {"vertex":"A","text":"\\\\alpha"},\n  {"vertex":"B","text":"60°"}\n]`}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-              />
-              {angleLabelsError && (
-                <p className="text-xs text-red-600 mt-1">{angleLabelsError}</p>
-              )}
+            <p className="text-xs text-gray-400 ml-6 mt-1 mb-3">
+              Sare automat peste unghiurile drepte marcate cu pătrățel
+            </p>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Etichete custom unghiuri{' '}
+                  <span className="font-normal text-gray-400">(JSON opțional)</span>
+                </label>
+                <textarea
+                  value={angleLabelsJson}
+                  onChange={(e) => {
+                    setAngleLabelsJson(e.target.value);
+                    setAngleLabelsError('');
+                  }}
+                  rows={3}
+                  placeholder={`[\n  {"vertex":"A","text":"\\\\alpha"},\n  {"vertex":"B","text":"60°"}\n]`}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                />
+                {angleLabelsError && (
+                  <p className="text-xs text-red-600 mt-1">{angleLabelsError}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  Unghi la intersecție construcții{' '}
+                  <span className="font-normal text-gray-400">(JSON opțional)</span>
+                </label>
+                <textarea
+                  value={intersectionAngleLabelsJson}
+                  onChange={(e) => {
+                    setIntersectionAngleLabelsJson(e.target.value);
+                    setIntersectionAngleLabelsError('');
+                  }}
+                  rows={2}
+                  placeholder={`[{"between":["bisector_A","median_B"],"text":"\\\\alpha"}]`}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                />
+                {intersectionAngleLabelsError && (
+                  <p className="text-xs text-red-600 mt-1">{intersectionAngleLabelsError}</p>
+                )}
+              </div>
             </div>
           </div>
 
