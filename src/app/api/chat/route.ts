@@ -4,6 +4,11 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { SYSTEM_PROMPT_V1 } from "@/lib/ai/system-prompt";
 import { callAIStream, getTaskPricing } from "@/lib/ai/router";
 import { generateEmbeddingForQuery } from "@/lib/embeddings/gemini";
+import {
+  findRelevantMethods,
+  buildMultiMethodInstruction,
+  type SolutionMethod,
+} from "@/lib/rag/solution-methods";
 
 const FREE_MONTHLY_LIMIT = 30;
 const IS_DEV = process.env.NODE_ENV === "development";
@@ -21,22 +26,6 @@ interface RagMatch {
   similarity: number;
   svg_static: string | null;
   tags: string[];
-}
-
-interface MethodMatch {
-  id: string;
-  exercise_type: string;
-  exercise_type_label: string;
-  method_name: string;
-  description: string | null;
-  steps: Array<{ step: number; title: string; content?: string; formula?: string }>;
-  notation_rules: Record<string, string>;
-  examples: unknown[];
-  common_mistakes: Array<{ mistake: string; correction: string }>;
-  grade_level: number;
-  topic: string;
-  importance_score: number;
-  similarity: number;
 }
 
 function serverError(label: string, err: unknown): NextResponse {
@@ -65,33 +54,7 @@ async function lookupLibrary(message: string): Promise<{ match: RagMatch | null;
   }
 }
 
-/**
- * Caută cea mai relevantă metodă de rezolvare BAC MD.
- * Non-blocking — returnează null dacă tabela nu există sau dacă embedding-ul e null.
- * Backwards-compat: fallback transparent dacă solution_methods nu e populat.
- */
-async function findRelevantMethod(embedding: number[] | null): Promise<MethodMatch | null> {
-  if (!embedding) return null;
-  try {
-    const service = createServiceClient();
-    const { data, error } = await service.rpc("match_solution_methods", {
-      query_embedding: embedding,
-      match_threshold: METHOD_THRESHOLD,
-      match_count: 1,
-    });
-    if (error) {
-      // Tabela poate să nu existe încă (înainte de migrare) — nu logăm ca eroare
-      if (error.message?.includes("does not exist") || error.message?.includes("function")) {
-        return null;
-      }
-      console.warn("[chat/route] match_solution_methods warning:", error.message);
-      return null;
-    }
-    return data && data.length > 0 ? (data[0] as MethodMatch) : null;
-  } catch {
-    return null;
-  }
-}
+// findRelevantMethods este importat din @/lib/rag/solution-methods
 
 export async function POST(req: NextRequest) {
   console.log("[chat/route] POST started");
@@ -170,8 +133,10 @@ export async function POST(req: NextRequest) {
   const isDirectMatch = ragMatch !== null && ragMatch.similarity >= RAG_DIRECT_THRESHOLD;
   const isContextMatch = ragMatch !== null && ragMatch.similarity >= RAG_CONTEXT_THRESHOLD && !isDirectMatch;
 
-  // ── Metodă de rezolvare BAC MD (backwards-compat — null dacă tabela nu există) ──
-  const methodMatch = await findRelevantMethod(queryEmbedding);
+  // ── Metode de rezolvare BAC MD (backwards-compat — [] dacă tabela nu există) ──
+  const relevantMethods: SolutionMethod[] = queryEmbedding
+    ? await findRelevantMethods(queryEmbedding, { threshold: METHOD_THRESHOLD, limit: 2 })
+    : [];
 
   // ── Conversation create or load ─────────────────────────────────
   let convId: string = conversationId ?? "";
@@ -217,35 +182,30 @@ export async function POST(req: NextRequest) {
     return serverError("user message insert", userMsgErr);
   }
 
-  // ── System prompt — inject RAG context + metodă BAC MD ──────────
+  // ── System prompt — inject metode BAC MD + context RAG ──────────
   let systemPrompt = SYSTEM_PROMPT_V1;
 
-  // Injectează metoda de rezolvare dacă există
-  if (methodMatch) {
-    const stepsText = methodMatch.steps
-      .map(s => {
-        let line = `  ${s.step}. ${s.title}`;
-        if (s.content) line += `: ${s.content}`;
-        if (s.formula) line += ` [${s.formula}]`;
-        return line;
-      })
-      .join('\n');
-
-    const notationText = Object.entries(methodMatch.notation_rules ?? {})
-      .map(([k, v]) => `  ${k}: ${v}`)
-      .join('\n');
-
-    const mistakesText = (methodMatch.common_mistakes ?? [])
-      .map(m => `  ⚠️ ${m.mistake} → ${m.correction}`)
-      .join('\n');
-
-    systemPrompt += `\n\n---\n**Metodă BAC MD detectată** (${methodMatch.exercise_type_label}, similaritate ${(methodMatch.similarity * 100).toFixed(0)}%):\n**${methodMatch.method_name}**\n${methodMatch.description ? `\n${methodMatch.description}\n` : ''}\nEtape obligatorii:\n${stepsText}${notationText ? `\n\nNotații BAC MD:\n${notationText}` : ''}${mistakesText ? `\n\nGreșeli frecvente de evitat:\n${mistakesText}` : ''}\n\nUrmează EXACT aceste etape în ordinea specificată. Respectă notațiile BAC MD.`;
+  // Injectează instrucțiunile metodei detectate (via helper din solution-methods.ts)
+  const methodInstruction = buildMultiMethodInstruction(relevantMethods);
+  if (methodInstruction) {
+    systemPrompt += `\n\n${methodInstruction}`;
   }
 
   // Injectează exercițiu similar dacă există (context match)
   if (isContextMatch && ragMatch) {
     systemPrompt += `\n\n---\nContext relevant din biblioteca de exerciții (similaritate ${(ragMatch.similarity * 100).toFixed(0)}%):\nExercițiu: ${ragMatch.statement}\nSoluție: ${ragMatch.solution}`;
   }
+
+  // ── Telemetrie structurată ─────────────────────────────────────
+  console.log('[chat] Request telemetry:', {
+    userQueryLength: message.length,
+    methodsFound: relevantMethods.length,
+    topMethod: relevantMethods[0]?.exercise_type ?? 'none',
+    topSimilarity: relevantMethods[0]?.similarity?.toFixed(3) ?? 'n/a',
+    exercisesFound: ragMatch ? 1 : 0,
+    ragDirectMatch: isDirectMatch,
+    ragContextMatch: isContextMatch,
+  });
 
   // ── SSE stream ─────────────────────────────────────────────────
   const encoder = new TextEncoder();
@@ -265,7 +225,18 @@ export async function POST(req: NextRequest) {
           encoder.encode(`data: ${JSON.stringify({ text: ragMatch.solution, source: "library" })}\n\n`)
         );
         controller.enqueue(
-          encoder.encode(`data: ${JSON.stringify({ done: true, conversationId: convId, source: "library" })}\n\n`)
+          encoder.encode(
+            `data: ${JSON.stringify({
+              done: true,
+              conversationId: convId,
+              source: "library",
+              metadata: {
+                method_used: relevantMethods[0]?.exercise_type ?? null,
+                method_similarity: relevantMethods[0]?.similarity ?? null,
+                exercises_matched: 1,
+              },
+            })}\n\n`
+          )
         );
         controller.close();
       } else {
@@ -274,8 +245,11 @@ export async function POST(req: NextRequest) {
           if (isContextMatch) {
             console.log(`[chat/route] RAG context match (similarity=${ragMatch!.similarity.toFixed(3)}) — context injected`);
           }
-          if (methodMatch) {
-            console.log(`[chat/route] Method match: ${methodMatch.method_name} (similarity=${methodMatch.similarity.toFixed(3)})`);
+          if (relevantMethods.length > 0) {
+            console.log(`[chat/route] Methods matched (${relevantMethods.length}):`);
+            for (const m of relevantMethods) {
+              console.log(`  - ${m.exercise_type} "${m.method_name}" (similarity=${m.similarity.toFixed(3)})`);
+            }
           }
 
           const result = await callAIStream(
@@ -300,7 +274,15 @@ export async function POST(req: NextRequest) {
           console.log(`[chat/route] stream complete. task=${taskName} chunks=${chunkCount} in=${inputTokens} out=${outputTokens}`);
           controller.enqueue(
             encoder.encode(
-              `data: ${JSON.stringify({ done: true, conversationId: convId })}\n\n`
+              `data: ${JSON.stringify({
+                done: true,
+                conversationId: convId,
+                metadata: {
+                  method_used: relevantMethods[0]?.exercise_type ?? null,
+                  method_similarity: relevantMethods[0]?.similarity ?? null,
+                  exercises_matched: isContextMatch ? 1 : 0,
+                },
+              })}\n\n`
             )
           );
           controller.close();

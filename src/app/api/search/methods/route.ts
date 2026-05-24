@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { generateEmbeddingForQuery } from "@/lib/embeddings/gemini";
+import { findRelevantMethodsByQuery } from "@/lib/rag/solution-methods";
 
 /**
  * GET /api/search/methods?q=...&grade=12&topic=algebra&limit=5
@@ -83,6 +84,62 @@ export async function GET(req: NextRequest) {
   } catch (e) {
     return NextResponse.json(
       { error: e instanceof Error ? e.message : "Eroare internă" },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * POST /api/search/methods
+ * Body: { query: string, grade?: number, topic?: string, threshold?: number, limit?: number }
+ *
+ * Căutare semantică în solution_methods via helper findRelevantMethodsByQuery.
+ * Endpoint admin/test — nu necesită autentificare (presupune key în header).
+ *
+ * Exemple curl:
+ *   curl -X POST .../api/search/methods \
+ *     -H "Content-Type: application/json" \
+ *     -d '{"query":"ecuatie de gradul 2","limit":5}'
+ */
+export const dynamic = "force-dynamic";
+
+export async function POST(req: NextRequest) {
+  let body: {
+    query?: string;
+    grade?: number;
+    topic?: string;
+    threshold?: number;
+    limit?: number;
+  };
+
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Body JSON invalid" }, { status: 400 });
+  }
+
+  const { query, grade, topic, threshold, limit } = body ?? {};
+
+  if (!query || typeof query !== "string" || query.trim().length < 2) {
+    return NextResponse.json({ error: "Câmpul 'query' lipsește sau e prea scurt" }, { status: 400 });
+  }
+
+  try {
+    const results = await findRelevantMethodsByQuery(query.trim(), {
+      threshold: threshold ?? 0.5,
+      limit: Math.min(limit ?? 5, 10),
+      grade: grade ?? null,
+      topic: topic ?? null,
+    });
+
+    return NextResponse.json({
+      query: query.trim(),
+      results,
+      count: results.length,
+    });
+  } catch (err) {
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Eroare internă" },
       { status: 500 }
     );
   }
