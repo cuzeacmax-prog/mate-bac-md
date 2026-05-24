@@ -16,24 +16,70 @@ type ShapeType =
   | 'cylinder'
   | 'cone'
   | 'sphere'
-  // Nou: trunchiuri
+  // Trunchiuri
   | 'frustum_pyramid'
   | 'frustum_cone'
-  // Nou: plane secante
+  // Plane secante
   | 'section_cube'
   | 'section_pyramid'
   | 'section_cone'
   | 'section_sphere'
   | 'section_cylinder'
-  // Nou: speciale
+  // Speciale
   | 'tetrahedron'
   | 'oblique_prism'
   | 'cube_all_diagonals'
   | 'sphere_with_circles'
-  // Nou: triunghi extins
+  // Triunghi extins
   | 'triangle_midsegments'
   | 'triangle_perp_bisectors'
-  | 'triangle_centroid';
+  | 'triangle_centroid'
+  // ── ETAPA 5 ──────────────────────────────────
+  // Funcții elementare
+  | 'fn_linear'
+  | 'fn_quadratic'
+  | 'fn_power'
+  | 'fn_radical'
+  | 'fn_exponential'
+  | 'fn_logarithmic'
+  | 'fn_modulus'
+  | 'fn_generic'
+  // Funcții trigonometrice
+  | 'trig_sin'
+  | 'trig_cos'
+  | 'trig_tan'
+  | 'trig_cot'
+  // Analiză matematică
+  | 'analysis_asymptotes'
+  | 'analysis_limit'
+  | 'analysis_tangent'
+  | 'analysis_monotonicity'
+  | 'analysis_integral'
+  | 'analysis_rotation_volume'
+  // Combinatorică / probabilitate
+  | 'prob_venn2'
+  | 'prob_venn3'
+  | 'prob_tree'
+  // Statistică
+  | 'stat_histogram'
+  | 'stat_bar'
+  | 'stat_pie'
+  | 'stat_polygon'
+  // Plan complex
+  | 'complex_plane'
+  // Trigonometrie geometrică
+  | 'trig_circle'
+  | 'trig_right_triangle'
+  | 'trig_reduction'
+  // Geometrie spațială
+  | 'spatial_projection'
+  | 'spatial_dihedral'
+  | 'spatial_three_perp'
+  // Transformări
+  | 'transform_symmetry'
+  | 'transform_translation'
+  | 'transform_rotation'
+  | 'transform_homothety';
 
 const SHAPE_OPTIONS: Array<{ value: ShapeType; label: string }> = [
   { value: 'triangle', label: 'Triunghi' },
@@ -65,6 +111,52 @@ const SHAPE_OPTIONS: Array<{ value: ShapeType; label: string }> = [
   { value: 'triangle_midsegments', label: 'Triunghi — linii mijlocii' },
   { value: 'triangle_perp_bisectors', label: 'Triunghi — mediatoare' },
   { value: 'triangle_centroid', label: 'Triunghi — centru de greutate G' },
+  // ── ETAPA 5 ──────────────────────────────────
+  // Funcții elementare
+  { value: 'fn_linear', label: '📈 Funcție liniară y=ax+b' },
+  { value: 'fn_quadratic', label: '📈 Funcție pătratică y=ax²+bx+c' },
+  { value: 'fn_power', label: '📈 Funcție putere y=xⁿ' },
+  { value: 'fn_radical', label: '📈 Funcție radical y=√x' },
+  { value: 'fn_exponential', label: '📈 Funcție exponențială y=aˣ' },
+  { value: 'fn_logarithmic', label: '📈 Funcție logaritmică y=log(x)' },
+  { value: 'fn_modulus', label: '📈 Funcție modul y=|ax+b|' },
+  { value: 'fn_generic', label: '📈 Funcție generică (expresie)' },
+  // Funcții trigonometrice
+  { value: 'trig_sin', label: '〜 sin — A·sin(Bx+C)+D' },
+  { value: 'trig_cos', label: '〜 cos — A·cos(Bx+C)+D' },
+  { value: 'trig_tan', label: '〜 tan cu asimptote' },
+  { value: 'trig_cot', label: '〜 cot cu asimptote' },
+  // Analiză matematică
+  { value: 'analysis_asymptotes', label: '∞ Asimptote (verticale/orizontale/oblice)' },
+  { value: 'analysis_limit', label: '→ Limita unei funcții' },
+  { value: 'analysis_tangent', label: '/ Tangentă la curbă' },
+  { value: 'analysis_monotonicity', label: '↑↓ Monotonie + extreme' },
+  { value: 'analysis_integral', label: '∫ Integrală definită (arie)' },
+  { value: 'analysis_rotation_volume', label: '○ Volum corp de rotație' },
+  // Combinatorică / probabilitate
+  { value: 'prob_venn2', label: '○ Diagrama Venn — 2 mulțimi' },
+  { value: 'prob_venn3', label: '○ Diagrama Venn — 3 mulțimi' },
+  { value: 'prob_tree', label: '🌿 Arbore de probabilitate' },
+  // Statistică
+  { value: 'stat_histogram', label: '▌ Histogramă frecvențe' },
+  { value: 'stat_bar', label: '▌ Diagramă cu bare' },
+  { value: 'stat_pie', label: '● Diagramă circulară (pie)' },
+  { value: 'stat_polygon', label: '〜 Poligon frecvențe (ogivă)' },
+  // Plan complex
+  { value: 'complex_plane', label: 'ℂ Plan complex — Re/Im' },
+  // Trigonometrie geometrică
+  { value: 'trig_circle', label: '○ Cerc trigonometric' },
+  { value: 'trig_right_triangle', label: '△ Triunghi dreptunghic + rapoarte' },
+  { value: 'trig_reduction', label: '↻ Reducere la unghi ascuțit' },
+  // Geometrie spațială
+  { value: 'spatial_projection', label: '⬛ Proiecție ortogonală 3D' },
+  { value: 'spatial_dihedral', label: '⟁ Unghi diedru' },
+  { value: 'spatial_three_perp', label: '⊥ Teorema celor 3 perpendiculare' },
+  // Transformări
+  { value: 'transform_symmetry', label: '↔ Simetrie axială / centrală' },
+  { value: 'transform_translation', label: '→ Translație' },
+  { value: 'transform_rotation', label: '↻ Rotație' },
+  { value: 'transform_homothety', label: '⤡ Omotetie' },
 ];
 
 type Vertex = 'A' | 'B' | 'C' | '';
@@ -920,6 +1012,108 @@ function TriangleExtForm({ extType, onResult }: { extType: ShapeType; onResult: 
   );
 }
 
+// ─── Generic API form (ETAPA 5 calculatoare) ──────────────────────────────────
+
+type GenericApiConfig = {
+  endpoint: string;
+  typeParam?: string; // if endpoint takes a `type` field
+  defaultParams: string; // JSON string
+  buttonLabel: string;
+};
+
+const ETAPA5_CONFIGS: Record<string, GenericApiConfig> = {
+  fn_linear: { endpoint: '/api/admin/generate-function', typeParam: 'linear', defaultParams: JSON.stringify({ a: 2, b: -1, domain: [-4, 4], show_grid: true, show_slope_triangle: true, show_intercepts: true, show_equation: true }, null, 2), buttonLabel: 'Generează funcție liniară' },
+  fn_quadratic: { endpoint: '/api/admin/generate-function', typeParam: 'quadratic', defaultParams: JSON.stringify({ a: 1, b: -2, c: -3, show_grid: true, show_vertex: true, show_axis_of_symmetry: true, show_discriminant: true, show_x_intercepts: true, show_y_intercept: true }, null, 2), buttonLabel: 'Generează funcție pătratică' },
+  fn_power: { endpoint: '/api/admin/generate-function', typeParam: 'power', defaultParams: JSON.stringify({ exponent: 3, coefficient: 1, show_grid: true, show_equation: true }, null, 2), buttonLabel: 'Generează funcție putere' },
+  fn_radical: { endpoint: '/api/admin/generate-function', typeParam: 'radical', defaultParams: JSON.stringify({ index: 2, coefficient: 1, show_grid: true }, null, 2), buttonLabel: 'Generează radical' },
+  fn_exponential: { endpoint: '/api/admin/generate-function', typeParam: 'exponential', defaultParams: JSON.stringify({ base: 2, coefficient: 1, show_grid: true, show_asymptote: true, show_y_intercept: true, show_equation: true }, null, 2), buttonLabel: 'Generează exponențială' },
+  fn_logarithmic: { endpoint: '/api/admin/generate-function', typeParam: 'logarithmic', defaultParams: JSON.stringify({ base: 2, coefficient: 1, show_grid: true, show_asymptote: true, show_x_intercept: true, show_equation: true }, null, 2), buttonLabel: 'Generează logaritmică' },
+  fn_modulus: { endpoint: '/api/admin/generate-function', typeParam: 'modulus', defaultParams: JSON.stringify({ a: 1, b: -2, show_grid: true, show_breakpoint: true, show_equation: true }, null, 2), buttonLabel: 'Generează modul' },
+  fn_generic: { endpoint: '/api/admin/generate-function', typeParam: 'generic', defaultParams: JSON.stringify({ expression: 'x^3 - 3*x', domain: [-3, 3], show_grid: true }, null, 2), buttonLabel: 'Generează funcție' },
+  trig_sin: { endpoint: '/api/admin/generate-trig', typeParam: 'sin', defaultParams: JSON.stringify({ amplitude: 2, frequency: 1, phase: 0, vertical_shift: 0, show_period_marker: true, show_amplitude_lines: true, show_max_min_points: true, show_zeros: true }, null, 2), buttonLabel: 'Generează sin' },
+  trig_cos: { endpoint: '/api/admin/generate-trig', typeParam: 'cos', defaultParams: JSON.stringify({ amplitude: 1, frequency: 1, phase: 0, show_period_marker: true, show_amplitude_lines: true }, null, 2), buttonLabel: 'Generează cos' },
+  trig_tan: { endpoint: '/api/admin/generate-trig', typeParam: 'tan', defaultParams: JSON.stringify({ amplitude: 1, frequency: 1, show_asymptotes: true }, null, 2), buttonLabel: 'Generează tan' },
+  trig_cot: { endpoint: '/api/admin/generate-trig', typeParam: 'cot', defaultParams: JSON.stringify({ amplitude: 1, frequency: 1, show_asymptotes: true }, null, 2), buttonLabel: 'Generează cot' },
+  analysis_asymptotes: { endpoint: '/api/admin/generate-analysis', typeParam: 'asymptotes', defaultParams: JSON.stringify({ expression: '1/(x-2)', domain: [-2, 6], range: [-8, 8], asymptotes: [{ type: 'vertical', x: 2 }, { type: 'horizontal', y: 0 }] }, null, 2), buttonLabel: 'Generează asimptote' },
+  analysis_limit: { endpoint: '/api/admin/generate-analysis', typeParam: 'limit', defaultParams: JSON.stringify({ expression: 'sin(x)/x', approach_point: 0, domain: [-5, 5], show_approach_arrows: true }, null, 2), buttonLabel: 'Generează limită' },
+  analysis_tangent: { endpoint: '/api/admin/generate-analysis', typeParam: 'tangent', defaultParams: JSON.stringify({ expression: 'x^2', tangent_point: 1, domain: [-3, 4], show_slope_triangle: true, show_derivative_value: true }, null, 2), buttonLabel: 'Generează tangentă' },
+  analysis_monotonicity: { endpoint: '/api/admin/generate-analysis', typeParam: 'monotonicity', defaultParams: JSON.stringify({ expression: 'x^3 - 3*x', domain: [-3, 3], show_extrema: true, show_derivative: true }, null, 2), buttonLabel: 'Generează monotonie' },
+  analysis_integral: { endpoint: '/api/admin/generate-analysis', typeParam: 'integral', defaultParams: JSON.stringify({ expression: 'x^2', a: 0, b: 2, show_bounds: true, show_riemann: true, riemann_n: 8 }, null, 2), buttonLabel: 'Generează integrală' },
+  analysis_rotation_volume: { endpoint: '/api/admin/generate-analysis', typeParam: 'rotation_volume', defaultParams: JSON.stringify({ expression: 'sqrt(x)', a: 0, b: 4, show_washer: true, num_washers: 5 }, null, 2), buttonLabel: 'Generează volum rotație' },
+  prob_venn2: { endpoint: '/api/admin/generate-probability', typeParam: 'venn2', defaultParams: JSON.stringify({ sets: [{ label: 'A', count: 30 }, { label: 'B', count: 25 }], intersection: 10, universe: 60, show_counts: true, title: 'Diagrama Venn' }, null, 2), buttonLabel: 'Generează Venn 2' },
+  prob_venn3: { endpoint: '/api/admin/generate-probability', typeParam: 'venn3', defaultParams: JSON.stringify({ sets: [{ label: 'A', count: 20 }, { label: 'B', count: 22 }, { label: 'C', count: 18 }], intersections: { ab: 8, ac: 6, bc: 7, abc: 3 }, universe: 60, show_counts: true }, null, 2), buttonLabel: 'Generează Venn 3' },
+  prob_tree: { endpoint: '/api/admin/generate-probability', typeParam: 'tree', defaultParams: JSON.stringify({ root_label: 'S', branches: [{ label: 'A', probability: 0.6, children: [{ label: 'B', probability: 0.7 }, { label: '\\overline{B}', probability: 0.3 }] }, { label: '\\overline{A}', probability: 0.4, children: [{ label: 'B', probability: 0.2 }, { label: '\\overline{B}', probability: 0.8 }] }], show_final_probabilities: true }, null, 2), buttonLabel: 'Generează arbore' },
+  stat_histogram: { endpoint: '/api/admin/generate-statistics', typeParam: 'histogram', defaultParams: JSON.stringify({ intervals: [{ start: 0, end: 5, frequency: 4 }, { start: 5, end: 10, frequency: 12 }, { start: 10, end: 15, frequency: 18 }, { start: 15, end: 20, frequency: 9 }, { start: 20, end: 25, frequency: 3 }], title: 'Histogramă', show_frequency_labels: true }, null, 2), buttonLabel: 'Generează histogramă' },
+  stat_bar: { endpoint: '/api/admin/generate-statistics', typeParam: 'bar', defaultParams: JSON.stringify({ categories: ['Lun', 'Mar', 'Mie', 'Joi', 'Vin'], values: [5, 8, 12, 7, 10], title: 'Diagrama cu bare', show_value_labels: true }, null, 2), buttonLabel: 'Generează bare' },
+  stat_pie: { endpoint: '/api/admin/generate-statistics', typeParam: 'pie', defaultParams: JSON.stringify({ slices: [{ label: 'A', value: 40 }, { label: 'B', value: 30 }, { label: 'C', value: 20 }, { label: 'D', value: 10 }], title: 'Diagram circular', show_percentages: true }, null, 2), buttonLabel: 'Generează pie' },
+  stat_polygon: { endpoint: '/api/admin/generate-statistics', typeParam: 'frequency_polygon', defaultParams: JSON.stringify({ intervals: [{ start: 0, end: 10, frequency: 5 }, { start: 10, end: 20, frequency: 12 }, { start: 20, end: 30, frequency: 8 }, { start: 30, end: 40, frequency: 3 }], show_histogram: true, show_cumulative: true }, null, 2), buttonLabel: 'Generează poligon' },
+  complex_plane: { endpoint: '/api/admin/generate-complex', defaultParams: JSON.stringify({ numbers: [{ re: 3, im: 2, label: 'z_1' }, { re: -1, im: 3, label: 'z_2' }], show_modulus: true, show_argument: true, show_conjugate: true, show_sum: true }, null, 2), buttonLabel: 'Generează plan complex' },
+  trig_circle: { endpoint: '/api/admin/generate-trig', typeParam: 'trig_circle', defaultParams: JSON.stringify({ angle_deg: 60, show_special_angles: true, show_sin_projection: true, show_cos_projection: true, show_tan_line: false, show_angle_arc: true }, null, 2), buttonLabel: 'Generează cerc trig' },
+  trig_right_triangle: { endpoint: '/api/admin/generate-trig', typeParam: 'right_triangle', defaultParams: JSON.stringify({ angle_deg: 30, hypotenuse: 10, show_trig_ratios: true, show_angle_labels: true, show_side_labels: true }, null, 2), buttonLabel: 'Generează triunghi dreptunghic' },
+  trig_reduction: { endpoint: '/api/admin/generate-trig', typeParam: 'reduction', defaultParams: JSON.stringify({ angle_deg: 150, show_reference_angle: true, show_reduction_formula: true, show_quadrant_label: true }, null, 2), buttonLabel: 'Generează reducere unghi' },
+  spatial_projection: { endpoint: '/api/admin/generate-spatial', typeParam: 'projection', defaultParams: JSON.stringify({ width: 4, depth: 3, height: 3, point: { x: 2, y: 2, z: 2, label: 'P' }, project_onto: 'base', show_projection_lines: true }, null, 2), buttonLabel: 'Generează proiecție 3D' },
+  spatial_dihedral: { endpoint: '/api/admin/generate-spatial', typeParam: 'dihedral', defaultParams: JSON.stringify({ angle_deg: 60, edge_length: 3, show_perpendicular: true }, null, 2), buttonLabel: 'Generează unghi diedru' },
+  spatial_three_perp: { endpoint: '/api/admin/generate-spatial', typeParam: 'three_perp', defaultParams: JSON.stringify({ base_width: 5, base_depth: 4, height: 3, show_labels: true, show_right_angle_markers: true }, null, 2), buttonLabel: 'Generează 3 perpendiculare' },
+  transform_symmetry: { endpoint: '/api/admin/generate-transformation', typeParam: 'symmetry', defaultParams: JSON.stringify({ points: [{ x: 2, y: 3 }, { x: -1, y: 2 }, { x: 3, y: -1 }], axis: 'y', type: 'axial', show_grid: true }, null, 2), buttonLabel: 'Generează simetrie' },
+  transform_translation: { endpoint: '/api/admin/generate-transformation', typeParam: 'translation', defaultParams: JSON.stringify({ points: [{ x: 1, y: 2 }, { x: 3, y: 1 }, { x: 2, y: 4 }], vector: { dx: 2, dy: -3 }, show_grid: true }, null, 2), buttonLabel: 'Generează translație' },
+  transform_rotation: { endpoint: '/api/admin/generate-transformation', typeParam: 'rotation', defaultParams: JSON.stringify({ points: [{ x: 3, y: 0 }, { x: 0, y: 2 }], center: { x: 0, y: 0 }, angle_deg: 90, show_arcs: true, show_grid: true }, null, 2), buttonLabel: 'Generează rotație' },
+  transform_homothety: { endpoint: '/api/admin/generate-transformation', typeParam: 'homothety', defaultParams: JSON.stringify({ points: [{ x: 2, y: 1 }, { x: 4, y: 2 }, { x: 3, y: 4 }], center: { x: 0, y: 0 }, ratio: 2, show_lines: true, show_grid: true }, null, 2), buttonLabel: 'Generează omotetie' },
+};
+
+function GenericApiForm({ shapeKey, onResult }: { shapeKey: keyof typeof ETAPA5_CONFIGS; onResult: (svg: string, steps: ConstructionStep[]) => void }) {
+  const config = ETAPA5_CONFIGS[shapeKey];
+  const [paramsJson, setParamsJson] = useState(config.defaultParams);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handle() {
+    setLoading(true); setError('');
+    let params: Record<string, unknown>;
+    try { params = JSON.parse(paramsJson) as Record<string, unknown>; }
+    catch { setError('JSON invalid — verifică sintaxa'); setLoading(false); return; }
+
+    try {
+      const body = config.typeParam
+        ? { type: config.typeParam, params }
+        : params;
+
+      const res = await fetch(config.endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json() as { error?: string; svg?: string };
+      if (!res.ok) { setError(data.error ?? 'Eroare server'); setLoading(false); return; }
+      onResult(data.svg ?? '', []);
+    } catch (e) { setError(e instanceof Error ? e.message : 'Eroare rețea'); }
+    setLoading(false);
+  }
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-xs font-medium text-gray-600 mb-1">Parametri (JSON)</label>
+        <textarea
+          value={paramsJson}
+          onChange={(e) => setParamsJson(e.target.value)}
+          rows={14}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-xs font-mono resize-y"
+          spellCheck={false}
+        />
+      </div>
+      <div className="text-xs text-gray-400">
+        Endpoint: <code className="bg-gray-100 px-1 rounded">{config.endpoint}</code>
+        {config.typeParam && <> · type: <code className="bg-gray-100 px-1 rounded">{config.typeParam}</code></>}
+      </div>
+      {error && <p className="text-xs text-red-600">{error}</p>}
+      <button onClick={handle} disabled={loading}
+        className="w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 text-white rounded-md font-semibold text-sm">
+        {loading ? 'Se generează...' : config.buttonLabel}
+      </button>
+    </div>
+  );
+}
+
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function TestConstructionPage() {
@@ -975,6 +1169,10 @@ export default function TestConstructionPage() {
           )}
           {(shape === 'triangle_midsegments' || shape === 'triangle_perp_bisectors' || shape === 'triangle_centroid') && (
             <TriangleExtForm extType={shape} onResult={handleResult} />
+          )}
+          {/* ETAPA 5 — all new calculators via generic form */}
+          {(shape in ETAPA5_CONFIGS) && (
+            <GenericApiForm shapeKey={shape as keyof typeof ETAPA5_CONFIGS} onResult={handleResult} />
           )}
         </div>
 
