@@ -15,7 +15,7 @@ const IS_DEV = process.env.NODE_ENV === "development";
 
 const RAG_DIRECT_THRESHOLD = 0.85;
 const RAG_CONTEXT_THRESHOLD = 0.65;
-const METHOD_THRESHOLD = 0.55;
+const METHOD_THRESHOLD = 0.45; // relaxat: 0.55 → 0.45 pentru match-uri mai dese
 
 interface RagMatch {
   id: string;

@@ -66,7 +66,7 @@ export async function findRelevantMethods(
   options: FindMethodsOptions = {}
 ): Promise<SolutionMethod[]> {
   const {
-    threshold = 0.55,
+    threshold = 0.45,
     limit = 2,
     grade = null,
     topic = null,
