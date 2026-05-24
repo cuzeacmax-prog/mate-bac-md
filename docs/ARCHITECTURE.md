@@ -15,15 +15,18 @@
 
 ## Fluxuri principale
 
-### 1. Chat cu RAG
+### 1. Chat cu RAG + Metode BAC MD (ETAPA 6)
 ```
 User → POST /api/chat
   → Auth + rate limit
   → Gemini embed query (1536d, free tier)
-  → match_exercises RPC (cosine similarity)
+  → match_exercises RPC (cosine similarity) — bibliotecă exerciții
     → similarity ≥ 0.85: răspuns direct din bibliotecă (zero AI cost)
-    → 0.65–0.85: injectare context în prompt Sonnet
-    → < 0.65: apel Sonnet normal + log gap_analysis
+    → 0.65–0.85: injectare context în prompt
+    → < 0.65: prompt normal + log gap_analysis
+  → match_solution_methods RPC (threshold 0.55) — metode pedagogice MD
+    → dacă găsit: injectare pași + notații BAC MD în system prompt
+    → backwards-compat: dacă tabela nu există → ignorat transparent
   → SSE stream înapoi la client
 ```
 
@@ -57,14 +60,17 @@ src/
       admin/
         generate-*/   → API-uri geometrie (Triangle, Circle, etc.)
         library/      → CRUD bibliotecă
+        methodologies/ → CRUD metode pedagogice (ETAPA 6)
       search/
         library/      → RAG search endpoint
+        methods/      → Semantic search metode BAC MD (ETAPA 6)
     admin/
       health/         → System health dashboard
       library/
         review/       → Review UI
         preview/      → Compilare vizuală variații
       test-construction/ → Testare interactivă forme geometrice
+      methodologies/  → CRUD metode de rezolvare BAC MD (ETAPA 6)
   lib/
     geometry/         → Calculatoare TypeScript (11 module)
     embeddings/       → Gemini embedding helper
@@ -76,6 +82,7 @@ scripts/
   library/            → batch-generate-all, variation-matrices, test-embedding
   db/                 → apply-rpc (instrucțiuni migrare)
   backup/             → export/import JSON
+  seed/               → methodologies-seed.ts (30 metode BAC MD, rulat manual)
 
 supabase/
   migrations/         → Schema SQL (aplicat în ordine timestamp)

@@ -10,6 +10,7 @@ const IS_DEV = process.env.NODE_ENV === "development";
 
 const RAG_DIRECT_THRESHOLD = 0.85;
 const RAG_CONTEXT_THRESHOLD = 0.65;
+const METHOD_THRESHOLD = 0.55;
 
 interface RagMatch {
   id: string;
@@ -20,6 +21,22 @@ interface RagMatch {
   similarity: number;
   svg_static: string | null;
   tags: string[];
+}
+
+interface MethodMatch {
+  id: string;
+  exercise_type: string;
+  exercise_type_label: string;
+  method_name: string;
+  description: string | null;
+  steps: Array<{ step: number; title: string; content?: string; formula?: string }>;
+  notation_rules: Record<string, string>;
+  examples: unknown[];
+  common_mistakes: Array<{ mistake: string; correction: string }>;
+  grade_level: number;
+  topic: string;
+  importance_score: number;
+  similarity: number;
 }
 
 function serverError(label: string, err: unknown): NextResponse {
@@ -45,6 +62,34 @@ async function lookupLibrary(message: string): Promise<{ match: RagMatch | null;
     return { match, embedding };
   } catch {
     return { match: null, embedding: null };
+  }
+}
+
+/**
+ * Caută cea mai relevantă metodă de rezolvare BAC MD.
+ * Non-blocking — returnează null dacă tabela nu există sau dacă embedding-ul e null.
+ * Backwards-compat: fallback transparent dacă solution_methods nu e populat.
+ */
+async function findRelevantMethod(embedding: number[] | null): Promise<MethodMatch | null> {
+  if (!embedding) return null;
+  try {
+    const service = createServiceClient();
+    const { data, error } = await service.rpc("match_solution_methods", {
+      query_embedding: embedding,
+      match_threshold: METHOD_THRESHOLD,
+      match_count: 1,
+    });
+    if (error) {
+      // Tabela poate să nu existe încă (înainte de migrare) — nu logăm ca eroare
+      if (error.message?.includes("does not exist") || error.message?.includes("function")) {
+        return null;
+      }
+      console.warn("[chat/route] match_solution_methods warning:", error.message);
+      return null;
+    }
+    return data && data.length > 0 ? (data[0] as MethodMatch) : null;
+  } catch {
+    return null;
   }
 }
 
@@ -125,6 +170,9 @@ export async function POST(req: NextRequest) {
   const isDirectMatch = ragMatch !== null && ragMatch.similarity >= RAG_DIRECT_THRESHOLD;
   const isContextMatch = ragMatch !== null && ragMatch.similarity >= RAG_CONTEXT_THRESHOLD && !isDirectMatch;
 
+  // ── Metodă de rezolvare BAC MD (backwards-compat — null dacă tabela nu există) ──
+  const methodMatch = await findRelevantMethod(queryEmbedding);
+
   // ── Conversation create or load ─────────────────────────────────
   let convId: string = conversationId ?? "";
   if (!convId) {
@@ -169,10 +217,35 @@ export async function POST(req: NextRequest) {
     return serverError("user message insert", userMsgErr);
   }
 
-  // ── System prompt — inject RAG context if partial match ─────────
-  const systemPrompt = isContextMatch && ragMatch
-    ? `${SYSTEM_PROMPT_V1}\n\n---\nContext relevant din biblioteca de exerciții (similaritate ${(ragMatch.similarity * 100).toFixed(0)}%):\nExercițiu: ${ragMatch.statement}\nSoluție: ${ragMatch.solution}`
-    : SYSTEM_PROMPT_V1;
+  // ── System prompt — inject RAG context + metodă BAC MD ──────────
+  let systemPrompt = SYSTEM_PROMPT_V1;
+
+  // Injectează metoda de rezolvare dacă există
+  if (methodMatch) {
+    const stepsText = methodMatch.steps
+      .map(s => {
+        let line = `  ${s.step}. ${s.title}`;
+        if (s.content) line += `: ${s.content}`;
+        if (s.formula) line += ` [${s.formula}]`;
+        return line;
+      })
+      .join('\n');
+
+    const notationText = Object.entries(methodMatch.notation_rules ?? {})
+      .map(([k, v]) => `  ${k}: ${v}`)
+      .join('\n');
+
+    const mistakesText = (methodMatch.common_mistakes ?? [])
+      .map(m => `  ⚠️ ${m.mistake} → ${m.correction}`)
+      .join('\n');
+
+    systemPrompt += `\n\n---\n**Metodă BAC MD detectată** (${methodMatch.exercise_type_label}, similaritate ${(methodMatch.similarity * 100).toFixed(0)}%):\n**${methodMatch.method_name}**\n${methodMatch.description ? `\n${methodMatch.description}\n` : ''}\nEtape obligatorii:\n${stepsText}${notationText ? `\n\nNotații BAC MD:\n${notationText}` : ''}${mistakesText ? `\n\nGreșeli frecvente de evitat:\n${mistakesText}` : ''}\n\nUrmează EXACT aceste etape în ordinea specificată. Respectă notațiile BAC MD.`;
+  }
+
+  // Injectează exercițiu similar dacă există (context match)
+  if (isContextMatch && ragMatch) {
+    systemPrompt += `\n\n---\nContext relevant din biblioteca de exerciții (similaritate ${(ragMatch.similarity * 100).toFixed(0)}%):\nExercițiu: ${ragMatch.statement}\nSoluție: ${ragMatch.solution}`;
+  }
 
   // ── SSE stream ─────────────────────────────────────────────────
   const encoder = new TextEncoder();
@@ -200,6 +273,9 @@ export async function POST(req: NextRequest) {
         try {
           if (isContextMatch) {
             console.log(`[chat/route] RAG context match (similarity=${ragMatch!.similarity.toFixed(3)}) — context injected`);
+          }
+          if (methodMatch) {
+            console.log(`[chat/route] Method match: ${methodMatch.method_name} (similarity=${methodMatch.similarity.toFixed(3)})`);
           }
 
           const result = await callAIStream(
