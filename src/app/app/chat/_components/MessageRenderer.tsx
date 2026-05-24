@@ -98,11 +98,31 @@ export function MessageRenderer({ content, isStreaming }: Props) {
     ),
   };
 
+  // KaTeX options — throwOnError:false prevents raw LaTeX from leaking when formula fails
+  const katexOptions = {
+    throwOnError: false,
+    strict: false,
+    trust: false,
+    macros: {
+      '\\R': '\\mathbb{R}',
+      '\\N': '\\mathbb{N}',
+      '\\Z': '\\mathbb{Z}',
+      '\\Q': '\\mathbb{Q}',
+    },
+  };
+
   return (
-    <div className="prose prose-sm dark:prose-invert max-w-none break-words [&_.katex-display]:overflow-x-auto">
+    <div className={[
+      "prose prose-sm dark:prose-invert max-w-none break-words",
+      "[&_.katex-display]:overflow-x-auto",
+      // Markdown table styles (variation tables, etc.)
+      "[&_table]:border-collapse [&_table]:w-full [&_table]:text-sm [&_table]:my-3",
+      "[&_th]:border [&_th]:border-border [&_th]:bg-muted [&_th]:px-3 [&_th]:py-1.5 [&_th]:text-center",
+      "[&_td]:border [&_td]:border-border [&_td]:px-3 [&_td]:py-1.5 [&_td]:text-center",
+    ].join(" ")}>
       <ReactMarkdown
         remarkPlugins={[remarkMath]}
-        rehypePlugins={[rehypeKatex]}
+        rehypePlugins={[[rehypeKatex, katexOptions]]}
         components={components}
       >
         {content}

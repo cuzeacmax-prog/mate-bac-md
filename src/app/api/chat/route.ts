@@ -308,14 +308,17 @@ export async function POST(req: NextRequest) {
               let exText = '';
               for await (const event of exResult.fullStream) {
                 if (event.type === 'text-delta') {
-                  exText += event.text;
-                  assistantText += event.text;
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: event.text })}\n\n`));
+                  // Guard: ensure we have a real string — SDK may surprise at runtime
+                  const chunk = event.text;
+                  if (typeof chunk !== 'string') continue;
+                  exText += chunk;
+                  assistantText += chunk;
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: chunk })}\n\n`));
                 }
                 if (event.type === 'tool-result') {
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  const out = (event as any).output;
-                  if (out?.svg) allSvgs.push(out.svg as string);
+                  const out = (event as any).output as Record<string, unknown> | undefined;
+                  if (typeof out?.svg === 'string' && out.svg) allSvgs.push(out.svg);
                 }
               }
 
@@ -365,15 +368,19 @@ export async function POST(req: NextRequest) {
               // Use fullStream to capture both text and tool results
               for await (const event of result.fullStream) {
                 if (event.type === 'text-delta') {
-                  assistantText += event.text;
+                  // Guard: ensure we have a real string — SDK may surprise at runtime
+                  const chunk = event.text;
+                  if (typeof chunk !== 'string') continue;
+                  assistantText += chunk;
                   chunkCount++;
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: event.text })}\n\n`));
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: chunk })}\n\n`));
                 }
                 if (event.type === 'tool-result') {
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  const out = (event as any).output;
-                  if (out?.svg) {
-                    svgOutputs.push(out.svg as string);
+                  const out = (event as any).output as Record<string, unknown> | undefined;
+                  if (typeof out?.svg === 'string' && out.svg) {
+                    svgOutputs.push(out.svg);
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     console.log(`[chat/route] SVG collected from tool: ${(event as any).toolName}`);
                   }
                 }

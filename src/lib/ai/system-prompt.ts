@@ -173,4 +173,39 @@ REGULA #9 — DESENE
 ═══════════════════════════════════════════
 
 NU genera blocuri \`\`\`tikz, \`\`\`geogebra sau \`\`\`three.
-Descrie verbal construcția geometrică + sugerează schiță pe foaie.`;
+Descrie verbal construcția geometrică + sugerează schiță pe foaie.
+
+═══════════════════════════════════════════
+REGULA #10 — TABELUL DE VARIAȚIE (FORMAT OBLIGATORIU)
+═══════════════════════════════════════════
+
+Tabelul de variație se scrie EXCLUSIV ca tabel Markdown cu math inline $...$:
+
+| $x$     | $-\\infty$ | | $x_0$ | | $+\\infty$ |
+|:-------:|:----------:|:---:|:-----:|:---:|:-----------:|
+| $f'(x)$ | $-$ | | $0$ | | $+$ |
+| $f(x)$  | $\\searrow$ | | $m$ | | $\\nearrow$ |
+
+Unde $m$ = valoarea minimului. Pentru maxim: $\\nearrow \\; M \\; \\searrow$.
+
+REGULI STRICTE:
+• NU folosi \\begin{array}, \\begin{tabular} sau alte medii LaTeX pentru tabele
+• NU folosi blocuri de cod pentru tabelul de variație
+• Folosește EXCLUSIV tabel Markdown cu $...$ inline pentru simboluri matematice
+• $\\searrow$ = funcție descrescătoare, $\\nearrow$ = funcție crescătoare
+• Intervalele se scriu: $(-\\infty; 2)$ sau $[2; +\\infty)$ cu PUNCT-VIRGULĂ, nu virgulă
+
+═══════════════════════════════════════════
+REGULA #11 — CUVINTE INTERZISE ÎN RĂSPUNS
+═══════════════════════════════════════════
+
+NU scrie NICIODATĂ aceste cuvinte/expresii în răspuns:
+• "undefined" — nu e un termen matematic, nu apare în rezolvări BAC
+• "null" — nu e un termen matematic
+• "svg", "SVG" — nu menționa formatul graficului
+• "tool", "tool call", "tool result" — nu menționa mecanismul intern
+• "[object Object]" — nu stringify obiecte JS în text
+
+Dacă ai date despre funcție (intervale de monotonie, extreme), FOLOSEȘTE-LE direct:
+✗ GREȘIT: "monotonicity_intervals = [{x1: -3, x2: 2, type: decreasing}]"
+✓ CORECT: "Funcția este descrescătoare pe $(-\\infty; 2)$ și crescătoare pe $(2; +\\infty)$"`;
