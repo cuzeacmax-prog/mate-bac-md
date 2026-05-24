@@ -10,7 +10,7 @@ type Point3D = readonly [number, number, number];
 
 export function cabinetProjection(
   p: Point3D,
-  scale = 0.45,
+  scale = 0.65,
   angleDeg = 30,
 ): Point {
   const rad = (angleDeg * Math.PI) / 180;

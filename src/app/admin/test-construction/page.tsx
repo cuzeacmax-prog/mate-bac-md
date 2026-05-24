@@ -30,10 +30,6 @@ type ShapeType =
   | 'oblique_prism'
   | 'cube_all_diagonals'
   | 'sphere_with_circles'
-  // Triunghi extins
-  | 'triangle_midsegments'
-  | 'triangle_perp_bisectors'
-  | 'triangle_centroid'
   // ── ETAPA 5 ──────────────────────────────────
   // Funcții elementare
   | 'fn_linear'
@@ -107,10 +103,6 @@ const SHAPE_OPTIONS: Array<{ value: ShapeType; label: string }> = [
   { value: 'oblique_prism', label: 'Prismă oblică' },
   { value: 'cube_all_diagonals', label: 'Cub cu toate diagonalele' },
   { value: 'sphere_with_circles', label: 'Sferă cu cerc mare + mic' },
-  // Triunghi extins
-  { value: 'triangle_midsegments', label: 'Triunghi — linii mijlocii' },
-  { value: 'triangle_perp_bisectors', label: 'Triunghi — mediatoare' },
-  { value: 'triangle_centroid', label: 'Triunghi — centru de greutate G' },
   // ── ETAPA 5 ──────────────────────────────────
   // Funcții elementare
   { value: 'fn_linear', label: '📈 Funcție liniară y=ax+b' },
@@ -164,7 +156,19 @@ type SideLabelFormat = 'value_only' | 'name_value' | 'name_only';
 
 // ─── Triangle form state ──────────────────────────────────────────────────────
 
+type TrianglePreset = 'custom' | 'right_3_4_5' | 'right_5_12_13' | 'equilateral' | 'isosceles' | 'obtuse';
+
+const TRIANGLE_PRESETS: Array<{ value: TrianglePreset; label: string; a: string; b: string; c: string }> = [
+  { value: 'custom',        label: '✏️ Personalizat',        a: '5',  b: '4',  c: '3'  },
+  { value: 'right_3_4_5',   label: '📐 Dreptunghic 3-4-5',  a: '5',  b: '4',  c: '3'  },
+  { value: 'right_5_12_13', label: '📐 Dreptunghic 5-12-13',a: '13', b: '12', c: '5'  },
+  { value: 'equilateral',   label: '△ Echilateral (5-5-5)',  a: '5',  b: '5',  c: '5'  },
+  { value: 'isosceles',     label: '△ Isoscel (4-4-6)',      a: '6',  b: '4',  c: '4'  },
+  { value: 'obtuse',        label: '△ Obtuzunghic (7-5-3)',  a: '7',  b: '5',  c: '3'  },
+];
+
 function TriangleForm({ onResult }: { onResult: (svg: string, steps: ConstructionStep[]) => void }) {
+  const [preset, setPreset] = useState<TrianglePreset>('right_3_4_5');
   const [a, setA] = useState('5');
   const [b, setB] = useState('4');
   const [c, setC] = useState('3');
@@ -183,10 +187,21 @@ function TriangleForm({ onResult }: { onResult: (svg: string, steps: Constructio
   const [bisectorFrom, setBisectorFrom] = useState<Vertex>('');
   const [medianFrom, setMedianFrom] = useState<Vertex>('');
   const [altitudeFrom, setAltitudeFrom] = useState<Vertex>('');
+  // ─── Elemente avansate unificate ────────────────────────────────────────────
+  const [showMidsegments, setShowMidsegments] = useState(false);
+  const [showPerpBisectors, setShowPerpBisectors] = useState(false);
+  const [showCentroid, setShowCentroid] = useState(false);
+  // ────────────────────────────────────────────────────────────────────────────
   const [customLabelsJson, setCustomLabelsJson] = useState('');
   const [angleLabelsJson, setAngleLabelsJson] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  function applyPreset(p: TrianglePreset) {
+    setPreset(p);
+    const found = TRIANGLE_PRESETS.find((x) => x.value === p);
+    if (found && p !== 'custom') { setA(found.a); setB(found.b); setC(found.c); }
+  }
 
   const vertexOptions: Array<{ value: Vertex; label: string }> = [
     { value: '', label: '— Niciuna —' },
@@ -227,6 +242,9 @@ function TriangleForm({ onResult }: { onResult: (svg: string, steps: Constructio
             show_incircle: showIncircle, show_circumcircle: showCircumcircle,
             show_angle_values: showAngleValues,
             constructions: constructions.length > 0 ? constructions : undefined,
+            show_midsegments: showMidsegments || undefined,
+            show_perpendicular_bisectors: showPerpBisectors || undefined,
+            show_centroid: showCentroid || undefined,
             custom_labels: customLabels, angle_labels: angleLabels,
           },
         }),
@@ -243,6 +261,14 @@ function TriangleForm({ onResult }: { onResult: (svg: string, steps: Constructio
 
   return (
     <div className="space-y-5">
+      {/* ── TASK 5: Preset triunghi ──────────────────────────────── */}
+      <div>
+        <label className="block text-xs font-medium text-gray-600 mb-1">Tip triunghi (preset)</label>
+        <select value={preset} onChange={(e) => applyPreset(e.target.value as TrianglePreset)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+          {TRIANGLE_PRESETS.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
+        </select>
+      </div>
       <div>
         <h3 className="text-sm font-semibold text-gray-700 mb-2">Laturi (opțional)</h3>
         <div className="grid grid-cols-3 gap-3">
@@ -299,8 +325,26 @@ function TriangleForm({ onResult }: { onResult: (svg: string, steps: Constructio
         </div>
       </div>
 
+      {/* ── TASK 2: Elemente avansate unificate ─────────────────── */}
       <div>
-        <h3 className="text-sm font-semibold text-gray-700 mb-2">Construcții</h3>
+        <h3 className="text-sm font-semibold text-gray-700 mb-2">🔺 Elemente avansate</h3>
+        <div className="space-y-1.5">
+          {[
+            { l: 'Linii mijlocii (triunghi median)', c: showMidsegments, s: setShowMidsegments },
+            { l: 'Mediatoare (circumcentru O)', c: showPerpBisectors, s: setShowPerpBisectors },
+            { l: 'Centru de greutate G', c: showCentroid, s: setShowCentroid },
+          ].map(({ l, c, s }) => (
+            <label key={l} className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked={c} onChange={(e) => s(e.target.checked)} className="rounded" />
+              <span className="text-sm text-gray-700">{l}</span>
+            </label>
+          ))}
+        </div>
+        <p className="text-xs text-gray-400 mt-1">Bisectoare/mediane/înălțimi pe vertex — în secțiunea &quot;Construcții&quot; de mai jos</p>
+      </div>
+
+      <div>
+        <h3 className="text-sm font-semibold text-gray-700 mb-2">Construcții (per vertex)</h3>
         <div className="grid grid-cols-3 gap-3">
           {[{ l: 'Bisectoare', v: bisectorFrom, s: setBisectorFrom }, { l: 'Mediana', v: medianFrom, s: setMedianFrom }, { l: 'Înălțimea', v: altitudeFrom, s: setAltitudeFrom }].map(({ l, v, s }) => (
             <div key={l}>
@@ -969,45 +1013,300 @@ function SpecialShapeForm({ shapeType, onResult }: { shapeType: ShapeType; onRes
   );
 }
 
-// ─── Triangle extension form ───────────────────────────────────────────────────
+// ─── ETAPA 5 Visual forms (P1 priority) ─────────────────────────────────────
 
-function TriangleExtForm({ extType, onResult }: { extType: ShapeType; onResult: (svg: string, steps: ConstructionStep[]) => void }) {
-  const [a, setA] = useState('5');
-  const [b, setB] = useState('7');
-  const [c, setC] = useState('8');
+function FnLinearForm({ onResult }: { onResult: (svg: string, steps: ConstructionStep[]) => void }) {
+  const [slope, setSlope] = useState('2');
+  const [intercept, setIntercept] = useState('-1');
+  const [xMin, setXMin] = useState('-4');
+  const [xMax, setXMax] = useState('4');
+  const [showGrid, setShowGrid] = useState(true);
+  const [showSlope, setShowSlope] = useState(true);
+  const [showIntercepts, setShowIntercepts] = useState(true);
+  const [showEq, setShowEq] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
   async function handle() {
     setLoading(true); setError('');
-    const base = { a: parseFloat(a), b: parseFloat(b), c: parseFloat(c), show_sides: true, show_vertices: true };
-    let input: Record<string, unknown> = { ...base };
-    if (extType === 'triangle_midsegments') input = { ...base, show_midsegments: true };
-    else if (extType === 'triangle_perp_bisectors') input = { ...base, show_perpendicular_bisectors: true };
-    else input = { ...base, show_centroid: true, constructions: [{ type: 'median', from: 'A' }, { type: 'median', from: 'B' }, { type: 'median', from: 'C' }] };
-
     try {
-      const res = await fetch('/api/admin/generate-advanced', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ shape: 'triangle', input }) });
-      const data = await res.json();
-      if (!res.ok) { setError(data.error || 'Eroare'); setLoading(false); return; }
-      const steps: ConstructionStep[] = (data.construction_steps ?? []).filter((s: { svg: string | null }) => !!s.svg).map((s: ConstructionStep) => s);
-      onResult(data.svg || '', steps);
+      const res = await fetch('/api/admin/generate-function', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'linear', params: { a: parseFloat(slope), b: parseFloat(intercept), domain: [parseFloat(xMin), parseFloat(xMax)], show_grid: showGrid, show_slope_triangle: showSlope, show_intercepts: showIntercepts, show_equation: showEq } }) });
+      const data = await res.json() as { error?: string; svg?: string };
+      if (!res.ok) { setError(data.error ?? 'Eroare'); setLoading(false); return; }
+      onResult(data.svg ?? '', []);
     } catch (e) { setError(e instanceof Error ? e.message : 'Eroare'); }
     setLoading(false);
   }
-
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-3">
-        {[{ l: 'a (BC)', v: a, s: setA }, { l: 'b (CA)', v: b, s: setB }, { l: 'c (AB)', v: c, s: setC }].map(({ l, v, s }) => (
-          <div key={l}><label className="block text-xs font-medium text-gray-600 mb-1">{l}</label>
-            <input type="number" step="0.5" min="0.5" value={v} onChange={(e) => s(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+      <div className="grid grid-cols-2 gap-3">
+        <div><label className="block text-xs font-medium text-gray-600 mb-1">Panta a</label>
+          <input type="number" step="0.5" value={slope} onChange={(e) => setSlope(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+        <div><label className="block text-xs font-medium text-gray-600 mb-1">Termenul liber b</label>
+          <input type="number" step="0.5" value={intercept} onChange={(e) => setIntercept(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+        <div><label className="block text-xs font-medium text-gray-600 mb-1">x min</label>
+          <input type="number" step="1" value={xMin} onChange={(e) => setXMin(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+        <div><label className="block text-xs font-medium text-gray-600 mb-1">x max</label>
+          <input type="number" step="1" value={xMax} onChange={(e) => setXMax(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+      </div>
+      <div className="space-y-1.5">
+        {[{ l: 'Grilă', c: showGrid, s: setShowGrid }, { l: 'Triunghi pantă', c: showSlope, s: setShowSlope }, { l: 'Intercepții', c: showIntercepts, s: setShowIntercepts }, { l: 'Ecuația pe grafic', c: showEq, s: setShowEq }].map(({ l, c, s }) => (
+          <label key={l} className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={c} onChange={(e) => s(e.target.checked)} /><span className="text-sm text-gray-700">{l}</span></label>
         ))}
       </div>
       {error && <p className="text-xs text-red-600">{error}</p>}
-      <button onClick={handle} disabled={loading} className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-md font-semibold text-sm">
-        {loading ? 'Se generează...' : 'Generează'}
-      </button>
+      <button onClick={handle} disabled={loading} className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-md font-semibold text-sm">{loading ? 'Se generează...' : 'Generează funcție liniară'}</button>
+    </div>
+  );
+}
+
+function FnQuadraticForm({ onResult }: { onResult: (svg: string, steps: ConstructionStep[]) => void }) {
+  const [a, setA] = useState('1');
+  const [b, setB] = useState('-2');
+  const [c, setC] = useState('-3');
+  const [xMin, setXMin] = useState('-5');
+  const [xMax, setXMax] = useState('5');
+  const [showGrid, setShowGrid] = useState(true);
+  const [showVertex, setShowVertex] = useState(true);
+  const [showAxis, setShowAxis] = useState(true);
+  const [showDisc, setShowDisc] = useState(true);
+  const [showXInt, setShowXInt] = useState(true);
+  const [showYInt, setShowYInt] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  async function handle() {
+    setLoading(true); setError('');
+    try {
+      const res = await fetch('/api/admin/generate-function', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'quadratic', params: { a: parseFloat(a), b: parseFloat(b), c: parseFloat(c), domain: [parseFloat(xMin), parseFloat(xMax)], show_grid: showGrid, show_vertex: showVertex, show_axis_of_symmetry: showAxis, show_discriminant: showDisc, show_x_intercepts: showXInt, show_y_intercept: showYInt } }) });
+      const data = await res.json() as { error?: string; svg?: string };
+      if (!res.ok) { setError(data.error ?? 'Eroare'); setLoading(false); return; }
+      onResult(data.svg ?? '', []);
+    } catch (e) { setError(e instanceof Error ? e.message : 'Eroare'); }
+    setLoading(false);
+  }
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-3 gap-3">
+        {[{ l: 'a (≠0)', v: a, s: setA }, { l: 'b', v: b, s: setB }, { l: 'c', v: c, s: setC }].map(({ l, v, s }) => (
+          <div key={l}><label className="block text-xs font-medium text-gray-600 mb-1">{l}</label>
+            <input type="number" step="0.5" value={v} onChange={(e) => s(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+        ))}
+        {[{ l: 'x min', v: xMin, s: setXMin }, { l: 'x max', v: xMax, s: setXMax }].map(({ l, v, s }) => (
+          <div key={l}><label className="block text-xs font-medium text-gray-600 mb-1">{l}</label>
+            <input type="number" step="1" value={v} onChange={(e) => s(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+        ))}
+      </div>
+      <div className="grid grid-cols-2 gap-1.5">
+        {[{ l: 'Grilă', c: showGrid, s: setShowGrid }, { l: 'Vârful V', c: showVertex, s: setShowVertex }, { l: 'Ax simetrie', c: showAxis, s: setShowAxis }, { l: 'Discriminant Δ', c: showDisc, s: setShowDisc }, { l: 'Rădăcini x', c: showXInt, s: setShowXInt }, { l: 'Intercepție y', c: showYInt, s: setShowYInt }].map(({ l, c, s }) => (
+          <label key={l} className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={c} onChange={(e) => s(e.target.checked)} /><span className="text-sm text-gray-700">{l}</span></label>
+        ))}
+      </div>
+      {error && <p className="text-xs text-red-600">{error}</p>}
+      <button onClick={handle} disabled={loading} className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-md font-semibold text-sm">{loading ? 'Se generează...' : 'Generează funcție pătratică'}</button>
+    </div>
+  );
+}
+
+function FnExponentialForm({ onResult }: { onResult: (svg: string, steps: ConstructionStep[]) => void }) {
+  const [base, setBase] = useState('2');
+  const [coef, setCoef] = useState('1');
+  const [showAsym, setShowAsym] = useState(true);
+  const [showYInt, setShowYInt] = useState(true);
+  const [showEq, setShowEq] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  async function handle() {
+    setLoading(true); setError('');
+    try {
+      const res = await fetch('/api/admin/generate-function', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'exponential', params: { base: base === 'e' ? Math.E : parseFloat(base), coefficient: parseFloat(coef), show_grid: true, show_asymptote: showAsym, show_y_intercept: showYInt, show_equation: showEq } }) });
+      const data = await res.json() as { error?: string; svg?: string };
+      if (!res.ok) { setError(data.error ?? 'Eroare'); setLoading(false); return; }
+      onResult(data.svg ?? '', []);
+    } catch (e) { setError(e instanceof Error ? e.message : 'Eroare'); }
+    setLoading(false);
+  }
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3">
+        <div><label className="block text-xs font-medium text-gray-600 mb-1">Baza a (a&gt;0, a≠1)</label>
+          <select value={base} onChange={(e) => setBase(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+            {['0.5', '0.25', '2', '3', 'e', '10'].map((v) => <option key={v} value={v}>{v}</option>)}
+          </select></div>
+        <div><label className="block text-xs font-medium text-gray-600 mb-1">Coeficient k</label>
+          <input type="number" step="0.5" value={coef} onChange={(e) => setCoef(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+      </div>
+      <div className="space-y-1.5">
+        {[{ l: 'Asimptota y=0', c: showAsym, s: setShowAsym }, { l: 'Punct (0,k)', c: showYInt, s: setShowYInt }, { l: 'Ecuația', c: showEq, s: setShowEq }].map(({ l, c, s }) => (
+          <label key={l} className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={c} onChange={(e) => s(e.target.checked)} /><span className="text-sm text-gray-700">{l}</span></label>
+        ))}
+      </div>
+      {error && <p className="text-xs text-red-600">{error}</p>}
+      <button onClick={handle} disabled={loading} className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-md font-semibold text-sm">{loading ? 'Se generează...' : 'Generează exponențială'}</button>
+    </div>
+  );
+}
+
+function FnLogarithmicForm({ onResult }: { onResult: (svg: string, steps: ConstructionStep[]) => void }) {
+  const [base, setBase] = useState('2');
+  const [coef, setCoef] = useState('1');
+  const [showAsym, setShowAsym] = useState(true);
+  const [showXInt, setShowXInt] = useState(true);
+  const [showEq, setShowEq] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  async function handle() {
+    setLoading(true); setError('');
+    try {
+      const res = await fetch('/api/admin/generate-function', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'logarithmic', params: { base: base === 'e' ? Math.E : parseFloat(base), coefficient: parseFloat(coef), show_grid: true, show_asymptote: showAsym, show_x_intercept: showXInt, show_equation: showEq } }) });
+      const data = await res.json() as { error?: string; svg?: string };
+      if (!res.ok) { setError(data.error ?? 'Eroare'); setLoading(false); return; }
+      onResult(data.svg ?? '', []);
+    } catch (e) { setError(e instanceof Error ? e.message : 'Eroare'); }
+    setLoading(false);
+  }
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3">
+        <div><label className="block text-xs font-medium text-gray-600 mb-1">Baza a</label>
+          <select value={base} onChange={(e) => setBase(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+            {['0.5', '2', '3', 'e', '10'].map((v) => <option key={v} value={v}>{v}</option>)}
+          </select></div>
+        <div><label className="block text-xs font-medium text-gray-600 mb-1">Coeficient k</label>
+          <input type="number" step="0.5" value={coef} onChange={(e) => setCoef(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+      </div>
+      <div className="space-y-1.5">
+        {[{ l: 'Asimptota x=0', c: showAsym, s: setShowAsym }, { l: 'Punct (1,0)', c: showXInt, s: setShowXInt }, { l: 'Ecuația', c: showEq, s: setShowEq }].map(({ l, c, s }) => (
+          <label key={l} className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={c} onChange={(e) => s(e.target.checked)} /><span className="text-sm text-gray-700">{l}</span></label>
+        ))}
+      </div>
+      {error && <p className="text-xs text-red-600">{error}</p>}
+      <button onClick={handle} disabled={loading} className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-md font-semibold text-sm">{loading ? 'Se generează...' : 'Generează logaritmică'}</button>
+    </div>
+  );
+}
+
+function FnModulusForm({ onResult }: { onResult: (svg: string, steps: ConstructionStep[]) => void }) {
+  const [a, setA] = useState('1');
+  const [b, setB] = useState('-2');
+  const [showBreak, setShowBreak] = useState(true);
+  const [showPiecewise, setShowPiecewise] = useState(false);
+  const [showEq, setShowEq] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  async function handle() {
+    setLoading(true); setError('');
+    try {
+      const res = await fetch('/api/admin/generate-function', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'modulus', params: { a: parseFloat(a), b: parseFloat(b), show_grid: true, show_breakpoint: showBreak, show_piecewise_labels: showPiecewise, show_equation: showEq } }) });
+      const data = await res.json() as { error?: string; svg?: string };
+      if (!res.ok) { setError(data.error ?? 'Eroare'); setLoading(false); return; }
+      onResult(data.svg ?? '', []);
+    } catch (e) { setError(e instanceof Error ? e.message : 'Eroare'); }
+    setLoading(false);
+  }
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3">
+        <div><label className="block text-xs font-medium text-gray-600 mb-1">a</label>
+          <input type="number" step="0.5" value={a} onChange={(e) => setA(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+        <div><label className="block text-xs font-medium text-gray-600 mb-1">b</label>
+          <input type="number" step="0.5" value={b} onChange={(e) => setB(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+      </div>
+      <p className="text-xs text-gray-500">y = |{a}x {parseInt(b) >= 0 ? '+' : ''}{b}|</p>
+      <div className="space-y-1.5">
+        {[{ l: 'Punctul de înfrângere', c: showBreak, s: setShowBreak }, { l: 'Etichete ramuri', c: showPiecewise, s: setShowPiecewise }, { l: 'Ecuația', c: showEq, s: setShowEq }].map(({ l, c, s }) => (
+          <label key={l} className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={c} onChange={(e) => s(e.target.checked)} /><span className="text-sm text-gray-700">{l}</span></label>
+        ))}
+      </div>
+      {error && <p className="text-xs text-red-600">{error}</p>}
+      <button onClick={handle} disabled={loading} className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-md font-semibold text-sm">{loading ? 'Se generează...' : 'Generează modul'}</button>
+    </div>
+  );
+}
+
+function TrigCircleForm({ onResult }: { onResult: (svg: string, steps: ConstructionStep[]) => void }) {
+  const [angleDeg, setAngleDeg] = useState('60');
+  const [showSpecial, setShowSpecial] = useState(true);
+  const [showSin, setShowSin] = useState(true);
+  const [showCos, setShowCos] = useState(true);
+  const [showTan, setShowTan] = useState(false);
+  const [showArc, setShowArc] = useState(true);
+  const [showCoords, setShowCoords] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  async function handle() {
+    setLoading(true); setError('');
+    try {
+      const res = await fetch('/api/admin/generate-trig', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'trig_circle', params: { angle_deg: parseFloat(angleDeg), show_special_angles: showSpecial, show_sin_projection: showSin, show_cos_projection: showCos, show_tan_line: showTan, show_angle_arc: showArc, show_coordinates: showCoords } }) });
+      const data = await res.json() as { error?: string; svg?: string };
+      if (!res.ok) { setError(data.error ?? 'Eroare'); setLoading(false); return; }
+      onResult(data.svg ?? '', []);
+    } catch (e) { setError(e instanceof Error ? e.message : 'Eroare'); }
+    setLoading(false);
+  }
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-xs font-medium text-gray-600 mb-1">Unghiul α (°)</label>
+        <div className="flex gap-2">
+          <input type="number" step="1" min="-360" max="360" value={angleDeg} onChange={(e) => setAngleDeg(e.target.value)} className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm" />
+          <select onChange={(e) => setAngleDeg(e.target.value)} className="px-2 py-2 border border-gray-300 rounded-md text-sm">
+            <option value="">Preset</option>
+            {[0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330].map((d) => <option key={d} value={d}>{d}°</option>)}
+          </select>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-1.5">
+        {[{ l: 'Unghiuri speciale', c: showSpecial, s: setShowSpecial }, { l: 'Proiecție sin', c: showSin, s: setShowSin }, { l: 'Proiecție cos', c: showCos, s: setShowCos }, { l: 'Tangenta', c: showTan, s: setShowTan }, { l: 'Arc unghi', c: showArc, s: setShowArc }, { l: 'Coordonate', c: showCoords, s: setShowCoords }].map(({ l, c, s }) => (
+          <label key={l} className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={c} onChange={(e) => s(e.target.checked)} /><span className="text-sm text-gray-700">{l}</span></label>
+        ))}
+      </div>
+      {error && <p className="text-xs text-red-600">{error}</p>}
+      <button onClick={handle} disabled={loading} className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-md font-semibold text-sm">{loading ? 'Se generează...' : 'Generează cerc trigonometric'}</button>
+    </div>
+  );
+}
+
+function TrigRightTriangleForm({ onResult }: { onResult: (svg: string, steps: ConstructionStep[]) => void }) {
+  const [angleDeg, setAngleDeg] = useState('30');
+  const [hyp, setHyp] = useState('10');
+  const [showRatios, setShowRatios] = useState(true);
+  const [showAngles, setShowAngles] = useState(true);
+  const [showSides, setShowSides] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  async function handle() {
+    setLoading(true); setError('');
+    try {
+      const res = await fetch('/api/admin/generate-trig', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'right_triangle', params: { angle_deg: parseFloat(angleDeg), hypotenuse: parseFloat(hyp), show_trig_ratios: showRatios, show_angle_labels: showAngles, show_side_labels: showSides } }) });
+      const data = await res.json() as { error?: string; svg?: string };
+      if (!res.ok) { setError(data.error ?? 'Eroare'); setLoading(false); return; }
+      onResult(data.svg ?? '', []);
+    } catch (e) { setError(e instanceof Error ? e.message : 'Eroare'); }
+    setLoading(false);
+  }
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3">
+        <div><label className="block text-xs font-medium text-gray-600 mb-1">Unghiul α (°)</label>
+          <select value={angleDeg} onChange={(e) => setAngleDeg(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+            {[15, 30, 45, 60, 75].map((d) => <option key={d} value={d}>{d}°</option>)}
+          </select></div>
+        <div><label className="block text-xs font-medium text-gray-600 mb-1">Ipotenuza</label>
+          <input type="number" step="1" min="1" value={hyp} onChange={(e) => setHyp(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+      </div>
+      <div className="space-y-1.5">
+        {[{ l: 'Rapoarte trigonometrice', c: showRatios, s: setShowRatios }, { l: 'Etichete unghiuri', c: showAngles, s: setShowAngles }, { l: 'Etichete laturi', c: showSides, s: setShowSides }].map(({ l, c, s }) => (
+          <label key={l} className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={c} onChange={(e) => s(e.target.checked)} /><span className="text-sm text-gray-700">{l}</span></label>
+        ))}
+      </div>
+      {error && <p className="text-xs text-red-600">{error}</p>}
+      <button onClick={handle} disabled={loading} className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-md font-semibold text-sm">{loading ? 'Se generează...' : 'Generează triunghi dreptunghic'}</button>
     </div>
   );
 }
@@ -1021,39 +1320,42 @@ type GenericApiConfig = {
   buttonLabel: string;
 };
 
+// P1 shapes (fn_linear, fn_quadratic, fn_exponential, fn_logarithmic, fn_modulus,
+//            trig_circle, trig_right_triangle) au formulare vizuale dedicate — NU sunt în această mapă.
 const ETAPA5_CONFIGS: Record<string, GenericApiConfig> = {
-  fn_linear: { endpoint: '/api/admin/generate-function', typeParam: 'linear', defaultParams: JSON.stringify({ a: 2, b: -1, domain: [-4, 4], show_grid: true, show_slope_triangle: true, show_intercepts: true, show_equation: true }, null, 2), buttonLabel: 'Generează funcție liniară' },
-  fn_quadratic: { endpoint: '/api/admin/generate-function', typeParam: 'quadratic', defaultParams: JSON.stringify({ a: 1, b: -2, c: -3, show_grid: true, show_vertex: true, show_axis_of_symmetry: true, show_discriminant: true, show_x_intercepts: true, show_y_intercept: true }, null, 2), buttonLabel: 'Generează funcție pătratică' },
+  // Funcții P2/P3 (JSON fallback)
   fn_power: { endpoint: '/api/admin/generate-function', typeParam: 'power', defaultParams: JSON.stringify({ exponent: 3, coefficient: 1, show_grid: true, show_equation: true }, null, 2), buttonLabel: 'Generează funcție putere' },
   fn_radical: { endpoint: '/api/admin/generate-function', typeParam: 'radical', defaultParams: JSON.stringify({ index: 2, coefficient: 1, show_grid: true }, null, 2), buttonLabel: 'Generează radical' },
-  fn_exponential: { endpoint: '/api/admin/generate-function', typeParam: 'exponential', defaultParams: JSON.stringify({ base: 2, coefficient: 1, show_grid: true, show_asymptote: true, show_y_intercept: true, show_equation: true }, null, 2), buttonLabel: 'Generează exponențială' },
-  fn_logarithmic: { endpoint: '/api/admin/generate-function', typeParam: 'logarithmic', defaultParams: JSON.stringify({ base: 2, coefficient: 1, show_grid: true, show_asymptote: true, show_x_intercept: true, show_equation: true }, null, 2), buttonLabel: 'Generează logaritmică' },
-  fn_modulus: { endpoint: '/api/admin/generate-function', typeParam: 'modulus', defaultParams: JSON.stringify({ a: 1, b: -2, show_grid: true, show_breakpoint: true, show_equation: true }, null, 2), buttonLabel: 'Generează modul' },
   fn_generic: { endpoint: '/api/admin/generate-function', typeParam: 'generic', defaultParams: JSON.stringify({ expression: 'x^3 - 3*x', domain: [-3, 3], show_grid: true }, null, 2), buttonLabel: 'Generează funcție' },
+  // Funcții trigonometrice
   trig_sin: { endpoint: '/api/admin/generate-trig', typeParam: 'sin', defaultParams: JSON.stringify({ amplitude: 2, frequency: 1, phase: 0, vertical_shift: 0, show_period_marker: true, show_amplitude_lines: true, show_max_min_points: true, show_zeros: true }, null, 2), buttonLabel: 'Generează sin' },
   trig_cos: { endpoint: '/api/admin/generate-trig', typeParam: 'cos', defaultParams: JSON.stringify({ amplitude: 1, frequency: 1, phase: 0, show_period_marker: true, show_amplitude_lines: true }, null, 2), buttonLabel: 'Generează cos' },
   trig_tan: { endpoint: '/api/admin/generate-trig', typeParam: 'tan', defaultParams: JSON.stringify({ amplitude: 1, frequency: 1, show_asymptotes: true }, null, 2), buttonLabel: 'Generează tan' },
   trig_cot: { endpoint: '/api/admin/generate-trig', typeParam: 'cot', defaultParams: JSON.stringify({ amplitude: 1, frequency: 1, show_asymptotes: true }, null, 2), buttonLabel: 'Generează cot' },
+  trig_reduction: { endpoint: '/api/admin/generate-trig', typeParam: 'reduction', defaultParams: JSON.stringify({ angle_deg: 150, show_reference_angle: true, show_reduction_formula: true, show_quadrant_label: true }, null, 2), buttonLabel: 'Generează reducere unghi' },
+  // Analiză
   analysis_asymptotes: { endpoint: '/api/admin/generate-analysis', typeParam: 'asymptotes', defaultParams: JSON.stringify({ expression: '1/(x-2)', domain: [-2, 6], range: [-8, 8], asymptotes: [{ type: 'vertical', x: 2 }, { type: 'horizontal', y: 0 }] }, null, 2), buttonLabel: 'Generează asimptote' },
   analysis_limit: { endpoint: '/api/admin/generate-analysis', typeParam: 'limit', defaultParams: JSON.stringify({ expression: 'sin(x)/x', approach_point: 0, domain: [-5, 5], show_approach_arrows: true }, null, 2), buttonLabel: 'Generează limită' },
   analysis_tangent: { endpoint: '/api/admin/generate-analysis', typeParam: 'tangent', defaultParams: JSON.stringify({ expression: 'x^2', tangent_point: 1, domain: [-3, 4], show_slope_triangle: true, show_derivative_value: true }, null, 2), buttonLabel: 'Generează tangentă' },
   analysis_monotonicity: { endpoint: '/api/admin/generate-analysis', typeParam: 'monotonicity', defaultParams: JSON.stringify({ expression: 'x^3 - 3*x', domain: [-3, 3], show_extrema: true, show_derivative: true }, null, 2), buttonLabel: 'Generează monotonie' },
   analysis_integral: { endpoint: '/api/admin/generate-analysis', typeParam: 'integral', defaultParams: JSON.stringify({ expression: 'x^2', a: 0, b: 2, show_bounds: true, show_riemann: true, riemann_n: 8 }, null, 2), buttonLabel: 'Generează integrală' },
   analysis_rotation_volume: { endpoint: '/api/admin/generate-analysis', typeParam: 'rotation_volume', defaultParams: JSON.stringify({ expression: 'sqrt(x)', a: 0, b: 4, show_washer: true, num_washers: 5 }, null, 2), buttonLabel: 'Generează volum rotație' },
+  // Combinatorică / probabilitate
   prob_venn2: { endpoint: '/api/admin/generate-probability', typeParam: 'venn2', defaultParams: JSON.stringify({ sets: [{ label: 'A', count: 30 }, { label: 'B', count: 25 }], intersection: 10, universe: 60, show_counts: true, title: 'Diagrama Venn' }, null, 2), buttonLabel: 'Generează Venn 2' },
   prob_venn3: { endpoint: '/api/admin/generate-probability', typeParam: 'venn3', defaultParams: JSON.stringify({ sets: [{ label: 'A', count: 20 }, { label: 'B', count: 22 }, { label: 'C', count: 18 }], intersections: { ab: 8, ac: 6, bc: 7, abc: 3 }, universe: 60, show_counts: true }, null, 2), buttonLabel: 'Generează Venn 3' },
   prob_tree: { endpoint: '/api/admin/generate-probability', typeParam: 'tree', defaultParams: JSON.stringify({ root_label: 'S', branches: [{ label: 'A', probability: 0.6, children: [{ label: 'B', probability: 0.7 }, { label: '\\overline{B}', probability: 0.3 }] }, { label: '\\overline{A}', probability: 0.4, children: [{ label: 'B', probability: 0.2 }, { label: '\\overline{B}', probability: 0.8 }] }], show_final_probabilities: true }, null, 2), buttonLabel: 'Generează arbore' },
+  // Statistică
   stat_histogram: { endpoint: '/api/admin/generate-statistics', typeParam: 'histogram', defaultParams: JSON.stringify({ intervals: [{ start: 0, end: 5, frequency: 4 }, { start: 5, end: 10, frequency: 12 }, { start: 10, end: 15, frequency: 18 }, { start: 15, end: 20, frequency: 9 }, { start: 20, end: 25, frequency: 3 }], title: 'Histogramă', show_frequency_labels: true }, null, 2), buttonLabel: 'Generează histogramă' },
   stat_bar: { endpoint: '/api/admin/generate-statistics', typeParam: 'bar', defaultParams: JSON.stringify({ categories: ['Lun', 'Mar', 'Mie', 'Joi', 'Vin'], values: [5, 8, 12, 7, 10], title: 'Diagrama cu bare', show_value_labels: true }, null, 2), buttonLabel: 'Generează bare' },
   stat_pie: { endpoint: '/api/admin/generate-statistics', typeParam: 'pie', defaultParams: JSON.stringify({ slices: [{ label: 'A', value: 40 }, { label: 'B', value: 30 }, { label: 'C', value: 20 }, { label: 'D', value: 10 }], title: 'Diagram circular', show_percentages: true }, null, 2), buttonLabel: 'Generează pie' },
   stat_polygon: { endpoint: '/api/admin/generate-statistics', typeParam: 'frequency_polygon', defaultParams: JSON.stringify({ intervals: [{ start: 0, end: 10, frequency: 5 }, { start: 10, end: 20, frequency: 12 }, { start: 20, end: 30, frequency: 8 }, { start: 30, end: 40, frequency: 3 }], show_histogram: true, show_cumulative: true }, null, 2), buttonLabel: 'Generează poligon' },
+  // Plan complex
   complex_plane: { endpoint: '/api/admin/generate-complex', defaultParams: JSON.stringify({ numbers: [{ re: 3, im: 2, label: 'z_1' }, { re: -1, im: 3, label: 'z_2' }], show_modulus: true, show_argument: true, show_conjugate: true, show_sum: true }, null, 2), buttonLabel: 'Generează plan complex' },
-  trig_circle: { endpoint: '/api/admin/generate-trig', typeParam: 'trig_circle', defaultParams: JSON.stringify({ angle_deg: 60, show_special_angles: true, show_sin_projection: true, show_cos_projection: true, show_tan_line: false, show_angle_arc: true }, null, 2), buttonLabel: 'Generează cerc trig' },
-  trig_right_triangle: { endpoint: '/api/admin/generate-trig', typeParam: 'right_triangle', defaultParams: JSON.stringify({ angle_deg: 30, hypotenuse: 10, show_trig_ratios: true, show_angle_labels: true, show_side_labels: true }, null, 2), buttonLabel: 'Generează triunghi dreptunghic' },
-  trig_reduction: { endpoint: '/api/admin/generate-trig', typeParam: 'reduction', defaultParams: JSON.stringify({ angle_deg: 150, show_reference_angle: true, show_reduction_formula: true, show_quadrant_label: true }, null, 2), buttonLabel: 'Generează reducere unghi' },
+  // Geometrie spațială
   spatial_projection: { endpoint: '/api/admin/generate-spatial', typeParam: 'projection', defaultParams: JSON.stringify({ width: 4, depth: 3, height: 3, point: { x: 2, y: 2, z: 2, label: 'P' }, project_onto: 'base', show_projection_lines: true }, null, 2), buttonLabel: 'Generează proiecție 3D' },
   spatial_dihedral: { endpoint: '/api/admin/generate-spatial', typeParam: 'dihedral', defaultParams: JSON.stringify({ angle_deg: 60, edge_length: 3, show_perpendicular: true }, null, 2), buttonLabel: 'Generează unghi diedru' },
   spatial_three_perp: { endpoint: '/api/admin/generate-spatial', typeParam: 'three_perp', defaultParams: JSON.stringify({ base_width: 5, base_depth: 4, height: 3, show_labels: true, show_right_angle_markers: true }, null, 2), buttonLabel: 'Generează 3 perpendiculare' },
+  // Transformări
   transform_symmetry: { endpoint: '/api/admin/generate-transformation', typeParam: 'symmetry', defaultParams: JSON.stringify({ points: [{ x: 2, y: 3 }, { x: -1, y: 2 }, { x: 3, y: -1 }], axis: 'y', type: 'axial', show_grid: true }, null, 2), buttonLabel: 'Generează simetrie' },
   transform_translation: { endpoint: '/api/admin/generate-transformation', typeParam: 'translation', defaultParams: JSON.stringify({ points: [{ x: 1, y: 2 }, { x: 3, y: 1 }, { x: 2, y: 4 }], vector: { dx: 2, dy: -3 }, show_grid: true }, null, 2), buttonLabel: 'Generează translație' },
   transform_rotation: { endpoint: '/api/admin/generate-transformation', typeParam: 'rotation', defaultParams: JSON.stringify({ points: [{ x: 3, y: 0 }, { x: 0, y: 2 }], center: { x: 0, y: 0 }, angle_deg: 90, show_arcs: true, show_grid: true }, null, 2), buttonLabel: 'Generează rotație' },
@@ -1150,29 +1452,35 @@ export default function TestConstructionPage() {
             {SHAPE_OPTIONS.find((o) => o.value === shape)?.label ?? 'Parametri'}
           </h2>
 
-          {shape === 'triangle' && <TriangleForm onResult={handleResult} />}
-          {shape === 'circle' && <CircleForm onResult={handleResult} />}
-          {shape === 'parallelogram' && <QuadrilateralForm type="parallelogram" onResult={handleResult} />}
-          {shape === 'trapezoid' && <QuadrilateralForm type="trapezoid" onResult={handleResult} />}
-          {shape === 'polygon' && <PolygonForm onResult={handleResult} />}
+          {/* key={shape} forțează remount la schimbare categorie → TASK 4 fix */}
+          {shape === 'triangle' && <TriangleForm key={shape} onResult={handleResult} />}
+          {shape === 'circle' && <CircleForm key={shape} onResult={handleResult} />}
+          {shape === 'parallelogram' && <QuadrilateralForm key={shape} type="parallelogram" onResult={handleResult} />}
+          {shape === 'trapezoid' && <QuadrilateralForm key={shape} type="trapezoid" onResult={handleResult} />}
+          {shape === 'polygon' && <PolygonForm key={shape} onResult={handleResult} />}
           {(shape === 'cube' || shape === 'prism' || shape === 'pyramid' || shape === 'cylinder' || shape === 'cone' || shape === 'sphere') && (
-            <SolidForm solidType={shape} onResult={handleResult} />
+            <SolidForm key={shape} solidType={shape} onResult={handleResult} />
           )}
           {(shape === 'frustum_pyramid' || shape === 'frustum_cone') && (
-            <FrustumForm frustumType={shape} onResult={handleResult} />
+            <FrustumForm key={shape} frustumType={shape} onResult={handleResult} />
           )}
           {(shape === 'section_cube' || shape === 'section_pyramid' || shape === 'section_cone' || shape === 'section_sphere' || shape === 'section_cylinder') && (
-            <SectionForm sectionType={shape} onResult={handleResult} />
+            <SectionForm key={shape} sectionType={shape} onResult={handleResult} />
           )}
           {(shape === 'tetrahedron' || shape === 'oblique_prism' || shape === 'cube_all_diagonals' || shape === 'sphere_with_circles') && (
-            <SpecialShapeForm shapeType={shape} onResult={handleResult} />
+            <SpecialShapeForm key={shape} shapeType={shape} onResult={handleResult} />
           )}
-          {(shape === 'triangle_midsegments' || shape === 'triangle_perp_bisectors' || shape === 'triangle_centroid') && (
-            <TriangleExtForm extType={shape} onResult={handleResult} />
-          )}
-          {/* ETAPA 5 — all new calculators via generic form */}
+          {/* ETAPA 5 — P1: formulare vizuale dedicate */}
+          {shape === 'fn_linear' && <FnLinearForm key={shape} onResult={handleResult} />}
+          {shape === 'fn_quadratic' && <FnQuadraticForm key={shape} onResult={handleResult} />}
+          {shape === 'fn_exponential' && <FnExponentialForm key={shape} onResult={handleResult} />}
+          {shape === 'fn_logarithmic' && <FnLogarithmicForm key={shape} onResult={handleResult} />}
+          {shape === 'fn_modulus' && <FnModulusForm key={shape} onResult={handleResult} />}
+          {shape === 'trig_circle' && <TrigCircleForm key={shape} onResult={handleResult} />}
+          {shape === 'trig_right_triangle' && <TrigRightTriangleForm key={shape} onResult={handleResult} />}
+          {/* ETAPA 5 — P2/P3: JSON fallback pentru restul */}
           {(shape in ETAPA5_CONFIGS) && (
-            <GenericApiForm shapeKey={shape as keyof typeof ETAPA5_CONFIGS} onResult={handleResult} />
+            <GenericApiForm key={shape} shapeKey={shape as keyof typeof ETAPA5_CONFIGS} onResult={handleResult} />
           )}
         </div>
 

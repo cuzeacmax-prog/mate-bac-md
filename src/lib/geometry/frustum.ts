@@ -14,7 +14,7 @@ function fmt(n: number, d = 3) {
 type Point3D = readonly [number, number, number];
 
 function proj(p: Point3D): Point {
-  return cabinetProjection(p, 0.45, 30);
+  return cabinetProjection(p, 0.65, 30);
 }
 
 function p2str(p: Point) {
@@ -208,7 +208,7 @@ export function generateFrustumPyramidAdvanced(input: FrustumPyramidInput): Frus
 
 // ─── Frustum Cone ─────────────────────────────────────────────────────────────
 
-const EY = 0.3; // ellipse vertical scale factor
+const EY = 0.35; // ellipse vertical scale factor (pedagogical open view)
 
 export function generateFrustumConeAdvanced(input: FrustumConeInput): FrustumOutput {
   const R  = input.bottom_radius;
@@ -233,11 +233,13 @@ export function generateFrustumConeAdvanced(input: FrustumConeInput): FrustumOut
   const steps: FrustumOutput['construction_steps'] = [];
   let cum = `\\begin{tikzpicture}\n`;
 
-  // Baza mare (jos) — elipsă completă
-  cum += `  \\draw[thick] (${fmt(cx)},${fmt(cy)}) ellipse (${fmt(R)} and ${fmt(R * EY)});\n`;
+  // Baza mare (jos) — față vizibilă solidă, spate dashed
+  cum += `  \\draw[thick] (${fmt(cx - R)},${fmt(cy)}) arc[start angle=180, end angle=360, x radius=${fmt(R)}, y radius=${fmt(R * EY)}];\n`;
+  cum += `  \\draw[dashed, gray!60] (${fmt(cx - R)},${fmt(cy)}) arc[start angle=180, end angle=0, x radius=${fmt(R)}, y radius=${fmt(R * EY)}];\n`;
 
-  // Baza mică (sus) — elipsă completă
-  cum += `  \\draw[thick] (${fmt(cx)},${fmt(cy + h)}) ellipse (${fmt(r)} and ${fmt(r * EY)});\n`;
+  // Baza mică (sus) — față vizibilă solidă, spate dashed
+  cum += `  \\draw[thick] (${fmt(cx - r)},${fmt(cy + h)}) arc[start angle=180, end angle=360, x radius=${fmt(r)}, y radius=${fmt(r * EY)}];\n`;
+  cum += `  \\draw[dashed, gray!40] (${fmt(cx - r)},${fmt(cy + h)}) arc[start angle=180, end angle=0, x radius=${fmt(r)}, y radius=${fmt(r * EY)}];\n`;
 
   // Generatoarele laterale (2 linii drepte)
   cum += `  \\draw[thick] (${fmt(cx - R)},${fmt(cy)}) -- (${fmt(cx - r)},${fmt(cy + h)});\n`;

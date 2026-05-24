@@ -9,7 +9,7 @@ function fmt(n: number, d = 3) {
 type Point3D = readonly [number, number, number];
 
 function proj(p: Point3D): Point {
-  return cabinetProjection(p, 0.45, 30);
+  return cabinetProjection(p, 0.65, 30);
 }
 
 function p2str(p: Point) {

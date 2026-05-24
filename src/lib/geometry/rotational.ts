@@ -59,7 +59,8 @@ export interface RotationalOutput {
 }
 
 // Ellipse perspective factor (how "flat" the top/bottom look)
-const EY = 0.3;
+// 0.35 = pedagogical open view (elipse mai deschise, cameră mai jos)
+const EY = 0.35;
 
 // ─── Cylinder ────────────────────────────────────────────────────────────────
 
@@ -83,10 +84,12 @@ export function generateCylinderAdvanced(input: CylinderInput): RotationalOutput
   const steps: RotationalOutput['construction_steps'] = [];
   let cum = `\\begin{tikzpicture}\n`;
 
-  // Bottom ellipse (full)
-  cum += `  \\draw[thick] (${fmt(cx)},${fmt(cy)}) ellipse (${fmt(r)} and ${fmt(r * EY)});\n`;
-  // Top ellipse (full)
-  cum += `  \\draw[thick] (${fmt(cx)},${fmt(cy + h)}) ellipse (${fmt(r)} and ${fmt(r * EY)});\n`;
+  // Bottom ellipse: front arc (visible, opens downward) solid; back arc dashed
+  cum += `  \\draw[thick] (${fmt(cx - r)},${fmt(cy)}) arc[start angle=180, end angle=360, x radius=${fmt(r)}, y radius=${fmt(r * EY)}];\n`;
+  cum += `  \\draw[dashed, gray!60] (${fmt(cx - r)},${fmt(cy)}) arc[start angle=180, end angle=0, x radius=${fmt(r)}, y radius=${fmt(r * EY)}];\n`;
+  // Top ellipse: front arc solid; back arc lightly dashed (top is more visible)
+  cum += `  \\draw[thick] (${fmt(cx - r)},${fmt(cy + h)}) arc[start angle=180, end angle=360, x radius=${fmt(r)}, y radius=${fmt(r * EY)}];\n`;
+  cum += `  \\draw[dashed, gray!40] (${fmt(cx - r)},${fmt(cy + h)}) arc[start angle=180, end angle=0, x radius=${fmt(r)}, y radius=${fmt(r * EY)}];\n`;
   // Two lateral lines
   cum += `  \\draw[thick] (${fmt(cx - r)},${fmt(cy)}) -- (${fmt(cx - r)},${fmt(cy + h)});\n`;
   cum += `  \\draw[thick] (${fmt(cx + r)},${fmt(cy)}) -- (${fmt(cx + r)},${fmt(cy + h)});\n`;
@@ -158,8 +161,9 @@ export function generateConeAdvanced(input: ConeInput): RotationalOutput {
   const steps: RotationalOutput['construction_steps'] = [];
   let cum = `\\begin{tikzpicture}\n`;
 
-  // Base ellipse
-  cum += `  \\draw[thick] (${fmt(cx)},${fmt(cy)}) ellipse (${fmt(r)} and ${fmt(r * EY)});\n`;
+  // Base ellipse: front arc (visible) solid; back arc dashed
+  cum += `  \\draw[thick] (${fmt(cx - r)},${fmt(cy)}) arc[start angle=180, end angle=360, x radius=${fmt(r)}, y radius=${fmt(r * EY)}];\n`;
+  cum += `  \\draw[dashed, gray!60] (${fmt(cx - r)},${fmt(cy)}) arc[start angle=180, end angle=0, x radius=${fmt(r)}, y radius=${fmt(r * EY)}];\n`;
 
   // Lateral sides (two lines from apex to rim)
   cum += `  \\draw[thick] (${fmt(cx - r)},${fmt(cy)}) -- (${fmt(cx)},${fmt(cy + h)});\n`;
@@ -238,7 +242,9 @@ export function generateSphereAdvanced(input: SphereInput): RotationalOutput {
   });
 
   if (input.show_equator) {
-    cum += `  \\draw[dashed, gray] (0,0) ellipse (${fmt(r)} and ${fmt(r * 0.3)});\n`;
+    // Ecuator: față (vizibilă, arcul inferior) solid; spate dashed
+    cum += `  \\draw[gray] (${fmt(-r)},0) arc[start angle=180, end angle=360, x radius=${fmt(r)}, y radius=${fmt(r * 0.3)}];\n`;
+    cum += `  \\draw[dashed, gray!60] (${fmt(-r)},0) arc[start angle=180, end angle=0, x radius=${fmt(r)}, y radius=${fmt(r * 0.3)}];\n`;
     steps.push({
       step: 2,
       title: 'Ecuatorul',
@@ -277,7 +283,8 @@ export function generateSphereAdvanced(input: SphereInput): RotationalOutput {
   if (input.show_small_circle) {
     const d = Math.min(Math.abs(input.show_small_circle.distance_from_center), r * 0.99);
     const sr = Math.sqrt(Math.max(0, r * r - d * d));
-    cum += `  \\draw[red, thick] (0,${fmt(d)}) ellipse (${fmt(sr)} and ${fmt(sr * 0.3)});\n`;
+    cum += `  \\draw[red, thick] (${fmt(-sr)},${fmt(d)}) arc[start angle=180, end angle=360, x radius=${fmt(sr)}, y radius=${fmt(sr * 0.3)}];\n`;
+    cum += `  \\draw[red, dashed] (${fmt(-sr)},${fmt(d)}) arc[start angle=180, end angle=0, x radius=${fmt(sr)}, y radius=${fmt(sr * 0.3)}];\n`;
     cum += `  \\fill[red] (0,${fmt(d)}) circle (0.04) node[right, red] {$O'$};\n`;
     cum += `  \\draw[red, dashed] (0,0) -- (0,${fmt(d)}) node[midway, right, red] {$d=${fmt(d, 2)}$};\n`;
     cum += `  \\draw[red, dashed] (0,${fmt(d)}) -- (${fmt(sr)},${fmt(d)}) node[midway, above, red] {$r'=${fmt(sr, 2)}$};\n`;
