@@ -14,6 +14,8 @@
     "db:apply-rpc": "tsx --env-file=.env.local scripts/db/apply-rpc.ts",
     "backup:export": "tsx --env-file=.env.local scripts/backup/export-library.ts",
     "backup:import": "tsx --env-file=.env.local scripts/backup/import-library.ts",
+    "seed:scenarii": "tsx --env-file=.env.local scripts/seed/import-scenarii.ts",
+    "seed:methods": "tsx --env-file=.env.local scripts/seed/methodologies-seed.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
