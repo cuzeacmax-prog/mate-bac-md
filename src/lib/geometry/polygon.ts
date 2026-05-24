@@ -201,7 +201,7 @@ export function generateRegularPolygonAdvanced(input: RegularPolygonInput): Regu
     const midA = a0 - ca / 2;
     const lx = cx + arcR * 1.4 * Math.cos(deg2rad(midA));
     const ly = cy + arcR * 1.4 * Math.sin(deg2rad(midA));
-    cum += `  \\node[orange, small] at (${fmt(lx)},${fmt(ly)}) {$${fmt(ca, 1)}°$};\n`;
+    cum += `  \\node[orange, font=\\small] at (${fmt(lx)},${fmt(ly)}) {$${fmt(ca, 1)}°$};\n`;
   }
 
   cum += `\\end{tikzpicture}`;

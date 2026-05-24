@@ -50,7 +50,7 @@ export function generateComplexPlane(input: ComplexPlaneInput): GraphOutput {
   // Axes
   tikz += `  \\draw[->, thick] (${fmt(-range - 0.3)},0) -- (${fmt(range + 0.5)},0) node[right] {$\\text{Re}$};\n`;
   tikz += `  \\draw[->, thick] (0,${fmt(-range - 0.3)}) -- (0,${fmt(range + 0.5)}) node[above] {$\\text{Im}$};\n`;
-  tikz += `  \\node[below left, small] at (0,0) {$O$};\n`;
+  tikz += `  \\node[below left, font=\\small] at (0,0) {$O$};\n`;
 
   // Integer ticks
   for (let v = -range; v <= range; v++) {

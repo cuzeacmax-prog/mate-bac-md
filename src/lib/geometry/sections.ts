@@ -288,7 +288,7 @@ export function generatePyramidSectionAdvanced(input: PyramidSectionInput): Sect
 
   if (input.label_vertices !== false) {
     for (let i = 0; i < n; i++) {
-      cum += `  \\fill[red] ${p2str(secPts[i])} circle (0.04) node[right, red, small] {$${secLabels[i] ?? `V'${i}`}$};\n`;
+      cum += `  \\fill[red] ${p2str(secPts[i])} circle (0.04) node[right, red, font=\\small] {$${secLabels[i] ?? `V'${i}`}$};\n`;
     }
   }
 

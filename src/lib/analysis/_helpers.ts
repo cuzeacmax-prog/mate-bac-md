@@ -178,7 +178,7 @@ export function generateAxesTikz(
 
   // Origin
   if (opts.show_origin_label !== false) {
-    tikz += `  \\node[below left, small] at (0,0) {$O$};\n`;
+    tikz += `  \\node[below left, font=\\small] at (0,0) {$O$};\n`;
   }
 
   // X ticks

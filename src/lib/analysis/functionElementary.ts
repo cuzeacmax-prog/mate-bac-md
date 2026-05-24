@@ -48,8 +48,8 @@ export function generateLinearFunctionPlot(input: LinearFunctionInput): GraphOut
     const y1 = fn(x1);
     const y2 = fn(x2);
     body += `  \\draw[red, thin] (${fmt(x1)},${fmt(y1)}) -- (${fmt(x2)},${fmt(y1)}) -- (${fmt(x2)},${fmt(y2)}) -- cycle;\n`;
-    body += `  \\node[below, red, small] at (${fmt((x1 + x2) / 2)},${fmt(y1)}) {$1$};\n`;
-    body += `  \\node[right, red, small] at (${fmt(x2)},${fmt((y1 + y2) / 2)}) {$${fmtLabel(a)}$};\n`;
+    body += `  \\node[below, red, font=\\small] at (${fmt((x1 + x2) / 2)},${fmt(y1)}) {$1$};\n`;
+    body += `  \\node[right, red, font=\\small] at (${fmt(x2)},${fmt((y1 + y2) / 2)}) {$${fmtLabel(a)}$};\n`;
   }
 
   // X intercept: ax + b = 0 → x = -b/a
@@ -57,13 +57,13 @@ export function generateLinearFunctionPlot(input: LinearFunctionInput): GraphOut
     const xi = -b / a;
     if (xi >= xmin && xi <= xmax) {
       body += markedPointTikz(xi, 0, `(${fmtLabel(xi)}, 0)`, { anchor: 'below right', color: 'red!70!black', show_coords: false });
-      body += `  \\node[below, red!70!black, small] at (${fmt(xi)},0) {$${fmtLabel(xi)}$};\n`;
+      body += `  \\node[below, red!70!black, font=\\small] at (${fmt(xi)},0) {$${fmtLabel(xi)}$};\n`;
       points['X0'] = [xi, 0];
     }
   }
   // Y intercept: (0, b)
   if (input.show_intercepts !== false && b !== 0) {
-    body += `  \\fill[red!70!black] (0,${fmt(b)}) circle (0.07) node[right, small] {$(0, ${fmtLabel(b)})$};\n`;
+    body += `  \\fill[red!70!black] (0,${fmt(b)}) circle (0.07) node[right, font=\\small] {$(0, ${fmtLabel(b)})$};\n`;
     points['Y0'] = [0, b];
   }
 
@@ -139,7 +139,7 @@ export function generateQuadraticFunctionPlot(input: QuadraticFunctionInput): Gr
 
   // Axis of symmetry
   if (input.show_axis_of_symmetry) {
-    body += `  \\draw[dashed, gray] (${fmt(vertexX)},${fmt(yRange[0])}) -- (${fmt(vertexX)},${fmt(yRange[1])}) node[above, gray, small] {$x=${fmtLabel(vertexX)}$};\n`;
+    body += `  \\draw[dashed, gray] (${fmt(vertexX)},${fmt(yRange[0])}) -- (${fmt(vertexX)},${fmt(yRange[1])}) node[above, gray, font=\\small] {$x=${fmtLabel(vertexX)}$};\n`;
   }
 
   // X intercepts
@@ -164,7 +164,7 @@ export function generateQuadraticFunctionPlot(input: QuadraticFunctionInput): Gr
 
   // Y intercept
   if (input.show_y_intercept !== false && c !== 0) {
-    body += `  \\fill[orange!80!black] (0,${fmt(c)}) circle (0.07) node[right, small] {$(0;\\,${fmtLabel(c)})$};\n`;
+    body += `  \\fill[orange!80!black] (0,${fmt(c)}) circle (0.07) node[right, font=\\small] {$(0;\\,${fmtLabel(c)})$};\n`;
     points['Y0'] = [0, c];
   }
 
@@ -172,7 +172,7 @@ export function generateQuadraticFunctionPlot(input: QuadraticFunctionInput): Gr
   if (input.show_discriminant) {
     const dStr = fmtLabel(discriminant);
     const roots = discriminant > 0 ? '2 rădăcini reale distincte' : discriminant === 0 ? 'o rădăcină dublă' : 'fără rădăcini reale';
-    body += `  \\node[below right, small] at (${fmt(xmin + 0.2)},${fmt(yRange[1] - 0.3)}) {$\\Delta = ${dStr}$ (${roots})};\n`;
+    body += `  \\node[below right, font=\\small] at (${fmt(xmin + 0.2)},${fmt(yRange[1] - 0.3)}) {$\\Delta = ${dStr}$ (${roots})};\n`;
   }
 
   const parabola = a > 0 ? 'ramuri în sus' : 'ramuri în jos';
@@ -270,7 +270,7 @@ export function generateRadicalFunctionPlot(input: RadicalFunctionInput): GraphO
 
   if (input.show_domain_restriction && isEven) {
     body += `  \\draw[dashed, gray] (0,${fmt(ymin)}) -- (0,${fmt(ymax)});\n`;
-    body += `  \\node[above, gray, small] at (0,${fmt(ymax)}) {$x\\geq 0$};\n`;
+    body += `  \\node[above, gray, font=\\small] at (0,${fmt(ymax)}) {$x\\geq 0$};\n`;
   }
 
   const idxStr = idx === 2 ? '' : `^${idx}`;
@@ -313,18 +313,18 @@ export function generateExponentialFunctionPlot(input: ExponentialFunctionInput)
 
   // Asymptote y = 0
   if (input.show_asymptote !== false) {
-    body += `  \\draw[dashed, gray] (${fmt(xmin)},0) -- (${fmt(xmax)},0) node[right, gray, small] {$y=0$};\n`;
+    body += `  \\draw[dashed, gray] (${fmt(xmin)},0) -- (${fmt(xmax)},0) node[right, gray, font=\\small] {$y=0$};\n`;
   }
 
   // Y intercept (0, k)
   if (input.show_y_intercept !== false) {
-    body += `  \\fill[red!70!black] (0,${fmt(k)}) circle (0.07) node[right, small] {$(0;\\,${fmtLabel(k)})$};\n`;
+    body += `  \\fill[red!70!black] (0,${fmt(k)}) circle (0.07) node[right, font=\\small] {$(0;\\,${fmtLabel(k)})$};\n`;
   }
 
   const baseStr = a === Math.E ? 'e' : fmtLabel(a);
   const eqStr = k === 1 ? `${baseStr}^x` : `${fmtLabel(k)}\\cdot ${baseStr}^x`;
   if (input.show_equation !== false) {
-    body += `  \\node[above, blue, small] at (${fmt(xmax - 1)},${fmt(Math.min(fn(xmax - 1), yRange[1] - 0.3))}) {$y=${eqStr}$};\n`;
+    body += `  \\node[above, blue, font=\\small] at (${fmt(xmax - 1)},${fmt(Math.min(fn(xmax - 1), yRange[1] - 0.3))}) {$y=${eqStr}$};\n`;
   }
 
   const type = a > 1 ? 'crescătoare' : 'descrescătoare';
@@ -370,17 +370,17 @@ export function generateLogarithmicFunctionPlot(input: LogarithmicFunctionInput)
 
   // Vertical asymptote x = 0
   if (input.show_asymptote !== false) {
-    body += `  \\draw[dashed, gray] (0,${fmt(yRange[0])}) -- (0,${fmt(yRange[1])}) node[above, gray, small] {$x=0$};\n`;
+    body += `  \\draw[dashed, gray] (0,${fmt(yRange[0])}) -- (0,${fmt(yRange[1])}) node[above, gray, font=\\small] {$x=0$};\n`;
   }
 
   // X intercept: log_a(x) = 0 → x = 1
   if (input.show_x_intercept !== false) {
-    body += `  \\fill[green!50!black] (1,0) circle (0.07) node[below right, small] {$(1;0)$};\n`;
+    body += `  \\fill[green!50!black] (1,0) circle (0.07) node[below right, font=\\small] {$(1;0)$};\n`;
   }
 
   // Special point (a, 1) → log_a(a) = 1
   if (input.show_special_point && a >= xmin && a <= xmax) {
-    body += `  \\fill[orange!80!black] (${fmt(a)},${fmt(k)}) circle (0.07) node[above right, small] {$(${fmtLabel(a)};${fmtLabel(k)})$};\n`;
+    body += `  \\fill[orange!80!black] (${fmt(a)},${fmt(k)}) circle (0.07) node[above right, font=\\small] {$(${fmtLabel(a)};${fmtLabel(k)})$};\n`;
   }
 
   const baseStr = a === Math.E ? 'e' : a === 10 ? '10' : fmtLabel(a);
@@ -388,7 +388,7 @@ export function generateLogarithmicFunctionPlot(input: LogarithmicFunctionInput)
   const eqStr = k === 1 ? logStr : `${fmtLabel(k)}${logStr}`;
   if (input.show_equation !== false) {
     const mid = (xmin + xmax) * 0.6;
-    body += `  \\node[above, blue, small] at (${fmt(mid)},${fmt(Math.min(fn(mid), yRange[1] - 0.3))}) {$y=${eqStr}$};\n`;
+    body += `  \\node[above, blue, font=\\small] at (${fmt(mid)},${fmt(Math.min(fn(mid), yRange[1] - 0.3))}) {$y=${eqStr}$};\n`;
   }
 
   const type = (a > 1 && k > 0) || (a < 1 && k < 0) ? 'crescătoare' : 'descrescătoare';
@@ -442,15 +442,15 @@ export function generateModulusFunctionPlot(input: ModulusFunctionInput): GraphO
   if (input.show_piecewise_labels) {
     // Label left branch
     const xleft = (xmin + breakX) / 2;
-    body += `  \\node[above, blue, small] at (${fmt(xleft)},${fmt(fn(xleft))}) {$-(${fmtLabel(a)}x+${fmtLabel(b)})$};\n`;
+    body += `  \\node[above, blue, font=\\small] at (${fmt(xleft)},${fmt(fn(xleft))}) {$-(${fmtLabel(a)}x+${fmtLabel(b)})$};\n`;
     // Label right branch
     const xright = (breakX + xmax) / 2;
-    body += `  \\node[above, blue, small] at (${fmt(xright)},${fmt(fn(xright))}) {$${fmtLabel(a)}x+${fmtLabel(b)}$};\n`;
+    body += `  \\node[above, blue, font=\\small] at (${fmt(xright)},${fmt(fn(xright))}) {$${fmtLabel(a)}x+${fmtLabel(b)}$};\n`;
   }
 
   const eqStr = a === 1 && b === 0 ? '|x|' : b === 0 ? `|${fmtLabel(a)}x|` : `|${fmtLabel(a)}x + ${fmtLabel(b)}|`;
   if (input.show_equation !== false) {
-    body += `  \\node[above right, blue, small] at (${fmt(xmax - 2)},${fmt(yRange[1] - 0.5)}) {$y=${eqStr}$};\n`;
+    body += `  \\node[above right, blue, font=\\small] at (${fmt(xmax - 2)},${fmt(yRange[1] - 0.5)}) {$y=${eqStr}$};\n`;
   }
 
   return {
@@ -493,13 +493,13 @@ export function generateFunctionPlot(input: FunctionPlotInput): GraphOutput {
   // Asymptotes
   for (const asm of input.asymptotes ?? []) {
     if (asm.type === 'vertical' && asm.value !== undefined) {
-      body += `  \\draw[dashed, orange!80!black] (${fmt(asm.value)},${fmt(yRange[0])}) -- (${fmt(asm.value)},${fmt(yRange[1])}) node[above, small] {$x=${fmtLabel(asm.value)}$};\n`;
+      body += `  \\draw[dashed, orange!80!black] (${fmt(asm.value)},${fmt(yRange[0])}) -- (${fmt(asm.value)},${fmt(yRange[1])}) node[above, font=\\small] {$x=${fmtLabel(asm.value)}$};\n`;
     } else if (asm.type === 'horizontal' && asm.value !== undefined) {
-      body += `  \\draw[dashed, orange!80!black] (${fmt(xmin)},${fmt(asm.value)}) -- (${fmt(xmax)},${fmt(asm.value)}) node[right, small] {$y=${fmtLabel(asm.value)}$};\n`;
+      body += `  \\draw[dashed, orange!80!black] (${fmt(xmin)},${fmt(asm.value)}) -- (${fmt(xmax)},${fmt(asm.value)}) node[right, font=\\small] {$y=${fmtLabel(asm.value)}$};\n`;
     } else if (asm.type === 'oblique' && asm.slope !== undefined && asm.intercept !== undefined) {
       const y1 = asm.slope * xmin + asm.intercept;
       const y2 = asm.slope * xmax + asm.intercept;
-      body += `  \\draw[dashed, orange!80!black] (${fmt(xmin)},${fmt(y1)}) -- (${fmt(xmax)},${fmt(y2)}) node[right, small] {$y=${fmtLabel(asm.slope)}x+${fmtLabel(asm.intercept)}$};\n`;
+      body += `  \\draw[dashed, orange!80!black] (${fmt(xmin)},${fmt(y1)}) -- (${fmt(xmax)},${fmt(y2)}) node[right, font=\\small] {$y=${fmtLabel(asm.slope)}x+${fmtLabel(asm.intercept)}$};\n`;
     }
   }
 
@@ -512,7 +512,7 @@ export function generateFunctionPlot(input: FunctionPlotInput): GraphOutput {
   }
 
   if (input.label) {
-    body += `  \\node[above right, blue, small] at (${fmt(xmax - 1)},${fmt(yRange[1] - 0.5)}) {$${input.label}$};\n`;
+    body += `  \\node[above right, blue, font=\\small] at (${fmt(xmax - 1)},${fmt(yRange[1] - 0.5)}) {$${input.label}$};\n`;
   }
 
   return {

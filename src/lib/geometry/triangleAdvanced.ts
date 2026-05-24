@@ -535,7 +535,7 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
       const midX = (seg.start[0] + seg.end[0]) / 2;
       const midY = (seg.start[1] + seg.end[1]) / 2;
       const lp = exteriorLabelPosition(seg.start, seg.end, centroidPoint, 0.28);
-      cumulativeTikz += `  \\node[rotate=${lp.rotation.toFixed(1)}, teal!70!black, small] at (${lp.x.toFixed(3)},${lp.y.toFixed(3)}) {$m_${side}$};\n`;
+      cumulativeTikz += `  \\node[rotate=${lp.rotation.toFixed(1)}, teal!70!black, font=\\small] at (${lp.x.toFixed(3)},${lp.y.toFixed(3)}) {$m_${side}$};\n`;
       // midpoints as dots
       cumulativeTikz += `  \\fill[teal!70!black] (${seg.start[0].toFixed(3)},${seg.start[1].toFixed(3)}) circle (0.04);\n`;
       cumulativeTikz += `  \\fill[teal!70!black] (${seg.end[0].toFixed(3)},${seg.end[1].toFixed(3)}) circle (0.04);\n`;
