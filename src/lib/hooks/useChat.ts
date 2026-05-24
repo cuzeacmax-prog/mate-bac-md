@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import type { ChatMessage } from "@/app/app/chat/_components/ChatMessages";
+import type { ChatMessage, ChatMetadata } from "@/app/app/chat/_components/ChatMessages";
 
 interface UseChatOptions {
   conversationId?: string;
@@ -93,10 +93,13 @@ export function useChat({
               setStreamingContent(accumulated);
             }
             if (json.done) {
+              const meta = json.metadata as ChatMetadata | undefined;
               const assistantMsg: ChatMessage = {
                 id: crypto.randomUUID(),
                 role: "assistant",
                 content: accumulated,
+                svgs: meta?.svgs ?? [],
+                metadata: meta,
               };
               setMessages((prev) => [...prev, assistantMsg]);
               setStreamingContent("");

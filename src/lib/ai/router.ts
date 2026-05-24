@@ -1,4 +1,4 @@
-import { streamText, generateText } from "ai";
+import { streamText, generateText, stepCountIs, type ToolSet } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { google } from "@ai-sdk/google";
 import { createServiceClient } from "@/lib/supabase/service";
@@ -76,6 +76,32 @@ export async function callAI(
     inputTokens: result.usage.inputTokens ?? 0,
     outputTokens: result.usage.outputTokens ?? 0,
   };
+}
+
+/**
+ * callAIStream cu Tool Use support (Vercel AI SDK v6).
+ * Activează tool-calling loop (maxim 4 steps) când tools e furnizat.
+ * Altfel, comportament identic cu callAIStream.
+ */
+export async function callAIStreamWithTools<T extends ToolSet>(
+  taskName: string,
+  messages: AiMessage[],
+  options: { system?: string; tools?: T; maxToolSteps?: number }
+) {
+  const config = await getModelConfig(taskName);
+  const model = buildModel(config);
+
+  return streamText({
+    model,
+    system: options.system,
+    messages,
+    maxOutputTokens: config.max_tokens || undefined,
+    temperature: config.temperature,
+    tools: options.tools && Object.keys(options.tools).length > 0 ? options.tools : undefined,
+    stopWhen: options.tools && Object.keys(options.tools).length > 0
+      ? stepCountIs(options.maxToolSteps ?? 4)
+      : undefined,
+  });
 }
 
 export async function getTaskPricing(

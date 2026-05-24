@@ -3,10 +3,22 @@
 import { useEffect, useRef } from "react";
 import { MessageBubble } from "./MessageBubble";
 
+export interface ChatMetadata {
+  method_used?: string | null;
+  method_similarity?: number | null;
+  exercises_matched?: number;
+  isMulti?: boolean;
+  exerciseCount?: number;
+  svgs?: string[];
+}
+
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant";
   content: string;
+  /** SVG-uri generate de tool use (figuri geometrice, grafice) */
+  svgs?: string[];
+  metadata?: ChatMetadata;
 }
 
 interface Props {
@@ -38,7 +50,7 @@ export function ChatMessages({ messages, streamingContent, isStreaming }: Props)
   return (
     <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
       {messages.map((msg) => (
-        <MessageBubble key={msg.id} role={msg.role} content={msg.content} />
+        <MessageBubble key={msg.id} role={msg.role} content={msg.content} svgs={msg.svgs} />
       ))}
       {isStreaming && streamingContent !== undefined && (
         <MessageBubble
