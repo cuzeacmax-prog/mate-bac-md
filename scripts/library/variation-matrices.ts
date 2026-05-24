@@ -8,6 +8,8 @@ import type { RegularPolygonInput } from '../../src/lib/geometry/polygon';
 import type { CubeInput, RectangularPrismInput } from '../../src/lib/geometry/solid3d';
 import type { RegularPyramidInput } from '../../src/lib/geometry/pyramid';
 import type { CylinderInput, ConeInput, SphereInput } from '../../src/lib/geometry/rotational';
+import type { FrustumPyramidInput, FrustumConeInput } from '../../src/lib/geometry/frustum';
+import type { CubeSectionInput, PyramidSectionInput, ConeSectionInput, SphereSectionInput, CylinderSectionInput } from '../../src/lib/geometry/sections';
 
 // ─── Triangles (50 variații) ──────────────────────────────────────────────────
 
@@ -382,5 +384,126 @@ export function generateSphereVariations(): SphereInput[] {
     { radius: 6, show_equator: true, show_meridian: true, label_center: 'O' },
     { radius: 3, label_center: 'O' },
     { radius: 5, show_meridian: true, label_center: 'O', show_radius: true },
+  ];
+}
+
+// ─── Trunchiuri (8 variații) ──────────────────────────────────────────────────
+
+export function generateFrustumPyramidVariations(): FrustumPyramidInput[] {
+  return [
+    { base_sides: 3, base_radius: 4, top_radius: 2, height: 5, show_height: true, label_vertices: true, show_hidden_lines: true },
+    { base_sides: 3, base_radius: 5, top_radius: 2.5, height: 6, show_apothem_lateral: true, label_vertices: true },
+    { base_sides: 4, base_radius: 5, top_radius: 3, height: 6, show_height: true, label_vertices: true, show_hidden_lines: true },
+    { base_sides: 4, base_radius: 4, top_radius: 2, height: 5, show_apothem_lateral: true, label_vertices: true },
+    { base_sides: 4, base_radius: 6, top_radius: 3, height: 8, show_height: true, show_apothem_lateral: true, label_vertices: true },
+    { base_sides: 6, base_radius: 6, top_radius: 4, height: 7, show_height: true, label_vertices: true, show_hidden_lines: true },
+    { base_sides: 6, base_radius: 5, top_radius: 3, height: 6, show_apothem_lateral: true, label_vertices: true },
+    { base_sides: 6, base_radius: 7, top_radius: 4, height: 8, show_height: true, label_vertices: true },
+  ];
+}
+
+export function generateFrustumConeVariations(): FrustumConeInput[] {
+  return [
+    { bottom_radius: 5, top_radius: 3, height: 6, show_axis: true, show_radii: true, label_bottom_center: 'O', label_top_center: "O'" },
+    { bottom_radius: 4, top_radius: 2, height: 5, show_axis: true, show_slant: true, label_bottom_center: 'O' },
+    { bottom_radius: 6, top_radius: 3, height: 8, show_radii: true, show_slant: true, label_bottom_center: 'O', label_top_center: "O'" },
+    { bottom_radius: 3, top_radius: 1.5, height: 4, show_axis: true, show_radii: true, show_slant: true },
+  ];
+}
+
+// ─── Plane secante (10 variații) ──────────────────────────────────────────────
+
+export function generateCubeSectionVariations(): CubeSectionInput[] {
+  return [
+    { side: 5, plane_type: 'horizontal', plane_position: 0.5, show_full_cube: true, highlight_section: true, label_section_vertices: true },
+    { side: 4, plane_type: 'diagonal_face', show_full_cube: true, highlight_section: true, label_section_vertices: true },
+    { side: 6, plane_type: 'diagonal_space', show_full_cube: true, highlight_section: true, label_section_vertices: true },
+  ];
+}
+
+export function generatePyramidSectionVariations(): PyramidSectionInput[] {
+  return [
+    { base_sides: 4, base_radius: 4, height: 6, section_height_ratio: 0.5, highlight_section: true, label_vertices: true },
+    { base_sides: 3, base_radius: 4, height: 7, section_height_ratio: 0.6, highlight_section: true, label_vertices: true },
+    { base_sides: 6, base_radius: 5, height: 8, section_height_ratio: 0.4, highlight_section: true, label_vertices: true },
+  ];
+}
+
+export function generateConeSectionVariations(): ConeSectionInput[] {
+  return [
+    { base_radius: 5, height: 7, section_height_ratio: 0.6, highlight_section: true },
+    { base_radius: 4, height: 6, section_height_ratio: 0.5, highlight_section: true },
+  ];
+}
+
+export function generateSphereSectionVariations(): SphereSectionInput[] {
+  return [
+    { radius: 5, section_distance_from_center: 0, highlight_section: true },   // cerc mare
+    { radius: 5, section_distance_from_center: 3, highlight_section: true },   // cerc mic
+  ];
+}
+
+export function generateCylinderSectionVariations(): CylinderSectionInput[] {
+  return [
+    { radius: 4, height: 8, section_type: 'horizontal', highlight_section: true },
+    { radius: 4, height: 8, section_type: 'axial', highlight_section: true },
+    { radius: 4, height: 8, section_type: 'oblique', oblique_angle: 45, highlight_section: true },
+  ];
+}
+
+// ─── Speciale (8 variații) ────────────────────────────────────────────────────
+
+export function generateTetrahedronVariations() {
+  return [
+    { side: 4, show_height: true, label_vertices: true },
+    { side: 5, show_height: true, show_edges: true, label_vertices: true },
+    { side: 6, label_vertices: true },
+  ];
+}
+
+export function generateObliquePrismVariations() {
+  return [
+    { base_width: 4, base_length: 4, height: 6, oblique_offset_x: 1.5, label_vertices: true, show_hidden_lines: false },
+    { base_width: 5, base_length: 3, height: 5, oblique_offset_x: 2, label_vertices: true },
+  ];
+}
+
+export function generateCubeAllDiagonalsVariations() {
+  return [
+    { side: 4, show_all_diagonals: true, show_hidden_lines: true, label_vertices: true },
+    { side: 5, show_all_diagonals: true, show_hidden_lines: true, label_vertices: true, highlighted_space_diagonal: "AC'" as const },
+  ];
+}
+
+export function generateSphereWithCirclesVariations() {
+  return [
+    { radius: 4, show_equator: true, show_great_circle: true, show_small_circle: { distance_from_center: 2 }, label_center: 'O' },
+    { radius: 5, show_equator: true, show_small_circle: { distance_from_center: 3 }, label_center: 'O' },
+  ];
+}
+
+// ─── Triunghi extins (6 variații) ─────────────────────────────────────────────
+
+export function generateTriangleMidsegmentVariations(): TriangleAdvancedInput[] {
+  return [
+    { a: 6, b: 8, c: 10, show_sides: true, show_vertices: true, show_midsegments: true },
+    { a: 5, b: 7, c: 8, show_sides: true, show_vertices: true, show_midsegments: true, show_median_triangle: true },
+    { a: 6, b: 6, c: 6, show_sides: true, show_vertices: true, show_midsegments: true },
+  ];
+}
+
+export function generateTrianglePerpBisectorVariations(): TriangleAdvancedInput[] {
+  return [
+    { a: 5, b: 7, c: 8, show_sides: true, show_vertices: true, show_perpendicular_bisectors: true, show_circumcircle: true },
+    { a: 6, b: 6, c: 6, show_sides: true, show_vertices: true, show_perpendicular_bisectors: true },
+  ];
+}
+
+export function generateTriangleCentroidVariations(): TriangleAdvancedInput[] {
+  return [
+    { a: 5, b: 7, c: 8, show_sides: true, show_vertices: true, show_centroid: true,
+      constructions: [{ type: 'median', from: 'A' }, { type: 'median', from: 'B' }, { type: 'median', from: 'C' }] },
+    { a: 6, b: 8, c: 10, show_sides: true, show_vertices: true, show_centroid: true,
+      constructions: [{ type: 'median', from: 'A' }, { type: 'median', from: 'B' }, { type: 'median', from: 'C' }] },
   ];
 }

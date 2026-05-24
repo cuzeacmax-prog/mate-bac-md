@@ -30,6 +30,12 @@ export interface RegularPyramidInput {
   show_hidden_lines?: boolean;
   label_apex?: string;
   label_vertices?: boolean;
+
+  // Cazuri speciale
+  is_regular_tetrahedron?: boolean;  // toate fețele triunghiuri echilaterale egale
+  show_apothem_lateral?: boolean;    // apotema laterală (de la vârf la mijloc latură bază)
+  show_apothem_base?: boolean;       // apotema bazei (de la centru bază la mijloc latură)
+  show_lateral_edge?: boolean;       // muchia laterală cu etichetă
 }
 
 export interface PyramidOutput {
@@ -152,7 +158,7 @@ export function generateRegularPyramidAdvanced(input: RegularPyramidInput): Pyra
   }
 
   // Step 4: apothem (slant height to midpoint of base edge)
-  if (input.show_apothem) {
+  if (input.show_apothem || input.show_apothem_lateral) {
     const mid: Point3D = [
       (base3D[0][0] + base3D[1][0]) / 2,
       0,
@@ -164,6 +170,35 @@ export function generateRegularPyramidAdvanced(input: RegularPyramidInput): Pyra
       step: steps.length + 1,
       title: 'Apotema laterală',
       explanation: `Apotema laterală l = √(h² + a²) = ${slantHeight.toFixed(2)}.`,
+      cumulative_tikz: cum + `\\end{tikzpicture}`,
+    });
+  }
+
+  // Apotema bazei
+  if (input.show_apothem_base) {
+    const baseCenterPt = proj([0, 0, 0]);
+    const mid: Point3D = [
+      (base3D[0][0] + base3D[1][0]) / 2,
+      0,
+      (base3D[0][2] + base3D[1][2]) / 2,
+    ];
+    const midPt = proj(mid);
+    cum += `  \\draw[teal] ${p2str(baseCenterPt)} -- ${p2str(midPt)} node[midway, below] {$a=${fmt(apothem, 2)}$};\n`;
+    steps.push({
+      step: steps.length + 1,
+      title: 'Apotema bazei',
+      explanation: `Apotema bazei a = R·cos(π/${n}) = ${apothem.toFixed(2)}.`,
+      cumulative_tikz: cum + `\\end{tikzpicture}`,
+    });
+  }
+
+  // Muchia laterală cu etichetă
+  if (input.show_lateral_edge) {
+    cum += `  \\draw[purple, thick] ${p2str(apexPt)} -- ${p2str(basePts[0])} node[midway, left] {$m=${fmt(lateralEdge, 2)}$};\n`;
+    steps.push({
+      step: steps.length + 1,
+      title: 'Muchia laterală',
+      explanation: `Muchia laterală m = √(h² + R²) = ${lateralEdge.toFixed(2)}.`,
       cumulative_tikz: cum + `\\end{tikzpicture}`,
     });
   }
@@ -182,4 +217,36 @@ export function generateRegularPyramidAdvanced(input: RegularPyramidInput): Pyra
     },
     construction_steps: steps,
   };
+}
+
+// ─── Regular Tetrahedron ──────────────────────────────────────────────────────
+
+export interface RegularTetrahedronInput {
+  side: number;              // latura unică (toate laturile egale)
+  show_height?: boolean;
+  show_edges?: boolean;
+  label_vertices?: boolean;
+}
+
+/**
+ * Tetraedru regulat — caz special al piramidei cu baza triunghiulară echilaterală
+ * și toate fețele triunghiuri echilaterale egale.
+ */
+export function generateRegularTetrahedronAdvanced(input: RegularTetrahedronInput): PyramidOutput {
+  const s = input.side;
+
+  // Raza circumscrisă bazei (triunghi echilateral cu latura s)
+  const R = s / Math.sqrt(3);
+  const h = s * Math.sqrt(2 / 3);
+
+  return generateRegularPyramidAdvanced({
+    base_sides: 3,
+    base_radius: R,
+    height: h,
+    show_height: input.show_height,
+    show_lateral_edges: input.show_edges,
+    label_vertices: input.label_vertices,
+    label_apex: 'D',
+    is_regular_tetrahedron: true,
+  });
 }

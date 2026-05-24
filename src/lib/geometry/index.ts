@@ -9,3 +9,5 @@ export * from './solid3d';
 export * from './pyramid';
 export * from './rotational';
 export * from './markers';
+export * from './frustum';
+export * from './sections';

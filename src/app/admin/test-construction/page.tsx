@@ -15,7 +15,25 @@ type ShapeType =
   | 'pyramid'
   | 'cylinder'
   | 'cone'
-  | 'sphere';
+  | 'sphere'
+  // Nou: trunchiuri
+  | 'frustum_pyramid'
+  | 'frustum_cone'
+  // Nou: plane secante
+  | 'section_cube'
+  | 'section_pyramid'
+  | 'section_cone'
+  | 'section_sphere'
+  | 'section_cylinder'
+  // Nou: speciale
+  | 'tetrahedron'
+  | 'oblique_prism'
+  | 'cube_all_diagonals'
+  | 'sphere_with_circles'
+  // Nou: triunghi extins
+  | 'triangle_midsegments'
+  | 'triangle_perp_bisectors'
+  | 'triangle_centroid';
 
 const SHAPE_OPTIONS: Array<{ value: ShapeType; label: string }> = [
   { value: 'triangle', label: 'Triunghi' },
@@ -29,6 +47,24 @@ const SHAPE_OPTIONS: Array<{ value: ShapeType; label: string }> = [
   { value: 'cylinder', label: 'Cilindru' },
   { value: 'cone', label: 'Con' },
   { value: 'sphere', label: 'Sferă' },
+  // Trunchiuri
+  { value: 'frustum_pyramid', label: 'Trunchi de piramidă' },
+  { value: 'frustum_cone', label: 'Trunchi de con' },
+  // Plane secante
+  { value: 'section_cube', label: 'Cub cu plan secant' },
+  { value: 'section_pyramid', label: 'Piramidă cu plan secant' },
+  { value: 'section_cone', label: 'Con cu plan secant' },
+  { value: 'section_sphere', label: 'Sferă cu plan secant' },
+  { value: 'section_cylinder', label: 'Cilindru cu plan secant' },
+  // Speciale
+  { value: 'tetrahedron', label: 'Tetraedru regulat' },
+  { value: 'oblique_prism', label: 'Prismă oblică' },
+  { value: 'cube_all_diagonals', label: 'Cub cu toate diagonalele' },
+  { value: 'sphere_with_circles', label: 'Sferă cu cerc mare + mic' },
+  // Triunghi extins
+  { value: 'triangle_midsegments', label: 'Triunghi — linii mijlocii' },
+  { value: 'triangle_perp_bisectors', label: 'Triunghi — mediatoare' },
+  { value: 'triangle_centroid', label: 'Triunghi — centru de greutate G' },
 ];
 
 type Vertex = 'A' | 'B' | 'C' | '';
@@ -586,6 +622,304 @@ function SolidForm({ solidType, onResult }: { solidType: ShapeType; onResult: (s
   );
 }
 
+// ─── Frustum form ─────────────────────────────────────────────────────────────
+
+function FrustumForm({ frustumType, onResult }: { frustumType: 'frustum_pyramid' | 'frustum_cone'; onResult: (svg: string, steps: ConstructionStep[]) => void }) {
+  const [baseSides, setBaseSides] = useState('4');
+  const [baseRadius, setBaseRadius] = useState('5');
+  const [topRadius, setTopRadius] = useState('3');
+  const [height, setHeight] = useState('6');
+  const [showHeight, setShowHeight] = useState(true);
+  const [showSlant, setShowSlant] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handle() {
+    setLoading(true); setError('');
+    const type = frustumType === 'frustum_pyramid' ? 'pyramid' : 'cone';
+    const input = frustumType === 'frustum_pyramid'
+      ? { base_sides: parseInt(baseSides), base_radius: parseFloat(baseRadius), top_radius: parseFloat(topRadius), height: parseFloat(height), show_height: showHeight, show_apothem_lateral: showSlant, label_vertices: true, show_hidden_lines: true }
+      : { bottom_radius: parseFloat(baseRadius), top_radius: parseFloat(topRadius), height: parseFloat(height), show_axis: showHeight, show_slant: showSlant, show_radii: true, label_bottom_center: 'O', label_top_center: "O'" };
+    try {
+      const res = await fetch('/api/admin/generate-frustum', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type, input }) });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error || 'Eroare'); setLoading(false); return; }
+      const steps: ConstructionStep[] = (data.construction_steps ?? []).filter((s: { svg: string | null }) => !!s.svg).map((s: ConstructionStep) => s);
+      onResult(data.svg || '', steps);
+    } catch (e) { setError(e instanceof Error ? e.message : 'Eroare'); }
+    setLoading(false);
+  }
+
+  return (
+    <div className="space-y-4">
+      {frustumType === 'frustum_pyramid' && (
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">Nr. laturi bază</label>
+          <select value={baseSides} onChange={(e) => setBaseSides(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+            {['3','4','6'].map((n) => <option key={n} value={n}>{n} laturi</option>)}
+          </select>
+        </div>
+      )}
+      <div className="grid grid-cols-3 gap-3">
+        {[{ l: 'Raza mare (R)', v: baseRadius, s: setBaseRadius }, { l: 'Raza mică (r)', v: topRadius, s: setTopRadius }, { l: 'Înălțimea (h)', v: height, s: setHeight }].map(({ l, v, s }) => (
+          <div key={l}>
+            <label className="block text-xs font-medium text-gray-600 mb-1">{l}</label>
+            <input type="number" step="0.5" min="0.5" value={v} onChange={(e) => s(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" />
+          </div>
+        ))}
+      </div>
+      <div className="space-y-1.5">
+        <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={showHeight} onChange={(e) => setShowHeight(e.target.checked)} /><span className="text-sm">Înălțimea</span></label>
+        <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={showSlant} onChange={(e) => setShowSlant(e.target.checked)} /><span className="text-sm">Generatoarea laterală</span></label>
+      </div>
+      {error && <p className="text-xs text-red-600">{error}</p>}
+      <button onClick={handle} disabled={loading} className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-md font-semibold text-sm">
+        {loading ? 'Se generează...' : frustumType === 'frustum_pyramid' ? 'Generează trunchi piramidă' : 'Generează trunchi con'}
+      </button>
+    </div>
+  );
+}
+
+// ─── Section form ─────────────────────────────────────────────────────────────
+
+function SectionForm({ sectionType, onResult }: { sectionType: ShapeType; onResult: (svg: string, steps: ConstructionStep[]) => void }) {
+  const [side, setSide] = useState('5');
+  const [baseSides, setBaseSides] = useState('4');
+  const [baseRadius, setBaseRadius] = useState('4');
+  const [height, setHeight] = useState('6');
+  const [ratio, setRatio] = useState('0.5');
+  const [radius, setRadius] = useState('5');
+  const [distFromCenter, setDistFromCenter] = useState('2');
+  const [planeType, setPlaneType] = useState<'horizontal' | 'vertical' | 'diagonal_face' | 'diagonal_space'>('horizontal');
+  const [cylSection, setCylSection] = useState<'horizontal' | 'axial' | 'oblique'>('horizontal');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handle() {
+    setLoading(true); setError('');
+    let shape = sectionType.replace('section_', '');
+    let input: Record<string, unknown>;
+    if (sectionType === 'section_cube') {
+      input = { side: parseFloat(side), plane_type: planeType, plane_position: 0.5, show_full_cube: true, highlight_section: true, label_section_vertices: true };
+    } else if (sectionType === 'section_pyramid') {
+      input = { base_sides: parseInt(baseSides), base_radius: parseFloat(baseRadius), height: parseFloat(height), section_height_ratio: parseFloat(ratio), highlight_section: true, label_vertices: true };
+    } else if (sectionType === 'section_cone') {
+      input = { base_radius: parseFloat(baseRadius), height: parseFloat(height), section_height_ratio: parseFloat(ratio), highlight_section: true };
+    } else if (sectionType === 'section_sphere') {
+      input = { radius: parseFloat(radius), section_distance_from_center: parseFloat(distFromCenter), highlight_section: true };
+    } else {
+      input = { radius: parseFloat(baseRadius), height: parseFloat(height), section_type: cylSection, highlight_section: true };
+    }
+    try {
+      const res = await fetch('/api/admin/generate-section', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ shape, input }) });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error || 'Eroare'); setLoading(false); return; }
+      const steps: ConstructionStep[] = (data.construction_steps ?? []).filter((s: { svg: string | null }) => !!s.svg).map((s: ConstructionStep) => s);
+      onResult(data.svg || '', steps);
+    } catch (e) { setError(e instanceof Error ? e.message : 'Eroare'); }
+    setLoading(false);
+  }
+
+  return (
+    <div className="space-y-4">
+      {sectionType === 'section_cube' && (
+        <>
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">Latura cubului</label>
+            <input type="number" step="0.5" min="1" value={side} onChange={(e) => setSide(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">Tipul planului secant</label>
+            <select value={planeType} onChange={(e) => setPlaneType(e.target.value as typeof planeType)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+              <option value="horizontal">Orizontal</option>
+              <option value="vertical">Vertical</option>
+              <option value="diagonal_face">Diagonal față</option>
+              <option value="diagonal_space">Diagonal spațial</option>
+            </select></div>
+        </>
+      )}
+      {(sectionType === 'section_pyramid') && (
+        <div className="grid grid-cols-2 gap-3">
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">Nr. laturi</label>
+            <select value={baseSides} onChange={(e) => setBaseSides(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+              {['3','4','6'].map((n) => <option key={n} value={n}>{n}</option>)}
+            </select></div>
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">Raza bazei</label>
+            <input type="number" step="0.5" value={baseRadius} onChange={(e) => setBaseRadius(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">Înălțimea</label>
+            <input type="number" step="0.5" value={height} onChange={(e) => setHeight(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">Fracție înălțime (0-1)</label>
+            <input type="number" step="0.05" min="0.1" max="0.9" value={ratio} onChange={(e) => setRatio(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+        </div>
+      )}
+      {sectionType === 'section_cone' && (
+        <div className="grid grid-cols-3 gap-3">
+          {[{ l: 'Raza', v: baseRadius, s: setBaseRadius }, { l: 'Înălțimea', v: height, s: setHeight }, { l: 'Fracție (0-1)', v: ratio, s: setRatio }].map(({ l, v, s }) => (
+            <div key={l}><label className="block text-xs font-medium text-gray-600 mb-1">{l}</label>
+              <input type="number" step="0.05" min="0.1" value={v} onChange={(e) => s(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+          ))}
+        </div>
+      )}
+      {sectionType === 'section_sphere' && (
+        <div className="grid grid-cols-2 gap-3">
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">Raza sferei</label>
+            <input type="number" step="0.5" min="1" value={radius} onChange={(e) => setRadius(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">Distanța de la centru (0=cerc mare)</label>
+            <input type="number" step="0.1" min="0" value={distFromCenter} onChange={(e) => setDistFromCenter(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+        </div>
+      )}
+      {sectionType === 'section_cylinder' && (
+        <>
+          <div className="grid grid-cols-2 gap-3">
+            {[{ l: 'Raza', v: baseRadius, s: setBaseRadius }, { l: 'Înălțimea', v: height, s: setHeight }].map(({ l, v, s }) => (
+              <div key={l}><label className="block text-xs font-medium text-gray-600 mb-1">{l}</label>
+                <input type="number" step="0.5" value={v} onChange={(e) => s(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+            ))}
+          </div>
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">Tipul secțiunii</label>
+            <select value={cylSection} onChange={(e) => setCylSection(e.target.value as typeof cylSection)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+              <option value="horizontal">Orizontal (elipsă)</option>
+              <option value="axial">Axial (dreptunghi)</option>
+              <option value="oblique">Oblic</option>
+            </select></div>
+        </>
+      )}
+      {error && <p className="text-xs text-red-600">{error}</p>}
+      <button onClick={handle} disabled={loading} className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-md font-semibold text-sm">
+        {loading ? 'Se generează...' : 'Generează secțiune'}
+      </button>
+    </div>
+  );
+}
+
+// ─── Special shapes form ──────────────────────────────────────────────────────
+
+function SpecialShapeForm({ shapeType, onResult }: { shapeType: ShapeType; onResult: (svg: string, steps: ConstructionStep[]) => void }) {
+  const [side, setSide] = useState('5');
+  const [radius, setRadius] = useState('5');
+  const [smallCircleDist, setSmallCircleDist] = useState('2');
+  const [baseWidth, setBaseWidth] = useState('4');
+  const [baseLength, setBaseLength] = useState('4');
+  const [height, setHeight] = useState('6');
+  const [oblOffset, setOblOffset] = useState('1.5');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handle() {
+    setLoading(true); setError('');
+    let shape = '';
+    let input: Record<string, unknown>;
+
+    if (shapeType === 'tetrahedron') {
+      shape = 'tetrahedron';
+      input = { side: parseFloat(side), show_height: true, label_vertices: true };
+    } else if (shapeType === 'oblique_prism') {
+      shape = 'oblique_prism';
+      input = { base_width: parseFloat(baseWidth), base_length: parseFloat(baseLength), height: parseFloat(height), oblique_offset_x: parseFloat(oblOffset), label_vertices: true };
+    } else if (shapeType === 'cube_all_diagonals') {
+      // Re-uses solid endpoint via /generate-solid with show_all_diagonals
+      const res = await fetch('/api/admin/generate-solid', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'cube', input: { side: parseFloat(side), show_all_diagonals: true, show_hidden_lines: true, label_vertices: true } }) });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error || 'Eroare'); setLoading(false); return; }
+      const steps2: ConstructionStep[] = (data.construction_steps ?? []).filter((s: { svg: string | null }) => !!s.svg).map((s: ConstructionStep) => s);
+      onResult(data.svg || '', steps2);
+      setLoading(false);
+      return;
+    } else {
+      // sphere_with_circles — re-uses /generate-solid with sphere
+      const res = await fetch('/api/admin/generate-solid', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'sphere', input: { radius: parseFloat(radius), show_equator: true, show_great_circle: true, show_small_circle: { distance_from_center: parseFloat(smallCircleDist) }, label_center: 'O' } }) });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error || 'Eroare'); setLoading(false); return; }
+      const steps2: ConstructionStep[] = (data.construction_steps ?? []).filter((s: { svg: string | null }) => !!s.svg).map((s: ConstructionStep) => s);
+      onResult(data.svg || '', steps2);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/admin/generate-section', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ shape, input }) });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error || 'Eroare'); setLoading(false); return; }
+      const steps: ConstructionStep[] = (data.construction_steps ?? []).filter((s: { svg: string | null }) => !!s.svg).map((s: ConstructionStep) => s);
+      onResult(data.svg || '', steps);
+    } catch (e) { setError(e instanceof Error ? e.message : 'Eroare'); }
+    setLoading(false);
+  }
+
+  return (
+    <div className="space-y-4">
+      {shapeType === 'tetrahedron' && (
+        <div><label className="block text-xs font-medium text-gray-600 mb-1">Latura (toate egale)</label>
+          <input type="number" step="0.5" min="1" value={side} onChange={(e) => setSide(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+      )}
+      {shapeType === 'oblique_prism' && (
+        <div className="grid grid-cols-2 gap-3">
+          {[{ l: 'Lățimea bazei', v: baseWidth, s: setBaseWidth }, { l: 'Lungimea bazei', v: baseLength, s: setBaseLength }, { l: 'Înălțimea', v: height, s: setHeight }, { l: 'Deplasare laterală', v: oblOffset, s: setOblOffset }].map(({ l, v, s }) => (
+            <div key={l}><label className="block text-xs font-medium text-gray-600 mb-1">{l}</label>
+              <input type="number" step="0.5" value={v} onChange={(e) => s(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+          ))}
+        </div>
+      )}
+      {shapeType === 'cube_all_diagonals' && (
+        <div><label className="block text-xs font-medium text-gray-600 mb-1">Latura cubului</label>
+          <input type="number" step="0.5" min="1" value={side} onChange={(e) => setSide(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+      )}
+      {shapeType === 'sphere_with_circles' && (
+        <div className="grid grid-cols-2 gap-3">
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">Raza sferei</label>
+            <input type="number" step="0.5" min="1" value={radius} onChange={(e) => setRadius(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+          <div><label className="block text-xs font-medium text-gray-600 mb-1">Distanța cerc mic (0=cerc mare)</label>
+            <input type="number" step="0.5" min="0" value={smallCircleDist} onChange={(e) => setSmallCircleDist(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+        </div>
+      )}
+      {error && <p className="text-xs text-red-600">{error}</p>}
+      <button onClick={handle} disabled={loading} className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-md font-semibold text-sm">
+        {loading ? 'Se generează...' : 'Generează'}
+      </button>
+    </div>
+  );
+}
+
+// ─── Triangle extension form ───────────────────────────────────────────────────
+
+function TriangleExtForm({ extType, onResult }: { extType: ShapeType; onResult: (svg: string, steps: ConstructionStep[]) => void }) {
+  const [a, setA] = useState('5');
+  const [b, setB] = useState('7');
+  const [c, setC] = useState('8');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handle() {
+    setLoading(true); setError('');
+    const base = { a: parseFloat(a), b: parseFloat(b), c: parseFloat(c), show_sides: true, show_vertices: true };
+    let input: Record<string, unknown> = { ...base };
+    if (extType === 'triangle_midsegments') input = { ...base, show_midsegments: true };
+    else if (extType === 'triangle_perp_bisectors') input = { ...base, show_perpendicular_bisectors: true };
+    else input = { ...base, show_centroid: true, constructions: [{ type: 'median', from: 'A' }, { type: 'median', from: 'B' }, { type: 'median', from: 'C' }] };
+
+    try {
+      const res = await fetch('/api/admin/generate-advanced', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ shape: 'triangle', input }) });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error || 'Eroare'); setLoading(false); return; }
+      const steps: ConstructionStep[] = (data.construction_steps ?? []).filter((s: { svg: string | null }) => !!s.svg).map((s: ConstructionStep) => s);
+      onResult(data.svg || '', steps);
+    } catch (e) { setError(e instanceof Error ? e.message : 'Eroare'); }
+    setLoading(false);
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-3 gap-3">
+        {[{ l: 'a (BC)', v: a, s: setA }, { l: 'b (CA)', v: b, s: setB }, { l: 'c (AB)', v: c, s: setC }].map(({ l, v, s }) => (
+          <div key={l}><label className="block text-xs font-medium text-gray-600 mb-1">{l}</label>
+            <input type="number" step="0.5" min="0.5" value={v} onChange={(e) => s(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" /></div>
+        ))}
+      </div>
+      {error && <p className="text-xs text-red-600">{error}</p>}
+      <button onClick={handle} disabled={loading} className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-md font-semibold text-sm">
+        {loading ? 'Se generează...' : 'Generează'}
+      </button>
+    </div>
+  );
+}
+
 // ─── Main page ────────────────────────────────────────────────────────────────
 
 export default function TestConstructionPage() {
@@ -629,6 +963,18 @@ export default function TestConstructionPage() {
           {shape === 'polygon' && <PolygonForm onResult={handleResult} />}
           {(shape === 'cube' || shape === 'prism' || shape === 'pyramid' || shape === 'cylinder' || shape === 'cone' || shape === 'sphere') && (
             <SolidForm solidType={shape} onResult={handleResult} />
+          )}
+          {(shape === 'frustum_pyramid' || shape === 'frustum_cone') && (
+            <FrustumForm frustumType={shape} onResult={handleResult} />
+          )}
+          {(shape === 'section_cube' || shape === 'section_pyramid' || shape === 'section_cone' || shape === 'section_sphere' || shape === 'section_cylinder') && (
+            <SectionForm sectionType={shape} onResult={handleResult} />
+          )}
+          {(shape === 'tetrahedron' || shape === 'oblique_prism' || shape === 'cube_all_diagonals' || shape === 'sphere_with_circles') && (
+            <SpecialShapeForm shapeType={shape} onResult={handleResult} />
+          )}
+          {(shape === 'triangle_midsegments' || shape === 'triangle_perp_bisectors' || shape === 'triangle_centroid') && (
+            <TriangleExtForm extType={shape} onResult={handleResult} />
           )}
         </div>
 

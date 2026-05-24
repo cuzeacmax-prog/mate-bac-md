@@ -1,6 +1,7 @@
 import * as Tri from './triangle';
 import * as Markers from './markers';
 import type { Point, Triangle } from './types';
+import { midSegment, perpendicularBisector, medianTriangle } from './triangle';
 
 // ─── Private helpers ────────────────────────────────────────────────────────────
 
@@ -274,6 +275,23 @@ export interface TriangleAdvancedInput {
     arc_radius?: number;
     color?: string;
   }>;
+
+  // ── NEW: linii mijlocii, triunghi median, mediatoare, centroid ────────────────
+
+  /** Afișează liniile mijlocii (segmentele de mijloc). true = toate 3, sau array boolean [a, b, c]. */
+  show_midsegments?: boolean | boolean[];
+
+  /** Afișează triunghiul median (linii între cele 3 mijloace de laturi). */
+  show_median_triangle?: boolean;
+
+  /** Afișează mediatoarele. true = toate 3, sau array boolean [a, b, c]. */
+  show_perpendicular_bisectors?: boolean | boolean[];
+
+  /** Afișează centrul de greutate G ca punct cu etichetă. */
+  show_centroid?: boolean;
+
+  /** Afișează circumcentrul O (intersecția mediatoarelor) ca punct cu etichetă. */
+  show_circumcenter_point?: boolean;
 }
 
 export interface TriangleAdvancedOutput {
@@ -497,6 +515,109 @@ export function generateTriangleAdvanced(input: TriangleAdvancedInput): Triangle
       title: line.description,
       explanation: line.description + mergeNote,
       elements_added: [line.label],
+      cumulative_tikz: cumulativeTikz + '\\end{tikzpicture}',
+    });
+  }
+
+  // ── NEW: linii mijlocii ────────────────────────────────────────────────────────
+  const showMidsegs = input.show_midsegments;
+  if (showMidsegs) {
+    const flags: [boolean, boolean, boolean] =
+      Array.isArray(showMidsegs)
+        ? [showMidsegs[0] ?? true, showMidsegs[1] ?? true, showMidsegs[2] ?? true]
+        : [true, true, true];
+
+    const midsegs: Array<['a' | 'b' | 'c', boolean]> = [['a', flags[0]], ['b', flags[1]], ['c', flags[2]]];
+    for (const [side, show] of midsegs) {
+      if (!show) continue;
+      const seg = midSegment(triangle, side);
+      cumulativeTikz += `  \\draw[thick, teal!70!black] (${seg.start[0].toFixed(3)},${seg.start[1].toFixed(3)}) -- (${seg.end[0].toFixed(3)},${seg.end[1].toFixed(3)});\n`;
+      const midX = (seg.start[0] + seg.end[0]) / 2;
+      const midY = (seg.start[1] + seg.end[1]) / 2;
+      const lp = exteriorLabelPosition(seg.start, seg.end, centroidPoint, 0.28);
+      cumulativeTikz += `  \\node[rotate=${lp.rotation.toFixed(1)}, teal!70!black, small] at (${lp.x.toFixed(3)},${lp.y.toFixed(3)}) {$m_${side}$};\n`;
+      // midpoints as dots
+      cumulativeTikz += `  \\fill[teal!70!black] (${seg.start[0].toFixed(3)},${seg.start[1].toFixed(3)}) circle (0.04);\n`;
+      cumulativeTikz += `  \\fill[teal!70!black] (${seg.end[0].toFixed(3)},${seg.end[1].toFixed(3)}) circle (0.04);\n`;
+      // suppress midX warning
+      void midX; void midY;
+    }
+    steps.push({
+      step: steps.length + 1,
+      title: 'Liniile mijlocii',
+      explanation: 'Linia mijlocie este paralelă cu latura corespunzătoare și egală cu jumătatea ei.',
+      elements_added: ['midsegments'],
+      cumulative_tikz: cumulativeTikz + '\\end{tikzpicture}',
+    });
+  }
+
+  // ── NEW: triunghi median ───────────────────────────────────────────────────────
+  if (input.show_median_triangle) {
+    const mt = medianTriangle(triangle);
+    // Ma = mt.B, Mb = mt.C, Mc = mt.A  (din definiția medianTriangle)
+    const Ma = mt.B; // mijlocul BC
+    const Mb = mt.C; // mijlocul CA
+    const Mc = mt.A; // mijlocul AB
+    cumulativeTikz += `  \\draw[thick, violet!70!black, dashed] (${Mc[0].toFixed(3)},${Mc[1].toFixed(3)}) -- (${Ma[0].toFixed(3)},${Ma[1].toFixed(3)}) -- (${Mb[0].toFixed(3)},${Mb[1].toFixed(3)}) -- cycle;\n`;
+    // Labels
+    const labelOffset = 0.2;
+    const maCent = centroidPoint;
+    [{ p: Ma, l: 'M_a' }, { p: Mb, l: 'M_b' }, { p: Mc, l: 'M_c' }].forEach(({ p, l }) => {
+      cumulativeTikz += `  \\fill[violet!70!black] (${p[0].toFixed(3)},${p[1].toFixed(3)}) circle (0.04);\n`;
+      const lp = exteriorLabelPosition(p, p, maCent, labelOffset);
+      cumulativeTikz += `  \\node[violet!70!black] at (${lp.x.toFixed(3)},${lp.y.toFixed(3)}) {$${l}$};\n`;
+    });
+    steps.push({
+      step: steps.length + 1,
+      title: 'Triunghiul median',
+      explanation: 'Triunghiul median MaMbMc are laturile paralele cu laturile triunghiului original și egale cu jumătatea lor.',
+      elements_added: ['median_triangle'],
+      cumulative_tikz: cumulativeTikz + '\\end{tikzpicture}',
+    });
+  }
+
+  // ── NEW: mediatoare ────────────────────────────────────────────────────────────
+  const showPerpBis = input.show_perpendicular_bisectors;
+  if (showPerpBis) {
+    const flags: [boolean, boolean, boolean] =
+      Array.isArray(showPerpBis)
+        ? [showPerpBis[0] ?? true, showPerpBis[1] ?? true, showPerpBis[2] ?? true]
+        : [true, true, true];
+
+    const sides: Array<['a' | 'b' | 'c', boolean]> = [['a', flags[0]], ['b', flags[1]], ['c', flags[2]]];
+    // Extend length relative to triangle size
+    const extLen = (triangle.sideA + triangle.sideB + triangle.sideC) / 15;
+    for (const [side, show] of sides) {
+      if (!show) continue;
+      const bisec = perpendicularBisector(triangle, side, extLen);
+      cumulativeTikz += `  \\draw[thick, orange!80!black] (${bisec.start[0].toFixed(3)},${bisec.start[1].toFixed(3)}) -- (${bisec.end[0].toFixed(3)},${bisec.end[1].toFixed(3)});\n`;
+      cumulativeTikz += `  \\fill[orange!80!black] (${bisec.midPt[0].toFixed(3)},${bisec.midPt[1].toFixed(3)}) circle (0.04);\n`;
+    }
+    // Circumcenter = intersection of perpendicular bisectors
+    const oP = Tri.circumcenter(triangle);
+    cumulativeTikz += `  \\fill[orange!80!black] (${oP[0].toFixed(3)},${oP[1].toFixed(3)}) circle (0.06);\n`;
+    cumulativeTikz += `  \\node[right=2pt, orange!80!black] at (${oP[0].toFixed(3)},${oP[1].toFixed(3)}) {$O$};\n`;
+    points['O'] = oP;
+    steps.push({
+      step: steps.length + 1,
+      title: 'Mediatoarele',
+      explanation: 'Mediatoarele laturilor se intersectează în circumcentrul O — centrul cercului circumscris.',
+      elements_added: ['perpendicular_bisectors', 'O'],
+      cumulative_tikz: cumulativeTikz + '\\end{tikzpicture}',
+    });
+  }
+
+  // ── NEW: centroid explicit ─────────────────────────────────────────────────────
+  if (input.show_centroid) {
+    const G = centroidPoint;
+    cumulativeTikz += `  \\fill[green!50!black] (${G[0].toFixed(3)},${G[1].toFixed(3)}) circle (0.06);\n`;
+    cumulativeTikz += `  \\node[right=2pt, green!50!black] at (${G[0].toFixed(3)},${G[1].toFixed(3)}) {$G$};\n`;
+    points['G'] = G;
+    steps.push({
+      step: steps.length + 1,
+      title: 'Centrul de greutate G',
+      explanation: 'Centrul de greutate G este intersecția celor 3 mediane. Împarte fiecare mediană în raport 2:1 față de vârf.',
+      elements_added: ['G'],
       cumulative_tikz: cumulativeTikz + '\\end{tikzpicture}',
     });
   }

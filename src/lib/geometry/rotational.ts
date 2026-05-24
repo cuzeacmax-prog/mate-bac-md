@@ -35,6 +35,10 @@ export interface SphereInput {
   show_meridian?: boolean;
   show_radius?: boolean;
   label_center?: string;
+
+  // Nou: cerc mare + cerc mic
+  show_great_circle?: boolean;                                  // cerc mare (în plan XZ)
+  show_small_circle?: { distance_from_center: number };        // cerc mic la distanță dată
 }
 
 export interface RotationalOutput {
@@ -255,6 +259,34 @@ export function generateSphereAdvanced(input: SphereInput): RotationalOutput {
 
   if (input.show_radius) {
     cum += `  \\draw[blue] (0,0) -- (${fmt(r)},0) node[midway, above] {$r=${fmt(r, 2)}$};\n`;
+  }
+
+  // Cerc mare (plan vertical XZ — apare ca cerc în 2D)
+  if (input.show_great_circle) {
+    cum += `  \\draw[blue, thick] (0,0) circle (${fmt(r)});\n`; // coincide cu sfera
+    cum += `  \\node[blue, right] at (${fmt(r * 0.7)},${fmt(r * 0.7)}) {cerc mare};\n`;
+    steps.push({
+      step: steps.length + 1,
+      title: 'Cercul mare',
+      explanation: `Cercul mare are același plan cu sfera. Raza = R = ${r}.`,
+      cumulative_tikz: cum + `\\end{tikzpicture}`,
+    });
+  }
+
+  // Cerc mic la o distanță față de centru
+  if (input.show_small_circle) {
+    const d = Math.min(Math.abs(input.show_small_circle.distance_from_center), r * 0.99);
+    const sr = Math.sqrt(Math.max(0, r * r - d * d));
+    cum += `  \\draw[red, thick] (0,${fmt(d)}) ellipse (${fmt(sr)} and ${fmt(sr * 0.3)});\n`;
+    cum += `  \\fill[red] (0,${fmt(d)}) circle (0.04) node[right, red] {$O'$};\n`;
+    cum += `  \\draw[red, dashed] (0,0) -- (0,${fmt(d)}) node[midway, right, red] {$d=${fmt(d, 2)}$};\n`;
+    cum += `  \\draw[red, dashed] (0,${fmt(d)}) -- (${fmt(sr)},${fmt(d)}) node[midway, above, red] {$r'=${fmt(sr, 2)}$};\n`;
+    steps.push({
+      step: steps.length + 1,
+      title: 'Cercul mic',
+      explanation: `Cercul mic la distanța d=${d.toFixed(2)} față de centru are raza r'=${sr.toFixed(2)}.`,
+      cumulative_tikz: cum + `\\end{tikzpicture}`,
+    });
   }
 
   cum += `\\end{tikzpicture}`;

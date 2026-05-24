@@ -47,6 +47,21 @@ export interface CubeInput {
   show_diagonal_3d?: boolean;
   show_hidden_lines?: boolean;
   label_vertices?: boolean;
+
+  // Nou: toate diagonalele (faciale + spațiale)
+  show_all_diagonals?: boolean;
+  highlighted_space_diagonal?: "AC'" | "BD'" | null;
+}
+
+export interface ObliquePrismInput {
+  base_width: number;
+  base_length: number;
+  height: number;
+  oblique_offset_x: number;   // deplasare laterală baza de sus
+  oblique_offset_z?: number;  // deplasare în adâncime (opțional)
+  projection?: 'cabinet' | 'isometric';
+  show_hidden_lines?: boolean;
+  label_vertices?: boolean;
 }
 
 export interface RectangularPrismInput {
@@ -176,6 +191,45 @@ export function generateCubeAdvanced(input: CubeInput): Solid3DOutput {
     });
   }
 
+  // Step: toate diagonalele (spațiale + faciale pe toate fețele)
+  if (input.show_all_diagonals) {
+    const d3 = a * Math.sqrt(3);
+    const d2 = a * Math.sqrt(2);
+    // Diagonale spațiale: AC', BD', A'C, B'D
+    const spaceDiags: [string, string, string][] = [
+      ['A', 'Cp', `a\\sqrt{3}=${fmt(d3, 2)}`],
+      ['B', 'Dp', ''],
+    ];
+    const highlightKey = input.highlighted_space_diagonal;
+    for (const [from, to, lbl] of spaceDiags) {
+      const isHighlighted = (highlightKey === "AC'" && from === 'A') || (highlightKey === "BD'" && from === 'B');
+      const color = isHighlighted ? 'red!80!black' : 'blue!60!black';
+      const thickness = isHighlighted ? 'very thick' : 'thick';
+      let lineStr = `  \\draw[${color}, ${thickness}] ${p2str(v2d[from as keyof typeof v2d])} -- ${p2str(v2d[to as keyof typeof v2d])}`;
+      if (lbl) lineStr += ` node[midway, right] {$${lbl}$}`;
+      lineStr += `;\n`;
+      cum += lineStr;
+    }
+    // Diagonale faciale
+    const faceDiags: [string, string][] = [
+      ['A', 'C'], ['B', 'D'],          // față frontală
+      ['Ap', 'Cp'], ['Bp', 'Dp'],      // față spate
+      ['A', 'Dp'], ['D', 'Ap'],        // față stânga
+      ['B', 'Cp'], ['C', 'Bp'],        // față dreapta
+      ['D', 'Bp'], ['A', 'Cp'],        // față sus
+      ['A', 'Bp'], ['B', 'Ap'],        // față jos
+    ];
+    for (const [from, to] of faceDiags) {
+      cum += `  \\draw[dashed, teal!60, thin] ${p2str(v2d[from as keyof typeof v2d])} -- ${p2str(v2d[to as keyof typeof v2d])};\n`;
+    }
+    steps.push({
+      step: steps.length + 1,
+      title: 'Toate diagonalele cubului',
+      explanation: `Diagonala spațială AC' = a√3 = ${d3.toFixed(2)}. Diagonala feței = a√2 = ${d2.toFixed(2)}.`,
+      cumulative_tikz: cum + `\\end{tikzpicture}`,
+    });
+  }
+
   cum += `\\end{tikzpicture}`;
 
   const diag3d = a * Math.sqrt(3);
@@ -276,5 +330,86 @@ export function generateRectangularPrismAdvanced(input: RectangularPrismInput): 
       diagonal_3d: Math.sqrt(l ** 2 + w ** 2 + h ** 2),
     },
     construction_steps: steps,
+  };
+}
+
+// ─── Oblique Prism ────────────────────────────────────────────────────────────
+
+export function generateObliquePrismAdvanced(input: ObliquePrismInput): Solid3DOutput {
+  const bw = input.base_width;
+  const bl = input.base_length;
+  const h  = input.height;
+  const ox = input.oblique_offset_x;
+  const oz = input.oblique_offset_z ?? 0;
+  const mode = input.projection ?? 'cabinet';
+  const showHidden = input.show_hidden_lines !== false;
+
+  // Baza jos: ABCD la y=0
+  // Baza sus: A'B'C'D' la y=h, deplasată cu (ox, oz)
+  const v3d: Record<string, Point3D> = {
+    A:  [0,    0, 0],    B:  [bw,    0, 0],    C:  [bw,    0, bl],    D:  [0,    0, bl],
+    Ap: [ox,   h, oz],   Bp: [bw+ox, h, oz],   Cp: [bw+ox, h, bl+oz], Dp: [ox,   h, bl+oz],
+  };
+
+  const v2d: Record<string, Point> = {};
+  for (const [k, p] of Object.entries(v3d)) {
+    v2d[k] = proj(p, mode);
+  }
+
+  const points: Record<string, Point> = {
+    A: v2d.A, B: v2d.B, C: v2d.C, D: v2d.D,
+    "A'": v2d.Ap, "B'": v2d.Bp, "C'": v2d.Cp, "D'": v2d.Dp,
+  };
+
+  let cum = `\\begin{tikzpicture}\n`;
+
+  // Fețele vizibile
+  const solidEdges: [string, string][] = [
+    ['A', 'B'], ['B', 'C'], ['C', 'D'], ['D', 'A'],       // baza jos
+    ['Ap', 'Bp'], ['Bp', 'Cp'], ['Cp', 'Dp'], ['Dp', 'Ap'], // baza sus
+    ['A', 'Ap'], ['B', 'Bp'], ['C', 'Cp'], ['D', 'Dp'],   // muchii laterale
+  ];
+  const hiddenEdges: [string, string][] = [];
+
+  for (const [a1, b1] of solidEdges) {
+    cum += `  \\draw[thick] ${p2str(v2d[a1])} -- ${p2str(v2d[b1])};\n`;
+  }
+  if (showHidden) {
+    for (const [a1, b1] of hiddenEdges) {
+      cum += `  \\draw[dashed, gray] ${p2str(v2d[a1])} -- ${p2str(v2d[b1])};\n`;
+    }
+  }
+
+  if (input.label_vertices !== false) {
+    const labelMap: Record<string, [string, string]> = {
+      A: ['A', 'below left'], B: ['B', 'below right'],
+      C: ['C', 'right'], D: ['D', 'left'],
+      Ap: ["A'", 'above left'], Bp: ["B'", 'above right'],
+      Cp: ["C'", 'right'], Dp: ["D'", 'left'],
+    };
+    for (const [k, [lbl, anc]] of Object.entries(labelMap)) {
+      cum += `  \\fill ${p2str(v2d[k])} circle (0.04) node[${anc}] {$${lbl}$};\n`;
+    }
+  }
+
+  cum += `\\end{tikzpicture}`;
+
+  const lateralEdge = Math.sqrt(ox * ox + h * h + oz * oz);
+  const baseArea = bw * bl;
+  const volume = baseArea * h; // V = Aria_baza × h (înălțimea perpendiculară)
+
+  return {
+    tikz: cum,
+    points,
+    computed: {
+      volume,
+      surface_area: 2 * baseArea + 2 * (bw + bl) * lateralEdge,
+    },
+    construction_steps: [{
+      step: 1,
+      title: `Prismă oblică ${bw}×${bl}×${h}`,
+      explanation: `Prismă oblică cu baza ${bw}×${bl}, înălțimea h=${h}, deplasare laterală ox=${ox}.`,
+      cumulative_tikz: cum,
+    }],
   };
 }

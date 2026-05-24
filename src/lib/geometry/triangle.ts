@@ -174,3 +174,68 @@ export function altitudeFootFrom(vertex: 'A' | 'B' | 'C', t: Triangle): Point {
   const proj = ((V[0] - P1[0]) * dx + (V[1] - P1[1]) * dy) / (dx * dx + dy * dy);
   return [P1[0] + proj * dx, P1[1] + proj * dy];
 }
+
+export function distance(p1: Point, p2: Point): number {
+  return Math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2);
+}
+
+/**
+ * Linia mijlocie paralelă cu latura dată.
+ * parallelToSide 'a' → paralelă cu BC (latura a), trece prin mijloacele AB și AC
+ * parallelToSide 'b' → paralelă cu CA, trece prin mijloacele AB și BC
+ * parallelToSide 'c' → paralelă cu AB, trece prin mijloacele BC și CA
+ */
+export function midSegment(t: Triangle, parallelToSide: 'a' | 'b' | 'c'): { start: Point; end: Point } {
+  if (parallelToSide === 'a') {
+    return { start: midpoint(t.A, t.B), end: midpoint(t.A, t.C) };
+  } else if (parallelToSide === 'b') {
+    return { start: midpoint(t.A, t.B), end: midpoint(t.B, t.C) };
+  } else {
+    return { start: midpoint(t.B, t.C), end: midpoint(t.A, t.C) };
+  }
+}
+
+/**
+ * Mediatoarea laturii date — perpendiculara ridicată din mijlocul laturii.
+ * Returnează un segment extins în ambele direcții față de mijlocul laturii.
+ */
+export function perpendicularBisector(
+  t: Triangle,
+  side: 'a' | 'b' | 'c',
+  extendLength = 1.2,
+): { start: Point; end: Point; midPt: Point } {
+  let P1: Point, P2: Point;
+  if (side === 'a') { P1 = t.B; P2 = t.C; }
+  else if (side === 'b') { P1 = t.C; P2 = t.A; }
+  else { P1 = t.A; P2 = t.B; }
+
+  const midPt = midpoint(P1, P2);
+  // Perpendicular direction: rotate (P2-P1) by 90°
+  const dx = P2[0] - P1[0];
+  const dy = P2[1] - P1[1];
+  const len = Math.sqrt(dx * dx + dy * dy);
+  const perpX = -dy / len;
+  const perpY = dx / len;
+
+  return {
+    start: [midPt[0] - perpX * extendLength, midPt[1] - perpY * extendLength],
+    end:   [midPt[0] + perpX * extendLength, midPt[1] + perpY * extendLength],
+    midPt,
+  };
+}
+
+/**
+ * Triunghiul median — format de cele 3 mijloace ale laturilor.
+ * Ma = mijlocul BC, Mb = mijlocul CA, Mc = mijlocul AB
+ */
+export function medianTriangle(t: Triangle): Triangle {
+  const Ma = midpoint(t.B, t.C);
+  const Mb = midpoint(t.C, t.A);
+  const Mc = midpoint(t.A, t.B);
+  return {
+    A: Mc, B: Ma, C: Mb,
+    sideA: distance(Ma, Mb),
+    sideB: distance(Mb, Mc),
+    sideC: distance(Mc, Ma),
+  };
+}
