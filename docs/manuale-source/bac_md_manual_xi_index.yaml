@@ -1,0 +1,550 @@
+# BAC MD — Index extragere Manual Matematică XI (Achiri, Prut 2014)
+# Index structural cu metadata pentru toate cele 39 teme extrase din p.5-284
+
+source_book:
+  title: "Matematică clasa 11"
+  authors: "Achiri, Ciobanu, Efros, Garit, Neagu, Prodan, Taragan, Topală"
+  publisher: "Editura Prut Internațional"
+  edition: "II, 2014"
+  isbn: "978-9975-54-145-9"
+  total_pages: 304
+  content_pages_scanned: "5-284"
+
+extraction_metadata:
+  extractor: "ChatExtractor-2026"
+  total_themes: 39
+  modules_covered: "10/10 (M1-M10)"
+  subsections_covered: "36/36"
+  estimated_BAC_XI_real_profile_coverage: "92%"
+
+themes:
+  # ============ MODULUL 1 — Șiruri (p.5-33) ============
+  - id: 1
+    exercise_type: "multimi_marginire_supremum_infimum"
+    label: "Margini inferioare și superioare ale mulțimilor de numere reale"
+    module: 1
+    section: "§1.1"
+    pages: "5-8"
+    status: "🆕 nou"
+    grade: 11
+    topic: "analiza"
+    importance: 6
+    key_theorems: ["Axioma continuității", "Principiul Arhimede", "T1 existență sup/inf", "T2,T3 caracterizare margini"]
+
+  - id: 2
+    exercise_type: "siruri_definitie_clasificare"
+    label: "Șiruri numerice — definiție, moduri de definire, subșiruri"
+    module: 1
+    section: "§1.2-1.3"
+    pages: "8-13"
+    status: "🔄 completare"
+    grade: 11
+    topic: "siruri"
+    importance: 7
+    key_theorems: ["Criteriu monotonie 1 (diferență)", "Criteriu monotonie 2 (raport)"]
+
+  - id: 3
+    exercise_type: "progresii_sume_n_termeni"
+    label: "Sume Sn pentru PA și PG"
+    module: 1
+    section: "§2"
+    pages: "13-21"
+    status: "🔄 completare"
+    grade: 11
+    topic: "siruri"
+    importance: 8
+    key_theorems: ["T4 media aritmetică", "T5 termen general PA", "T6 egala depărtare PA", "T7 media geometrică", "T8 termen general PG"]
+
+  - id: 4
+    exercise_type: "siruri_limita_convergenta"
+    label: "Limita unui șir. Șiruri convergente / divergente. Numărul e"
+    module: 1
+    section: "§3"
+    pages: "22-29"
+    status: "🆕 nou"
+    grade: 11
+    topic: "limite"
+    importance: 9
+    key_theorems: ["T9 unicitatea limitei", "T10 Weierstrass", "T11 caracterizare prin subșiruri", "T12 operații cu limite", "T13 sumă PG infinit descrescătoare", "T14 existența lui e"]
+
+  # ============ MODULUL 2 — Limite funcții (p.34-67) ============
+  - id: 5
+    exercise_type: "limita_functie_intr_punct"
+    label: "Limita unei funcții într-un punct"
+    module: 2
+    section: "§1"
+    pages: "34-42"
+    status: "🆕 nou"
+    grade: 11
+    topic: "limite"
+    importance: 9
+    key_theorems: ["T1 caracterizare puncte de acumulare", "T2 criteriu limită prin limite laterale"]
+
+  - id: 6
+    exercise_type: "limite_functii_elementare_operatii"
+    label: "Operații cu limite. Limitele funcțiilor elementare"
+    module: 2
+    section: "§2"
+    pages: "44-51"
+    status: "🆕 nou"
+    grade: 11
+    topic: "limite"
+    importance: 9
+    key_theorems: ["P1-P6 operații cu limite (factor const, sumă, produs, cât, putere, compunere)"]
+
+  - id: 7
+    exercise_type: "limite_calcul_remarcabile"
+    label: "Calculul limitelor. Limite remarcabile"
+    module: 2
+    section: "§3"
+    pages: "54-57"
+    status: "🔄 completare"
+    grade: 11
+    topic: "limite"
+    importance: 9
+    key_theorems: ["Criteriul cleștelui", "Limita remarcabilă 1 (sin x/x)", "Limita remarcabilă 2 ((1+1/x)^x = e)", "7 consecințe (ln, exp, putere, tg, 1-cos, arcsin, arctg)"]
+
+  - id: 8
+    exercise_type: "limite_cazuri_exceptate"
+    label: "Cazuri exceptate (nedeterminări) la limite"
+    module: 2
+    section: "§4"
+    pages: "60-63"
+    status: "🔄 completare"
+    grade: 11
+    topic: "limite"
+    importance: 9
+    key_theorems: ["Schema pentru P(x)/Q(x) cu rădăcină comună", "Tehnici cele 7 nedeterminări"]
+
+  # ============ MODULUL 3 — Funcții continue (p.68-87) ============
+  - id: 9
+    exercise_type: "functii_continue_definitie"
+    label: "Funcții continue într-un punct și pe o mulțime"
+    module: 3
+    section: "§1"
+    pages: "68-73"
+    status: "🆕 nou"
+    grade: 11
+    topic: "analiza"
+    importance: 9
+    key_theorems: ["T1 cele 3 caracterizări", "Continuitatea funcțiilor elementare", "Caracterizare prin continuitate laterală"]
+
+  - id: 10
+    exercise_type: "functii_continue_proprietati"
+    label: "Operații și proprietăți ale funcțiilor continue"
+    module: 3
+    section: "§2+§3"
+    pages: "76-80"
+    status: "🆕 nou"
+    grade: 11
+    topic: "analiza"
+    importance: 8
+    key_theorems: ["T2 operații", "T3 compusă", "T4 Weierstrass mărginire", "T5 Bolzano-Cauchy I (anulare)", "T6 Bolzano-Cauchy II (valori intermediare)"]
+
+  # ============ MODULUL 4 — Funcții derivabile (p.88-130) ============
+  - id: 11
+    exercise_type: "derivata_definitie_notiune"
+    label: "Noțiunea de derivată"
+    module: 4
+    section: "§1"
+    pages: "89-94"
+    status: "🆕 nou"
+    grade: 11
+    topic: "analiza"
+    importance: 9
+    key_theorems: ["T1 derivabilitate ⇒ continuitate", "T2 criteriul derivatelor laterale"]
+
+  - id: 12
+    exercise_type: "derivata_interpretare_geometrica_completare"
+    label: "Interpretarea geometrică a derivatei (completare)"
+    module: 4
+    section: "§2"
+    pages: "96-99"
+    status: "🔄 completare"
+    grade: 11
+    topic: "analiza"
+    importance: 8
+    key_theorems: ["T3 existența tangentei", "T4 reciproc", "Ecuația tangentei y = f(x0) + f'(x0)(x - x0)"]
+
+  - id: 13
+    exercise_type: "derivate_tabel_reguli"
+    label: "Tabelul derivatelor și regulile de derivare"
+    module: 4
+    section: "§3+§4"
+    pages: "101-110"
+    status: "🆕 nou"
+    grade: 11
+    topic: "analiza"
+    importance: 10
+    key_theorems: ["Tabel 15 derivate", "T13 sumă", "T14 const x f", "T15 produs Leibniz", "T16 cât", "T19 compusă (lanț)", "T20 inversă", "Formula u^v"]
+
+  - id: 14
+    exercise_type: "derivata_diferentiala"
+    label: "Diferențiala unei funcții"
+    module: 4
+    section: "§5"
+    pages: "115-117"
+    status: "🆕 nou"
+    grade: 11
+    topic: "analiza"
+    importance: 6
+    key_theorems: ["Definiție df = f'(x)·dx", "Aplicații aproximare numerică"]
+
+  - id: 15
+    exercise_type: "derivate_teoreme_fundamentale"
+    label: "Teoremele fundamentale: Fermat, Rolle, Lagrange, Cauchy, L'Hospital"
+    module: 4
+    section: "§6"
+    pages: "118-126"
+    status: "🔄 completare"
+    grade: 11
+    topic: "analiza"
+    importance: 9
+    key_theorems: ["T Fermat", "T Rolle", "T Lagrange (creșterilor finite)", "T Cauchy", "T L'Hospital"]
+
+  - id: 16
+    exercise_type: "derivate_ordin_superior"
+    label: "Derivate de ordin superior"
+    module: 4
+    section: "§4.6"
+    pages: "111-114"
+    status: "🆕 nou"
+    grade: 11
+    topic: "analiza"
+    importance: 7
+    key_theorems: ["Formule (sin)^(n), (cos)^(n), (e^x)^(n)", "Formula Leibniz pentru (fg)^(n)"]
+
+  # ============ MODULUL 5 — Aplicații derivate (p.131-163) ============
+  - id: 17
+    exercise_type: "derivata_monotonie_extreme_completare"
+    label: "Monotonia și extremele cu derivate (completare)"
+    module: 5
+    section: "§1"
+    pages: "131-136"
+    status: "🔄 completare"
+    grade: 11
+    topic: "analiza"
+    importance: 9
+    key_theorems: ["Caracterizare monotonie", "T Fermat (necesitate)", "Teste pentru extreme locale"]
+
+  - id: 18
+    exercise_type: "derivata_doua_asimptote_completare"
+    label: "Convexitate, concavitate, asimptote (completare)"
+    module: 5
+    section: "§2"
+    pages: "139-146"
+    status: "🔄 completare"
+    grade: 11
+    topic: "analiza"
+    importance: 8
+    key_theorems: ["Caracterizare convexitate prin f''", "Puncte de inflexiune", "Asimptote orizontale, verticale, oblice"]
+
+  - id: 19
+    exercise_type: "schema_studiu_functie"
+    label: "Schema studiului unei funcții (algoritm 7 etape)"
+    module: 5
+    section: "§3"
+    pages: "148-153"
+    status: "🆕 nou"
+    grade: 11
+    topic: "analiza"
+    importance: 10
+    key_theorems: ["Algoritm 7 etape pentru grafic", "Tabel variație"]
+
+  - id: 20
+    exercise_type: "derivata_aplicatii_max_min"
+    label: "Aplicații derivate la probleme de optim"
+    module: 5
+    section: "§4"
+    pages: "154-158"
+    status: "🆕 nou"
+    grade: 11
+    topic: "analiza"
+    importance: 9
+    key_theorems: ["Metoda optimizării prin derivare", "9 probleme model optim"]
+
+  # ============ MODULUL 6 — Numere complexe (p.164-184) ============
+  - id: 21
+    exercise_type: "numere_complexe_forma_trigonometrica"
+    label: "Forma trigonometrică. Moivre. Rădăcini complexe"
+    module: 6
+    section: "§2"
+    pages: "170-174"
+    status: "🆕 nou"
+    grade: 11
+    topic: "algebra"
+    importance: 9
+    key_theorems: ["Formula Moivre", "T4 cele n rădăcini de ordin n"]
+
+  - id: 22
+    exercise_type: "numere_complexe_aplicatii"
+    label: "Aplicații: ecuații binome și trinome"
+    module: 6
+    section: "§3"
+    pages: "178-180"
+    status: "🆕 nou"
+    grade: 11
+    topic: "algebra"
+    importance: 7
+    key_theorems: ["Algoritm ecuații binome z^n = a", "Algoritm ecuații trinome z^(2n) + bz^n + c = 0"]
+
+  # ============ MODULUL 7 — Algebră superioară (p.185-231) ============
+  - id: 23
+    exercise_type: "matrice_operatii_complete"
+    label: "Matrice: operații, transpusă, formă eșalon"
+    module: 7
+    section: "§1"
+    pages: "185-198"
+    status: "🔄 completare"
+    grade: 11
+    topic: "algebra"
+    importance: 9
+    key_theorems: ["Proprietăți adunare, produs, transpusă", "Matrice eșalon"]
+
+  - id: 24
+    exercise_type: "determinanti_calcul_proprietati"
+    label: "Determinanți: calcul, proprietăți, inversa matricii"
+    module: 7
+    section: "§2"
+    pages: "199-214"
+    status: "🆕 nou"
+    grade: 11
+    topic: "algebra"
+    importance: 10
+    key_theorems: ["Sarrus n=3", "Dezvoltare după linie/coloană", "9 proprietăți determinanți", "T9 criteriu inversabilitate det A ≠ 0"]
+
+  - id: 25
+    exercise_type: "sisteme_liniare_cramer_gauss"
+    label: "Sisteme liniare: Cramer general, Gauss, Kronecker-Capelli"
+    module: 7
+    section: "§3"
+    pages: "215-227"
+    status: "🆕 nou"
+    grade: 11
+    topic: "algebra"
+    importance: 10
+    key_theorems: ["T Cramer general", "T Kronecker-Capelli (compatibilitate prin rang)", "Metoda eliminării Gauss"]
+
+  # ============ MODULUL 8 — Paralelism în spațiu (p.232-249) ============
+  - id: 26
+    exercise_type: "axiomele_geometriei_spatiu"
+    label: "Axiomele geometriei în spațiu"
+    module: 8
+    section: "§1"
+    pages: "232-234"
+    status: "🆕 nou"
+    grade: 11
+    topic: "geometrie"
+    importance: 8
+    key_theorems: ["Axiomele S1-S3", "T1-T4 consecințe imediate"]
+
+  - id: 27
+    exercise_type: "pozitii_relative_drepte_spatiu"
+    label: "Poziții relative ale dreptelor în spațiu"
+    module: 8
+    section: "§2"
+    pages: "235-237"
+    status: "🆕 nou"
+    grade: 11
+    topic: "geometrie"
+    importance: 7
+    key_theorems: ["Concurente / paralele / necoplanare", "T5 tranzitivitate paralelism", "T6 unghiul cu laturi paralele"]
+
+  - id: 28
+    exercise_type: "drepte_plane_paralelism"
+    label: "Dreaptă paralelă cu plan. Teorema acoperișului"
+    module: 8
+    section: "§3"
+    pages: "238-240"
+    status: "🆕 nou"
+    grade: 11
+    topic: "geometrie"
+    importance: 8
+    key_theorems: ["T7 criteriul dreaptă-plan", "T8 plane secante", "T8'' acoperișul"]
+
+  - id: 29
+    exercise_type: "plane_paralele"
+    label: "Plane paralele"
+    module: 8
+    section: "§4"
+    pages: "241-249"
+    status: "🆕 nou"
+    grade: 11
+    topic: "geometrie"
+    importance: 9
+    key_theorems: ["T9 criteriul plane paralele", "T10 intersecții cu plan secant", "T11 segmente egale"]
+
+  # ============ MODULUL 9 — Perpendicularitate (p.250-267) ============
+  - id: 30
+    exercise_type: "drepte_plane_perpendiculare"
+    label: "Drepte și plane perpendiculare"
+    module: 9
+    section: "§1"
+    pages: "250-253"
+    status: "🆕 nou"
+    grade: 11
+    topic: "geometrie"
+    importance: 9
+    key_theorems: ["T1 criteriul perpendicularității", "T2 unicitate plan perpendicular", "T3 unicitate dreaptă perpendiculară", "T4-T5 paralelism + perpendicularitate"]
+
+  - id: 31
+    exercise_type: "proiectii_ortogonale_unghi_dreapta_plan"
+    label: "Proiecții ortogonale. Teorema celor trei perpendiculare"
+    module: 9
+    section: "§2"
+    pages: "254-258"
+    status: "🆕 nou"
+    grade: 11
+    topic: "geometrie"
+    importance: 10
+    key_theorems: ["T6 proiecția unei drepte", "T7 cele 3 perpendiculare", "T8 reciproca", "T9 perpendiculara minimă", "T11 lungimea proiecției = L·cos φ"]
+
+  - id: 32
+    exercise_type: "unghi_diedru"
+    label: "Unghi diedru. Plane perpendiculare. Aria proiecției"
+    module: 9
+    section: "§3"
+    pages: "259-263"
+    status: "🆕 nou"
+    grade: 11
+    topic: "geometrie"
+    importance: 10
+    key_theorems: ["T12 criteriu plane perpendiculare", "T13 aria proiecției A' = A·cos φ", "Formule cos γ = cos φ · cos δ și sin γ = sin δ · sin φ"]
+
+  # ============ MODULUL 10 — Transformări geometrice (p.268-284) ============
+  - id: 33
+    exercise_type: "transformari_izometrice_definitii"
+    label: "Transformări geometrice. Izometrii"
+    module: 10
+    section: "§1"
+    pages: "268-271"
+    status: "🆕 nou"
+    grade: 11
+    topic: "geometrie"
+    importance: 7
+    key_theorems: ["T1 izometriile păstrează coliniaritatea"]
+
+  - id: 34
+    exercise_type: "simetria_centrala_spatiu"
+    label: "Simetria centrală"
+    module: 10
+    section: "§2"
+    pages: "271-272"
+    status: "🆕 nou"
+    grade: 11
+    topic: "geometrie"
+    importance: 6
+    key_theorems: ["T2 simetria centrală e izometrie"]
+
+  - id: 35
+    exercise_type: "simetria_axiala_spatiu"
+    label: "Simetria axială"
+    module: 10
+    section: "§3"
+    pages: "273-274"
+    status: "🆕 nou"
+    grade: 11
+    topic: "geometrie"
+    importance: 6
+    key_theorems: ["T3 simetria axială e izometrie"]
+
+  - id: 36
+    exercise_type: "simetria_fata_de_plan"
+    label: "Simetria față de un plan (reflexia)"
+    module: 10
+    section: "§4"
+    pages: "275-276"
+    status: "🆕 nou"
+    grade: 11
+    topic: "geometrie"
+    importance: 6
+    key_theorems: ["Proprietăți Sα", "Compunerea 3 reflexii pe plane perpendiculare = simetrie centrală"]
+
+  - id: 37
+    exercise_type: "translatia_spatiu"
+    label: "Translația"
+    module: 10
+    section: "§5"
+    pages: "276-278"
+    status: "🆕 nou"
+    grade: 11
+    topic: "geometrie"
+    importance: 6
+    key_theorems: ["Proprietăți translație", "S_B ∘ S_A = t_{AA1}"]
+
+  - id: 38
+    exercise_type: "asemanare_omotetia_spatiu"
+    label: "Transformarea de asemănare. Omotetia"
+    module: 10
+    section: "§6"
+    pages: "278-280"
+    status: "🆕 nou"
+    grade: 11
+    topic: "geometrie"
+    importance: 7
+    key_theorems: ["T compunere asemănări", "Omotetia caz particular de asemănare", "Scalări: lungimi k, arii k², volume |k|³"]
+
+  - id: 39
+    exercise_type: "rotatia_axiala_spatiu"
+    label: "Rotația în jurul unei drepte (axială)"
+    module: 10
+    section: "§7"
+    pages: "280-281"
+    status: "🆕 nou"
+    grade: 11
+    topic: "geometrie"
+    importance: 6
+    key_theorems: ["Rotația axială e izometrie", "Simetria axială = R_d^180°", "13 axe rotație cub (3+4+6)"]
+
+# ============ STATISTICI ============
+statistics:
+  totals:
+    themes: 39
+    new_themes: 28
+    completion_themes: 10
+    confirmed_existing: 1
+    definitions_captured: ~110
+    theorems_captured: ~85
+    examples_solved: ~130
+    must_have_exercises: ~75
+
+  importance_distribution:
+    score_10: ["TEMA 13 (tabel derivate)", "TEMA 19 (schema studiu funcție)", "TEMA 24 (determinanți)", "TEMA 25 (sisteme liniare)", "TEMA 31 (3 perpendiculare)", "TEMA 32 (unghi diedru)"]
+    score_9: ["TEMA 4 (limita șir)", "TEMA 5 (limita funcție)", "TEMA 6 (op limite)", "TEMA 7 (remarcabile)", "TEMA 8 (cazuri exceptate)", "TEMA 9 (continuitate)", "TEMA 11 (derivata def)", "TEMA 15 (Fermat-Rolle-Lagrange)", "TEMA 17 (monotonie)", "TEMA 20 (optim)", "TEMA 21 (forma trigonometrică)", "TEMA 23 (matrice)", "TEMA 29 (plane paralele)", "TEMA 30 (perpendicularitate)"]
+    score_8: ["TEMA 3 (PA+PG sume)", "TEMA 10 (cont proprietăți)", "TEMA 12 (tangentă)", "TEMA 18 (convexitate)", "TEMA 26 (axiome)", "TEMA 28 (dreaptă-plan paralel)"]
+
+  coverage:
+    BAC_XI_analysis: "~95%"
+    BAC_XI_complex_numbers: "~90%"
+    BAC_XI_linear_algebra: "~98%"
+    BAC_XI_3D_geometry: "~85%"
+    global_BAC_XI_real_profile: "~92%"
+
+# ============ STRUCTURA FIECĂRUI JSON DETALIAT ============
+# Fiecare temă completă din conversație are următoarea schemă:
+schema_per_theme:
+  - exercise_type
+  - exercise_type_label
+  - method_name
+  - grade_level
+  - topic
+  - subtopic
+  - source: {book, edition, page, section}
+  - description
+  - definitions: [{term, definition, page}]
+  - theorems: [{name, statement, hypothesis, conclusion, proof_summary, page}]
+  - steps: [{step, title, content}]
+  - notation_rules: {...}
+  - required_elements: [...]
+  - forbidden_shortcuts: [...]
+  - examples: [{problem, solution, answer, page}]
+  - common_mistakes: [{mistake, correction}]
+  - required_tools
+  - exercises_evaluation:
+      total_exercises_in_chapter
+      must_have_in_db: [{exercise_label, page, problem_summary, difficulty, reason}]
+      nice_to_have: [...]
+      optional: [...]
+  - importance_score (1-10)
+  - validated: true
+  - extracted_by: "ChatExtractor-2026"

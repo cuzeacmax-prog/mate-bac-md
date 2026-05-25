@@ -1,0 +1,3110 @@
+[
+  {
+    "exercise_type": "statistica_medii_mediana_mod",
+    "exercise_type_label": "Mărimi medii ale seriilor statistice",
+    "method_name": "Calculul mediei aritmetice, medianei și modului unei serii statistice",
+    "grade_level": 12,
+    "topic": "statistica",
+    "subtopic": "valori_tipice_serie_statistica",
+    "description": "Determinarea celor trei valori tipice (media aritmetică, mediana, modul) care caracterizează tendința centrală a unei serii statistice. Manualul tratează separat cazurile: date negrupate (succesiune), date grupate pe variante, date grupate pe intervale.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Identificarea tipului de grupare",
+        "content": "Determinăm dacă datele sunt: a) o succesiune (date negrupate), b) grupate pe variante, c) grupate pe intervale. Algoritmul diferă pentru fiecare caz."
+      },
+      {
+        "step": 2,
+        "title": "Calculul mediei aritmetice",
+        "content": "Aplicăm formula corespunzătoare: pentru succesiune x̄ = (x1+...+xn)/n; pentru variante x̄ = Σxi·ni/n; pentru intervale x̄ = Σxi*·ni/n, unde xi* este mijlocul intervalului."
+      },
+      {
+        "step": 3,
+        "title": "Determinarea medianei",
+        "content": "Calculăm (n+1)/2. Pentru variante: identificăm prima frecvență cumulată > (n+1)/2 și citim valoarea variantei. Pentru intervale: identificăm intervalul median și aplicăm formula de interpolare."
+      },
+      {
+        "step": 4,
+        "title": "Determinarea modului",
+        "content": "Pentru variante: Mo = varianta cu frecvența maximă (poate fi mai multe — serie bi/multimodală). Pentru intervale: identificăm intervalul modal (cu frecvența maximă) și aplicăm formula Mo = x_inf + h·(n2'−n1')/((n2'−n1')+(n2'−n3'))."
+      },
+      {
+        "step": 5,
+        "title": "Interpretarea valorilor",
+        "content": "Cele trei valori tipice se completează reciproc. Mediana și modul pot fi mai relevante decât media când distribuția este asimetrică sau există valori extreme."
+      }
+    ],
+    "notation_rules": {
+      "x̄": "media aritmetică (cu bară superioară)",
+      "Me": "mediana",
+      "Mo": "modul (dominanta)",
+      "xi": "valoarea variantei i",
+      "ni": "frecvența absolută a variantei/intervalului i",
+      "fi": "frecvența relativă a variantei/intervalului i",
+      "xi*": "mijlocul intervalului i (pentru date grupate pe intervale)",
+      "n": "volumul selecției (total observații)",
+      "r": "numărul de variante/intervale distincte",
+      "x_inf": "limita inferioară a intervalului median/modal",
+      "h": "mărimea (lățimea) intervalului"
+    },
+    "examples": [
+      {
+        "problem": "Să se determine mediana seriei statistice grupate pe variante: xi: 2, 5, 6, 7, 10 cu frecvențele absolute ni: 3, 7, 2, 9, 4 (total n = 25).",
+        "solution": "Calculăm (n+1)/2 = (25+1)/2 = 13. Frecvențele absolute cumulate sunt: 3, 10, 12, 21, 25. Prima frecvență cumulată mai mare decât 13 este 21, care corespunde liniei variantei xi = 7.",
+        "answer": "R: Me = 7.",
+        "page": 111
+      },
+      {
+        "problem": "Să se determine mediana seriei statistice grupate pe intervale: [4,8) cu n=7; [8,12) cu n=3; [12,16) cu n=8; [16,20] cu n=7 (total n=25).",
+        "solution": "Avem n = 25, (n+1)/2 = 13. Frecvențele cumulate sunt 7, 10, 18, 25. Intervalul [12,16) este primul interval a cărui frecvență cumulată este mai mare decât 13: 18 > 13. Deci, mediana se conține în acest interval. În intervalul [12,16) se află 8 variante. Creșterea uniformă este (16−12)/8 = 0,5. A 13-a variantă este 12 + (13−10)·(16−12)/8 = 13,5.",
+        "answer": "R: Me = 13,5.",
+        "page": 111
+      },
+      {
+        "problem": "Să se determine modul seriei statistice grupate pe variante: a) xi: 0,3,5,6,7 cu ni: 3,2,4,7,4; b) xi: 0,1,3,4,8 cu ni: 3,5,4,5,3.",
+        "solution": "a) Mo = 6, deoarece frecvența ei, fiind egală cu 7, este cea mai mare. b) Mo = 1; Mo = 4. Aici există două valori modale. Spunem că această serie statistică este bimodală.",
+        "answer": "R: a) Mo = 6. b) Mo1 = 1, Mo2 = 4 (bimodală).",
+        "page": 112
+      },
+      {
+        "problem": "Într-o bancă s-au înregistrat sumele retrase de 100 de clienți, grupate pe intervale: [0,200) cu n=5; [200,400) cu n=20; [400,600) cu n=28; [600,800) cu n=25; [800,1000) cu n=18; ≥1000 cu n=4. Să se afle modul sumei retrase.",
+        "solution": "Intervalul modal este [400,600), deoarece frecvența lui, egală cu 28, este cea mai mare. Se constată că x_inf = 400, h = 200, n1' = 20, n2' = 28, n3' = 25. Prin urmare, Mo = 400 + 200·(28−20)/((28−20)+(28−25)) = 400 + 200·8/11 ≈ 545,4.",
+        "answer": "R: Mo ≈ 545,4 (euro).",
+        "page": 112
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "A scrie media aritmetică ca x̄ = Σxi/n pentru date pe intervale, ignorând că trebuie să folosim mijloacele xi* și frecvențele ni.",
+        "correction": "Pentru date grupate pe intervale, întâi calculăm xi* = (lim_inf + lim_sup)/2 pentru fiecare interval, apoi x̄ = Σxi*·ni/n."
+      },
+      {
+        "mistake": "A identifica mediana cu intervalul median (a da ca răspuns intervalul, nu numărul).",
+        "correction": "Intervalul median doar localizează mediana; valoarea concretă a medianei se calculează prin formula de interpolare Me = x_inf(Me) + h·((n+1)/2 − Σf_pm)/n_Me."
+      },
+      {
+        "mistake": "A omite ordonarea crescătoare înainte de a determina mediana unei succesiuni.",
+        "correction": "Mediana se definește pentru date ordonate crescător; ordonarea este pas obligatoriu."
+      },
+      {
+        "mistake": "A nu observa că o serie poate fi bimodală/multimodală și a alege arbitrar o singură valoare.",
+        "correction": "Toate variantele cu frecvența maximă sunt valori modale; le menționăm pe toate."
+      },
+      {
+        "mistake": "A calcula media aritmetică simplă (x1+...+xn)/n pentru date grupate (ignorând frecvențele)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A confunda frecvența absolută ni cu frecvența cumulată",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A lua ca mediană varianta cu frecvența cea mai mare (acela este modul)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A lua ca mediană pur și simplu termenul de la mijloc fără a fi ordonat crescător",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A lua direct limita inferioară a intervalului modal/median fără aplicarea formulei de interpolare",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A pretinde că o serie cu frecvențe egale are mod",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 10,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 110,
+      "section": "§4 Mărimi medii ale seriilor statistice"
+    }
+  },
+  {
+    "exercise_type": "calcul_financiar_procente_dobanda",
+    "exercise_type_label": "Elemente de calcul financiar (procente, dobândă simplă/compusă, TVA, profit, buget)",
+    "method_name": "Aplicarea formulelor procentuale și financiare pentru calcule monetare",
+    "grade_level": 12,
+    "topic": "calcul_financiar",
+    "subtopic": "procente_dobanda_TVA_profit",
+    "description": "Capitol care reunește toate aplicațiile financiare cerute la BAC: procente directe/inverse, dobândă simplă, dobândă compusă (cu capitalizare anuală/lunară), TVA, formare de preț, profit, rentabilitate economică, bugete și salariu brut/net.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Identificarea tipului problemei",
+        "content": "Stabilim dacă este: a) procent direct/invers, b) dobândă simplă, c) dobândă compusă (anuală/lunară), d) TVA/preț, e) buget/salariu, f) rentabilitate/profit."
+      },
+      {
+        "step": 2,
+        "title": "Notarea datelor în notația cărții",
+        "content": "G = mărime de bază, p = rata în %, t = numărul de perioade, S0 = capital inițial, D = dobânda, S_t = suma finală, T = TVA, P = profit, V = venit, C = cheltuieli."
+      },
+      {
+        "step": 3,
+        "title": "Alegerea formulei",
+        "content": "Procent: T = G·p/100. Dobândă simplă: D = S0·p·t/100, S_t = S0(1 + p·t/100). Dobândă compusă anuală: S_t = S0(1+p/100)^t. Capitalizare lunară: S_t = S0(1+p/1200)^(12t). Profit: P = V − C. Rentabilitate: R_ec = P/CP."
+      },
+      {
+        "step": 4,
+        "title": "Calcul numeric cu exactitate de 4 zecimale",
+        "content": "Se recomandă de a efectua calculele intermediare cu o exactitate de 4 zecimale (observație explicită din manual, p.117)."
+      },
+      {
+        "step": 5,
+        "title": "Răspunsul în unități monetare",
+        "content": "Răspunsul se dă în unitatea monetară cerută (lei, u.m., euro) cu indicarea explicită a unității."
+      }
+    ],
+    "notation_rules": {
+      "G": "mărimea de bază (inițială)",
+      "T": "suma care reprezintă p% din G; sau TVA",
+      "p": "rata în procente",
+      "S0": "capital inițial",
+      "S_t": "suma în cont după t perioade",
+      "i": "rata zecimală: i = p/100",
+      "D": "dobânda (pentru întreaga perioadă)",
+      "D_t": "dobânda totală pe t perioade",
+      "P": "profit total (brut)",
+      "V": "venituri încasate",
+      "C": "cheltuieli suportate",
+      "R_ec": "rentabilitatea economică",
+      "CP": "capital permanent",
+      "P_f": "preț final (la consumator)",
+      "u.m.": "unități monetare"
+    },
+    "examples": [
+      {
+        "problem": "Dintre cei 800 de elevi ai unui liceu, 40% locuiesc în vecinătate și vin la ore pe jos. Câți elevi vin pe jos?",
+        "solution": "G = 800, p = 40. T = (800/100)·40 = 320.",
+        "answer": "R: 320 de elevi.",
+        "page": 115
+      },
+      {
+        "problem": "În clasele primare ale unei școli învață 210 elevi, ceea ce constituie 35% din numărul total. Câți elevi învață în această școală?",
+        "solution": "T = 210, p = 35%. G = (210/35)·100 = 600.",
+        "answer": "R: 600 de elevi.",
+        "page": 115
+      },
+      {
+        "problem": "O persoană constituie două depozite a câte 5 mii lei la o bancă, cu rata anuală 12%: unul pe 1 an, altul pe 1,5 ani. Ce sumă trebuie să restituie banca?",
+        "solution": "Primul caz: D1 = (5000/100)·12 = 600. Peste un an: 5 600 lei. Al doilea caz: D2 = (5000/100)·12·1,5 = 900. Banca va restitui 5 900 lei.",
+        "answer": "R: 5 600 lei; 5 900 lei.",
+        "page": 116
+      },
+      {
+        "problem": "10 000 lei pe 2 ani la 7%: a) dobândă simplă; b) compusă cu capitalizare anuală. Diferența?",
+        "solution": "a) S2 = 10 000·(1 + 2·7/100) = 11 400 lei. b) S2 = 10 000·(1 + 7/100)² = 11 449 lei. Diferența: 49 lei.",
+        "answer": "R: a) 11 400 lei; b) 11 449 lei. Diferența 49 lei.",
+        "page": 117
+      },
+      {
+        "problem": "Aceleași condiții, dar capitalizarea se efectuează lunar.",
+        "solution": "24 de perioade, rata lunară 7/12 %. S24 = 10 000·(1 + 7/1200)^24 ≈ 11 498,06 lei.",
+        "answer": "R: 11 498,06 lei.",
+        "page": 117
+      },
+      {
+        "problem": "54 000 u.m. în regim de dobândă simplă cu ratele anuale 10%, 12%, 13% pentru 200, 150, 100 de zile. Dobânda totală? (anul = 360 zile)",
+        "solution": "D_t = 54 000·(10·200 + 12·150 + 13·100)/(100·360) = 7 650 u.m.",
+        "answer": "R: 7 650 u.m.",
+        "page": 118
+      },
+      {
+        "problem": "Întreprindere: venit 2 mil. u.m., cheltuieli 1 100 000 u.m., capital 9 mil. u.m. Rentabilitatea?",
+        "solution": "P = 2 000 000 − 1 100 000 = 900 000 u.m. R_ec = 900 000/9 000 000 = 0,1.",
+        "answer": "R: 0,1.",
+        "page": 119
+      },
+      {
+        "problem": "1 l lapte: preț cost 6 lei, TVA 8%, magazinul cumpără la 7,2 lei. Profitul producătorului?",
+        "solution": "x + x·8/100 = 7,2 ⟹ x ≈ 6,67. Profit: 6,67 − 6 = 0,67 lei = 67 bani.",
+        "answer": "R: 67 bani.",
+        "page": 120
+      },
+      {
+        "problem": "Magazin plătește producătorului 360 u.m. (TVA 20%) pentru un ventilator. Adaos 75 u.m. Prețul final?",
+        "solution": "360 = x + x·0,2 ⟹ x = 300. P_f = 300 + 75 + 375·0,2 = 300 + 75 + 75 = 450 u.m.",
+        "answer": "R: 450 u.m.",
+        "page": 120
+      },
+      {
+        "problem": "Salariu brut 3 800 lei, rețineri totale 27%. Salariul net?",
+        "solution": "Net = 73% din brut = (3 800/100)·73 = 2 774 lei.",
+        "answer": "R: 2 774 lei.",
+        "page": 120
+      },
+      {
+        "problem": "Credit 16 000 u.m. pe 1,5 ani, dobândă simplă 18%. Suma de restituit?",
+        "solution": "D_t = (18/100)·16 000·1,5 = 4 320. S_t = 16 000 + 4 320 = 20 320 u.m.",
+        "answer": "R: 20 320 u.m.",
+        "page": 121
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Folosirea formulei dobânzii compuse cu rata anuală p% direct când capitalizarea este lunară.",
+        "correction": "La capitalizare lunară: S_t = S0(1 + p/1200)^(12t)."
+      },
+      {
+        "mistake": "A calcula TVA-ul ca proporție din prețul cu TVA inclus (ex: TVA = 20%·360 când 360 deja include TVA).",
+        "correction": "Dacă B include TVA: x = B/(1+TVA/100), apoi TVA = B − x."
+      },
+      {
+        "mistake": "A aduna pur și simplu reducerile succesive (15% + 10% = 25%).",
+        "correction": "Reducerile se aplică multiplicativ: preț final = preț inițial · (1−0,15) · (1−0,10) = preț inițial · 0,765."
+      },
+      {
+        "mistake": "A confunda profitul cu venitul.",
+        "correction": "Profitul P = V − C; venitul singur nu reflectă profitabilitatea."
+      },
+      {
+        "mistake": "A folosi formula dobânzii compuse când contractul specifică dobândă simplă",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A păstra rata anuală p% la capitalizare lunară (corect: p/12 lunar)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A păstra timpul în ani la capitalizare lunară (corect: 12t luni)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A calcula TVA ca (T/(100+TVA))·preț confundând baza de calcul",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A scădea direct p% pentru reduceri succesive (corect: aplicare succesivă a coeficientului)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A confunda profitul (V−C) cu rentabilitatea (P/CP)",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 10,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 115,
+      "section": "§5 Elemente de calcul financiar"
+    }
+  },
+  {
+    "exercise_type": "piramida_regulata_arii_volum",
+    "exercise_type_label": "Piramida (recapitulare și completări)",
+    "method_name": "Calculul ariilor și volumelor piramidelor (în special regulate)",
+    "grade_level": 12,
+    "topic": "geometrie_3d",
+    "subtopic": "piramida_arii_si_volum",
+    "description": "Studiul piramidei: definiția generală, piramida regulată, apotema, arie laterală și totală, secțiuni paralele cu baza, teoreme privind echivalența unghiuri-laturi (Th. 4, 5 și corolare). Volumul piramidei se tratează în §5 al modulului.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Identificarea tipului piramidei",
+        "content": "Stabilim: regulată / neregulată; baza (triunghi/pătrat/dreptunghi/hexagon/romb/trapez); poziția proiecției vârfului."
+      },
+      {
+        "step": 2,
+        "title": "Identificarea elementelor cunoscute",
+        "content": "Latura bazei (a), apotema (h sau m), înălțimea (H), muchia laterală (l), unghi diedru de la bază (φ), unghi între muchie laterală și plan bază (α)."
+      },
+      {
+        "step": 3,
+        "title": "Reducerea la triunghiuri dreptunghice de bază",
+        "content": "Pentru piramidă regulată: triunghiul format de înălțime, apotema bazei (r) și apotema piramidei. Relația: h² = H² + r². Pentru muchia laterală: l² = H² + R², unde R = raza cercului circumscris bazei."
+      },
+      {
+        "step": 4,
+        "title": "Aplicarea formulelor",
+        "content": "A_L = h·p; A_B = r·p; A_T = p(h+r). Volum: V = (1/3)·A_B·H."
+      },
+      {
+        "step": 5,
+        "title": "Pentru secțiuni paralele cu baza",
+        "content": "Aplicăm Teorema 6: dacă planul taie la distanța h de vârf, A_sec/A_B = (h/H)²."
+      },
+      {
+        "step": 6,
+        "title": "Pentru piramide neregulate",
+        "content": "Folosim Teoremele 4 sau 5 pentru a localiza piciorul înălțimii."
+      }
+    ],
+    "notation_rules": {
+      "VA1A2...An": "piramidă cu vârf V și bază A1A2...An",
+      "H": "înălțimea piramidei",
+      "h": "apotema piramidei (înălțimea unei fețe laterale)",
+      "A_T": "aria totală",
+      "A_L": "aria laterală",
+      "A_B": "aria bazei",
+      "p": "semiperimetrul bazei",
+      "r": "raza cercului înscris în bază",
+      "R": "raza cercului circumscris bazei",
+      "φ": "unghi diedru de la baza piramidei",
+      "α": "unghi format de muchia laterală cu planul bazei",
+      "l": "lungimea muchiei laterale"
+    },
+    "examples": [
+      {
+        "problem": "Baza piramidei SABCD este paralelogramul ABCD cu AB = 6 cm, AD = 10 cm. Fețele laterale SAB și SAD sunt perpendiculare pe planul bazei și formează un unghi diedru de 120°. Cea mai mare muchie laterală este 14 cm. Să se determine ariile secțiunilor cu planele determinate de înălțimea SA și înălțimile din A ale bazei.",
+        "solution": "[AE] și [AF] înălțimile din A. m(∠B) = m(∠D) = 60°, deci BE = 3 cm și FD = 5 cm. AC = √76 cm. SD = 14 cm fiind cea mai mare oblică. SA = √(14² − 10²) = √96 = 4√6. AE = √(6² − 3²) = 3√3; AF = √(10² − 5²) = 5√3. A(ΔSAE) = (1/2)·4√6·3√3 = 18√2 cm². A(ΔSAF) = (1/2)·4√6·5√3 = 30√2 cm².",
+        "answer": "R: A(ΔSAE) = 18√2 cm², A(ΔSAF) = 30√2 cm².",
+        "page": 137
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "A presupune regulată orice piramidă cu bază regulată.",
+        "correction": "Piramida regulată impune AMBELE: bază = poligon regulat ȘI proiecția vârfului = centrul de simetrie al bazei."
+      },
+      {
+        "mistake": "Folosirea formulei A_L = (1/2)·P·h cu P = perimetru pentru piramide neregulate.",
+        "correction": "Această formulă (A_L = h·p) e valabilă DOAR pentru piramide regulate."
+      },
+      {
+        "mistake": "Confuzia între apotema piramidei și apotema bazei.",
+        "correction": "Apotema piramidei = înălțimea triunghiului-față laterală; apotema bazei = raza cercului înscris în bază; legate prin h² = H² + r²."
+      },
+      {
+        "mistake": "A scrie raportul ariilor secțiunilor paralele = h/H.",
+        "correction": "Raportul ariilor = (h/H)² (corolarul Teoremei 6)."
+      },
+      {
+        "mistake": "A confunda apotema piramidei (înălțimea feței laterale) cu apotema bazei (raza cercului înscris)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A scrie A_T = A_L (uitând baza)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A presupune piramidă regulată fără verificarea ipotezei",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A folosi formula A_L = h·p pentru piramide neregulate",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A scrie A_sec/A_B = h/H (corect: pătratul raportului)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A confunda muchia laterală l cu apotema h sau cu înălțimea H",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 9,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 136,
+      "section": "§3 Piramida"
+    }
+  },
+  {
+    "exercise_type": "trunchi_piramida_arii_volum",
+    "exercise_type_label": "Trunchiul de piramidă (arii și volum)",
+    "method_name": "Calculul ariilor și volumului unui trunchi de piramidă (în special regulat)",
+    "grade_level": 12,
+    "topic": "geometrie_3d",
+    "subtopic": "trunchi_piramida",
+    "description": "Trunchiul de piramidă: definiție, elemente, arie laterală și totală, volum. Cazul particular al trunchiului de piramidă regulată cu formula A_L = n·((a+b)/2)·h. Volumul: V = (H/3)·(A_b + √(A_b·A_B) + A_B).",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Identificarea trunchiului",
+        "content": "Regulat sau neregulat. Identificăm: laturile a, b ale bazelor (a < b), înălțimea H, apotema trunchiului h, muchia laterală l."
+      },
+      {
+        "step": 2,
+        "title": "Calculul ariilor bazelor",
+        "content": "Pentru baze regulate cu n laturi: A_b = n·a²/(4·tg(π/n)); echivalent triunghi echilateral a²√3/4, pătrat a², hexagon 3a²√3/2."
+      },
+      {
+        "step": 3,
+        "title": "Relația dintre H, h și diferența laturilor",
+        "content": "Apotema trunchiului h, înălțimea H, diferența apotemelor bazelor: h² = H² + (r_B − r_b)², unde r = apotema bazei = a/(2·tg(π/n))."
+      },
+      {
+        "step": 4,
+        "title": "Pentru muchia laterală l",
+        "content": "l² = H² + (R_B − R_b)², unde R = raza cercului circumscris bazei = a/(2·sin(π/n))."
+      },
+      {
+        "step": 5,
+        "title": "Aplicarea formulelor finale",
+        "content": "A_L = n·(a+b)·h/2; A_T = A_L + A_b + A_B; V = (H/3)·(A_b + √(A_b·A_B) + A_B)."
+      },
+      {
+        "step": 6,
+        "title": "Secțiunea la mijlocul înălțimii",
+        "content": "Aria secțiunii la jumătatea înălțimii = ((√A_b + √A_B)/2)²."
+      }
+    ],
+    "notation_rules": {
+      "A_b, A_B": "ariile bazei mici și ale bazei mari",
+      "A_L, A_T": "aria laterală, aria totală",
+      "H": "înălțimea trunchiului",
+      "h": "apotema trunchiului regulat",
+      "a, b": "laturile bazei mici, respectiv bazei mari (a < b)",
+      "l": "muchia laterală",
+      "n": "numărul de laturi al bazei"
+    },
+    "examples": [
+      {
+        "problem": "Coșul unei hote are forma unui trunchi de piramidă patrulateră regulată cu latura bazei mari 0,9 m, latura bazei mici 0,24 m și apotema 0,45 m, atașat la un paralelipiped 0,9×0,9×0,05 m. Câți m² de tablă (10% în plus pentru încheieturi)?",
+        "solution": "A_1 (paralelipiped) = 4·0,9·0,05 = 0,18 m². Pentru trunchi: înălțimea apotemei trapezului h = √(0,45² − 0,33²) ≈ 0,306 m. A_2 (trunchi) = 4·((0,9+0,24)/2)·0,306 ≈ 0,70 m². A_total = 0,88 m². Cu 10% suplimentar: 0,968 ≈ 1 m².",
+        "answer": "R: ≈ 1 m².",
+        "page": 140
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "A interpreta apotema trunchiului ca proiecția pe planul bazei.",
+        "correction": "Apotema trunchiului regulat = înălțimea trapezului format pe fața laterală."
+      },
+      {
+        "mistake": "A scrie volumul trunchiului ca medie aritmetică a volumelor.",
+        "correction": "Formula corectă: V = (H/3)·(A_b + √(A_b·A_B) + A_B); termenul √(A_b·A_B) este media geometrică."
+      },
+      {
+        "mistake": "A folosi formulele de trunchi regulat când doar bazele sunt regulate dar piramida nu.",
+        "correction": "Trunchiul regulat presupune proveniența dintr-o piramidă regulată."
+      },
+      {
+        "mistake": "A folosi formula V = (1/3)·A_B·H (formula piramidei) pentru trunchi",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A scrie V = (1/2)·H·(A_b + A_B) (formulă greșită, analogie cu trapezul)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A folosi A_L = n·a·h pentru trunchi regulat (corect: n·(a+b)/2·h)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A omite calcularea separată a A_b și A_B în A_T",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A confunda apotema trunchiului cu apotema bazei sau muchia laterală",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 9,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 140,
+      "section": "§4 Trunchiul de piramidă; §5.5 Volumul trunchiului de piramidă (p. 146)"
+    }
+  },
+  {
+    "exercise_type": "volum_poliedre_principiul_cavalieri",
+    "exercise_type_label": "Volumul poliedrelor. Principiul lui Cavalieri (teorie fundamentală)",
+    "method_name": "Definiția axiomatică a volumului și deducerea formulelor pentru paralelipiped, prismă, piramidă",
+    "grade_level": 12,
+    "topic": "geometrie_3d",
+    "subtopic": "teoria_volumului",
+    "description": "Bazele teoretice ale calculului de volum: funcția volum (cu 3 proprietăți axiomatice), principiul lui Cavalieri (admis fără demonstrație) și deducerile formulelor V_paralelipiped = abc, V_prismă = A_B·H, V_piramidă = (1/3)·A_B·H.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Verificarea proprietăților funcției volum",
+        "content": "Confirmăm axiomele 1°, 2°, 3°."
+      },
+      {
+        "step": 2,
+        "title": "Aplicarea Principiului Cavalieri",
+        "content": "Pentru a demonstra egalitatea volumelor: arii egale ale secțiunilor pentru orice plan paralel cu α."
+      },
+      {
+        "step": 3,
+        "title": "Folosirea formulelor deduse",
+        "content": "Paralelipiped: V = abc. Cub: V = a³. Prismă: V = A_B·H. Piramidă: V = A_B·H/3. Trunchi piramidă: V = (H/3)·(A_b + √(A_b·A_B) + A_B)."
+      }
+    ],
+    "notation_rules": {
+      "V(K)": "volumul corpului K",
+      "A_B": "aria bazei",
+      "H": "înălțimea corpului",
+      "K1 ⊆ K2": "incluziune între corpuri",
+      "α, β": "plane"
+    },
+    "examples": [],
+    "common_mistakes": [
+      {
+        "mistake": "A presupune că Principiul Cavalieri necesită corpuri identice ca formă.",
+        "correction": "Cavalieri compară corpuri cu forme posibil diferite; criteriul e doar egalitatea ariilor secțiunilor."
+      },
+      {
+        "mistake": "A demonstra V_paralelipiped = abc doar pentru a, b, c naturale.",
+        "correction": "Caz rațional → caz real prin lipsă/adaos și trecere la limită."
+      },
+      {
+        "mistake": "A admite formula V = A_B·H pentru piramidă (corect: A_B·H/3)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A admite V = abc pentru paralelipiped oblic fără Cavalieri",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A trece din ℚ în ℝ pentru muchii fără justificarea limită",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 7,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 142,
+      "section": "§5 Volumul poliedrelor"
+    }
+  },
+  {
+    "exercise_type": "trunchi_con_arii_volum",
+    "exercise_type_label": "Trunchiul de con (arii și volum)",
+    "method_name": "Calculul ariei laterale, totale și volumului trunchiului de con circular drept",
+    "grade_level": 12,
+    "topic": "geometrie_3d",
+    "subtopic": "trunchi_con",
+    "description": "Studiul trunchiului de con circular drept: definiție, generatoare, înălțime, ax de rotație, secțiune axială. Formulele fundamentale: A_L = πg(R+r), A_T = πg(R+r) + πR² + πr², V = (πh/3)(R² + Rr + r²).",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Identificarea elementelor",
+        "content": "R = raza bazei mari, r = raza bazei mici (r < R), h = înălțimea, g = generatoarea. Relația: g² = h² + (R−r)²."
+      },
+      {
+        "step": 2,
+        "title": "Studierea secțiunii axiale",
+        "content": "Trapez isoscel cu bazele 2R și 2r, laturi g, înălțime h. Unghiul generatoare-bază: tg α = h/(R−r)."
+      },
+      {
+        "step": 3,
+        "title": "Calculul ariei laterale",
+        "content": "A_L = πg(R+r). Alternativ: A_L = 2πh·d (T2)."
+      },
+      {
+        "step": 4,
+        "title": "Calculul ariei totale",
+        "content": "A_T = πg(R+r) + πR² + πr²."
+      },
+      {
+        "step": 5,
+        "title": "Calculul volumului",
+        "content": "V = (πh/3)(R² + Rr + r²) — atenție: termenul mijlociu este Rr."
+      },
+      {
+        "step": 6,
+        "title": "Verificarea prin caz limită",
+        "content": "r = 0: V_con = πR²h/3; r = R: V_cilindru = πR²h."
+      }
+    ],
+    "notation_rules": {
+      "T": "trunchiul de con",
+      "C, C'": "conul mare și conul mic",
+      "R, r": "raza bazei mari, raza bazei mici",
+      "G, G'": "generatoarele conurilor C și C'",
+      "g": "generatoarea trunchiului; g = G − G'",
+      "H, H'": "înălțimile conurilor",
+      "h": "înălțimea trunchiului; h = H − H'",
+      "A_L(T), A_T(T), V(T)": "aria laterală, totală, volum",
+      "d": "distanța de la mijlocul generatoarei la axa de rotație"
+    },
+    "examples": [
+      {
+        "problem": "Razele bazelor unui trunchi de con se raportă ca 2:3. A_L = suma ariilor bazelor, V = 1900π cm³. Înălțimea?",
+        "solution": "r = 2x, R = 3x. Condiția A_L = arii baze: 5x·g = 13x², g = 13x/5. h = √(g² − x²) = 12x/5. V = (πh/3)(R²+Rr+r²) = 76πx³/5 = 1900π ⟹ x = 5. h = 12 cm.",
+        "answer": "R: h = 12 cm.",
+        "page": 163
+      },
+      {
+        "problem": "Triunghi echilateral latura a se rotește în jurul unei axe paralele cu înălțimea, la distanța d > a/2. Volumul corpului?",
+        "solution": "V = V_1 − V_2 unde V_1, V_2 sunt volumele celor 2 trunchiuri de con. Manualul afirmă: V = 3πa²d/2.",
+        "answer": "R: V = 3πa²d/2.",
+        "page": 164
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Folosirea mediei aritmetice: V = πh(R² + r²)/2.",
+        "correction": "Formula corectă conține termenul Rr: V = (πh/3)·(R² + Rr + r²)."
+      },
+      {
+        "mistake": "A folosi A_L = π(R + r)·h cu h = înălțimea.",
+        "correction": "Generatoarea g, NU înălțimea h: A_L = πg(R+r); g² = h² + (R−r)²."
+      },
+      {
+        "mistake": "A presupune că secțiunea axială este dreptunghi.",
+        "correction": "Secțiunea axială este TRAPEZ ISOSCEL."
+      },
+      {
+        "mistake": "A trata trunchiul ca cilindru cu raza medie.",
+        "correction": "Corpuri geometric distincte; formula medie nu se aplică."
+      },
+      {
+        "mistake": "A scrie V = (πh/3)·((R+r)/2)² (formulă greșită)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A scrie V = (πh/2)·(R² + r²) (formulă greșită)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A folosi A_L = πg·R (formula conului) pentru trunchi",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A confunda generatoarea g cu înălțimea h",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A omite că secțiunea axială este TRAPEZ ISOSCEL",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 9,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 161,
+      "section": "§3 Trunchiul de con"
+    }
+  },
+  {
+    "exercise_type": "probabilitate_conditionata",
+    "exercise_type_label": "Probabilitatea condiționată. Formula de înmulțire a probabilităților",
+    "method_name": "Calculul probabilităților condiționate folosind P(A/B) = P(A∩B)/P(B)",
+    "grade_level": 12,
+    "topic": "probabilitati",
+    "subtopic": "probabilitate_conditionata",
+    "description": "Probabilitatea condiționată P(A/B) = P(A∩B)/P(B) și formula de înmulțire a probabilităților. Aplicări la probleme cu condiționări (sondaje, extrageri succesive).",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Identificarea evenimentului condiționant",
+        "content": "Stabilim care eveniment se cunoaște (B) și care e cel de calculat (A)."
+      },
+      {
+        "step": 2,
+        "title": "Calculul P(B)",
+        "content": "Folosind schema clasică sau date direct."
+      },
+      {
+        "step": 3,
+        "title": "Calculul P(A∩B)",
+        "content": "Direct sau prin formula reuniunii: P(A∩B) = P(A) + P(B) − P(A∪B)."
+      },
+      {
+        "step": 4,
+        "title": "Aplicarea formulei",
+        "content": "P(A/B) = P(A∩B)/P(B)."
+      }
+    ],
+    "notation_rules": {
+      "P(A/B)": "probabilitatea lui A condiționată de B",
+      "P_B(A)": "notație echivalentă",
+      "P(A∩B)": "probabilitatea intersecției",
+      "∪, ∩": "reuniune, intersecție"
+    },
+    "examples": [
+      {
+        "problem": "Două zaruri. Probabilitatea sumă 6 (A), știind că suma este pară (B).",
+        "solution": "P(B) = 18/36 = 1/2. P(A∩B) = P(A) = 5/36. P(A/B) = (5/36)/(18/36) = 5/18.",
+        "answer": "R: P(A/B) = 5/18.",
+        "page": 87
+      },
+      {
+        "problem": "Clasă 35 elevi: 20 franceză, 25 engleză (fiecare cel puțin una). Prob. franceză știind engleză.",
+        "solution": "P(B) = 25/35 = 5/7. P(A) = 20/35 = 4/7. P(A∪B) = 1. P(A∩B) = 4/7 + 5/7 − 1 = 2/7. P(A/B) = (2/7)/(5/7) = 2/5.",
+        "answer": "R: P(A/B) = 2/5.",
+        "page": 87
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "A presupune că A∩B = ∅.",
+        "correction": "Pentru P(A/B) e necesar A∩B nenul."
+      },
+      {
+        "mistake": "A inversa raportul: P(A/B) = P(B)/P(A∩B).",
+        "correction": "Formula corectă: P(A/B) = P(A∩B)/P(B)."
+      },
+      {
+        "mistake": "A confunda P(A/B) cu P(A) · P(B)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A confunda P(A/B) cu P(B/A) (nu sunt simetrice)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A scrie P(A/B) = P(A) · P(B/A) (corect: pentru P(A∩B))",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 8,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 87,
+      "section": "§3 Probabilitatea condiționată"
+    }
+  },
+  {
+    "exercise_type": "evenimente_independente",
+    "exercise_type_label": "Evenimente aleatoare independente",
+    "method_name": "Verificarea și aplicarea independenței prin P(A∩B) = P(A)·P(B)",
+    "grade_level": 12,
+    "topic": "probabilitati",
+    "subtopic": "evenimente_independente",
+    "description": "Definirea independenței a două și a n evenimente. Independența în totalitate vs. independență două câte două.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Calculul P(A), P(B) și P(A∩B)",
+        "content": "Schema clasică sau date din enunț."
+      },
+      {
+        "step": 2,
+        "title": "Verificarea egalității",
+        "content": "P(A∩B) = P(A)·P(B) ⟹ independente."
+      },
+      {
+        "step": 3,
+        "title": "Pentru 3+ evenimente",
+        "content": "Independența două câte două NU implică independența în totalitate."
+      }
+    ],
+    "notation_rules": {
+      "A, B independente": "P(A∩B) = P(A)·P(B)",
+      "A, B, C independente în totalitate": "produsul probabilităților pentru orice subset"
+    },
+    "examples": [
+      {
+        "problem": "Zar. A = {cel mult 3 puncte}, B = {3 sau 6}. Independente?",
+        "solution": "P(A) = 3/6 = 1/2. P(B) = 2/6 = 1/3. A∩B = {3}, P(A∩B) = 1/6 = (1/2)(1/3) = P(A)·P(B). Independente.",
+        "answer": "R: Da, independente.",
+        "page": 89
+      },
+      {
+        "problem": "Urna 1: 3 albe + 2 negre, urna 2: 4 albe + 3 negre. Prob. toate 3 bile albe.",
+        "solution": "P(A) = C(3,2)/C(5,2) = 3/10. P(B) = 4/7. Independente. P(A∩B) = (3/10)(4/7) = 6/35.",
+        "answer": "R: 6/35.",
+        "page": 89
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Independența intuitiv.",
+        "correction": "Independența se VERIFICĂ algebric: P(A∩B) = P(A)·P(B)."
+      },
+      {
+        "mistake": "A confunda independența cu incompatibilitatea.",
+        "correction": "Incompatibile (A∩B=∅) ≠ Independente. Două evenimente incompatibile cu probabilități pozitive sunt MEREU DEPENDENTE."
+      },
+      {
+        "mistake": "A presupune independența intuitiv",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A concluziona independența totală din independența două câte două",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A folosi P(A∩B) = P(A)·P(B) fără verificare",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 8,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 89,
+      "section": "§4 Evenimente aleatoare independente"
+    }
+  },
+  {
+    "exercise_type": "variabile_aleatoare_discrete",
+    "exercise_type_label": "Variabile aleatoare discrete. Repartiția și valoarea medie",
+    "method_name": "Construirea repartiției și calculul valorii medii M(ξ) = Σxi·pi",
+    "grade_level": 12,
+    "topic": "probabilitati",
+    "subtopic": "variabile_aleatoare",
+    "description": "Definirea variabilei aleatoare discrete, repartiția (tabel valori-probabilități), valoarea medie M(ξ) = Σxi·pi.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Identificarea valorilor posibile",
+        "content": "Listăm toate valorile distincte pe care le poate lua ξ."
+      },
+      {
+        "step": 2,
+        "title": "Calculul probabilităților",
+        "content": "Pentru fiecare xi, pi = P(ξ = xi) folosind schema clasică sau combinatorica."
+      },
+      {
+        "step": 3,
+        "title": "Construirea tabelului",
+        "content": "Tabel cu 2 rânduri: valori (xi) și probabilități (pi). Verificăm Σpi = 1."
+      },
+      {
+        "step": 4,
+        "title": "Calculul valorii medii",
+        "content": "M(ξ) = Σxi·pi. Pentru η = aξ + b: M(η) = a·M(ξ) + b."
+      }
+    ],
+    "notation_rules": {
+      "ξ": "variabila aleatoare",
+      "η": "altă variabilă aleatoare",
+      "P(ξ = xi) = pi": "probabilitatea ca ξ să ia valoarea xi",
+      "M(ξ)": "valoarea medie (speranța matematică)",
+      "Tabel ξ│xi și P│pi": "forma standard a repartiției"
+    },
+    "examples": [
+      {
+        "problem": "Urnă cu 4 albe + 2 negre, extragere 2 bile. ξ = nr. bilelor albe. Repartiția.",
+        "solution": "Cazuri totale C(6,2)=15. P(ξ=0)=C(2,2)/15=1/15. P(ξ=1)=C(4,1)·C(2,1)/15=8/15. P(ξ=2)=C(4,2)/15=6/15. Σ = 15/15 = 1 ✓.",
+        "answer": "R: ξ│0│1│2│ ; P│1/15│8/15│6/15│.",
+        "page": 91
+      },
+      {
+        "problem": "ξ │−1│1│3│5│; P│1/6│1/6│1/6│1/2│. M(ξ) și M(η) pentru η = 2ξ.",
+        "solution": "M(ξ) = −1·1/6 + 1·1/6 + 3·1/6 + 5·1/2 = 18/6 = 3. M(η) = 2·M(ξ) = 6.",
+        "answer": "R: M(ξ) = 3, M(η) = 6.",
+        "page": 92
+      },
+      {
+        "problem": "Trăgător 3 cartușe, atinge ținta cu 0,8. ξ = nr. cartușelor folosite. M(ξ).",
+        "solution": "P(ξ=1) = 0,8. P(ξ=2) = 0,2·0,8 = 0,16. P(ξ=3) = 1 − 0,96 = 0,04. M(ξ) = 1·0,8 + 2·0,16 + 3·0,04 = 1,24.",
+        "answer": "R: M(ξ) = 1,24.",
+        "page": 92
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "A nu include toate valorile posibile.",
+        "correction": "Listare sistematică de la min la max."
+      },
+      {
+        "mistake": "A confunda extrageri concomitente vs. succesive.",
+        "correction": "Concomitent ≡ combinări C(n,k); succesiv cu înlocuire → produs probabilități constante; succesiv fără înlocuire → produs probabilități condiționate."
+      },
+      {
+        "mistake": "A calcula M(ξ) ca medie aritmetică fără ponderi.",
+        "correction": "M(ξ) = media PONDERATĂ cu probabilitățile: Σxi·pi."
+      },
+      {
+        "mistake": "A trata valoarea medie ca medie aritmetică simplă",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A omite verificarea Σpi = 1",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A confunda repartiția cu funcția de repartiție",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 8,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 91,
+      "section": "§5 Variabile aleatoare discrete"
+    }
+  },
+  {
+    "exercise_type": "binomul_newton_combinatorica",
+    "exercise_type_label": "Combinatorică și binomul lui Newton",
+    "method_name": "Calculul aranjamentelor/permutărilor/combinărilor + dezvoltarea (a+b)^n și termenul general T_{k+1}",
+    "grade_level": 12,
+    "topic": "combinatorica",
+    "subtopic": "binomul_newton",
+    "description": "Recapitulare combinatorică (aranjamente, permutări, combinări) + binomul lui Newton: dezvoltarea (a±b)^n, coeficienți binomiali, termen general, proprietăți, triunghiul lui Pascal.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Identificarea tipului problemei",
+        "content": "a) Numărare directă; b) Dezvoltare (a±b)^n; c) Găsirea unui termen specific; d) Identificarea n din condiții pe coeficienți."
+      },
+      {
+        "step": 2,
+        "title": "Pentru combinatorica pură",
+        "content": "Ordinea contează? → aranjamente sau permutări. NU contează? → combinări."
+      },
+      {
+        "step": 3,
+        "title": "Pentru dezvoltarea binomului",
+        "content": "Scriem T_{k+1} = C_n^k·a^(n-k)·b^k. Impunem condiția cerută și rezolvăm pentru k."
+      },
+      {
+        "step": 4,
+        "title": "Pentru găsirea n",
+        "content": "Scriem condițiile pe C_n^m sub formă de ecuație. Folosim proprietățile combinărilor + factoriale."
+      }
+    ],
+    "notation_rules": {
+      "n!": "factorial: n! = 1·2·...·n; 0! = 1",
+      "A_n^m": "aranjamente",
+      "P_n": "permutări",
+      "C_n^m": "combinări",
+      "(a+b)^n": "binomul la puterea n",
+      "T_{k+1}": "al (k+1)-lea termen; index 0-based pentru k",
+      "card B(M)": "cardinalul mulțimii părților"
+    },
+    "examples": [
+      {
+        "problem": "14 discipline, orar de 6 discipline diferite pentru o zi. Câte orare?",
+        "solution": "Ordinea contează → aranjamente. A_14^6 = 14!/8! = 9·10·11·12·13·14 = 2 162 160.",
+        "answer": "R: 2 162 160.",
+        "page": 220
+      },
+      {
+        "problem": "Echipe din 3 elevi din 26 elevi. Câte echipe?",
+        "solution": "Combinări. C_26^3 = 26!/(3!·23!) = 2 600.",
+        "answer": "R: 2 600.",
+        "page": 221
+      },
+      {
+        "problem": "5 ciocolate diferite la 5 copii (câte una fiecare). Moduri?",
+        "solution": "Permutări. P_5 = 5! = 120.",
+        "answer": "R: 120.",
+        "page": 221
+      },
+      {
+        "problem": "Termenul cu x^30 în dezvoltarea (2x² + 3x)^24.",
+        "solution": "T_{k+1} = C_24^k·(2x²)^(24-k)·(3x)^k = C_24^k·2^(24-k)·3^k·x^(2(24-k)+k). Condiția: 48 − k = 30 ⟹ k = 18. T_19 = C_24^18·2^6·3^18·x^30.",
+        "answer": "R: T_19 = C_24^18·2^6·3^18·x^30.",
+        "page": 222
+      },
+      {
+        "problem": "(ln²x + ⁴√x)^n. Coeficienții termenilor 14, 15, 16 în progresie aritmetică. Determinați n.",
+        "solution": "2·C_n^14 = C_n^13 + C_n^15. Rezultă n² − 57n + 782 = 0, cu n1 = 23, n2 = 34.",
+        "answer": "R: n1 = 23 sau n2 = 34.",
+        "page": 222
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "A confunda termenul al k-lea cu T_k.",
+        "correction": "T_{k+1} este al (k+1)-lea; pentru 'al 5-lea termen', k = 4."
+      },
+      {
+        "mistake": "A uita semnul (−1)^k în dezvoltarea (a−b)^n.",
+        "correction": "T_{k+1} = (−1)^k·C_n^k·a^(n-k)·b^k."
+      },
+      {
+        "mistake": "A presupune C_n^m = C_n^(m+1) pentru orice m.",
+        "correction": "Doar C_n^m = C_n^(n−m)."
+      },
+      {
+        "mistake": "A confunda A_n^m cu C_n^m",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A scrie n! pentru permutări fără justificare A_n^n",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A omite C_n^m·... pentru termenul general",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A folosi C_n^m = n!/(n−m)! (greșit; corect: n!/(m!(n−m)!))",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 9,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 219,
+      "section": "§8 Elemente de combinatorică. Binomul lui Newton"
+    }
+  },
+  {
+    "exercise_type": "matrici_determinanti_sisteme_liniare",
+    "exercise_type_label": "Operații cu matrice, determinanți, sisteme de ecuații liniare",
+    "method_name": "Operații matriceale + calcul determinanți + rezolvare sisteme (Cramer, matrice inversă, Gauss)",
+    "grade_level": 12,
+    "topic": "matrice",
+    "subtopic": "algebra_superioara_completa",
+    "description": "Recapitulare completă: 1) operații cu matrice; 2) determinanți (de ordin 2, 3, n; proprietăți); 3) sisteme liniare (Cramer, matrice inversă, Gauss-Jordan).",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Identificarea operației",
+        "content": "a) Operație cu matrice; b) Calcul determinant; c) Rezolvare sistem."
+      },
+      {
+        "step": 2,
+        "title": "Pentru operații matriceale",
+        "content": "Sumă: doar matrice de același tip. Produs A·B: nr. coloane A = nr. linii B. Transpusă: schimbă linii cu coloane. Inversă: prin transformări elementare sau prin complemenți algebrici."
+      },
+      {
+        "step": 3,
+        "title": "Pentru determinanți 2 și 3",
+        "content": "Ordin 2: ad − bc. Ordin 3 (Sarrus): 3 diagonale +, 3 diagonale −. Alternativ: dezvoltare după linie/coloană cu zero-uri induse."
+      },
+      {
+        "step": 4,
+        "title": "Pentru sisteme — alegerea metodei",
+        "content": "Sistem pătrat n×n cu det≠0: Cramer sau matrice inversă. Sistem oarecare: METODA GAUSS."
+      },
+      {
+        "step": 5,
+        "title": "Aplicarea Cramer",
+        "content": "Δ = det A. Pentru fiecare xi: Δi înlocuind coloana i cu termenii liberi; xi = Δi/Δ."
+      },
+      {
+        "step": 6,
+        "title": "Aplicarea Gauss",
+        "content": "Matricea extinsă (A|B) → formă eșalon prin transformări elementare → compara rangurile → aplică pașii."
+      }
+    ],
+    "notation_rules": {
+      "Mm,n(K)": "matrice de tip (m,n) cu elemente în K",
+      "Mn(K)": "matrice pătratice de ordin n",
+      "In": "matricea unitate",
+      "O": "matricea nulă",
+      "ᵗA": "transpusa",
+      "A⁻¹": "inversa",
+      "det A sau |A|": "determinantul",
+      "Aij": "complementul algebric; Aij = (−1)^(i+j)·Mij",
+      "Mij": "minorul",
+      "Δ, Δi": "determinantul matricei sistemului; Δi prin înlocuirea coloanei i",
+      "(A|B)": "matricea extinsă",
+      "~": "echivalență prin transformări elementare"
+    },
+    "examples": [
+      {
+        "problem": "A = [[2,0],[-1,3]], B = [[2,3,1],[-1,0,8]], C = [[5,-3],[2,1]]. Determinați: a) A+B; b) A+C; c) 3C; d) A·B; e) B·C; f) ᵗA.",
+        "solution": "a) Nu există (tipuri diferite). b) [[7,-3],[1,4]]. c) [[15,-9],[6,3]]. d) [[4,6,2],[-5,-3,23]]. e) Nu există. f) [[2,-1],[0,3]].",
+        "answer": "R: detaliile de mai sus.",
+        "page": 235
+      },
+      {
+        "problem": "Inversa matricei A = [[3,1,2],[0,2,-9],[-1,0,-2]].",
+        "solution": "Prin transformări elementare (A | I3) ~ (I3 | A⁻¹). Rezultat: A⁻¹ = [[-4,2,-13],[9,-4,27],[2,-1,6]]. det A = 1.",
+        "answer": "R: A⁻¹ = [[-4,2,-13],[9,-4,27],[2,-1,6]].",
+        "page": 236
+      },
+      {
+        "problem": "Calculați Δ = |2,1,0,3; 1,0,2,-1; 0,0,1,2; 0,2,0,i|.",
+        "solution": "Aplicăm zero-uri induse + dezvoltare. Rezultat: Δ = 26 − i.",
+        "answer": "R: Δ = 26 − i.",
+        "page": 238
+      },
+      {
+        "problem": "Sistem: 3x1+x2+2x3=0; 2x2-9x3=0; -x1-2x3=2.",
+        "solution": "|A| = 1 ≠ 0. Cramer: Δ1=-26, Δ2=54, Δ3=12. x1=-26, x2=54, x3=12.",
+        "answer": "R: S = {(-26, 54, 12)}.",
+        "page": 239
+      },
+      {
+        "problem": "Gauss: 2x1-x2+x3-2x4=1; x1+x2-x3+x4=2; 4x1+x2-x3=5.",
+        "solution": "Forma eșalon: 2 linii nenule. Sistem trapezoidal: x3=α, x4=β. Soluție: x1=1+β/3, x2=1+α-4β/3, x3=α, x4=β.",
+        "answer": "R: S parametrizat cu α, β ∈ ℂ.",
+        "page": 240
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Produsul A·B fără verificarea dimensiunilor.",
+        "correction": "A·B există ⟺ nr. coloane A = nr. linii B."
+      },
+      {
+        "mistake": "A scrie det(λA) = λ·det A.",
+        "correction": "Pentru o matrice n×n: det(λA) = λ^n·det A."
+      },
+      {
+        "mistake": "Cramer la sistem cu Δ = 0.",
+        "correction": "Δ = 0: fie incompatibil, fie infinit soluții; se rezolvă prin Gauss."
+      },
+      {
+        "mistake": "A confunda Aij cu Mij.",
+        "correction": "Aij = (−1)^(i+j)·Mij."
+      },
+      {
+        "mistake": "A⁻¹ = (1/det A)·(Aij) fără transpunere.",
+        "correction": "A⁻¹ = (1/det A)·ᵗ(Aij)."
+      },
+      {
+        "mistake": "A presupune comutativitatea: AB ≠ BA în general",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A scrie det(A+B) = det A + det B (FALS)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A aplica Cramer la sisteme non-pătrate sau cu Δ = 0",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A folosi Sarrus pentru 4x4+",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A omite proprietatea 5° (esențială pentru calcul eficient)",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 10,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 235,
+      "section": "§11 Elemente de algebră superioară"
+    }
+  },
+  {
+    "exercise_type": "paralelism_perpendicularitate_spatiu_vectori_3D",
+    "exercise_type_label": "Paralelismul și perpendicularitatea în spațiu. Vectori 3D",
+    "method_name": "Recunoașterea pozițiilor relative (drepte/plane), criterii de paralelism/perpendicularitate, calcul vectorial 3D",
+    "grade_level": 12,
+    "topic": "geometrie_3d",
+    "subtopic": "paralelism_perpendicularitate",
+    "description": "Sinteza geometriei 3D: vectori (sumă, produs cu scalar, produs scalar) cu coordonate; pozițiile relative ale dreptelor și planelor; criterii de paralelism/perpendicularitate; transformări geometrice.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Identificarea configurației",
+        "content": "Drepte/plane: pozițiile relative posibile (concurente, paralele, secante, perpendiculare)."
+      },
+      {
+        "step": 2,
+        "title": "Pentru vectori cu coordonate",
+        "content": "a̅ = (x1,y1,z1), b̅ = (x2,y2,z2). Sumă, produs scalar (x1x2+y1y2+z1z2), modul √(x²+y²+z²), perpendicularitate (a̅·b̅=0), cos(a̅,b̅)."
+      },
+      {
+        "step": 3,
+        "title": "Pentru paralelism",
+        "content": "Dreaptă ∥ plan: găsim o dreaptă din plan paralelă. Plan ∥ plan: două drepte concurente din unul paralele cu celălalt."
+      },
+      {
+        "step": 4,
+        "title": "Pentru perpendicularitate",
+        "content": "Dreaptă ⊥ plan: perpendicular pe DOUĂ drepte concurente din plan."
+      },
+      {
+        "step": 5,
+        "title": "Aplicarea T3⊥",
+        "content": "Pentru a verifica perpendicularitatea unei oblice pe o dreaptă din plan: arătăm că proiecția oblicei e perpendiculară pe acea dreaptă."
+      }
+    ],
+    "notation_rules": {
+      "a̅ = AB": "vector reprezentat de segmentul orientat",
+      "AB↑↑CD": "vectori coorientați",
+      "AB↑↓CD": "vectori cu sensuri opuse",
+      "|a̅|": "modulul",
+      "a̅·b̅": "produs scalar",
+      "α, β, γ": "plane",
+      "a, b, c": "drepte spațiale",
+      "a ∥ α": "dreapta paralelă cu planul",
+      "a ⊥ α": "dreapta perpendiculară pe plan",
+      "pr_α(a)": "proiecția pe planul α",
+      "m(∠(α, β))": "măsura unghiului diedru"
+    },
+    "examples": [
+      {
+        "problem": "Cubul ABCDA1B1C1D1 cu muchia a. Demonstrați AC1 ⊥ (BDA1).",
+        "solution": "Reper ortonormat în A. A=(0,0,0), C1=(a,a,a), B=(a,0,0), D=(0,a,0), A1=(0,0,a). AC1·BD = 0 ✓; AC1·BA1 = 0 ✓. BD și BA1 concurente în B din planul (BDA1). Concluzie: AC1 ⊥ (BDA1).",
+        "answer": "R: Demonstrația prin produs scalar nul + drepte concurente.",
+        "page": 227
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Drepte care nu se intersectează = paralele.",
+        "correction": "În spațiu: pot fi paralele SAU necoplanare."
+      },
+      {
+        "mistake": "a ⊂ α ⟹ a NU paralelă cu α.",
+        "correction": "Conform manualului, dreapta inclusă în plan ESTE paralelă (caz limită)."
+      },
+      {
+        "mistake": "A omite că drepte din plan trebuie să fie concurente.",
+        "correction": "Perpendicularitatea pe drepte paralele NU implică perpendicularitatea pe plan."
+      },
+      {
+        "mistake": "Perpendicularitate pe o singură dreaptă (incorect)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A confunda paralele coplanare cu necoplanare",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A scrie a̅⊥b̅ ⟺ |a̅|·|b̅| = 0",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A folosi a̅·b̅ = |a̅|·|b̅| (lipsește cos φ)",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 8,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 223,
+      "section": "§9 Geometrie în plan și în spațiu"
+    }
+  },
+  {
+    "exercise_type": "lungime_arc_arie_suprafata_rotatie",
+    "exercise_type_label": "Lungimea graficului unei funcții și aria suprafeței de rotație",
+    "method_name": "Formula l(f) = ∫√(1+f'(x)²)dx pentru lungime de arc; A(f) = 2π∫f(x)√(1+f'(x)²)dx pentru arie suprafață rotație",
+    "grade_level": 12,
+    "topic": "analiza",
+    "subtopic": "aplicatii_integrale_definite_avansate",
+    "description": "Două formule fundamentale: 1) lungimea arcului; 2) aria suprafeței obținute prin rotația graficului în jurul axei Ox.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Verificarea ipotezelor",
+        "content": "f derivabilă pe [a, b] cu f' continuă. Pentru arie: f ≥ 0."
+      },
+      {
+        "step": 2,
+        "title": "Calculul f'(x) și (f'(x))²",
+        "content": "Determinăm derivata și pătratul ei."
+      },
+      {
+        "step": 3,
+        "title": "Simplificarea 1+(f')²",
+        "content": "Adesea se obține un pătrat perfect; aplicăm substituții potrivite."
+      },
+      {
+        "step": 4,
+        "title": "Aplicarea formulei",
+        "content": "Lungime: l = ∫√(1+f'²)dx. Arie: A = 2π∫f·√(1+f'²)dx."
+      },
+      {
+        "step": 5,
+        "title": "Pentru curbe nereprezentabile ca grafice",
+        "content": "Folosim simetrii (cercul de rază r), parametrizare, sau secționăm domeniul."
+      }
+    ],
+    "notation_rules": {
+      "l(f)": "lungimea graficului",
+      "G_f": "graficul funcției",
+      "S_f": "suprafața de rotație",
+      "A(f)": "aria suprafeței de rotație",
+      "f'": "derivata"
+    },
+    "examples": [
+      {
+        "problem": "Lungimea cercului de rază r.",
+        "solution": "Calculăm 1/12 din lungime (arcul de la x=0 la x=r/2). f(x) = √(r²−x²), f'(x) = −x/√(r²−x²). 1 + (f')² = r²/(r²−x²). l(f) = ∫_0^(r/2) r/√(r²−x²) dx = r·arcsin(1/2) = rπ/6. Lungime totală = 12·rπ/6 = 2πr.",
+        "answer": "R: L = 2πr.",
+        "page": 69
+      },
+      {
+        "problem": "Lungimea graficului f(x) = ln(sin x), x ∈ [π/3, π/2].",
+        "solution": "f'(x) = ctg x. 1 + (f')² = 1/sin²x. l = ∫_(π/3)^(π/2) (1/sin x) dx = ln|tg(x/2)|_(π/3)^(π/2) = (1/2)ln 3.",
+        "answer": "R: l = (1/2)·ln 3.",
+        "page": 69
+      },
+      {
+        "problem": "Lungimea graficului f(x) = ln x, x ∈ [√3, √8].",
+        "solution": "f'(x) = 1/x. Substituție t = √(1+x²): l = 1 + (1/2)·ln(3/2).",
+        "answer": "R: l = 1 + (1/2)·ln(3/2).",
+        "page": 70
+      },
+      {
+        "problem": "Aria suprafeței de rotație pentru f(x) = (1/2)(eˣ + e⁻ˣ), x ∈ [0,1].",
+        "solution": "f'(x) = (eˣ−e⁻ˣ)/2. 1+(f')² = ((eˣ+e⁻ˣ)/2)². √(1+f'²) = f(x). A = 2π∫_0^1 f²(x) dx = π + π(e⁴−1)/(4e²).",
+        "answer": "R: A = π + π(e⁴−1)/(4e²).",
+        "page": 70
+      },
+      {
+        "problem": "Aria oglinzii parabolice y² = (9/4)x, x ∈ [0,1].",
+        "solution": "f(x) = (3/2)√x. f' = 3/(4√x). 1+(f')² = (16x+9)/(16x). A = (3π/4)·∫_0^1 √(16x+9) dx. Cu t = 16x+9: A = 49π/16.",
+        "answer": "R: A = 49π/16.",
+        "page": 71
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Aplicarea formulei pe cerc fără a observa neredibilitatea la capete.",
+        "correction": "Calculăm pe sub-arc și înmulțim prin simetrie."
+      },
+      {
+        "mistake": "A = π·∫f·√(1+f'²)dx (în loc de 2π).",
+        "correction": "Aria completă (la 360°) include 2π."
+      },
+      {
+        "mistake": "Folosirea formulei pentru f cu valori negative.",
+        "correction": "Formula cere f ≥ 0; altfel |f(x)|."
+      },
+      {
+        "mistake": "Aplicarea formulei pentru cerc direct (funcția nu e derivabilă la ±r)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Omiterea factorului 2π în formula ariei",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Confuzia între l(f), A(f) și V (volumul)",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 6,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 69,
+      "section": "§3 Calculul lungimii graficului unei funcții și al ariei unei suprafețe de rotație (opțional)"
+    }
+  },
+  {
+    "exercise_type": "primitiva_simpla",
+    "exercise_type_label": "Noțiunea de primitivă. Integrala nedefinită (completare cu tabel integrale și proprietăți)",
+    "method_name": "Calculul primitivelor folosind tabelul integralelor uzuale și proprietățile integralei nedefinite",
+    "grade_level": 12,
+    "topic": "analiza",
+    "subtopic": "primitive_si_integrala_nedefinita",
+    "description": "COMPLETARE la tema existentă: tabelul complet al primitivelor (21 formule), proprietățile integralei nedefinite, teorema existenței primitivei pentru funcții continue.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Identificarea tipului",
+        "content": "a) imediată din tabel; b) ∫f(kx+b)dx → prop. 6°; c) ∫f'/f → prop. 7°; d) linearitate."
+      },
+      {
+        "step": 2,
+        "title": "Linearitate",
+        "content": "Descompunem ∫(αf+βg)dx = α∫f dx + β∫g dx."
+      },
+      {
+        "step": 3,
+        "title": "Constanta de integrare",
+        "content": "OBLIGATORIU: rezultatul include +C."
+      },
+      {
+        "step": 4,
+        "title": "Pentru condiții F(x₀)=y₀",
+        "content": "Forma generală F+C, apoi substituim condiția."
+      }
+    ],
+    "notation_rules": {
+      "∫f(x)dx": "integrala nedefinită",
+      "F(x) + C": "primitiva generală",
+      "F'(x) = f(x)": "relația primitivă-funcție",
+      "* în tabel": "formule pentru profilul real"
+    },
+    "examples": [
+      {
+        "problem": "Tabel primitive (formulele 1-21):",
+        "solution": "1) ∫0 dx = C. 2) ∫dx = x+C. 3) ∫xⁿdx = x^(n+1)/(n+1) + C, n∈ℕ*. 4) ∫x^α dx = x^(α+1)/(α+1) + C. 5) ∫dx/√x = 2√x + C. 6) ∫aˣdx = aˣ/ln a + C. 7) ∫eˣdx = eˣ + C. 8) ∫dx/x = ln|x| + C. 9) ∫cos x dx = sin x + C. 10) ∫sin x dx = -cos x + C. 11) ∫dx/cos²x = tg x + C. 12) ∫dx/sin²x = -ctg x + C. 13*) ∫dx/√(1-x²) = arcsin x + C. 14*) ∫dx/(1+x²) = arctg x + C. 15*) ∫dx/(a²+x²) = (1/a)arctg(x/a) + C. 16*) ∫dx/√(a²-x²) = arcsin(x/a) + C. 17*) ∫dx/(a²-x²) = (1/(2a))ln|(a+x)/(a-x)| + C. 18*-21*) formule cu √(a²±x²) și √(x²-a²).",
+        "answer": "Tabelul complet.",
+        "page": 16
+      },
+      {
+        "problem": "Calculați: a) ∫(6x²-3x+5)dx; b) ∫sin 5x dx; c) ∫(2x-1)¹⁰⁰dx; d) ∫dx/(3x-1).",
+        "solution": "a) 2x³-3x²/2+5x+C; b) -(1/5)cos 5x+C; c) (2x-1)¹⁰¹/202+C; d) (1/3)ln|3x-1|+C.",
+        "answer": "R: ca mai sus.",
+        "page": 15
+      },
+      {
+        "problem": "F primitivă a lui f(x) = cos x + sin x cu F(0) = 1.",
+        "solution": "F(x) = sin x - cos x + C. F(0) = -1+C = 1 ⟹ C = 2.",
+        "answer": "R: F(x) = sin x - cos x + 2.",
+        "page": 18
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Omiterea C.",
+        "correction": "Toate primitivele includ +C."
+      },
+      {
+        "mistake": "∫(1/x)dx = ln x.",
+        "correction": "ln|x|."
+      },
+      {
+        "mistake": "∫sin 5x dx = cos 5x/5.",
+        "correction": "-(1/5)cos 5x + C."
+      },
+      {
+        "mistake": "A omite C",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "∫(1/x)dx = ln x + C (corect: ln|x| + C)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "∫f(kx+b)dx fără factorul 1/k",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 9,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 12,
+      "section": "§1 Noțiunea de primitivă a unei funcții. Noțiunea de integrală nedefinită"
+    }
+  },
+  {
+    "exercise_type": "integrala_definita_teoreme_de_baza",
+    "exercise_type_label": "Integrala definită — teoremele fundamentale 1-12 (completare)",
+    "method_name": "Formula Leibniz-Newton și cele 12 teoreme fundamentale",
+    "grade_level": 12,
+    "topic": "analiza",
+    "subtopic": "integrala_definita_teorie",
+    "description": "COMPLETARE: cele 12 teoreme fundamentale — definiție, Leibniz-Newton, sume Riemann, condiție integrabilitate, clase integrabile, proprietăți (liniaritate, aditivitate, semn, monotonie, modul) și 2 teoreme de medie.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Verificarea ipotezelor",
+        "content": "Continuitate/integrabilitate, semnul, paritatea."
+      },
+      {
+        "step": 2,
+        "title": "Primitivă + Leibniz-Newton",
+        "content": "∫_a^b f = F(b)−F(a)."
+      },
+      {
+        "step": 3,
+        "title": "Proprietățile",
+        "content": "T2 liniaritate, T6 aditivitate, T9 modul."
+      },
+      {
+        "step": 4,
+        "title": "Funcții pe ramuri",
+        "content": "Aplicăm T6 pe sub-intervale."
+      },
+      {
+        "step": 5,
+        "title": "Teorema de medie",
+        "content": "M[f] = (1/(b−a))·∫f; rezolvăm f(c) = M[f]."
+      }
+    ],
+    "notation_rules": {
+      "∫_a^b f(x)dx": "integrala definită",
+      "F(x)|_a^b": "F(b) − F(a)",
+      "σ(T, ξ)": "suma Riemann",
+      "‖T‖": "norma diviziunii",
+      "M[f]": "valoarea medie"
+    },
+    "examples": [
+      {
+        "problem": "I = ∫₁² (3/x − 2 − 4x) dx.",
+        "solution": "Liniaritate: 3∫dx/x − 2∫dx − 4∫x dx = 3ln x|₁² − 2x|₁² − 4·x²/2|₁² = 3ln 2 − 2 − 6 = 3ln 2 − 8.",
+        "answer": "R: 3ln 2 − 8.",
+        "page": 33
+      },
+      {
+        "problem": "∫_{-1}² f(x)dx, f = x² pe [-1,1], f = 2−x pe (1,2].",
+        "solution": "T6: ∫_{-1}¹ x² dx + ∫₁² (2−x)dx = (2/3) + (1/2) = 7/6.",
+        "answer": "R: 7/6.",
+        "page": 42
+      },
+      {
+        "problem": "∫_{-2}³ (|x−1|+|x+1|) dx.",
+        "solution": "Pe [-2,-1]: -2x. Pe (-1,1): 2. Pe [1,3]: 2x. T6: 3 + 4 + 8 = 15.",
+        "answer": "R: 15.",
+        "page": 42
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "∫_a^b f = F(a) − F(b).",
+        "correction": "F(b) − F(a)."
+      },
+      {
+        "mistake": "Ignorarea discontinuităților.",
+        "correction": "T6 strict; verificați continuitatea."
+      },
+      {
+        "mistake": "|∫f| = ∫|f|.",
+        "correction": "Egale doar pentru f de semn constant."
+      },
+      {
+        "mistake": "T12 cu c ∈ [a,b].",
+        "correction": "c ∈ (a,b) — interval DESCHIS."
+      },
+      {
+        "mistake": "Leibniz-Newton la funcții non-continue",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "T12 fără continuitate",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Confuzia ∫_a^a f = 0 cu ∫_a^b f = 0",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "|∫f| ≤ ∫f (corect: |∫f| ≤ ∫|f|)",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 10,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 28,
+      "section": "§1-§2 Integrala definită + Proprietăți"
+    }
+  },
+  {
+    "exercise_type": "integrala_definita_metode_calcul",
+    "exercise_type_label": "Metode de calcul al integralei definite (integrare prin părți + schimbarea de variabilă)",
+    "method_name": "Aplicarea Teoremelor 13 (prin părți) și 14 (schimbare variabilă) pentru integrala definită",
+    "grade_level": 12,
+    "topic": "analiza",
+    "subtopic": "metode_integrala_definita",
+    "description": "Cele două metode esențiale pentru BAC: 1) integrarea prin părți pentru integrala definită (T13); 2) schimbarea de variabilă cu modificarea limitelor (T14). Conține formula directă cu evaluare la capete.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Pentru integrare prin părți",
+        "content": "Alegem u și dv (regula LIATE: Logaritm > Inverse trig > Algebric > Trig > Exponențial). Calculăm du și v. Aplicăm formula DIRECT: u·v|_a^b − ∫v·du."
+      },
+      {
+        "step": 2,
+        "title": "Sau prin metoda diferențială",
+        "content": "(3x²+1)dx = d(x³+x). Aplicăm ∫u·dv direct fără notații explicite."
+      },
+      {
+        "step": 3,
+        "title": "Pentru schimbare de variabilă",
+        "content": "Alegem t = φ(x) sau x = φ(t). Calculăm dx = φ'(t)dt. Schimbăm LIMITELE: dacă x = a ⟹ t = α; dacă x = b ⟹ t = β. NU revenim la variabila inițială."
+      },
+      {
+        "step": 4,
+        "title": "Verificarea ipotezelor T14",
+        "content": "Continuitate f; derivabilitate φ cu φ' continuă și nenulă; corespondență a ⟷ α, b ⟷ β."
+      }
+    ],
+    "notation_rules": {
+      "u(x)v(x)|_a^b": "evaluare la capete",
+      "d(...)": "diferențială",
+      "t = φ(x), x = φ(t)": "substituție directă/inversă",
+      "α, β": "noile limite de integrare"
+    },
+    "examples": [
+      {
+        "problem": "∫₀¹ (x+1)·e^(2x) dx.",
+        "solution": "Prin părți cu u=x+1, dv=e^(2x)dx. du=dx, v=(1/2)e^(2x). I = (x+1)·(1/2)e^(2x)|₀¹ − ∫₀¹ (1/2)e^(2x)dx = e²·1 − (1/2) − (1/4)(e²−1) = (1/4)(3e²−1).",
+        "answer": "R: (1/4)(3e²−1).",
+        "page": 49
+      },
+      {
+        "problem": "∫₀^π (x²+x+1)cos x dx (integrare prin părți DE 2 ORI).",
+        "solution": "Prima dată: u=x²+x+1, dv=cos x dx ⟹ (x²+x+1)sin x − ∫(2x+1)sin x dx. A doua dată: u=2x+1, dv=sin x dx ⟹ -(2x+1)cos x + 2∫cos x dx. Total F(x) = (x²+x−1)sin x + (2x+1)cos x. F(π) − F(0) = -(2π+1) − 1 = -2(π+1).",
+        "answer": "R: -2(π+1).",
+        "page": 49
+      },
+      {
+        "problem": "I = ∫₀¹ x(2x−1)⁵ dx (schimbare de variabilă).",
+        "solution": "Substituție t = 2x−1, x = (t+1)/2, dx = dt/2. Limite: x=0 ⟹ t=-1; x=1 ⟹ t=1. I = ∫_{-1}¹ ((t+1)/2)·t⁵·(dt/2) = (1/4)∫_{-1}¹ (t⁶+t⁵)dt = (1/4)·[t⁷/7+t⁶/6]_{-1}¹ = (1/4)·(2/7) = 1/14.",
+        "answer": "R: 1/14.",
+        "page": 51
+      },
+      {
+        "problem": "∫_a^(a√3) dx/(x⁴√(a²+x²)) folosind două schimbări succesive de variabilă.",
+        "solution": "Pasul 1: x = a·tg t, dx = a·dt/cos²t. Limite t ∈ [π/6, π/4]. Pasul 2: sin t = u sau direct continuare. Rezultatul cuprinde fracții cu √, vezi manualul p.52-53.",
+        "answer": "R: (vezi manual p.52-53)",
+        "page": 52
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "După T14 a reveni la variabila inițială.",
+        "correction": "Pentru integrala DEFINITĂ după schimbarea variabilei NU revenim — calculăm direct cu noile limite."
+      },
+      {
+        "mistake": "A uita una din limite în schimbarea lor.",
+        "correction": "Calculați AMBELE noi limite α = φ⁻¹(a), β = φ⁻¹(b)."
+      },
+      {
+        "mistake": "T13 cu u și dv inversate.",
+        "correction": "Regula LIATE pentru alegerea lui u."
+      },
+      {
+        "mistake": "A omite condiția φ' ≠ 0 la T14.",
+        "correction": "Această condiție garantează bijectivitatea pe interval."
+      },
+      {
+        "mistake": "A aplica T14 cu φ' = 0 undeva în interval",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A uita schimbarea limitelor",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A reveni la variabila inițială după T14",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "A confunda u cu v în T13",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 10,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 49,
+      "section": "§3 Metode de calcul al integralei definite"
+    }
+  },
+  {
+    "exercise_type": "elemente_logica_matematica",
+    "exercise_type_label": "Elemente de logică matematică. Propoziții, teoreme, inducție",
+    "method_name": "Propoziții, condiții necesare/suficiente/echivalente, metode demonstrație (directă, reducere la absurd, inducție)",
+    "grade_level": 12,
+    "topic": "alt",
+    "subtopic": "logica_matematica",
+    "description": "Bazele logicii matematice: propoziții (A/F), teoreme directe/reciproce/contrara reciprocei, axiome, condiții necesare/suficiente/echivalente, reducere la absurd, inducție matematică cu schema completă.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Valoarea de adevăr",
+        "content": "Este propoziție clară? Demonstrație directă sau contraexemplu."
+      },
+      {
+        "step": 2,
+        "title": "Tipul teoremei",
+        "content": "'Dacă A, atunci B' sau echivalență."
+      },
+      {
+        "step": 3,
+        "title": "Demonstrație directă",
+        "content": "A ⟹ B prin pași logici."
+      },
+      {
+        "step": 4,
+        "title": "Reducere la absurd",
+        "content": "Presupunem ¬B; deducem ¬A; contradicție."
+      },
+      {
+        "step": 5,
+        "title": "Inducție",
+        "content": "1) Baza P(m). 2) Pasul P(k) ⟹ P(k+1). 3) Concluzie."
+      },
+      {
+        "step": 6,
+        "title": "Contraexemplu",
+        "content": "Pentru a infirma '∀x, P(x)'."
+      }
+    ],
+    "notation_rules": {
+      "A, F sau 1, 0": "valori de adevăr",
+      "A ⟹ B": "implicație",
+      "A ⟺ B": "echivalență",
+      "¬A": "negația",
+      "P(n)": "propoziție depinzând de n",
+      "card M, |M|": "cardinal",
+      "B(A)": "Booleanul; |B(A)| = 2^|A|"
+    },
+    "examples": [
+      {
+        "problem": "Teorema 'Dacă număr natural divizibil cu 6, atunci divizibil cu 2'. Identificați condițiile.",
+        "solution": "A = 'divizibil cu 6' (suficientă); B = 'divizibil cu 2' (necesară). Reciproca: 'div. cu 2 ⟹ div. cu 6' FALSĂ (contraexemplu: 4).",
+        "answer": "R: A suficientă, B necesară; reciproca falsă.",
+        "page": 186
+      },
+      {
+        "problem": "Demonstrați: 'm întreg nu div. cu 3 ⟹ m nu div. cu 6' (reducere la absurd).",
+        "solution": "Contrara reciprocei: 'm div. cu 6 ⟹ m div. cu 3'. Dacă m = 6t, atunci m = 3·(2t), div. cu 3. ∎",
+        "answer": "R: demonstrat.",
+        "page": 187
+      },
+      {
+        "problem": "Inducție: G_n = G_0(1+p/100)^n (dobândă compusă).",
+        "solution": "1) P(1): G_1 = G_0(1+p/100) ✓. 2) Presupun P(k); calculez G_{k+1} = G_k(1+p/100) = G_0(1+p/100)^{k+1} ✓. 3) Inducție ⟹ ∀n.",
+        "answer": "R: demonstrat.",
+        "page": 187
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Reciproca automat adevărată.",
+        "correction": "Trebuie demonstrată separat."
+      },
+      {
+        "mistake": "Inducție testând P(1)-P(3).",
+        "correction": "Bază + pas inductiv pentru ORICE k."
+      },
+      {
+        "mistake": "Omiterea P(k) la pasul inductiv.",
+        "correction": "Ipoteza inductivă e esențială."
+      },
+      {
+        "mistake": "Confuzia necesar/suficient",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Reciproca presupusă adevărată automat",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Omiterea bazei inducției",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Verificarea pe câteva cazuri ≠ demonstrație",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 7,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 185,
+      "section": "§1.3 Elemente de logică matematică"
+    }
+  },
+  {
+    "exercise_type": "elemente_trigonometrie_sinteza",
+    "exercise_type_label": "Elemente de trigonometrie (sinteză completă)",
+    "method_name": "Formule trigonometrice + ecuații/inecuații trigonometrice",
+    "grade_level": 12,
+    "topic": "trigonometrie",
+    "subtopic": "sinteza_recapitulativa",
+    "description": "Sinteza completă pentru BAC: cerc trigonometric, grade-radiani, funcții trig, tabel valori, toate identitățile (fundamentale, sumă/diferență, multiplii, micșorare putere, jumătate, substituții universale, sumă-produs), ecuații trigonometrice fundamentale + 7 metode, inecuații fundamentale, funcții inverse.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Tipul ecuației/inecuației",
+        "content": "Fundamentală? Reductibilă (substituție)? Omogenă? Cu unghi auxiliar? Substituție universală?"
+      },
+      {
+        "step": 2,
+        "title": "Cele 7 metode",
+        "content": "(1) necunoscută auxiliară; (2) descompunere factori; (3) împărțire la cosⁿx; (4) omogenizare; (5) unghi auxiliar; (6) substituție universală; (7) sistem algebric."
+      },
+      {
+        "step": 3,
+        "title": "Ecuații a·sin x+b·cos x=c",
+        "content": "Împărțim prin √(a²+b²); rezultă sin(x+φ)=c/√(a²+b²)."
+      },
+      {
+        "step": 4,
+        "title": "Selecția soluțiilor pe interval",
+        "content": "Soluție generală cu k ∈ ℤ; rezolvăm inegalități pentru k."
+      }
+    ],
+    "notation_rules": {
+      "tg, ctg": "notație românească (nu tan/cot)",
+      "arcsin etc.": "funcții inverse",
+      "S = {...}": "mulțimea soluțiilor",
+      "k, n ∈ ℤ": "parametri periodicitate"
+    },
+    "examples": [
+      {
+        "problem": "sin x + cos 2x − 1 = 0.",
+        "solution": "cos 2x = 1−2sin²x. ⟹ sin x − 2sin²x = 0 ⟹ sin x(1−2sin x) = 0. Caz 1: sin x = 0 ⟹ x = πn. Caz 2: sin x = 1/2 ⟹ x = (-1)^k·π/6 + πk.",
+        "answer": "R: S = {πn} ∪ {(-1)^k·π/6+πk}.",
+        "page": 233
+      },
+      {
+        "problem": "4 sin²x − sin 2x = 3.",
+        "solution": "Omogenizare: 4sin²x − 2sin x cos x − 3(sin²x+cos²x) = 0 ⟹ sin²x − 2sin x cos x − 3cos²x = 0. Împărțim cos²x ≠ 0: tg²x − 2tg x − 3 = 0. t = tg x: t² − 2t − 3 = 0 ⟹ t₁=-1, t₂=3.",
+        "answer": "R: S = {-π/4+πk} ∪ {arctg 3+πn}.",
+        "page": 233
+      },
+      {
+        "problem": "sin x + √3 cos x = -√2, x ∈ (-π, π/2).",
+        "solution": "Împărțim prin 2: (1/2)sin x + (√3/2)cos x = -√2/2. Recunoaștem cos(π/3), sin(π/3). sin(x+π/3) = -√2/2 ⟹ x+π/3 = (-1)^(k+1)·π/4+kπ. Pentru k=0: x = -7π/12 ∈ (-π, π/2) ✓.",
+        "answer": "R: S = {-7π/12}.",
+        "page": 233
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Substituție universală fără DVA.",
+        "correction": "Pierde x = π+2πk; verificați separat."
+      },
+      {
+        "mistake": "cos x = a doar x = arccos a + 2πk.",
+        "correction": "x = ±arccos a + 2πk."
+      },
+      {
+        "mistake": "Nu vedem omogenitatea.",
+        "correction": "Împărțim prin cosⁿx → polinom în tg x."
+      },
+      {
+        "mistake": "sin x = a ⟺ x = arcsin a (uitând periodicitatea)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "tg x = tg y ⟺ x = y (lipsește πk)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "DVA omis pentru substituția universală",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "arccos(-x) = -arccos x (corect: π - arccos x)",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 10,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 229,
+      "section": "§10 Elemente de trigonometrie"
+    }
+  },
+  {
+    "exercise_type": "transformari_identice_expresii",
+    "exercise_type_label": "Transformări identice ale expresiilor (recapitulare)",
+    "method_name": "Reducerea expresiilor (algebric/logaritmic/trig) la formă simplă cu respectarea DVA",
+    "grade_level": 12,
+    "topic": "algebra",
+    "subtopic": "transformari_identice_recapitulativ",
+    "description": "Reducere la formă simplă pentru expresii cu radicali, fracții, logaritmi, puteri; DVA; identități și demonstrația lor; radicali imbricați.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "DVA",
+        "content": "Identificăm toate condițiile; intersectăm."
+      },
+      {
+        "step": 2,
+        "title": "Factorizare",
+        "content": "Formule calcul prescurtat, trinom grad 2, etc."
+      },
+      {
+        "step": 3,
+        "title": "Simplificare",
+        "content": "Factori comuni, proprietăți puteri/radicali/log."
+      },
+      {
+        "step": 4,
+        "title": "Cu modul",
+        "content": "√a² = |a| (NU a)."
+      },
+      {
+        "step": 5,
+        "title": "Justificarea",
+        "content": "Pe DVA, expresia simplificată ≡ inițială."
+      }
+    ],
+    "notation_rules": {
+      "DVA": "domeniul valorilor admisibile",
+      "U ≡ V": "identitate (echivalente pe DVA)"
+    },
+    "examples": [
+      {
+        "problem": "DVA pentru A = 2/(x-3) + √(4x-2) și B = 2x/(x²-y²) + 3/(x-y).",
+        "solution": "Pentru A: x≠3 ȘI 4x-2≥0 ⟹ x ≥ 1/2, x ≠ 3 ⟹ DVA = [1/2, 3) ∪ (3,+∞). Pentru B: x² ≠ y² ⟹ DVA = {(x,y) | x ≠ ±y}.",
+        "answer": "R: ca mai sus.",
+        "page": 188
+      },
+      {
+        "problem": "Pentru n≥0, demonstrați: √(6m+2√(9m²-n²)) - √(6m-2√(9m²-n²)) = 2√(3m-n).",
+        "solution": "6m+2√((3m-n)(3m+n)) = (√(3m+n)+√(3m-n))². 6m-2√(...) = (√(3m+n)-√(3m-n))². LHS = |√(3m+n)+√(3m-n)| - |√(3m+n)-√(3m-n)| = 2√(3m-n).",
+        "answer": "R: demonstrat.",
+        "page": 189
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Ignora DVA și simplifică unde nu e justificat.",
+        "correction": "Transformările sunt valabile DOAR pe DVA."
+      },
+      {
+        "mistake": "log_a(xy) = log_a x + log_a y fără x,y>0.",
+        "correction": "Cere x>0 ȘI y>0 (sau folosirea modulului)."
+      },
+      {
+        "mistake": "√(x²-4) = √(x-2)·√(x+2) (fals pentru x ≤ -2)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "√a² = a fără modul",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "log_a(x²) = 2 log_a(x) (corect: 2 log_a|x|)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Pierderea de soluții prin ridicare la pătrat",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 7,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 188,
+      "section": "§2 Transformări identice ale expresiilor"
+    }
+  },
+  {
+    "exercise_type": "statistica_baze_si_grupare_date",
+    "exercise_type_label": "Statistică matematică — fundamente, înregistrare, grupare, reprezentare grafică",
+    "method_name": "Tabele frecvențe, grupare variante/intervale (Sturges), reprezentări grafice",
+    "grade_level": 12,
+    "topic": "statistica",
+    "subtopic": "fundamente_statistica",
+    "description": "Bazele statisticii descriptive: populație, eșantion, caracteristică (cantitativă/calitativă, continuă/discretă), serie statistică, frecvențe absolute/relative/cumulate, gruparea pe variante și intervale (Sturges), reprezentări grafice (histogramă, poligon, batoane, bare, structurale).",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Identificare elemente",
+        "content": "Populația, unități, caracteristică, tipul, volumul."
+      },
+      {
+        "step": 2,
+        "title": "Metoda grupării",
+        "content": "Variante (puține valori) sau intervale (caracteristică continuă/multe valori) cu Sturges."
+      },
+      {
+        "step": 3,
+        "title": "Mărimea intervalului",
+        "content": "h = (xmax-xmin)/r."
+      },
+      {
+        "step": 4,
+        "title": "Tabelul de frecvențe",
+        "content": "variantă/interval | nᵢ | Fᵢ | fᵢ | Fᵢ/n. Verificăm Σnᵢ = n."
+      },
+      {
+        "step": 5,
+        "title": "Reprezentarea grafică",
+        "content": "Histogramă (intervale), poligon (mijloc), batoane (discrete), bare (calitative)."
+      }
+    ],
+    "notation_rules": {
+      "n, r": "volumul eșantionului, numărul intervalelor/variantelor",
+      "xᵢ, nᵢ, Fᵢ, fᵢ": "elemente tabel",
+      "xᵢ*": "mijlocul intervalului",
+      "h": "lățimea uniformă",
+      "[a, b)": "convenție interval semi-deschis"
+    },
+    "examples": [
+      {
+        "problem": "Identificați elementele când se studiază notele clasei a XII-a.",
+        "solution": "Populația = elevii; unități = elev; volum = nr. elevi; caracteristică = nota (cantitativă, discretă).",
+        "answer": "R: ca mai sus.",
+        "page": 98
+      },
+      {
+        "problem": "65 lămpi, xmin = 8,4, xmax = 21,9. Câte intervale și mărime?",
+        "solution": "Sturges: r = 1 + 3,322·lg 65 ≈ 7,02 ⟹ r = 7. h = (21,9−8,4)/7 ≈ 1,93 ≈ 2.",
+        "answer": "R: r = 7, h = 2.",
+        "page": 100
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "[a,b] cu suprapunere.",
+        "correction": "[a, b) — convenție."
+      },
+      {
+        "mistake": "Observație b aparține [a,b).",
+        "correction": "Aparține [b,c)."
+      },
+      {
+        "mistake": "Histograma cu spații.",
+        "correction": "Adiacente."
+      },
+      {
+        "mistake": "Poligonul prin capete.",
+        "correction": "Prin mijlocul intervalului."
+      },
+      {
+        "mistake": "Intervale [a,b] complete (suprapunere)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Omiterea frecvențelor relative pentru procentaj",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Confuzia cumulate/simple",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Nerotunjirea r",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 8,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 98,
+      "section": "§1 Noțiuni fundamentale + §2 Înregistrare/grupare + §3 Reprezentare grafică"
+    }
+  },
+  {
+    "exercise_type": "generalitati_evenimente_aleatoare",
+    "exercise_type_label": "Generalități. Tipuri de evenimente aleatoare",
+    "method_name": "Clasificarea evenimentelor (sigure/imposibile/aleatoare; compatibile/incompatibile; echiprobabile)",
+    "grade_level": 12,
+    "topic": "probabilitati",
+    "subtopic": "notiuni_fundamentale",
+    "description": "Bazele teoriei probabilităților: experiment, eveniment, clasificarea (sigur/imposibil/aleator), compatibilitate, echiprobabilitate.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Identificarea experimentului",
+        "content": "Aruncare monedă/zar, extragere, etc."
+      },
+      {
+        "step": 2,
+        "title": "Listarea evenimentelor elementare",
+        "content": "Toate rezultatele posibile."
+      },
+      {
+        "step": 3,
+        "title": "Clasificarea",
+        "content": "Sigur/imposibil/aleator."
+      },
+      {
+        "step": 4,
+        "title": "(In)compatibilitate",
+        "content": "A ∩ B = ∅ ⟺ incompatibile."
+      },
+      {
+        "step": 5,
+        "title": "Echiprobabilitate",
+        "content": "Justificare prin simetrie (monedă perfectă, etc.)."
+      }
+    ],
+    "notation_rules": {
+      "E": "evenimentul sigur",
+      "∅": "evenimentul imposibil",
+      "A∩B, A∪B": "intersecție/reuniune"
+    },
+    "examples": [
+      {
+        "problem": "Zar: Aᵢ = {i puncte}, B₁ = {impar}, B₂ = {par}, B₃ = {≤3}. Care compatibile/incompatibile?",
+        "solution": "Aᵢ două câte două incompatibile. B₁, B₂ incompatibile. B₃, A₄/A₅/A₆ incompatibile. B₂, B₃ compatibile (ex. fața 2). B₁, B₃ compatibile (1, 3).",
+        "answer": "R: ca mai sus.",
+        "page": 77
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Incompatibile = independente.",
+        "correction": "Distincte! Incompatibile cu probabilități > 0 sunt MEREU DEPENDENTE."
+      },
+      {
+        "mistake": "Două evenimente sigure pot fi diferite.",
+        "correction": "Există un singur E."
+      },
+      {
+        "mistake": "Echiprobabilitate fără simetrie",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Confuzia 'sigur' cu probabilitate 1 (echivalente doar în spațiu finit)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Două evenimente cu probabilități pozitive ⟹ compatibile (fals)",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 6,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 76,
+      "section": "M5 Generalități + §1.1 Evenimente egal posibile"
+    }
+  },
+  {
+    "exercise_type": "poliedru_definitie_clasificare",
+    "exercise_type_label": "Noțiunea de poliedru. Poliedre convexe și regulate",
+    "method_name": "Recunoașterea/clasificarea poliedrelor; identificarea elementelor",
+    "grade_level": 12,
+    "topic": "geometrie_3d",
+    "subtopic": "poliedre_fundamente",
+    "description": "Fundamentele teoriei poliedrelor: corp geometric, poliedru = corp cu frontiera = reuniune finită de suprafețe poligonale, elemente (fețe, muchii, vârfuri, diagonale), convexe, regulate (cele 5 platonice).",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Verificarea condițiilor poliedrului",
+        "content": "Corp geometric (mărginit + interior)? Frontiera = reuniune FINITĂ de suprafețe poligonale?"
+      },
+      {
+        "step": 2,
+        "title": "Identificare elemente",
+        "content": "F, M, V; diagonalele."
+      },
+      {
+        "step": 3,
+        "title": "Convexitatea",
+        "content": "Pentru fiecare față: corpul într-un singur semispațiu."
+      },
+      {
+        "step": 4,
+        "title": "Regularitatea",
+        "content": "Fețe regulate congruente + număr egal muchii per vârf."
+      }
+    ],
+    "notation_rules": {
+      "F, M, V": "fețe, muchii, vârfuri",
+      "ABCD...A'B'C'D'...": "denumirea prin vârfuri",
+      "[AB]": "muchie/diagonală",
+      "(ABC)": "fața"
+    },
+    "examples": [
+      {
+        "problem": "De ce tetraedrul transparent NU e corp?",
+        "solution": "Reuniunea segmentelor are doar puncte de frontieră (segmentele sunt unidimensionale în 3D). Corpul cere puncte interioare ⟹ NU e corp.",
+        "answer": "R: lipsesc punctele interioare.",
+        "page": 128
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Descrie un poliedru prin desen fără justificare.",
+        "correction": "Trebuie: corp geometric ȘI frontiera = reuniune finită suprafețe poligonale."
+      },
+      {
+        "mistake": "Cilindru/con ca poliedre.",
+        "correction": "Au suprafețe CURBE — corpuri de rotație (M8)."
+      },
+      {
+        "mistake": "Transparent vs. corp",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Fețe congruente ⟹ regulat (cere și număr egal muchii/vârf)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Căutarea unui al 6-lea poliedru regulat",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 6,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 128,
+      "section": "§1 Noțiunea de poliedru"
+    }
+  },
+  {
+    "exercise_type": "transformari_geometrice_spatiu",
+    "exercise_type_label": "Transformări geometrice ale spațiului (izometrii, omotetie, asemănare)",
+    "method_name": "Aplicarea simetriilor, translației, rotației, omotetiei, asemănării",
+    "grade_level": 12,
+    "topic": "geometrie_3d",
+    "subtopic": "transformari_geometrice",
+    "description": "Clasificarea transformărilor: 1) IZOMETRII (păstrează distanțele) — S_O (centrală), t_AA' (translația), S_d (axială), rotația, S_α (față de plan); 2) altele — omotetia, asemănarea.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Tipul transformării",
+        "content": "Distanțe? → izometrie. Rapoarte? → asemănare/omotetie."
+      },
+      {
+        "step": 2,
+        "title": "Simetria centrală",
+        "content": "M' cu O mijlocul MM'."
+      },
+      {
+        "step": 3,
+        "title": "Simetrie axială/plan",
+        "content": "Coborâm perpendiculara, prelungim."
+      },
+      {
+        "step": 4,
+        "title": "Translația",
+        "content": "Vector v = AA'; M' = M + v."
+      },
+      {
+        "step": 5,
+        "title": "Omotetia H(O, k)",
+        "content": "M' pe semidreapta OM cu OM' = k·OM."
+      }
+    ],
+    "notation_rules": {
+      "S_O, S_d, S_α": "simetrii (centrală, axială, plan)",
+      "t_AA'": "translația",
+      "H(O, k)": "omotetia",
+      "f(K) = K'": "imaginea figurii",
+      "K ≅ K'": "congruente",
+      "K ~ K'": "asemenea"
+    },
+    "examples": [
+      {
+        "problem": "H(O, 2) aplicată triunghiului ABC. Relația cu imaginea?",
+        "solution": "A' pe OA cu OA'=2OA. A'B'C' ~ ABC cu coeficient 2; arie de 4 ori mai mare; orientare păstrată.",
+        "answer": "R: ~ cu k=2, arie×4.",
+        "page": 228
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Omotetia k=-1 ≠ simetrie centrală.",
+        "correction": "H(O,-1) ≡ S_O."
+      },
+      {
+        "mistake": "Rotația păstrează totul fix.",
+        "correction": "Doar axa fixă; restul se rotește."
+      },
+      {
+        "mistake": "Centrală vs. axială (punct fix vs. dreaptă fixă)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "H(O, 1) = identitate pentru orice O",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Asemănarea = omotetia (greșit; omotetia are centru fix)",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 5,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 228,
+      "section": "§9.6 Transformări geometrice"
+    }
+  },
+  {
+    "exercise_type": "siruri_limite_functii_sinteza",
+    "exercise_type_label": "Sinteza limitelor (șiruri, funcții, continuitate)",
+    "method_name": "Recapitulare formule și teoreme: limită șir, funcție, continuitate, limite remarcabile",
+    "grade_level": 12,
+    "topic": "limite",
+    "subtopic": "sinteza_recapitulativa",
+    "description": "SINTEZĂ RECAPITULATIVĂ (cls.11): definiția limitei șir, convergență (monotonie+mărginire), operații, limite remarcabile, continuitate, asimptote.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Tipul limitei",
+        "content": "Șir/funcție (punct finit/∞)? Formă nedeterminată (0/0, ∞/∞, 0·∞, ∞-∞, 0⁰, ∞⁰, 1^∞)?"
+      },
+      {
+        "step": 2,
+        "title": "Reguli simple",
+        "content": "Substituție directă, factorizare, raționalizare."
+      },
+      {
+        "step": 3,
+        "title": "Limite remarcabile",
+        "content": "sin x/x, (1+1/x)^x, exp, log."
+      },
+      {
+        "step": 4,
+        "title": "L'Hôpital sau Taylor",
+        "content": "Pentru 0/0 sau ∞/∞: lim f/g = lim f'/g'."
+      },
+      {
+        "step": 5,
+        "title": "Continuitate",
+        "content": "f(x₀) există? lim_{x→x₀} f(x) există? Egale? Toate 3 ⟹ continuă."
+      }
+    ],
+    "notation_rules": {
+      "lim_{n→∞} aₙ": "limită șir",
+      "lim_{x→x₀} f(x)": "limită funcție",
+      "lim_{x→x₀⁻}, lim_{x→x₀⁺}": "limite laterale",
+      "0/0 etc.": "forme nedeterminate",
+      "e": "constanta Euler ≈ 2,71828"
+    },
+    "examples": [
+      {
+        "problem": "lim_{x→0} sin(3x)/(2x).",
+        "solution": "(3/2)·lim sin(3x)/(3x) = (3/2)·1 = 3/2.",
+        "answer": "R: 3/2.",
+        "page": 204
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Limita stângă = dreaptă fără verificare.",
+        "correction": "Verificați separat; egalitatea = condiție pentru limita bilaterală."
+      },
+      {
+        "mistake": "Operații la limite ±∞.",
+        "correction": "Cer limite FINITE; pentru infinite, atenție la ∞-∞, 0·∞."
+      },
+      {
+        "mistake": "0/0 = 0 sau 1 (formă nedeterminată)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "L'Hôpital la 1/0 (limita e ±∞)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Confuzia lim cu evaluare în puncte de discontinuitate",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 6,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 201,
+      "section": "§5 Șiruri și limite + §6 Limite funcții. Funcții continue"
+    }
+  },
+  {
+    "exercise_type": "ecuatii_inecuatii_sisteme_recapitulativ",
+    "exercise_type_label": "Ecuații. Inecuații. Sisteme. Totalități (sinteză)",
+    "method_name": "Recapitulare metode rezolvare pentru toate clasele",
+    "grade_level": 12,
+    "topic": "algebra",
+    "subtopic": "ecuatii_inecuatii_sinteza",
+    "description": "SINTEZĂ (cls.10-11): algebrice, raționale, iraționale, modul, exponențiale, logaritmice (trig în §10); sisteme; totalități. Transformări echivalente vs. neechivalente.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "DVA",
+        "content": "Esențial înainte de transformări."
+      },
+      {
+        "step": 2,
+        "title": "Tipul ecuației",
+        "content": "Algebric/expon/log/modul/mixt."
+      },
+      {
+        "step": 3,
+        "title": "Metoda",
+        "content": "Grad 2: Δ. Iraționale: izolare radical + ridicare la pătrat (verificare!). Exponențiale: bază comună sau substituție. Logaritmice: bază comună + DVA. Modul: cazuri."
+      },
+      {
+        "step": 4,
+        "title": "Verificarea",
+        "content": "Indispensabilă pentru transformări neechivalente."
+      }
+    ],
+    "notation_rules": {
+      "DVA": "domeniul valorilor admisibile",
+      "S": "mulțimea soluțiilor",
+      "Δ": "discriminant",
+      "|...|": "modul",
+      "∨, ∧": "sau, și"
+    },
+    "examples": [],
+    "common_mistakes": [
+      {
+        "mistake": "Nu verifică după ridicare la pătrat.",
+        "correction": "Ridicare la putere pară = NEECHIVALENTĂ; verificare obligatorie."
+      },
+      {
+        "mistake": "DVA omis cu soluții străine",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Ridicare la pătrat fără verificare",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "log/exp fără DVA",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Împărțire cu expresie care poate fi zero",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 5,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 196,
+      "section": "§4 Ecuații. Inecuații. Sisteme. Totalități"
+    }
+  },
+  {
+    "exercise_type": "reprezentari_grafice_date_statistice",
+    "exercise_type_label": "Reprezentarea grafică a datelor statistice",
+    "method_name": "Construire histogramă, poligon, batoane, bare, diagrame structurale",
+    "grade_level": 12,
+    "topic": "statistica",
+    "subtopic": "reprezentari_grafice",
+    "description": "Tipuri reprezentări: 1) Histogramă + poligon (intervale); 2) Diagrame batoane (discrete cu puține valori); 3) Diagrame bare (calitative); 4) Diagrame structurale (cerc, pătrat).",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Tipul datelor",
+        "content": "Cantitative continue (intervale)? Discrete cu puține valori? Calitative? Structurale?"
+      },
+      {
+        "step": 2,
+        "title": "Histogramă",
+        "content": "Pe Ox intervalele; dreptunghiuri ADIACENTE cu înălțimea = nᵢ sau fᵢ."
+      },
+      {
+        "step": 3,
+        "title": "Poligonul",
+        "content": "(xᵢ*, nᵢ); unim punctele cu segmente. Opțional: închidem prin (xinit*, 0), (xfin*, 0)."
+      },
+      {
+        "step": 4,
+        "title": "Diagramă batoane",
+        "content": "Pe Ox variante discrete; segmente VERTICALE."
+      },
+      {
+        "step": 5,
+        "title": "Diagramă cu bare",
+        "content": "Pe Oy etichete; dreptunghiuri ORIZONTALE."
+      },
+      {
+        "step": 6,
+        "title": "Diagramă structurală cerc",
+        "content": "360° împărțit proporțional: αᵢ = 360°·fᵢ."
+      }
+    ],
+    "notation_rules": {
+      "xᵢ*": "mijlocul intervalului",
+      "(xᵢ*, nᵢ), (xᵢ*, fᵢ)": "puncte poligon",
+      "360°·fᵢ": "unghi central"
+    },
+    "examples": [
+      {
+        "problem": "Geiger 25 măsurători: 3,0,4,6,3,5,4,4,2,3,1,5,3,4,2,5,6,4,1,2,7,6,5,3,4. Serie + diagramă batoane.",
+        "solution": "Variante 0-7; nᵢ = {1,2,3,5,6,4,3,1}. Σ = 25 ✓. Diagrama: 8 segmente verticale.",
+        "answer": "R: diagrama cu nᵢ = {1,2,3,5,6,4,3,1}.",
+        "page": 105
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Histogramă cu dreptunghiuri separate.",
+        "correction": "Dreptunghiurile sunt ADIACENTE (continuitatea intervalelor)."
+      },
+      {
+        "mistake": "Poligonul prin capetele intervalelor.",
+        "correction": "Folosește MIJLOACELE xᵢ*."
+      },
+      {
+        "mistake": "Bare pentru date pe intervale.",
+        "correction": "Histogramă pentru intervale; bare pentru calitative."
+      },
+      {
+        "mistake": "Spații între dreptunghiuri histogramă",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Omiterea axei verticale",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Histogramă pentru date discrete",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Batoane pentru intervale",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 7,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 104,
+      "section": "§3 Reprezentarea grafică a datelor statistice"
+    }
+  },
+  {
+    "exercise_type": "aplicatii_functii_derivabile_schema_studiu",
+    "exercise_type_label": "Aplicațiile funcțiilor derivabile. Schema completă de studiu a unei funcții",
+    "method_name": "Teoremele Fermat, Rolle, Lagrange + L'Hôpital + algoritmul de studiu al funcției + probleme max/min",
+    "grade_level": 12,
+    "topic": "derivate",
+    "subtopic": "aplicatii_derivate_schema_studiu",
+    "description": "Sinteza pentru BAC: cele 4 teoreme de bază (Fermat, Rolle, Lagrange, L'Hôpital), studiul monotoniei/extremelor/convexității/inflexiunilor/asimptotelor, algoritmul cu 7 etape pentru trasarea graficului, probleme aplicate de maxim/minim.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Algoritm monotonie + extreme",
+        "content": "I) Calculăm f'. II) Rezolvăm f'(x) = 0. III) Determinăm semnul f' pe intervale. IV) Stabilim intervalele de monotonie. V) Determinăm punctele de extrem."
+      },
+      {
+        "step": 2,
+        "title": "Algoritm convexitate + inflexiuni",
+        "content": "I) Calculăm f'' și rezolvăm f''(x) = 0. II) Semnul f'' pe intervale (convex unde f''>0, concav unde f''<0). III) Determinăm punctele de inflexiune."
+      },
+      {
+        "step": 3,
+        "title": "SCHEMA COMPLETĂ DE TRASARE A GRAFICULUI (7 etape)",
+        "content": "I) Domeniul de definiție. II) Paritate, periodicitate. III*) Limitele la extremitățile intervalelor, continuitatea, asimptotele. IV) f' + monotonie + extreme. V*) f'' + convexitate + inflexiuni. VI) Tabloul de variație. VII) Trasarea graficului."
+      },
+      {
+        "step": 4,
+        "title": "L'Hôpital",
+        "content": "0/0 sau ∞/∞: lim f/g = lim f'/g'. Cazuri 0·∞, ∞-∞, 1^∞, 0⁰, ∞⁰: aducem la 0/0 sau ∞/∞ prin logaritmare/transformări."
+      },
+      {
+        "step": 5,
+        "title": "Probleme max/min aplicate",
+        "content": "I) Modelăm în limbaj matematic (alegem parametrul x). II) Determinăm minimul/maximul pe intervalul rezultat din problemă. III) Interpretăm rezultatul. IV) Scriem răspunsul."
+      }
+    ],
+    "notation_rules": {
+      "f', f''": "derivatele de ordin 1, 2",
+      "F(b) − F(a) = F'(c)(b−a)": "formula Lagrange",
+      "lim f/g = lim f'/g'": "L'Hôpital",
+      "y = mx + n": "asimptotă oblică",
+      "x = a": "asimptotă verticală",
+      "y = l": "asimptotă orizontală"
+    },
+    "examples": [
+      {
+        "problem": "Trasați graficul f : ℝ → ℝ, f(x) = 1 − |x²−1|.",
+        "solution": "I) D = ℝ. II) Pară. III) lim_{x→+∞} f(x) = -∞. Asimptotă oblică: m = -1, n = 1, deci y = -x+1. IV) Pe (-1,1): f(x) = 1-(1-x²) = x²; f'(x) = 2x; pe (-∞,-1)∪(1,+∞): f(x) = 2-x²; f'(x) = -2x. Puncte ±1: nederivabile, puncte de întoarcere + maxim cu f(±1) = 1. V) f''>0 pe ℝ\\{±1}, deci convexă pe (-∞,-1), (-1,1), (1,+∞). VI) Tablou variație. VII) Grafic.",
+        "answer": "R: grafic conform algoritm 7 etape (fig. 9.3, p.217).",
+        "page": 216
+      },
+      {
+        "problem": "Punctul graficului f(x) = 2√x la distanța minimă de A(2,0).",
+        "solution": "Notăm d(x) = √((x-2)² + (2√x)²) = √(x² + 4). Minim când x² + 4 minim ⟹ x = 0. M(0,0); d_min = 2.",
+        "answer": "R: M(0,0), d = 2.",
+        "page": 218
+      },
+      {
+        "problem": "Venit maxim când C(x) = 5+11x, p(x) = -x²+15x+11, 4 < x < 12.",
+        "solution": "V(x) = p·x - C = -x³+15x²-5. V'(x) = -3x²+30x = 0 ⟹ x = 10. V''(10) < 0 ⟹ max. V(10) = 495 lei.",
+        "answer": "R: 10 unități; 495 lei.",
+        "page": 218
+      },
+      {
+        "problem": "Calculați lim_{x→2} ln(x/2)/(x³-8).",
+        "solution": "Formă 0/0. L'Hôpital: lim (1/x)/(3x²) = lim 1/(3x³) = 1/24.",
+        "answer": "R: 1/24.",
+        "page": 215
+      },
+      {
+        "problem": "lim_{x→+∞}(((x-3)/(x+2))^(3x)).",
+        "solution": "Forma 1^∞. ln((x-3)/(x+2))^(3x) → -15 (prin L'Hôpital). Rezultat: e^(-15).",
+        "answer": "R: e^(-15).",
+        "page": 215
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Reciproca Fermat: f'(x₀) = 0 ⟹ x₀ extrem.",
+        "correction": "FALS — vezi x³ la 0. Fermat afirmă DOAR că extremele sunt printre punctele critice."
+      },
+      {
+        "mistake": "Lagrange fără verificarea continuității.",
+        "correction": "Ipoteza: f continuă pe [a,b] ȘI derivabilă pe (a,b)."
+      },
+      {
+        "mistake": "L'Hôpital la 1·∞ sau 0·0.",
+        "correction": "Aducem la 0/0 sau ∞/∞ prin logaritmare/transformări."
+      },
+      {
+        "mistake": "Asimptota oblică prin lim (f(x) - mx) fără calculul lui m.",
+        "correction": "Calculați AMBELE: m = lim f(x)/x, n = lim (f(x)-mx)."
+      },
+      {
+        "mistake": "Reciproca Fermat (f'(x₀)=0 ⟹ x₀ extrem — FALS; ex: x³ la 0)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Aplicare L'Hôpital la forme non-0/0 sau non-∞/∞",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Aplicare Lagrange pe interval închis fără verificare",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Asimptotă oblică doar dacă m ≠ 0 (m=0 ⟹ orizontală)",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 10,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 213,
+      "section": "§7 Proprietăți generale și aplicații ale funcțiilor derivabile"
+    }
+  },
+  {
+    "exercise_type": "prisma_arii_volum_completare",
+    "exercise_type_label": "Prisma — recapitulare și completări (paralelipiped, prismă regulată)",
+    "method_name": "Calculul ariilor și volumului prismelor (drepte, oblice, regulate, paralelipiped)",
+    "grade_level": 12,
+    "topic": "geometrie_3d",
+    "subtopic": "prisma_recapitulativ",
+    "description": "COMPLETARE: definițiile prismei (în general, dreaptă, oblică, regulată), paralelipiped, paralelipiped dreptunghic, cub; cele 3 teoreme principale + formulele A_L = P·l, A_T pentru regulată, V via Cavalieri.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Identificarea prismei",
+        "content": "Triunghiulară/patrulateră/n-unghiulară? Dreaptă/oblică? Regulată?"
+      },
+      {
+        "step": 2,
+        "title": "Formula aria laterală",
+        "content": "Dreaptă: A_L = P·l. Oblică: necesită calcul cu secțiunea perpendiculară."
+      },
+      {
+        "step": 3,
+        "title": "Aria totală",
+        "content": "A_T = A_L + 2·A_B. Pentru regulată: A_T = P(l+r)."
+      },
+      {
+        "step": 4,
+        "title": "Volumul",
+        "content": "V = A_B · H."
+      },
+      {
+        "step": 5,
+        "title": "Pentru paralelipiped dreptunghic",
+        "content": "V = a·b·c. Diagonala: d² = a²+b²+c²."
+      }
+    ],
+    "notation_rules": {
+      "P": "perimetrul bazei",
+      "l": "lungimea muchiei laterale (pentru prismă dreaptă: l = H)",
+      "H": "înălțimea prismei",
+      "A_L, A_T, A_B": "ariile",
+      "r": "raza cercului înscris în bază",
+      "d": "diagonala paralelipipedului"
+    },
+    "examples": [
+      {
+        "problem": "Cutie carton cu pereți dreptunghiuri, deschidere prin tăiere după linia AD1C1B; lungimea benzii adezive?",
+        "solution": "Decupare urmat de aplicare Pitagora pe fețele paralelipipedului dreptunghic. Calculul lungimii depinde de dimensiunile concrete.",
+        "answer": "[depinde de dimensiunile cutiei]",
+        "page": 131
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Aplicare formula prismei regulate la prismă neregulată.",
+        "correction": "Verificați AMBELE: bază regulată ȘI prismă dreaptă."
+      },
+      {
+        "mistake": "Prismă oblică cu A_L = P·l.",
+        "correction": "Pentru oblică, fețele sunt paralelograme, NU dreptunghiuri; necesită secțiunea perpendiculară."
+      },
+      {
+        "mistake": "Cubul ca paralelipiped general.",
+        "correction": "Cub = paralelipiped dreptunghic cu muchii congruente; e cazul cel mai particular."
+      },
+      {
+        "mistake": "Folosirea A_L = P·l pentru prismă oblică",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Confuzia muchie laterală cu înălțimea pentru oblică",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "d² = a²+b²+c² pentru paralelipiped non-dreptunghic",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 7,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 130,
+      "section": "§2 Prisma"
+    }
+  },
+  {
+    "exercise_type": "polinoame_operatii_radacini",
+    "exercise_type_label": "Polinoame — operații, descompunere, împărțire, teorema Bézout",
+    "method_name": "Operații cu polinoame, descompunere în factori, algoritmul împărțirii, schema Horner, teorema Bézout, rădăcini",
+    "grade_level": 12,
+    "topic": "algebra",
+    "subtopic": "polinoame_recapitulativ",
+    "description": "COMPLETARE: monoame, polinoame, gradul polinomului, forma canonică; descompunerea în factori (factor comun, grupare, formule prescurtate, trinom grad 2, combinări); polinoame ireductibile peste ℝ; împărțirea polinoamelor + algoritm + Bézout + schema Horner; ecuații polinomiale, rădăcini.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Identificarea operației",
+        "content": "Adunare/scădere/înmulțire/împărțire/factorizare/căutare rădăcini."
+      },
+      {
+        "step": 2,
+        "title": "Descompunere în factori",
+        "content": "1) Factor comun; 2) Gruparea termenilor; 3) Formule prescurtat (a²-b², a³±b³, etc.); 4) Trinom grad 2; 5) Combinare metode."
+      },
+      {
+        "step": 3,
+        "title": "Împărțirea polinoamelor",
+        "content": "Algoritm direct (ca la numere): câtul = quotient termen cu termen; restul = rămășița finală. P = Q·C + R."
+      },
+      {
+        "step": 4,
+        "title": "Aplicarea Bézout",
+        "content": "Pentru a determina restul împărțirii la X - α: calculați direct P(α). Pentru rădăcini: P(α) = 0 ⟺ α e rădăcină."
+      },
+      {
+        "step": 5,
+        "title": "Vieta",
+        "content": "Pentru polinoame cu rădăcini cunoscute (sau pentru relații între rădăcini): aplicați formulele Vieta."
+      }
+    ],
+    "notation_rules": {
+      "P(X), Q(X)": "polinoame de nedeterminata X",
+      "grad P": "gradul polinomului",
+      "aₙ": "coeficient dominant",
+      "a₀": "termen liber",
+      "P(α)": "valoarea numerică în α",
+      "X-α": "binom de gradul 1",
+      "Bézout: R = P(α)": "restul împărțirii la X-α"
+    },
+    "examples": [
+      {
+        "problem": "Descompuneți Q(X) = X⁴ - 2X³ + 2X² - 2X + 1 în factori ireductibili peste ℝ.",
+        "solution": "Q(X) = X⁴ + X² + X² + 1 - 2X(X² + 1) = X²(X²+1) + (X²+1) - 2X(X²+1) = (X²+1)(X²-2X+1) = (X²+1)(X-1)². X²+1 ireductibil peste ℝ.",
+        "answer": "R: Q(X) = (X-1)²(X²+1).",
+        "page": 193
+      },
+      {
+        "problem": "Împărțirea P(X) = 8X³ - 2X² + X + 3 la X+2.",
+        "solution": "Algoritm: câtul = 8X² - 18X + 37, restul = -71. Deci P(X) = (X+2)(8X² - 18X + 37) - 71.",
+        "answer": "R: cât 8X² - 18X + 37, rest -71.",
+        "page": 193
+      },
+      {
+        "problem": "Restul împărțirii P(X) = 2X³ + aX² + aX - 3 la X-1 (folosind Bézout).",
+        "solution": "R = P(1) = 2 + a + a - 3 = 2a - 1.",
+        "answer": "R: 2a - 1.",
+        "page": 194
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "P(α) = 0 ⟹ P se împarte la (X-α)^k pentru k arbitrar.",
+        "correction": "P(α) = 0 ⟹ P se împarte exact la X-α (gradul 1); multiplicitatea cere verificare suplimentară prin P'(α), P''(α), etc."
+      },
+      {
+        "mistake": "Aplicare Bézout la împărțitorul X² - 4.",
+        "correction": "Bézout cere împărțitor de forma X-α; pentru gradul 2 se aplică Bézout de 2 ori (la X-2 și la X+2)."
+      },
+      {
+        "mistake": "Omiterea conjugatei z̄ printre rădăcinile unui polinom real.",
+        "correction": "Pentru polinom real, rădăcinile complexe vin în perechi conjugate."
+      },
+      {
+        "mistake": "Atribuirea unui grad polinomului nul",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "grad(P+Q) = grad P + grad Q (corect: ≤ maxul)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Folosirea Bézout pentru împărțitor de grad > 1 (Bézout cere X-α)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Uitarea conjugatei pentru rădăcinile complexe ale polinoamelor reale",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 8,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 192,
+      "section": "§3 Polinoame"
+    }
+  },
+  {
+    "exercise_type": "exercitii_recapitulative_BAC_M9_p12",
+    "exercise_type_label": "M9 §12 — Exerciții și probleme recapitulative (BAC-style, ~123 exerciții)",
+    "method_name": "Inventar și clasificare exerciții pentru recapitularea finală BAC",
+    "grade_level": 12,
+    "topic": "alt",
+    "subtopic": "recapitulare_BAC_aplicatii",
+    "description": "Cele ~123 exerciții recapitulative finale din manual, organizate în secțiunile A (umanist) și B (real). Inventar pentru selecție manuală — fiecare exercițiu menționează tema acoperită și nivelul de dificultate.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Conținutul secțiunii",
+        "content": "Secțiunea A: 33 exerciții (profil umanist + ușoare/medii). Secțiunea B: 90 exerciții (profil real, medii-grele). Total ≈ 123 exerciții."
+      },
+      {
+        "step": 2,
+        "title": "Categorii principale",
+        "content": "Algebră (ecuații, inecuații, sisteme, polinoame, logaritm/expon): ~30. Trigonometrie: ~10. Combinatorică/probabilități: ~10. Statistică/financiar: ~8. Analiza (derivate, integrale, primitive): ~25. Geometrie 3D (poliedre, corpuri rotație): ~15. Geometrie analitică/vectori: ~10. Numere complexe: ~6. Matrici/determinanți: ~5."
+      },
+      {
+        "step": 3,
+        "title": "Folosire ca pool BAC",
+        "content": "Aceste exerciții reprezintă o aproximare a tipologiei BAC; selectarea câtorva pentru fiecare temă majoră oferă o pregătire reprezentativă."
+      }
+    ],
+    "notation_rules": {},
+    "examples": [
+      {
+        "problem": "EX 1 (p.241) Ecuație cu fracții: 4 : [5(1,2:36 + 1:0,25 - 1,8(3))·12,8] : 1/5 = 0,125x : [(7-6,35):6,5 + 9,8(9)]. Rezolvați în ℝ.",
+        "solution": "[Algebră elementară — calcul numeric]",
+        "answer": "[Vezi răspunsuri manual]",
+        "page": 241
+      },
+      {
+        "problem": "EX 11 (p.241) Valoare expresie -√3 sin(π-α) - cos(π/2-α) pentru sin α = -1/8.",
+        "solution": "Trigonometrie: reducere formule. Rezultă -3·sin α / 2 (sau similar).",
+        "answer": "[Vezi răspuns]",
+        "page": 241
+      },
+      {
+        "problem": "EX 37 (p.242) Sistem 3×3 prin Cramer (cu coeficienți complexi).",
+        "solution": "Δ = ... ; xᵢ = Δᵢ/Δ.",
+        "answer": "[Vezi răspuns]",
+        "page": 242
+      },
+      {
+        "problem": "EX 44 (p.242) Cheltuieli c(x) = 4x² + 30x + 300, preț 150 lei/u.p. Venit max?",
+        "solution": "Venit brut V(x) = 150x - c(x) = -4x² + 120x - 300. V'(x) = -8x + 120 = 0 ⟹ x = 15. V(15) = 600 lei.",
+        "answer": "R: 600 lei la x = 15 unități.",
+        "page": 242
+      },
+      {
+        "problem": "EX 52 (p.243) Populație 2014: 30.000. 2015: +9%, 2016: +10% față de 2015. Populația 2016?",
+        "solution": "Capitalizare procentuală: 30.000·1,09·1,10 = 35.970.",
+        "answer": "R: 35.970 locuitori.",
+        "page": 243
+      },
+      {
+        "problem": "EX 68 (p.243) Cisterne cilindrice (10m × 2m) cu vin. Sticla 0,7l la 2,5 euro. 6 cisterne. Lei?",
+        "solution": "Volum/cisternă = π·1²·10 = 10π ≈ 31,42 m³. Total 6 = 188,5 m³ = 188.500 L. Sticle = 188.500/0,7 ≈ 269.285. Euro = 269.285 · 2,5 ≈ 673.215. Lei = 673.215 · 21,14 ≈ 14.231.766.",
+        "answer": "R: ≈ 14.231.766 lei (depinde de rotunjire).",
+        "page": 243
+      },
+      {
+        "problem": "EX 69 (p.243) Coș fabrică trunchi de con (H=30, D_jos=3,6, D_sus=2,4) cu interior cilindric (D=1,6). Masa la 1.800 kg/m³?",
+        "solution": "V_trunchi = (πh/3)(R²+Rr+r²); R=1,8; r=1,2; h=30. V_trunchi = (30π/3)(3,24+2,16+1,44) = 10π·6,84 = 68,4π. V_cilindru = π·0,8²·30 = 19,2π. V_zidărie = 49,2π ≈ 154,57. Masa = 154,57·1800 ≈ 278.230 kg.",
+        "answer": "R: ≈ 278 tone.",
+        "page": 243
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Tratarea exercițiilor recapitulative ca o lecție nouă.",
+        "correction": "Acestea presupun cunoașterea tuturor materiilor; nu sunt pentru predare ci pentru pregătire BAC."
+      },
+      {
+        "mistake": "Sărirea peste DVA.",
+        "correction": "Toate exercițiile cer atenție la DVA — vezi tema 'transformari_identice_expresii'."
+      },
+      {
+        "mistake": "Folosirea soluțiilor din răspunsuri fără efort propriu",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 10,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 241,
+      "section": "§12 Exerciții și probleme recapitulative"
+    }
+  },
+  {
+    "exercise_type": "evaluare_finala_test_BAC_oficial",
+    "exercise_type_label": "EVALUARE FINALĂ — Test sumativ BAC (profil real + profil umanistic) cu barem",
+    "method_name": "Mostră oficială de test BAC structurată conform standardelor MEd RM",
+    "grade_level": 12,
+    "topic": "alt",
+    "subtopic": "test_sumativ_BAC",
+    "description": "Cele 2 teste sumative oficiale (profil umanist și profil real) cu barem, simulând formatul BAC. Profil umanist: 38-40 puncte = nota 10 (3 probleme). Profil real: 50-52 puncte = nota 10 (4 probleme). Timp efectiv: 90 minute.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Test PROFIL UMANISTIC (3 probleme, 40 puncte max)",
+        "content": "P1 (Procente/calcul financiar): 390 arbori la 25,5 lei/unu; +30% pentru cls.XII vs. cls.XI. a) Total cheltuit. b) Câți arbori cls.XII. c) Numărul de persoane susținute de oxigenul produs într-un an. P2 (Funcții + integrală): f(t) = t³-1,5t²-t+1; g(t) = -2t²+t+3. a) Adevărat/Fals: f(0) > g(1). b) Coordonatele intersecției graficelor. c) ∫₀¹ (f(t)-g(t))dt. d) Înălțimea maximă (funcție pătratică). P3 (Geometrie 3D — con): Stog fân con drept (r=4m, H=3m). a) Completare definiție con = corp geometric/disc/poliedru. b) Aria suprafeței. c) Volum trunchi de con înalt 1,2m din vârf."
+      },
+      {
+        "step": 2,
+        "title": "Test PROFIL REAL (4 probleme, 52 puncte max)",
+        "content": "P1 (Funcții liniare): Formula Celsius → Fahrenheit (t°F = (9/5)t°C + 32). a) Scrierea formulei. b) Conversie 2-7°C → °F. c) Conversie 70-90°F → °C. P2 (Primitive + grafic): f(x) = 1/(x²·∛x) = x^(-7/3). a) Continuă în 0? (F). b) F₁ primitivă prin A(1,2). c) F₂ primitivă prin B(8,4). d) Care grafic mai sus. e) Aria figurii mărginite de F₁, F₂, x=8, x=27. P3 (Geometrie 3D — piramidă): Lapte ambalat în piramidă triunghiulară regulată cu muchia 13,5 cm. a) Definiția tetraedrului regulat. b) Volumul pachetului. c) % volum rămas neumplut după turnare 0,5 L. P4 (Combinare numere complexe + trigonometrie): Mulțime A definită prin |z|+2i = 1+iz și ecuație trig. a) Completare cu numere astfel încât 2cos²(2x) - 2sin²(2x) = -10. b) Card(A). c) Demonstrație (1+i)^(6n) = (-i)^n · 2^(3n)."
+      },
+      {
+        "step": 3,
+        "title": "Barem PROFIL UMANISTIC",
+        "content": "Nota 10: 38-40 p. Nota 9: 37-35 p. Nota 8: 34-30 p. Nota 7: 29-24 p. Nota 6: 23-18 p. Nota 5: 17-13 p. Nota 4: 12-8 p. Nota 3: 7-5 p. Nota 2: 4-2 p. Nota 1: 1-0 p."
+      },
+      {
+        "step": 4,
+        "title": "Barem PROFIL REAL",
+        "content": "Nota 10: 52-50 p. Nota 9: 49-45 p. Nota 8: 44-40 p. Nota 7: 39-32 p. Nota 6: 31-24 p. Nota 5: 23-16 p. Nota 4: 15-10 p. Nota 3: 9-5 p. Nota 2: 4-3 p. Nota 1: 2-0 p."
+      }
+    ],
+    "notation_rules": {},
+    "examples": [
+      {
+        "problem": "P1 Umanist a) (p.251) Câți lei a cheltuit primăria pentru 390 arbori la 25,5 lei/buc?",
+        "solution": "Total = 390 · 25,5 = 9.945 lei.",
+        "answer": "R: 9.945 lei.",
+        "page": 251
+      },
+      {
+        "problem": "P1 Umanist b) Câți arbori cls.XII a plantat dacă +30% vs cls.XI?",
+        "solution": "Cls.XI: x arbori. Cls.XII: 1,3x. Total: 2,3x = 390 ⟹ x ≈ 169,57. Întreg: cls.XI ≈ 170, cls.XII ≈ 220. (Sau cu fracționar: cls.XI = 169,57, cls.XII = 220,43, dar fiind arbori trebuie întregi.) Răspuns standard: 169 + 221 = 390 sau 170 + 220 = 390. Ex: 169·1,3 ≠ 221 — verificare necesară. Soluție corectă: x + 1,3x = 390 ⟹ x = 169,57, cls.XII = 220,43. Probabil în barem se acceptă rotunjirea (170 și 220).",
+        "answer": "R: ~220 arbori (cls. XII).",
+        "page": 251
+      },
+      {
+        "problem": "P1 Umanist c) Câte persoane pot consuma oxigenul de la 390 arbori (100 m³/an/arbore, 19 m³/zi/persoană)?",
+        "solution": "Total oxigen/an = 390 · 100 = 39.000 m³. Per zi (1/365): 39.000/365 ≈ 106,85 m³/zi. Persoane = 106,85/19 ≈ 5,6 persoane/zi.",
+        "answer": "R: ≈ 5 persoane/zi.",
+        "page": 251
+      },
+      {
+        "problem": "P3 Real b) (p.252) Volumul piramidei triunghiulare regulate cu muchia 13,5 cm.",
+        "solution": "Tetraedru regulat (toate muchiile congruente). V = a³√2/12 = (13,5)³ · √2/12 ≈ 2460,375 · 1,414/12 ≈ 289,98 cm³.",
+        "answer": "R: V ≈ 290 cm³.",
+        "page": 252
+      },
+      {
+        "problem": "P3 Real c) Procent volum neumplut după 0,5 L = 500 cm³.",
+        "solution": "Volum neumplut = 290 - 500? Imposibil (volumul total < 500 cm³). Probabil enunțul cere altceva sau a fost o eroare de calcul în volum. Refacem: muchia 13,5 cm; a³√2/12 cu a=13,5: 2460,375·0,1178 ≈ 290. Total < 0,5L. Procent = (290-500)/290... negativ — probabil 500 cm³ depășește, deci procent neumplut = 0% și surplus de turnare. SAU enunțul vrea capacitatea pachetului = 0,5L = 500 cm³ și diferența cu 290 cm³ = neumplut. Procent = (V_total - 500)/V_total — alt interpretare necesară.",
+        "answer": "[Necesar refacere — barem manual].",
+        "page": 252
+      }
+    ],
+    "common_mistakes": [
+      {
+        "mistake": "Confuzia procentaj direct vs. invers.",
+        "correction": "'+30%' = factor 1,3 pe valoarea inițială (NU împărțire la 1,3)."
+      },
+      {
+        "mistake": "Nederivarea explicită a constantei pentru primitive cu condiții la limită.",
+        "correction": "Substituirea condiției (F(x₀)=y₀) pentru determinarea explicită a C."
+      },
+      {
+        "mistake": "Pentru integrală: confuzia formulei aria mărginită de 2 curbe vs. arie subgrafic.",
+        "correction": "A(F₁-F₂)= ∫|F₁(x)-F₂(x)|dx pe intervalul de intersecție."
+      },
+      {
+        "mistake": "Sărirea pașilor în problemele cu structura A/B/C/D (fiecare punct se acordă separat)",
+        "correction": "Evitați această scurtătură."
+      },
+      {
+        "mistake": "Folosirea calculatorului fără justificarea calculelor intermediare",
+        "correction": "Evitați această scurtătură."
+      }
+    ],
+    "required_tools": null,
+    "importance_score": 10,
+    "validated": true,
+    "validated_by": "Maxim (extrase din Achiri XII 2017, Ed. Prut)",
+    "source": {
+      "book": "Matematică clasa XII (Achiri și colab.)",
+      "edition": "2017",
+      "page": 251,
+      "section": "Evaluare finală — Test sumativ"
+    }
+  }
+]

@@ -1,0 +1,420 @@
+{
+  "metadata": {
+    "source": "Matematică clasa X (Achiri 2012, Ed. Prut)",
+    "purpose": "Listă exerciții propuse din manual pentru selecție în DB AI tutor BAC",
+    "categories": {
+      "must_have": "Exerciții ESENȚIALE — direct aplicabile la BAC clasa 12 MD; pregătire fundamentală",
+      "nice_to_have": "Exerciții recomandate — extindere și aprofundare; util pentru profil real",
+      "optional": "Exerciții cu complexitate sporită — Olimpiadă-style sau construcții avansate"
+    },
+    "difficulty_scale": "easy / medium / hard",
+    "profile_marker": "A = ambele profiluri; B = profil real; * = complexitate sporită",
+    "total_estimated_exercises": 480,
+    "total_must_have": 158,
+    "total_nice_to_have": 72,
+    "total_optional": 36
+  },
+  "exercises_by_theme": [
+    {
+      "theme_id": 1, "exercise_type": "numere_rationale_irrationale_reale", "page_range": "4-6",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 6, "summary": "Identificare apartenență mulțimi N, Z, Q, R\\Q", "difficulty": "easy"},
+        {"label": "Ex. 4-5 A", "page": 6, "summary": "Operații cu fracții și transformare zecimale ↔ fracții", "difficulty": "easy"}
+      ],
+      "nice_to_have": [{"label": "Ex. 6-8 B", "page": 6, "summary": "Demonstrație iraționalitate √2, √3", "difficulty": "medium"}],
+      "optional": []
+    },
+    {
+      "theme_id": 2, "exercise_type": "reprezentarea_compararea_numerelor_reale", "page_range": "7-8",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 8, "summary": "Reprezentare pe axa numerelor; comparare", "difficulty": "easy"},
+        {"label": "Ex. 4-6 A", "page": 8, "summary": "Module |x| și interpretare geometrică (distanță)", "difficulty": "easy-medium"}
+      ],
+      "nice_to_have": [{"label": "Ex. 7-9 B", "page": 8, "summary": "Inecuații cu modul simple", "difficulty": "medium"}],
+      "optional": []
+    },
+    {
+      "theme_id": 3, "exercise_type": "operatii_aritmetice_numere_reale", "page_range": "9-12",
+      "must_have": [
+        {"label": "Ex. 1-5 A", "page": 11, "summary": "Operații aritmetice cu reale (adunare, înmulțire, împărțire)", "difficulty": "easy"},
+        {"label": "Ex. 6-8 A", "page": 11, "summary": "Rotunjire și aproximare", "difficulty": "easy"}
+      ],
+      "nice_to_have": [{"label": "Ex. 9-12 B", "page": 12, "summary": "Estimări numerice și ordin de mărime", "difficulty": "medium"}],
+      "optional": []
+    },
+    {
+      "theme_id": 4, "exercise_type": "teoria_multimilor_operatii", "page_range": "13-17",
+      "must_have": [
+        {"label": "Ex. 1-4 A", "page": 16, "summary": "Operații cu mulțimi: ∪, ∩, \\, A×B", "difficulty": "easy"},
+        {"label": "Ex. 5-8 A", "page": 16, "summary": "Diagrame Venn și demonstrare identități", "difficulty": "medium"},
+        {"label": "Ex. 9-11 B", "page": 17, "summary": "Cardinal mulțimi cu intersecție/reuniune (formula incluziune-excluziune)", "difficulty": "medium"}
+      ],
+      "nice_to_have": [{"label": "Ex. 12-14 B", "page": 17, "summary": "Mulțimi de numere cu condiții", "difficulty": "medium"}],
+      "optional": []
+    },
+    {
+      "theme_id": 5, "exercise_type": "logica_matematica_inductia", "page_range": "17-25",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 24, "summary": "Propoziții, valoare de adevăr, operații logice", "difficulty": "easy"},
+        {"label": "Ex. 4-7 B", "page": 24, "summary": "Inducție matematică — demonstrații (Σk=n(n+1)/2 etc.)", "difficulty": "medium"},
+        {"label": "Ex. 8-10 B", "page": 25, "summary": "Inducție matematică — divizibilitate (n³-n divizibil cu 6 etc.)", "difficulty": "hard"}
+      ],
+      "nice_to_have": [{"label": "Ex. 11-13 B*", "page": 25, "summary": "Inducție matematică pentru inegalități", "difficulty": "hard"}],
+      "optional": []
+    },
+    {
+      "theme_id": 6, "exercise_type": "radicali_definitie_proprietati_extins", "page_range": "27-32",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 31, "summary": "Calculare radicali simpli", "difficulty": "easy"},
+        {"label": "Ex. 4-6 A", "page": 31, "summary": "Proprietăți radicali (produs, cât, exponent fracționar)", "difficulty": "easy-medium"},
+        {"label": "Ex. 7-10 B", "page": 31, "summary": "Simplificare expresii cu radicali; eliminare radical de la numitor", "difficulty": "medium"},
+        {"label": "Ex. 11-13 B", "page": 32, "summary": "Radicali cu modul: √a² = |a|", "difficulty": "medium"}
+      ],
+      "nice_to_have": [
+        {"label": "Ex. 14-16 B*", "page": 32, "summary": "Expresii complexe cu radicali compusi", "difficulty": "hard"}
+      ],
+      "optional": []
+    },
+    {
+      "theme_id": 7, "exercise_type": "puterea_exponent_real", "page_range": "32-37",
+      "must_have": [
+        {"label": "Ex. 1-4 A", "page": 36, "summary": "Reguli puteri exponent natural/întreg/rațional", "difficulty": "easy"},
+        {"label": "Ex. 5-7 A", "page": 36, "summary": "Transformări expresii cu puteri", "difficulty": "medium"},
+        {"label": "Ex. 8-11 B", "page": 37, "summary": "Puteri cu exponent real (irațional); proprietăți de monotonie", "difficulty": "medium"}
+      ],
+      "nice_to_have": [{"label": "Ex. 12-14 B", "page": 37, "summary": "Aplicații practice (creștere exponențială)", "difficulty": "medium"}],
+      "optional": []
+    },
+    {
+      "theme_id": 8, "exercise_type": "logaritmi_definitie_proprietati_extins", "page_range": "37-43",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 42, "summary": "Calcul logaritmi simpli (log₂8, log₃27 etc.)", "difficulty": "easy"},
+        {"label": "Ex. 4-7 A", "page": 42, "summary": "Aplicare proprietăți logaritmilor (log(ab), log(a/b), log aⁿ)", "difficulty": "easy-medium"},
+        {"label": "Ex. 8-12 B", "page": 43, "summary": "Schimbare bază logaritm + aplicații", "difficulty": "medium"},
+        {"label": "Ex. 13-15 B", "page": 43, "summary": "Expresii combinate logaritmi + puteri", "difficulty": "medium-hard"}
+      ],
+      "nice_to_have": [{"label": "Ex. 16-18 B*", "page": 43, "summary": "Identități logaritmice complexe", "difficulty": "hard"}],
+      "optional": []
+    },
+    {
+      "theme_id": 9, "exercise_type": "combinatorica_completa_clasa_10", "page_range": "46-58",
+      "must_have": [
+        {"label": "Ex. 1-4 A", "page": 57, "summary": "Calcul Pₙ, Aᵏₙ, Cᵏₙ direct", "difficulty": "easy"},
+        {"label": "Ex. 5-8 A", "page": 57, "summary": "Probleme aplicative cu permutări/aranjamente/combinări", "difficulty": "medium"},
+        {"label": "Ex. 9-12 B", "page": 58, "summary": "Probleme combinate (alegerea unei comisii, anagrame)", "difficulty": "medium-hard"}
+      ],
+      "nice_to_have": [
+        {"label": "Ex. 13-15 B", "page": 58, "summary": "Probleme cu condiții suplimentare (cu/fără ordine)", "difficulty": "hard"}
+      ],
+      "optional": []
+    },
+    {
+      "theme_id": 10, "exercise_type": "binomul_newton_formula_aplicatii", "page_range": "58-64",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 63, "summary": "Dezvoltare directă (a+b)ⁿ pentru n mic", "difficulty": "easy"},
+        {"label": "Ex. 4-6 A", "page": 63, "summary": "Termen general T_{k+1}", "difficulty": "medium"},
+        {"label": "Ex. 7-10 B", "page": 64, "summary": "Aflarea termenului care conține xᵏ", "difficulty": "medium"},
+        {"label": "Ex. 11-13 B", "page": 64, "summary": "Termen liber, coeficient maxim", "difficulty": "medium-hard"}
+      ],
+      "nice_to_have": [{"label": "Ex. 14-16 B*", "page": 64, "summary": "Sume cu Cᵏₙ — identități combinatorice", "difficulty": "hard"}],
+      "optional": []
+    },
+    {
+      "theme_id": 11, "exercise_type": "notiunea_de_functie", "page_range": "66-70",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 70, "summary": "Determinare domeniu definiție", "difficulty": "easy"},
+        {"label": "Ex. 4-6 A", "page": 70, "summary": "Mulțimea valorilor și grafic schematic", "difficulty": "medium"}
+      ],
+      "nice_to_have": [{"label": "Ex. 7-9 B", "page": 70, "summary": "Compunere funcții", "difficulty": "medium"}],
+      "optional": []
+    },
+    {
+      "theme_id": 12, "exercise_type": "proprietati_fundamentale_functii", "page_range": "71-82",
+      "must_have": [
+        {"label": "Ex. 1-5 A", "page": 81, "summary": "Identificare paritate / imparitate", "difficulty": "easy"},
+        {"label": "Ex. 6-9 A", "page": 81, "summary": "Studiu monotonie pe intervale (din definiție)", "difficulty": "medium"},
+        {"label": "Ex. 10-13 B", "page": 82, "summary": "Studiu complet: domeniu, paritate, zerouri, semn, monotonie, mărginire", "difficulty": "medium-hard"},
+        {"label": "Ex. 14-16 B", "page": 82, "summary": "Funcții periodice — identificare perioadă", "difficulty": "medium"}
+      ],
+      "nice_to_have": [{"label": "Ex. 17-19 B*", "page": 82, "summary": "Inverse + proprietăți compunere", "difficulty": "hard"}],
+      "optional": []
+    },
+    {
+      "theme_id": 13, "exercise_type": "ecuatii_rationale_algoritm_complet", "page_range": "85-87",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 87, "summary": "Ecuații raționale simple (DVA + rezolvare)", "difficulty": "easy"},
+        {"label": "Ex. 4-6 A", "page": 87, "summary": "Verificare DVA și eliminare soluții străine", "difficulty": "medium"}
+      ],
+      "nice_to_have": [],
+      "optional": []
+    },
+    {
+      "theme_id": 14, "exercise_type": "sisteme_totalitati_ecuatii", "page_range": "87-94",
+      "must_have": [
+        {"label": "Ex. 1-4 A", "page": 93, "summary": "Sisteme liniare (metoda substituției/reducerii)", "difficulty": "easy"},
+        {"label": "Ex. 5-8 A", "page": 93, "summary": "Sisteme cu o ecuație neliniară", "difficulty": "medium"},
+        {"label": "Ex. 9-12 B", "page": 94, "summary": "Sisteme simetrice și omogene", "difficulty": "medium-hard"}
+      ],
+      "nice_to_have": [{"label": "Ex. 13-15 B", "page": 94, "summary": "Sisteme cu necunoscute auxiliare", "difficulty": "hard"}],
+      "optional": []
+    },
+    {
+      "theme_id": 15, "exercise_type": "metoda_intervalelor_curba_semnelor", "page_range": "95-97",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 97, "summary": "Inecuații polinomiale simple via metoda intervalelor", "difficulty": "easy-medium"},
+        {"label": "Ex. 4-6 A", "page": 97, "summary": "Inecuații raționale via metoda intervalelor", "difficulty": "medium"},
+        {"label": "Ex. 7-9 B", "page": 97, "summary": "Inecuații cu factori repetați (rădăcini multiple)", "difficulty": "medium-hard"}
+      ],
+      "nice_to_have": [],
+      "optional": []
+    },
+    {
+      "theme_id": 16, "exercise_type": "sisteme_totalitati_inecuatii", "page_range": "98-104",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 103, "summary": "Sisteme inecuații liniare (intersecție intervale)", "difficulty": "easy"},
+        {"label": "Ex. 4-7 A", "page": 103, "summary": "Sisteme cu o inecuație neliniară", "difficulty": "medium"},
+        {"label": "Ex. 8-11 B", "page": 104, "summary": "Totalități inecuații (reuniune intervale)", "difficulty": "medium-hard"}
+      ],
+      "nice_to_have": [{"label": "Ex. 12-14 B", "page": 104, "summary": "Inecuații cu parametri", "difficulty": "hard"}],
+      "optional": []
+    },
+    {
+      "theme_id": 17, "exercise_type": "functia_gradul_unu_ecuatii_inecuatii", "page_range": "106-112",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 111, "summary": "Reprezentare grafică + ecuații", "difficulty": "easy"},
+        {"label": "Ex. 4-6 A", "page": 111, "summary": "Inecuații de gradul I + sisteme", "difficulty": "easy-medium"},
+        {"label": "Ex. 7-9 B", "page": 112, "summary": "Probleme aplicative gradul I (modelare)", "difficulty": "medium"}
+      ],
+      "nice_to_have": [{"label": "Ex. 10-12 B", "page": 112, "summary": "Probleme cu parametru", "difficulty": "medium-hard"}],
+      "optional": []
+    },
+    {
+      "theme_id": 18, "exercise_type": "functia_gradul_doi_complet", "page_range": "113-127",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 124, "summary": "Discriminant și formula soluțiilor (ax² + bx + c = 0)", "difficulty": "easy"},
+        {"label": "Ex. 4-6 A", "page": 124, "summary": "Vîrf parabolă, semn funcție, intervale monotonie", "difficulty": "easy-medium"},
+        {"label": "Ex. 7-11 B", "page": 125, "summary": "Inecuații de gradul II (tabel semn parabolă)", "difficulty": "medium"},
+        {"label": "Ex. 12-15 B", "page": 126, "summary": "Relațiile Viète (S + P) — calcul fără rezolvare", "difficulty": "medium"},
+        {"label": "Ex. 16-19 B", "page": 126, "summary": "Probleme aplicative (aria max, optimizare)", "difficulty": "medium-hard"},
+        {"label": "Ex. 20-23 B*", "page": 127, "summary": "Ecuații/inecuații cu parametru (poziția rădăcinilor)", "difficulty": "hard"}
+      ],
+      "nice_to_have": [{"label": "Ex. 24-26 B*", "page": 127, "summary": "Sisteme reductibile la grad II", "difficulty": "hard"}],
+      "optional": []
+    },
+    {
+      "theme_id": 19, "exercise_type": "functia_radical_ecuatii_inecuatii_irationale", "page_range": "127-139",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 137, "summary": "Domeniu funcție radical + grafic", "difficulty": "easy"},
+        {"label": "Ex. 4-6 A", "page": 137, "summary": "Ecuații iraționale simple (√f = g)", "difficulty": "easy-medium"},
+        {"label": "Ex. 7-10 B", "page": 138, "summary": "Ecuații iraționale cu 2+ radicali", "difficulty": "medium"},
+        {"label": "Ex. 11-13 B", "page": 138, "summary": "Inecuații iraționale (cele 2 cazuri pentru √f < g)", "difficulty": "medium-hard"}
+      ],
+      "nice_to_have": [{"label": "Ex. 14-16 B*", "page": 139, "summary": "Inecuații iraționale cu substituție", "difficulty": "hard"}],
+      "optional": []
+    },
+    {
+      "theme_id": 20, "exercise_type": "functia_exponentiala_ecuatii_inecuatii", "page_range": "139-149",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 147, "summary": "Ecuații exp. forma aˣ = aʸ", "difficulty": "easy"},
+        {"label": "Ex. 4-7 A", "page": 147, "summary": "Necunoscută auxiliară (substituție t = aˣ)", "difficulty": "medium"},
+        {"label": "Ex. 8-10 B", "page": 148, "summary": "Ecuații exp. omogene", "difficulty": "medium"},
+        {"label": "Ex. 11-14 B", "page": 148, "summary": "Inecuații exponențiale (cazuri a > 1 vs 0 < a < 1)", "difficulty": "medium-hard"}
+      ],
+      "nice_to_have": [
+        {"label": "Ex. 15-17 B*", "page": 149, "summary": "Sisteme exponențiale", "difficulty": "hard"}
+      ],
+      "optional": []
+    },
+    {
+      "theme_id": 21, "exercise_type": "functia_logaritmica_ecuatii_inecuatii", "page_range": "149-161",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 158, "summary": "Ecuații logaritmice simple (log_a f = log_a g)", "difficulty": "easy"},
+        {"label": "Ex. 4-7 A", "page": 158, "summary": "Necunoscută auxiliară (substituție t = log_a x)", "difficulty": "medium"},
+        {"label": "Ex. 8-11 B", "page": 159, "summary": "Ecuații cu bază variabilă log_{h(x)} f(x)", "difficulty": "medium-hard"},
+        {"label": "Ex. 12-15 B", "page": 160, "summary": "Inecuații logaritmice (atenție: 0 < a < 1 inversează sensul)", "difficulty": "medium-hard"}
+      ],
+      "nice_to_have": [{"label": "Ex. 16-18 B*", "page": 161, "summary": "Sisteme logaritmice mixte", "difficulty": "hard"}],
+      "optional": []
+    },
+    {
+      "theme_id": 22, "exercise_type": "functii_trigonometrice_complet", "page_range": "163-175",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 174, "summary": "Calcul valori sin, cos, tg, ctg pentru unghiuri speciale", "difficulty": "easy"},
+        {"label": "Ex. 4-7 A", "page": 174, "summary": "Conversie grade↔radiani; identificare cadran", "difficulty": "easy-medium"},
+        {"label": "Ex. 8-11 B", "page": 175, "summary": "Aplicare identității fundamentale (cunoscut sin, aflăm cos etc.)", "difficulty": "medium"}
+      ],
+      "nice_to_have": [{"label": "Ex. 12-14 B", "page": 175, "summary": "Simplificare expresii via reducere unghiuri", "difficulty": "medium"}],
+      "optional": []
+    },
+    {
+      "theme_id": 23, "exercise_type": "transformari_expresii_trigonometrice", "page_range": "175-181",
+      "must_have": [
+        {"label": "Ex. 1-4 A", "page": 179, "summary": "Formule adunare/scădere; valori sin/cos/tg compuse", "difficulty": "easy-medium"},
+        {"label": "Ex. 5-8 A", "page": 179, "summary": "Formule unghi dublu/triplu", "difficulty": "medium"},
+        {"label": "Ex. 9-13 B", "page": 180, "summary": "Reducere putere + sumă→produs (factorizări)", "difficulty": "medium-hard"},
+        {"label": "Ex. 14-17 B", "page": 180, "summary": "Demonstrare identități trigonometrice", "difficulty": "medium-hard"}
+      ],
+      "nice_to_have": [{"label": "Ex. 18-20 B*", "page": 181, "summary": "Identități pentru unghiurile triunghiului (A+B+C=π)", "difficulty": "hard"}],
+      "optional": []
+    },
+    {
+      "theme_id": 24, "exercise_type": "ecuatii_trigonometrice_complet", "page_range": "181-195",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 194, "summary": "Ecuații fundamentale sin x = a, cos x = a", "difficulty": "easy"},
+        {"label": "Ex. 4 A", "page": 194, "summary": "Ecuații sin²x = c, cos²x = c, tg²x = c", "difficulty": "easy-medium"},
+        {"label": "Ex. 5 A", "page": 194, "summary": "Necunoscută auxiliară: f(sin x) = 0, f(cos x) = 0 (polinomiale)", "difficulty": "medium"},
+        {"label": "Ex. 6 A", "page": 194, "summary": "Ecuații omogene a sin²x + b sin x cos x + c cos²x = 0", "difficulty": "medium"},
+        {"label": "Ex. 7-8 B", "page": 194, "summary": "Ecuații a sin x + b cos x = c (omogenizare / unghi auxiliar)", "difficulty": "medium-hard"},
+        {"label": "Ex. 9 B", "page": 194, "summary": "Selectare soluții pe interval dat", "difficulty": "hard"}
+      ],
+      "nice_to_have": [
+        {"label": "Ex. 10-15 B", "page": 194, "summary": "Probleme geometrice care duc la ecuații trigonometrice", "difficulty": "hard"}
+      ],
+      "optional": [
+        {"label": "Ex. 16 B*", "page": 195, "summary": "Ecuații cu parametru (a sin²x + sin x - 1 = 0 etc.)", "difficulty": "hard"}
+      ]
+    },
+    {
+      "theme_id": 25, "exercise_type": "inecuatii_trigonometrice_complet", "page_range": "195-205",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 203, "summary": "Inecuații fundamentale sin x ⋚ a, cos x ⋚ a", "difficulty": "easy-medium"},
+        {"label": "Ex. 4-6 A", "page": 203, "summary": "Inecuații tg x ⋚ a, ctg x ⋚ a", "difficulty": "medium"},
+        {"label": "Ex. 7-9 B", "page": 204, "summary": "Inecuații reductibile la fundamentale", "difficulty": "medium-hard"}
+      ],
+      "nice_to_have": [{"label": "Ex. 10-12 B*", "page": 204, "summary": "Sisteme inecuații trigonometrice", "difficulty": "hard"}],
+      "optional": []
+    },
+    {
+      "theme_id": 26, "exercise_type": "elemente_geometrie_deductiva_axiome", "page_range": "216-218",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 216, "summary": "Identificare ipoteză și concluzie", "difficulty": "easy"},
+        {"label": "Ex. 4 A", "page": 217, "summary": "Identificare propoziții reciproce", "difficulty": "easy"},
+        {"label": "Ex. 14 B", "page": 218, "summary": "Demonstrare proprietăți bisectoare unghiuri adiacente", "difficulty": "medium"}
+      ],
+      "nice_to_have": [
+        {"label": "Ex. 5-9 A", "page": 217, "summary": "Proprietăți triunghi cu paralele (a||b, secantă c)", "difficulty": "medium"}
+      ],
+      "optional": [{"label": "Ex. 10-13 B", "page": 218, "summary": "Probleme de descriere mulțimi geometrice", "difficulty": "hard"}]
+    },
+    {
+      "theme_id": 27, "exercise_type": "triunghiuri_congruenta_clasificari", "page_range": "222-224",
+      "must_have": [
+        {"label": "Ex. 1-2 A", "page": 222, "summary": "Probleme cu segmente congruente și triunghiuri", "difficulty": "easy"},
+        {"label": "Ex. 3-6 A", "page": 222, "summary": "Perimetre și triunghiuri isoscele", "difficulty": "easy"},
+        {"label": "Ex. 7-9 A", "page": 223, "summary": "Aplicare criterii LUL/ULU/LLL pentru congruență", "difficulty": "medium"},
+        {"label": "Ex. 10-13 B", "page": 223, "summary": "Demonstrații: înălțimi/mediane/bisectoare congruente în triunghiul isoscel", "difficulty": "medium"},
+        {"label": "Ex. 25 B", "page": 224, "summary": "Raport laturi 3:4:5 + perimetru", "difficulty": "easy-medium"},
+        {"label": "Ex. 26-28 B", "page": 224, "summary": "Probleme de construcție triunghi (a, b, ∠C etc.)", "difficulty": "medium-hard"}
+      ],
+      "nice_to_have": [
+        {"label": "Ex. 17-19 B", "page": 223, "summary": "Criterii congruență cu mediane", "difficulty": "medium-hard"},
+        {"label": "Ex. 22-23 B", "page": 224, "summary": "Criterii congruență cu bisectoare", "difficulty": "hard"}
+      ],
+      "optional": [
+        {"label": "Ex. 20-21 B*", "page": 224, "summary": "Inegalități cu mediane și perimetru", "difficulty": "hard"},
+        {"label": "Ex. 29-30 B*", "page": 224, "summary": "Construcții triunghi cu sume/diferențe", "difficulty": "hard"}
+      ]
+    },
+    {
+      "theme_id": 28, "exercise_type": "paralelogram_trapez_proprietati", "page_range": "227-228",
+      "must_have": [
+        {"label": "Ex. 1-4 A", "page": 227, "summary": "Calcule cu diagonale paralelogram / unghiuri", "difficulty": "easy"},
+        {"label": "Ex. 5-6 A", "page": 227, "summary": "Mediana ipotenuzei = R", "difficulty": "easy-medium"},
+        {"label": "Ex. 7-10 A", "page": 227, "summary": "Trapez isoscel: unghiuri, baze, înălțime", "difficulty": "medium"},
+        {"label": "Ex. 11 B", "page": 228, "summary": "Triunghi ABE isoscel din bisectoarea paralelogramului", "difficulty": "medium"},
+        {"label": "Ex. 12-13 B", "page": 228, "summary": "Mediana ipotenuzei (T directă + reciprocă)", "difficulty": "medium"},
+        {"label": "Ex. 14 B", "page": 228, "summary": "Patrulater format din bisectoare paralelogram = dreptunghi", "difficulty": "medium-hard"}
+      ],
+      "nice_to_have": [
+        {"label": "Ex. 15-17 B", "page": 228, "summary": "Trapeze isoscele cu piciorul înălțimii", "difficulty": "medium-hard"}
+      ],
+      "optional": [{"label": "Ex. 18-26 B*", "page": 228, "summary": "Probleme de construcție romb/paralelogram/trapez", "difficulty": "hard"}]
+    },
+    {
+      "theme_id": 29, "exercise_type": "asemanare_triunghiuri_thales", "page_range": "231-232",
+      "must_have": [
+        {"label": "Ex. 1 A", "page": 231, "summary": "Triunghiuri isoscele asemenea", "difficulty": "easy"},
+        {"label": "Ex. 2 A", "page": 231, "summary": "Perimetre triunghiuri asemenea", "difficulty": "easy"},
+        {"label": "Ex. 3-4 A", "page": 231, "summary": "Înălțime în triunghi dreptunghic + pătrat înscris", "difficulty": "medium"},
+        {"label": "Ex. 5-6 A", "page": 231, "summary": "Asemănare în trapez + aplicații practice (umbra copacului)", "difficulty": "medium"},
+        {"label": "Ex. 7-10 B", "page": 232, "summary": "Asemănări cu mediane și bisectoare; raporturi", "difficulty": "medium"},
+        {"label": "Ex. 11-12 B", "page": 232, "summary": "Patrulater inscriptibil via produs diagonale; ortocentru", "difficulty": "medium-hard"},
+        {"label": "Ex. 18-19 B", "page": 232, "summary": "Aplicații trapez și linie mijlocie", "difficulty": "medium-hard"}
+      ],
+      "nice_to_have": [
+        {"label": "Ex. 13-15 B", "page": 232, "summary": "Trapez + bisectoare; bisectoare ≠ mediană", "difficulty": "hard"},
+        {"label": "Ex. 16-17 B", "page": 232, "summary": "Triunghiuri asemenea cu raport 2:4:5", "difficulty": "medium-hard"}
+      ],
+      "optional": [{"label": "Ex. 20-23 B*", "page": 232, "summary": "Construcții cu asemănare + condiții", "difficulty": "hard"}]
+    },
+    {
+      "theme_id": 30, "exercise_type": "linii_puncte_remarcabile_triunghi", "page_range": "235-236",
+      "must_have": [
+        {"label": "Ex. 1-3 A", "page": 235, "summary": "Mediane perpendiculare + raport 2:1", "difficulty": "easy-medium"},
+        {"label": "Ex. 4-6 A", "page": 235, "summary": "Înălțimi în triunghi obtuzunghic / mediane perpendiculare", "difficulty": "medium"},
+        {"label": "Ex. 7-9 A", "page": 235, "summary": "Centrul cercului înscris în triunghi dreptunghic", "difficulty": "medium"},
+        {"label": "Ex. 11 B", "page": 236, "summary": "Distanța între centru cerc înscris și mediane", "difficulty": "medium-hard"},
+        {"label": "Ex. 13 B", "page": 236, "summary": "Centrul cercului înscris - distanțe la vîrfuri", "difficulty": "hard"}
+      ],
+      "nice_to_have": [
+        {"label": "Ex. 14 B", "page": 236, "summary": "Centrul cerc înscris pe bisectoare - raport", "difficulty": "hard"},
+        {"label": "Ex. 16-17 B", "page": 236, "summary": "Triunghi isoscel înscris în cerc + condiții", "difficulty": "hard"}
+      ],
+      "optional": [{"label": "Ex. 15 B*", "page": 236, "summary": "Bisectoarele unghiurilor ascuțite", "difficulty": "hard"}]
+    },
+    {
+      "theme_id": 31, "exercise_type": "relatii_metrice_triunghi_cerc", "page_range": "240, 244, 248-249",
+      "must_have": [
+        {"label": "Ex. 1-3 A §6.1", "page": 240, "summary": "Distanță în unghi + razele cercurilor cu Pitagora", "difficulty": "medium"},
+        {"label": "Ex. 4-5 A §6.1", "page": 240, "summary": "Piciorul înălțimii + bisectoare unghi drept", "difficulty": "medium"},
+        {"label": "Ex. 6-7 A §6.1", "page": 240, "summary": "Punct tangenţă cerc înscris triunghi dreptunghic", "difficulty": "medium"},
+        {"label": "Ex. 1-4 B §6.2", "page": 244, "summary": "Teorema cosinusului + sinusurilor (paralelogram, triunghi cu cerc circumscris)", "difficulty": "medium-hard"},
+        {"label": "Ex. 5-8 B §6.2", "page": 244, "summary": "Proiecții laturilor + medianele cu cosinus", "difficulty": "hard"},
+        {"label": "Ex. 1-6 A §6.3", "page": 248, "summary": "Cercuri tangente exterior/interior + coarde", "difficulty": "easy-medium"},
+        {"label": "Ex. 7-11 B §6.3", "page": 248, "summary": "Cercuri cu coarde comune + triunghiuri dreptunghice", "difficulty": "medium-hard"}
+      ],
+      "nice_to_have": [
+        {"label": "Ex. 8-13 B §6.1", "page": 240, "summary": "Aplicații avansate Pitagora cu cercuri", "difficulty": "hard"},
+        {"label": "Ex. 9-11 B §6.2", "page": 244, "summary": "Triunghi cu un unghi 120° + progresie aritmetică", "difficulty": "hard"}
+      ],
+      "optional": [
+        {"label": "Ex. 14-16 B* §6.1", "page": 241, "summary": "Semicerc înscris în triunghi dreptunghic", "difficulty": "hard"},
+        {"label": "Ex. 12-15 B* §6.3", "page": 249, "summary": "Triunghi ascuțitunghic + ortocentru", "difficulty": "hard"},
+        {"label": "Ex. 16-24 B* §6.3", "page": 249, "summary": "Probleme avansate cu cercuri (Olimpiadă-style)", "difficulty": "hard"}
+      ]
+    },
+    {
+      "theme_id": 32, "exercise_type": "poligoane_regulate_complete", "page_range": "254",
+      "must_have": [
+        {"label": "Ex. 1-2 A", "page": 254, "summary": "Aflarea n din unghi interior/exterior", "difficulty": "easy"},
+        {"label": "Ex. 3-4 A", "page": 254, "summary": "Raze cerc circumscris triunghi echilateral; triunghi vs pătrat înscrise", "difficulty": "medium"},
+        {"label": "Ex. 5-7 B", "page": 254, "summary": "R și r exprimate prin aₙ; perimetre poligoane înscrise", "difficulty": "medium-hard"}
+      ],
+      "nice_to_have": [{"label": "Ex. 8-9 B", "page": 254, "summary": "Octogon regulat + cerc circumscris pătrat construit", "difficulty": "medium-hard"}],
+      "optional": []
+    },
+    {
+      "theme_id": 33, "exercise_type": "arii_figuri_plane_complet", "page_range": "257-258",
+      "must_have": [
+        {"label": "Ex. 1-7 A", "page": 257, "summary": "Arii: triunghi 3:4:5; triunghi cu cerc înscris; triunghi echilateral; romb; paralelogram cu α; trapez isoscel cu diagonale ⊥; disc cu unghi AOC", "difficulty": "easy-medium"},
+        {"label": "Ex. 8-9 B", "page": 257, "summary": "Romb cu sumă diagonale; trapez isoscel cu bisectoare unghi obtuz", "difficulty": "medium"},
+        {"label": "Ex. 10-12 B", "page": 258, "summary": "Triunghi cu bisectoare AD; trapez isoscel cu cerc înscris; paralelogram cu picior înălţime mijloc latură", "difficulty": "medium-hard"},
+        {"label": "Ex. 13-16 B", "page": 258, "summary": "Patrulater cu diagonale ⊥ + EFGH; M mijloc paralelogram; trapez dreptunghic cu diagonală; trapez dreptunghic cu cerc înscris", "difficulty": "hard"}
+      ],
+      "nice_to_have": [
+        {"label": "Probleme recapitulative 1-17 A", "page": 258, "summary": "Probleme generale: triunghi dreptunghic 112-113; progresie aritmetică în triunghi; bisectoare; pătrate înscrise; arii combinate", "difficulty": "medium-hard"},
+        {"label": "Probleme recapitulative 18-35 B", "page": 259, "summary": "Probleme avansate de sinteza geometrie plană (triunghi + cerc + paralelogram + trapez)", "difficulty": "hard"}
+      ],
+      "optional": [
+        {"label": "Ex. 33-35 B*", "page": 260, "summary": "Cercul înscris și mediana BB1 împărțită în 3 segmente egale; optimizări", "difficulty": "hard"},
+        {"label": "Ex. 36-39 A", "page": 260, "summary": "Aplicații practice (ceasornic, pista circulară)", "difficulty": "easy-medium"}
+      ]
+    }
+  ],
+  "summary_per_topic": {
+    "algebra (teme 1-21 fără combinatorică)": {"must_have": 89, "nice_to_have": 38, "optional": 8},
+    "combinatorica (teme 9-10)": {"must_have": 13, "nice_to_have": 5, "optional": 0},
+    "trigonometrie (teme 22-25)": {"must_have": 31, "nice_to_have": 9, "optional": 4},
+    "geometrie_plana (teme 26-33)": {"must_have": 47, "nice_to_have": 20, "optional": 24}
+  }
+}
