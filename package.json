@@ -16,6 +16,7 @@
     "backup:import": "tsx --env-file=.env.local scripts/backup/import-library.ts",
     "seed:scenarii": "tsx --env-file=.env.local scripts/seed/import-scenarii.ts",
     "seed:manuale": "tsx --env-file=.env.local scripts/seed/import-manuale.ts",
+    "seed:manuale-force": "tsx --env-file=.env.local scripts/seed/import-manuale-force.ts",
     "seed:methods": "tsx --env-file=.env.local scripts/seed/methodologies-seed.ts",
     "setup:db": "tsx --env-file=.env.local scripts/seed/setup-complete.ts",
     "check:migration": "tsx --env-file=.env.local scripts/seed/check-migration.ts",
