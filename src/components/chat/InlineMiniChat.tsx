@@ -88,7 +88,10 @@ export function InlineMiniChat({ interaction, messageId }: Props) {
         aria-label="Redeschide întrebarea"
       >
         <span className="shrink-0">💬</span>
-        <span className="truncate italic">"{interaction.selectedText.slice(0, 50)}{interaction.selectedText.length > 50 ? '…' : ''}"</span>
+        {interaction.blockType
+          ? <span className="capitalize font-medium">{interaction.blockType}</span>
+          : <span className="truncate italic">"{interaction.selectedText.slice(0, 40)}{interaction.selectedText.length > 40 ? '…' : ''}"</span>
+        }
         {interaction.response && <span className="shrink-0 text-blue-500">— răspuns disponibil</span>}
       </motion.button>
     );
@@ -132,11 +135,13 @@ export function InlineMiniChat({ interaction, messageId }: Props) {
 
         {/* Body */}
         <div className="p-3 space-y-2.5">
-          {/* Selected text quote */}
-          <blockquote className="text-xs italic text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 px-2 py-1.5 rounded border-l-2 border-gray-300 dark:border-gray-600">
-            <span className="not-italic font-medium">Text selectat: </span>
-            &ldquo;{interaction.selectedText}&rdquo;
-          </blockquote>
+          {/* Block type indicator (optional) */}
+          {interaction.blockType && (
+            <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+              <span aria-hidden="true">📍</span>
+              <span className="capitalize font-medium">{interaction.blockType}</span>
+            </div>
+          )}
 
           {/* Input area (only before first response) */}
           {!hasResponse && (

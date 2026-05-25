@@ -2,6 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { latexToSpeech } from '@/lib/voice/latex-to-speech';
 
+/**
+ * Elimină explicații redundante în formatul "ACRONIM (Explicație lungă)".
+ * Aplicat ÎNAINTE de latexToSpeech pentru a nu mai ajunge în TTS.
+ * Ex: "DVA (Domeniu Valorilor Admisibile)" → "DVA"
+ */
+function deduplicateExplanations(text: string): string {
+  // Acronim ≥2 litere majuscule + paranteză cu conținut lung (≥12 caractere)
+  return text.replace(
+    /\b([A-ZĂÂÎȘȚ]{2,}[A-ZĂÂÎȘȚ0-9]*)\s*\(([^)]{12,})\)/g,
+    '$1'
+  );
+}
+
 export const dynamic = 'force-dynamic';
 
 const ALLOWED_VOICES = new Set(['alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer']);
@@ -30,8 +43,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'text este obligatoriu' }, { status: 400 });
   }
 
-  // ── LaTeX → Speech text ───────────────────────────────────────────
-  const speechText = latexToSpeech(rawText).slice(0, 4096); // TTS-1 max 4096 chars
+  // ── Pre-procesare + LaTeX → Speech text ──────────────────────────
+  const deduped = deduplicateExplanations(rawText);
+  const speechText = latexToSpeech(deduped).slice(0, 4096); // TTS-1 max 4096 chars
+
+  // Dev logging pentru debugging calitate TTS
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[voice/synthesize] Original length:', rawText.length);
+    console.log('[voice/synthesize] After dedup:', deduped.length);
+    console.log('[voice/synthesize] Speech text:', speechText.slice(0, 200), speechText.length > 200 ? '…' : '');
+  }
 
   // ── OpenAI TTS-1 ─────────────────────────────────────────────────
   const openaiKey = process.env.OPENAI_API_KEY;
