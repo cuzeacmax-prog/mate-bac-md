@@ -5,6 +5,12 @@ import { create } from 'zustand';
 export interface Interaction {
   id: string;
   messageId: string;
+  /** Id-ul blocului [[BLOCK:id:type]] (prezent în block selection mode) */
+  blockId?: string;
+  /** Tipul blocului: DVA, transform, solve, verify, final, hint… */
+  blockType?: string;
+  /** Conținut complet al blocului selectat */
+  blockContent?: string;
   selectedText: string;
   question: string;
   response: string;

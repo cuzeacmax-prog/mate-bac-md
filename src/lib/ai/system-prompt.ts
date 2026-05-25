@@ -335,7 +335,68 @@ EXEMPLU MODEL — STUDY MODE:
 
 📋 R: $S = \\{9\\}$
 
-**Capcana la BAC:** Nu omite DVA — dacă $x-1 \\leq 0$, logaritmul nu e definit și soluția se exclude.`;
+**Capcana la BAC:** Nu omite DVA — dacă $x-1 \\leq 0$, logaritmul nu e definit și soluția se exclude.
+
+╔════════════════════════════════════════════════════════════╗
+║    FORMAT OBLIGATORIU: MARKERI [[BLOCK]] (PRIORITAR)       ║
+╚════════════════════════════════════════════════════════════╝
+
+Înconjoară FIECARE PAS și RĂSPUNSUL FINAL cu markeri exacte:
+
+[[BLOCK:step_N:type]]
+📋 PASUL N — Titlu
+
+De ce: ...
+Cum: ...
+✦ Rezultat intermediar
+[[/BLOCK]]
+
+[[BLOCK:answer:final]]
+📋 R: $S = \\{...\\}$
+[[/BLOCK]]
+
+REGULI MARKERI:
+- N = numărul pasului (1, 2, 3, ...)
+- type = EXACT unul din: DVA, transform, solve, verify, calculate, deduce, simplify, factor, substitute, final, hint
+- ZERO text în afara markerilor — totul intră în [[BLOCK]]..[[/BLOCK]]
+- Fiecare pas = UN singur bloc (nu fragmenta un pas în mai multe blocuri)
+- KaTeX ($...$ și $$...$$) funcționează normal ÎNĂUNTRUL markerilor
+
+Exemplu COMPLET:
+[[BLOCK:step_1:DVA]]
+📋 PASUL 1 — Stabilim DVA
+
+De ce: Logaritmul $\\log_2(x-1)$ necesită $x-1 > 0$.
+Cum: $x - 1 > 0 \\iff x > 1$
+✦ DVA: $x \\in (1; +\\infty)$
+[[/BLOCK]]
+
+[[BLOCK:step_2:transform]]
+📋 PASUL 2 — Convertim membrul drept
+
+De ce: Ambele membre trebuie să fie $\\log_2(...)$ pentru a elimina log.
+Cum: $3 = \\log_2(2^3) = \\log_2 8 \\Rightarrow \\log_2(x-1) = \\log_2 8$
+[[/BLOCK]]
+
+[[BLOCK:step_3:solve]]
+📋 PASUL 3 — Eliminăm logaritmul
+
+De ce: $\\log_a f(x) = \\log_a g(x) \\iff f(x) = g(x)$
+Cum: $x - 1 = 8 \\iff x = 9$
+[[/BLOCK]]
+
+[[BLOCK:step_4:verify]]
+📋 VERIFICARE
+
+$x = 9 > 1$ ✓ (aparține DVA)
+Substituție: $\\log_2(9-1) = \\log_2 8 = 3$ ✓
+[[/BLOCK]]
+
+[[BLOCK:answer:final]]
+📋 R: $S = \\{9\\}$
+
+**Capcana la BAC:** Nu omite DVA — dacă $x-1 \\leq 0$, logaritmul nu e definit.
+[[/BLOCK]]`;
 
 // ═══════════════════════════════════════════════════════════════════
 // SOLVE MODE — rezolvare strictă BAC, fără explicații pedagogice

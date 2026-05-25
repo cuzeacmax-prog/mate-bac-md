@@ -12,6 +12,7 @@ import {
 } from "@/lib/rag/solution-methods";
 import { decomposeQuery, type DecomposedQuery } from "@/lib/chat/query-decomposer";
 import { resolveToolsForMethod, hasTools } from "@/lib/tools/tool-resolver";
+import { verifyMath, type VerificationResult } from "@/lib/chat/math-verifier";
 
 const FREE_MONTHLY_LIMIT = 30;
 const IS_DEV = process.env.NODE_ENV === "development";
@@ -400,6 +401,24 @@ export async function POST(req: NextRequest) {
             outputTokens = usage.outputTokens ?? 0;
 
             console.log(`[chat/route] stream complete. task=${taskName} chunks=${chunkCount} svgs=${svgOutputs.length} in=${inputTokens} out=${outputTokens}`);
+
+            // ── Silent Math Verification (Haiku, max 3s) ────────────
+            let verificationData: Pick<VerificationResult, 'isCorrect' | 'confidence'> | null = null;
+            if (assistantText && chatMode === 'study') {
+              try {
+                const vResult = await Promise.race([
+                  verifyMath(message, assistantText),
+                  new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+                ]);
+                if (vResult && vResult.confidence > 0) {
+                  verificationData = { isCorrect: vResult.isCorrect, confidence: vResult.confidence };
+                  console.log(`[chat/route] verification done: isCorrect=${vResult.isCorrect} confidence=${vResult.confidence.toFixed(2)}`);
+                }
+              } catch (vErr) {
+                console.warn('[chat/route] verification skipped:', vErr instanceof Error ? vErr.message : vErr);
+              }
+            }
+
             controller.enqueue(
               encoder.encode(
                 `data: ${JSON.stringify({
@@ -412,6 +431,7 @@ export async function POST(req: NextRequest) {
                     method_similarity: relevantMethods[0]?.similarity ?? null,
                     exercises_matched: isContextMatch ? 1 : 0,
                     svgs: svgOutputs,
+                    verification: verificationData,
                   },
                 })}\n\n`
               )

@@ -3,6 +3,11 @@
 import { useEffect, useRef } from "react";
 import { MessageBubble } from "./MessageBubble";
 
+export interface VerificationMeta {
+  isCorrect: boolean;
+  confidence: number;
+}
+
 export interface ChatMetadata {
   method_used?: string | null;
   method_similarity?: number | null;
@@ -10,6 +15,8 @@ export interface ChatMetadata {
   isMulti?: boolean;
   exerciseCount?: number;
   svgs?: string[];
+  /** Verificare matematică silențioasă (Haiku) */
+  verification?: VerificationMeta | null;
 }
 
 export interface ChatMessage {
@@ -56,6 +63,7 @@ export function ChatMessages({ messages, streamingContent, isStreaming }: Props)
           role={msg.role}
           content={msg.content}
           svgs={msg.svgs}
+          metadata={msg.metadata}
         />
       ))}
       {isStreaming && streamingContent !== undefined && (
