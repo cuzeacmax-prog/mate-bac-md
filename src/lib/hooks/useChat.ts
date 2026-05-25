@@ -6,6 +6,7 @@ import type { ChatMessage, ChatMetadata } from "@/app/app/chat/_components/ChatM
 interface UseChatOptions {
   conversationId?: string;
   initialMessages?: ChatMessage[];
+  mode?: 'study' | 'solve';
   onRateLimit?: () => void;
   onConversationCreated?: (id: string) => void;
 }
@@ -13,6 +14,7 @@ interface UseChatOptions {
 export function useChat({
   conversationId: initialConvId,
   initialMessages = [],
+  mode = 'study',
   onRateLimit,
   onConversationCreated,
 }: UseChatOptions = {}) {
@@ -40,7 +42,7 @@ export function useChat({
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: text, conversationId: convId }),
+          body: JSON.stringify({ message: text, conversationId: convId, mode }),
         });
 
         if (res.status === 429) {
@@ -117,7 +119,7 @@ export function useChat({
         setStreamingContent("");
       }
     },
-    [convId, isStreaming, onRateLimit, onConversationCreated]
+    [convId, mode, isStreaming, onRateLimit, onConversationCreated]
   );
 
   return {

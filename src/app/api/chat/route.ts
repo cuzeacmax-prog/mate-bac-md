@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
-import { SYSTEM_PROMPT_V1 } from "@/lib/ai/system-prompt";
+import { STUDY_SYSTEM_PROMPT, SOLVE_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
 import { callAIStream, callAIStreamWithTools, getTaskPricing } from "@/lib/ai/router";
 import { generateEmbeddingForQuery } from "@/lib/embeddings/gemini";
 import {
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Parse body ──────────────────────────────────────────────────
-  let body: { message: string; conversationId?: string };
+  let body: { message: string; conversationId?: string; mode?: string };
   try {
     body = await req.json();
   } catch (err) {
@@ -82,7 +82,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Body invalid" }, { status: 400 });
   }
 
-  const { message, conversationId } = body;
+  const { message, conversationId, mode } = body;
+  const chatMode: 'study' | 'solve' = mode === 'solve' ? 'solve' : 'study';
   if (!message?.trim()) {
     return NextResponse.json({ error: "Mesaj gol" }, { status: 400 });
   }
@@ -185,8 +186,8 @@ export async function POST(req: NextRequest) {
     return serverError("user message insert", userMsgErr);
   }
 
-  // ── System prompt — inject metode BAC MD + context RAG ──────────
-  let systemPrompt = SYSTEM_PROMPT_V1;
+  // ── System prompt — mode-specific + inject metode BAC MD + context RAG ──
+  let systemPrompt = chatMode === 'solve' ? SOLVE_SYSTEM_PROMPT : STUDY_SYSTEM_PROMPT;
 
   // Injectează instrucțiunile metodei detectate (via helper din solution-methods.ts)
   const methodInstruction = buildMultiMethodInstruction(relevantMethods);
@@ -284,7 +285,7 @@ export async function POST(req: NextRequest) {
 
             for (const ex of decomposed.exercises) {
               // RAG pentru sub-exercițiu (refolosim embedding global dacă textul e similar)
-              let exSystemPrompt = SYSTEM_PROMPT_V1;
+              let exSystemPrompt = chatMode === 'solve' ? SOLVE_SYSTEM_PROMPT : STUDY_SYSTEM_PROMPT;
               let exTools = {};
 
               // Metodă specifică sub-exercițiului (Gemini call per exercițiu)

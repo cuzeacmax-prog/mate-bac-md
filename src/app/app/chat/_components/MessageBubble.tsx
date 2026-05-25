@@ -3,16 +3,19 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { MessageRenderer } from "./MessageRenderer";
+import { SelectableMessage } from "@/components/chat/SelectableMessage";
 
 interface Props {
   role: "user" | "assistant";
   content: string;
+  /** Unique stable ID for this message (for interaction store keying) */
+  messageId?: string;
   isStreaming?: boolean;
   /** SVG-uri generate de tool use (figuri geometrice, grafice) */
   svgs?: string[];
 }
 
-export const MessageBubble = React.memo(function MessageBubble({ role, content, isStreaming, svgs }: Props) {
+export const MessageBubble = React.memo(function MessageBubble({ role, content, messageId, isStreaming, svgs }: Props) {
   const isUser = role === "user";
   const hasSvgs = !isUser && Array.isArray(svgs) && svgs.length > 0;
 
@@ -30,7 +33,15 @@ export const MessageBubble = React.memo(function MessageBubble({ role, content, 
           <p className="text-sm whitespace-pre-wrap break-words">{content}</p>
         ) : (
           <>
-            <MessageRenderer content={content} isStreaming={isStreaming} />
+            {messageId && !isStreaming ? (
+              <SelectableMessage
+                messageId={messageId}
+                content={content}
+                isStreaming={isStreaming}
+              />
+            ) : (
+              <MessageRenderer content={content} isStreaming={isStreaming} />
+            )}
             {hasSvgs && (
               <div className="mt-3 space-y-3">
                 {svgs!.map((svg, idx) => (

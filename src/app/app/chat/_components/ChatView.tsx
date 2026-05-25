@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useChat } from "@/lib/hooks/useChat";
 import { ChatMessages } from "./ChatMessages";
 import { ChatInput } from "./ChatInput";
+import { ModeToggle } from "@/components/chat/ModeToggle";
+import { useChatModeStore } from "@/lib/stores/chat-mode-store";
 import type { ChatMessage } from "./ChatMessages";
 
 interface Props {
@@ -16,10 +18,12 @@ export function ChatView({ conversationId, initialMessages }: Props) {
   const router = useRouter();
   const [inputValue, setInputValue] = useState("");
   const [showRateLimitModal, setShowRateLimitModal] = useState(false);
+  const { mode } = useChatModeStore();
 
   const { messages, streamingContent, isStreaming, error, sendMessage } = useChat({
     conversationId,
     initialMessages,
+    mode,
     onRateLimit: () => setShowRateLimitModal(true),
     onConversationCreated: (id) => {
       router.replace(`/app/chat/${id}`, { scroll: false });
@@ -35,6 +39,12 @@ export function ChatView({ conversationId, initialMessages }: Props) {
 
   return (
     <div className="flex flex-col h-full flex-1 min-w-0">
+      {/* Mode toggle header */}
+      <div className="flex items-center justify-between px-4 py-2 border-b bg-background/80 backdrop-blur-sm shrink-0">
+        <span className="text-xs text-muted-foreground font-medium">Profesor Maxim — BAC MD</span>
+        <ModeToggle />
+      </div>
+
       <ChatMessages
         messages={messages}
         streamingContent={streamingContent}
