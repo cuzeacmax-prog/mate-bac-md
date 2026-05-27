@@ -181,6 +181,91 @@ type AdminFeedbackRow = {
   created_at: string | null;
 };
 
+// ── ETAPA 10 / 11 table row types ────────────────────────────────────────────
+
+type UserProfileRow = {
+  id: string;
+  email: string | null;
+  full_name: string | null;
+  phone: string | null;
+  grade_level: number | null;
+  target_bac_score: number | null;
+  initial_bac_prediction: number | null;
+  current_bac_prediction: number | null;
+  bac_prediction_updated_at: string | null;
+  onboarding_completed: boolean | null;
+  onboarding_completed_at: string | null;
+  subscription_tier: string | null;
+  subscription_status: string | null;
+  trial_started_at: string | null;
+  trial_ends_at: string | null;
+  referral_code: string | null;
+  referred_by: string | null;
+  streak_current: number | null;
+  streak_longest: number | null;
+  streak_last_activity_date: string | null;
+  total_exercises_solved: number | null;
+  total_chat_messages: number | null;
+  ai_cost_total_usd: number | null;
+  created_at: string | null;
+  updated_at: string | null;
+};
+
+type TopicMasteryRow = {
+  id: string;
+  user_id: string;
+  topic_id: string;
+  topic_display_name: string;
+  mastery_score: number;
+  exercises_attempted: number | null;
+  exercises_correct: number | null;
+  needs_review: boolean | null;
+  last_practiced_at: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+};
+
+type DiagnosticSessionRow = {
+  id: string;
+  user_id: string;
+  grade_level: number;
+  target_bac_score: number | null;
+  exercises_log: Json;
+  total_questions: number | null;
+  correct_count: number | null;
+  initial_bac_prediction: number | null;
+  weaknesses: string[] | null;
+  completed_at: string | null;
+  created_at: string | null;
+};
+
+type DiagnosticExerciseRow = {
+  id: string;
+  topic_id: string;
+  grade_level: number;
+  difficulty: number;
+  prompt: string;
+  options: Json;
+  correct_letter: string;
+  explanation: string | null;
+  source: string | null;
+  created_at: string | null;
+};
+
+type ExerciseAttemptRow = {
+  id: string;
+  user_id: string;
+  exercise_id: string | null;
+  topic_id: string;
+  difficulty: number | null;
+  is_correct: boolean;
+  time_spent_seconds: number | null;
+  session_type: string | null;
+  created_at: string | null;
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export type Database = {
   public: {
     Tables: {
@@ -282,6 +367,70 @@ export type Database = {
           created_at?: string | null;
         };
         Update: Partial<Omit<GapAnalysisRow, "id">>;
+        Relationships: [];
+      };
+      user_profiles: {
+        Row: UserProfileRow;
+        Insert: Omit<UserProfileRow, "id" | "created_at" | "updated_at"> & {
+          id: string;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Update: Partial<Omit<UserProfileRow, "id">>;
+        Relationships: [];
+      };
+      topic_mastery: {
+        Row: TopicMasteryRow;
+        Insert: {
+          id?: string;
+          user_id: string;
+          topic_id: string;
+          topic_display_name: string;
+          mastery_score?: number;
+          exercises_attempted?: number | null;
+          exercises_correct?: number | null;
+          needs_review?: boolean | null;
+          last_practiced_at?: string | null;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Update: Partial<Omit<TopicMasteryRow, "id">>;
+        Relationships: [];
+      };
+      diagnostic_sessions: {
+        Row: DiagnosticSessionRow;
+        Insert: {
+          id?: string;
+          user_id: string;
+          grade_level: number;
+          target_bac_score?: number | null;
+          exercises_log?: Json;
+          total_questions?: number | null;
+          correct_count?: number | null;
+          initial_bac_prediction?: number | null;
+          weaknesses?: string[] | null;
+          completed_at?: string | null;
+          created_at?: string | null;
+        };
+        Update: Partial<Omit<DiagnosticSessionRow, "id">>;
+        Relationships: [];
+      };
+      diagnostic_exercises: {
+        Row: DiagnosticExerciseRow;
+        Insert: Omit<DiagnosticExerciseRow, "id" | "created_at"> & {
+          id?: string;
+          created_at?: string | null;
+        };
+        Update: Partial<Omit<DiagnosticExerciseRow, "id">>;
+        Relationships: [];
+      };
+      exercise_attempts: {
+        Row: ExerciseAttemptRow;
+        Insert: Omit<ExerciseAttemptRow, "id" | "created_at"> & {
+          id?: string;
+          created_at?: string | null;
+        };
+        Update: Partial<Omit<ExerciseAttemptRow, "id">>;
         Relationships: [];
       };
     };

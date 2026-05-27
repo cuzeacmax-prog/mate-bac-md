@@ -1,9 +1,11 @@
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { BookOpen, Brain, Camera, BarChart2, CheckCircle2, ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { createClient } from "@/lib/supabase/server";
 
 const FEATURES = [
   {
@@ -46,7 +48,30 @@ const PRICING_PREMIUM = [
   "Dashboard progres avansat",
 ];
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  // Server-side auth check: redirect logged-in users to app or onboarding
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (user) {
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('onboarding_completed')
+        .eq('id', user.id)
+        .single();
+
+      if (profile?.onboarding_completed) {
+        redirect('/app');
+      } else {
+        redirect('/onboarding/welcome');
+      }
+    }
+  } catch {
+    // Not authenticated or profile missing — show landing page
+  }
+
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
