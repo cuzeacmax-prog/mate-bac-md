@@ -245,10 +245,11 @@ type DiagnosticExerciseRow = {
   grade_level: number;
   difficulty: number;
   prompt: string;
-  options: Json;
+  correct_answer: string;        // the text of the correct option
+  distractors: Json;             // {"a":"...", "b":"...", "c":"...", "d":"..."}
   correct_letter: string;
   explanation: string | null;
-  source: string | null;
+  source_scenario_id: string | null;
   created_at: string | null;
 };
 
@@ -417,8 +418,17 @@ export type Database = {
       };
       diagnostic_exercises: {
         Row: DiagnosticExerciseRow;
-        Insert: Omit<DiagnosticExerciseRow, "id" | "created_at"> & {
+        Insert: {
           id?: string;
+          topic_id: string;
+          grade_level: number;
+          difficulty?: number | null;
+          prompt: string;
+          correct_answer: string;
+          distractors: Json;
+          correct_letter: string;
+          explanation?: string | null;
+          source_scenario_id?: string | null;
           created_at?: string | null;
         };
         Update: Partial<Omit<DiagnosticExerciseRow, "id">>;

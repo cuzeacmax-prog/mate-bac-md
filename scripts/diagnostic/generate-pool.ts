@@ -4,11 +4,19 @@
  * Rulează:  npm run diagnostic:generate-pool
  *
  * Ce face:
- * 1. Pentru fiecare topic din clasele 10-12, generează 5 exerciții per dificultate (1–5)
+ * 1. Pentru fiecare topic din clasele 10-12, generează 3 exerciții per dificultate (1–5)
  * 2. Le inserează în tabelul `diagnostic_exercises` din Supabase
  * 3. Verifică unicitatea (skip dacă exercițiul există deja)
  *
  * Requires: ANTHROPIC_API_KEY + SUPABASE_SERVICE_ROLE_KEY + NEXT_PUBLIC_SUPABASE_URL
+ *
+ * Schema diagnostic_exercises:
+ *   id, grade_level, topic_id, difficulty, prompt,
+ *   correct_answer TEXT NOT NULL,
+ *   distractors JSONB NOT NULL,    ← {"a":"...", "b":"...", "c":"...", "d":"..."}
+ *   correct_letter CHAR(1),
+ *   explanation TEXT,
+ *   source_scenario_id UUID
  */
 
 import Anthropic from '@anthropic-ai/sdk';
@@ -48,7 +56,7 @@ const TOPICS_BY_GRADE: Record<number, string[]> = {
 
 const DIFFICULTIES = [1, 2, 3, 4, 5];
 const EXERCISES_PER_COMBO = 3; // 3 exerciții per (topic × difficulty)
-const DELAY_MS = 800; // evită rate limiting
+const DELAY_MS = 600;          // evită rate limiting Haiku
 
 // ── Prompt template ──────────────────────────────────────────────────────────
 function buildPrompt(topic: string, difficulty: number, gradeLevel: number): string {
@@ -94,6 +102,22 @@ interface ApiResponse {
   exercises: GeneratedExercise[];
 }
 
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+/** Extract the correct answer text from options using correct_letter */
+function extractCorrectAnswer(options: Record<string, string>, correctLetter: string): string {
+  return options[correctLetter] ?? options['a'] ?? 'N/A';
+}
+
+/** Validate AI response — returns null if invalid */
+function validateExercise(ex: GeneratedExercise): string | null {
+  if (!ex.prompt || typeof ex.prompt !== 'string') return 'missing prompt';
+  if (!ex.correct_letter || !['a', 'b', 'c', 'd'].includes(ex.correct_letter)) return 'invalid correct_letter';
+  if (!ex.options || typeof ex.options !== 'object') return 'missing options';
+  if (!ex.options[ex.correct_letter]) return `correct_letter ${ex.correct_letter} not in options`;
+  return null;
+}
+
 // ── Main ─────────────────────────────────────────────────────────────────────
 async function main() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -115,39 +139,52 @@ async function main() {
 
   for (const [gradeStr, topics] of Object.entries(TOPICS_BY_GRADE)) {
     const gradeLevel = parseInt(gradeStr, 10);
-    console.log(`\n📚 Clasa ${gradeLevel} (${topics.length} topics)`);
+    console.log(`\n📚 Clasa ${gradeLevel} (${topics.length} topics × ${DIFFICULTIES.length} dif × ${EXERCISES_PER_COMBO} ex)`);
 
     for (const topic of topics) {
       for (const difficulty of DIFFICULTIES) {
-        console.log(`  ⚙️  ${topic} difficulty=${difficulty}...`);
+        process.stdout.write(`  ⚙️  ${topic} d=${difficulty}... `);
 
         try {
           const message = await anthropic.messages.create({
             model: 'claude-haiku-4-5-20251001',
             max_tokens: 1500,
-            messages: [
-              {
-                role: 'user',
-                content: buildPrompt(topic, difficulty, gradeLevel),
-              },
-            ],
+            messages: [{ role: 'user', content: buildPrompt(topic, difficulty, gradeLevel) }],
           });
 
           const text = message.content[0].type === 'text' ? message.content[0].text : '';
-          const jsonMatch = text.match(/\{[\s\S]*\}/);
+
+          // Extract JSON — handle markdown code blocks too
+          const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/) ?? text.match(/(\{[\s\S]*\})/);
           if (!jsonMatch) {
-            console.warn(`    ⚠️  No JSON found in response`);
+            console.log('⚠️  no JSON');
             errors++;
             continue;
           }
 
-          const parsed: ApiResponse = JSON.parse(jsonMatch[0]);
+          let parsed: ApiResponse;
+          try {
+            parsed = JSON.parse(jsonMatch[1] ?? jsonMatch[0]);
+          } catch {
+            console.log('⚠️  JSON parse error');
+            errors++;
+            continue;
+          }
+
           const exercises = parsed.exercises ?? [];
+          let batchInserted = 0;
 
           for (const ex of exercises) {
             total++;
 
-            // Check for duplicate (same prompt text)
+            // Validate
+            const validationError = validateExercise(ex);
+            if (validationError) {
+              errors++;
+              continue;
+            }
+
+            // Dedup check
             const { count } = await supabase
               .from('diagnostic_exercises')
               .select('*', { count: 'exact', head: true })
@@ -160,40 +197,70 @@ async function main() {
               continue;
             }
 
+            // INSERT with correct column names (schema-aligned)
             const { error } = await supabase.from('diagnostic_exercises').insert({
               topic_id: topic,
               grade_level: gradeLevel,
               difficulty,
               prompt: ex.prompt,
-              options: ex.options,
+              correct_answer: extractCorrectAnswer(ex.options, ex.correct_letter), // NOT NULL in schema
+              distractors: ex.options,       // JSONB column (NOT `options`)
               correct_letter: ex.correct_letter,
-              explanation: ex.explanation,
-              source: 'haiku_generated',
+              explanation: ex.explanation ?? null,
+              source_scenario_id: null,      // no source column; source_scenario_id is UUID ref
             });
 
             if (error) {
-              console.error(`    ❌ Insert error:`, error.message);
+              console.error(`\n    ❌ Insert error: ${error.message}`);
               errors++;
             } else {
               inserted++;
+              batchInserted++;
             }
           }
+
+          console.log(`✅ +${batchInserted}`);
 
           // Rate limit delay
           await new Promise((r) => setTimeout(r, DELAY_MS));
         } catch (err) {
-          console.error(`    ❌ Generation error:`, err instanceof Error ? err.message : err);
+          console.log(`❌ ${err instanceof Error ? err.message.substring(0, 80) : err}`);
           errors++;
         }
       }
     }
   }
 
-  console.log(`\n✅ Done!`);
-  console.log(`   Total generated:  ${total}`);
-  console.log(`   Inserted:         ${inserted}`);
-  console.log(`   Skipped (dup):    ${skipped}`);
-  console.log(`   Errors:           ${errors}`);
+  // ── Summary ───────────────────────────────────────────────────────────────
+  console.log(`\n${'─'.repeat(50)}`);
+  console.log(`✅ Done!`);
+  console.log(`   Total attempted: ${total}`);
+  console.log(`   Inserted:        ${inserted}`);
+  console.log(`   Skipped (dup):   ${skipped}`);
+  console.log(`   Errors:          ${errors}`);
+
+  // ── DB verification ───────────────────────────────────────────────────────
+  console.log('\n📊 Verificare în DB:');
+
+  const { count: totalCount } = await supabase
+    .from('diagnostic_exercises')
+    .select('*', { count: 'exact', head: true });
+
+  console.log(`   Total diagnostic_exercises: ${totalCount}`);
+
+  for (const grade of [10, 11, 12]) {
+    const { count: gCount } = await supabase
+      .from('diagnostic_exercises')
+      .select('*', { count: 'exact', head: true })
+      .eq('grade_level', grade);
+    console.log(`   Grade ${grade}: ${gCount}`);
+  }
+
+  if ((totalCount ?? 0) < 50) {
+    console.log('\n⚠️  Pool mic — re-rulează scriptul sau verifică erorile mai sus');
+  } else {
+    console.log('\n✅ Pool suficient pentru diagnostic adaptiv');
+  }
 }
 
 main().catch((err) => {
