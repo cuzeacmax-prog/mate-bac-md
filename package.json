@@ -13,6 +13,7 @@
     "test:embedding": "tsx --env-file=.env.local scripts/library/test-embedding.ts",
     "db:apply-rpc": "tsx --env-file=.env.local scripts/db/apply-rpc.ts",
     "db:apply-etapa10": "tsx --env-file=.env.local scripts/db/apply-etapa10.ts",
+    "db:setup-all": "tsx --env-file=.env.local scripts/db/setup-all.ts",
     "backup:export": "tsx --env-file=.env.local scripts/backup/export-library.ts",
     "backup:import": "tsx --env-file=.env.local scripts/backup/import-library.ts",
     "seed:scenarii": "tsx --env-file=.env.local scripts/seed/import-scenarii.ts",
