@@ -126,7 +126,7 @@ function runSupabaseQuery(sql: string, description: string): boolean {
   try {
     writeFileSync(tmpFile, sql, 'utf-8');
 
-    const env: Record<string, string> = { ...process.env as Record<string, string> };
+    const env: NodeJS.ProcessEnv = { ...process.env };
     if (ACCESS_TOKEN) env['SUPABASE_ACCESS_TOKEN'] = ACCESS_TOKEN;
 
     const result = spawnSync(
