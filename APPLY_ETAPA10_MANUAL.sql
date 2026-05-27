@@ -1,41 +1,41 @@
--- ══════════════════════════════════════════════════════════════════════
--- ETAPA 10 — Cleanup + Migration complet (paste ONCE în Supabase Studio)
--- ══════════════════════════════════════════════════════════════════════
+-- ════════════════════════════════════════════════════════════
+-- ETAPA 10 — Apply migration cu CLEANUP COMPLET
+-- Lipeste tot acest fisier in Supabase SQL Editor -> click Run
+-- ════════════════════════════════════════════════════════════
 
+-- ────────────────────────────────────────────────────────────
+-- STEP 1: CLEANUP — Drop toate tabelele partial create ETAPA 10
+-- ────────────────────────────────────────────────────────────
 
--- ═══════════════════════════════════════════════════
--- CLEANUP: elimină tabele parțial create din ETAPA 10
--- ═══════════════════════════════════════════════════
-DROP TABLE IF EXISTS email_list           CASCADE;
-DROP TABLE IF EXISTS analytics_events     CASCADE;
-DROP TABLE IF EXISTS push_subscriptions   CASCADE;
-DROP TABLE IF EXISTS notifications_log    CASCADE;
-DROP TABLE IF EXISTS referrals            CASCADE;
-DROP TABLE IF EXISTS payment_attempts     CASCADE;
-DROP TABLE IF EXISTS subscriptions        CASCADE;
-DROP TABLE IF EXISTS mock_bac_attempts    CASCADE;
-DROP TABLE IF EXISTS daily_challenges     CASCADE;
-DROP TABLE IF EXISTS streak_log           CASCADE;
-DROP TABLE IF EXISTS exercise_attempts    CASCADE;
-DROP TABLE IF EXISTS topic_mastery        CASCADE;
+DROP TABLE IF EXISTS email_list CASCADE;
+DROP TABLE IF EXISTS analytics_events CASCADE;
+DROP TABLE IF EXISTS push_subscriptions CASCADE;
+DROP TABLE IF EXISTS notifications_log CASCADE;
+DROP TABLE IF EXISTS referrals CASCADE;
+DROP TABLE IF EXISTS payment_attempts CASCADE;
+DROP TABLE IF EXISTS subscriptions CASCADE;
+DROP TABLE IF EXISTS mock_bac_attempts CASCADE;
+DROP TABLE IF EXISTS daily_challenges CASCADE;
+DROP TABLE IF EXISTS streak_log CASCADE;
+DROP TABLE IF EXISTS exercise_attempts CASCADE;
+DROP TABLE IF EXISTS topic_mastery CASCADE;
 
-DROP TRIGGER   IF EXISTS trg_generate_referral_code     ON user_profiles;
-DROP TRIGGER   IF EXISTS trg_topic_mastery_updated_at   ON topic_mastery;
-DROP FUNCTION  IF EXISTS generate_referral_code()       CASCADE;
-DROP FUNCTION  IF EXISTS update_topic_mastery_updated_at() CASCADE;
+DROP TRIGGER IF EXISTS trg_generate_referral_code ON user_profiles;
+DROP TRIGGER IF EXISTS trg_topic_mastery_updated_at ON topic_mastery;
+DROP FUNCTION IF EXISTS generate_referral_code() CASCADE;
+DROP FUNCTION IF EXISTS update_topic_mastery_updated_at() CASCADE;
 
+-- ────────────────────────────────────────────────────────────
+-- STEP 2: ENSURE user_profiles exista cu schema de baza
+-- ────────────────────────────────────────────────────────────
 
-
--- ═══════════════════════════════════════════════════
--- ENSURE: user_profiles complet
--- ═══════════════════════════════════════════════════
 CREATE TABLE IF NOT EXISTS user_profiles (
-  id          UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  email       TEXT,
-  full_name   TEXT,
-  avatar_url  TEXT,
-  created_at  TIMESTAMP DEFAULT NOW(),
-  updated_at  TIMESTAMP DEFAULT NOW()
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email TEXT,
+  full_name TEXT,
+  avatar_url TEXT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
 );
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON user_profiles TO service_role;
@@ -43,7 +43,7 @@ GRANT SELECT, UPDATE ON user_profiles TO authenticated;
 
 ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
 
-DROP POLICY IF EXISTS "Users see own profile"    ON user_profiles;
+DROP POLICY IF EXISTS "Users see own profile" ON user_profiles;
 CREATE POLICY "Users see own profile" ON user_profiles
   FOR SELECT USING (auth.uid() = id);
 
@@ -78,6 +78,9 @@ SELECT id, email,
 FROM auth.users
 ON CONFLICT (id) DO NOTHING;
 
+-- ────────────────────────────────────────────────────────────
+-- STEP 3: ETAPA 10 MIGRATION (20260607000000_launch_foundation.sql)
+-- ────────────────────────────────────────────────────────────
 
 -- ════════════════════════════════════════════════════════════
 -- ETAPA 10 — Foundation pentru launch comercial Mate BAC MD
@@ -147,7 +150,7 @@ CREATE INDEX IF NOT EXISTS idx_topic_mastery_user ON topic_mastery(user_id);
 CREATE INDEX IF NOT EXISTS idx_topic_mastery_review ON topic_mastery(user_id, next_review_at) WHERE needs_review = TRUE;
 CREATE INDEX IF NOT EXISTS idx_topic_mastery_score ON topic_mastery(user_id, mastery_score);
 
--- 3. EXERCISE_ATTEMPTS — log granular fiecare exercițiu
+-- 3. EXERCISE_ATTEMPTS — log granular fiecare exercitiu
 CREATE TABLE IF NOT EXISTS exercise_attempts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES user_profiles(id) ON DELETE CASCADE,
@@ -316,7 +319,7 @@ CREATE TABLE IF NOT EXISTS email_list (
 CREATE INDEX IF NOT EXISTS idx_email_list_email ON email_list(email);
 
 -- ════════════════════════════════════════════════════════════
--- PERMISIUNI și RLS
+-- PERMISIUNI si RLS
 -- ════════════════════════════════════════════════════════════
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON
@@ -406,42 +409,41 @@ CREATE TRIGGER trg_generate_referral_code
   FOR EACH ROW EXECUTE FUNCTION generate_referral_code();
 
 -- ════════════════════════════════════════════════════════════
--- INITIAL DATA: BAC Topics pentru toți utilizatorii existenți
+-- INITIAL DATA: BAC Topics pentru toti utilizatorii existenti
 -- ════════════════════════════════════════════════════════════
 
--- Insert topic_mastery records pentru users existenți cu grade_level
 DO $$
 DECLARE
   user_record RECORD;
   i INTEGER;
   topics TEXT[][];
   topics_grade_10 TEXT[][] := ARRAY[
-    ARRAY['algebra_ecuatii', 'Algebră - Ecuații'],
-    ARRAY['algebra_inecuatii', 'Algebră - Inecuații'],
-    ARRAY['siruri', 'Șiruri'],
-    ARRAY['functii', 'Funcții'],
-    ARRAY['trigonometrie_baza', 'Trigonometrie de bază'],
+    ARRAY['algebra_ecuatii', 'Algebra - Ecuatii'],
+    ARRAY['algebra_inecuatii', 'Algebra - Inecuatii'],
+    ARRAY['siruri', 'Siruri'],
+    ARRAY['functii', 'Functii'],
+    ARRAY['trigonometrie_baza', 'Trigonometrie de baza'],
     ARRAY['logaritmi', 'Logaritmi'],
-    ARRAY['exponentiale', 'Funcții exponențiale']
+    ARRAY['exponentiale', 'Functii exponentiale']
   ];
   topics_grade_11 TEXT[][] := ARRAY[
-    ARRAY['limite', 'Limite de funcții'],
+    ARRAY['limite', 'Limite de functii'],
     ARRAY['derivate', 'Derivate'],
-    ARRAY['derivate_aplicatii', 'Aplicații derivate'],
+    ARRAY['derivate_aplicatii', 'Aplicatii derivate'],
     ARRAY['polinoame', 'Polinoame'],
-    ARRAY['ecuatii_log_exp', 'Ecuații log/exp'],
-    ARRAY['inecuatii_log_exp', 'Inecuații log/exp'],
-    ARRAY['siruri_avansate', 'Șiruri avansate']
+    ARRAY['ecuatii_log_exp', 'Ecuatii log/exp'],
+    ARRAY['inecuatii_log_exp', 'Inecuatii log/exp'],
+    ARRAY['siruri_avansate', 'Siruri avansate']
   ];
   topics_grade_12 TEXT[][] := ARRAY[
     ARRAY['primitive', 'Primitive'],
     ARRAY['integrale', 'Integrale definite'],
-    ARRAY['arii_volume', 'Arii și volume'],
+    ARRAY['arii_volume', 'Arii si volume'],
     ARRAY['geometrie_3d', 'Geometrie 3D'],
     ARRAY['numere_complexe', 'Numere complexe'],
-    ARRAY['matrici_determinanti', 'Matrici și determinanți'],
-    ARRAY['combinatorica', 'Combinatorică'],
-    ARRAY['probabilitati', 'Probabilități']
+    ARRAY['matrici_determinanti', 'Matrici si determinanti'],
+    ARRAY['combinatorica', 'Combinatorica'],
+    ARRAY['probabilitati', 'Probabilitati']
   ];
 BEGIN
   FOR user_record IN SELECT id, grade_level FROM user_profiles WHERE grade_level IS NOT NULL LOOP
@@ -458,10 +460,10 @@ BEGIN
   END LOOP;
 END $$;
 
-
--- ══════════════════════════════════════════════════════════════════════
--- VERIFICARE FINALĂ (ar trebui să returneze total_tables >= 20)
--- ══════════════════════════════════════════════════════════════════════
+-- ════════════════════════════════════════════════════════════
+-- STEP 4: VERIFICARE FINALA
+-- Rezultat asteptat: total_tables >= 20, users_with_referral > 0
+-- ════════════════════════════════════════════════════════════
 
 SELECT
   (SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public')::int AS total_tables,
