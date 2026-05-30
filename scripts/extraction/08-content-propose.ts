@@ -27,7 +27,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // ── Config ───────────────────────────────────────────────────────────────────
 const MODEL = 'claude-sonnet-4-6';
 const DPI = 150;
-const MAX_TOKENS = 4000;
+const MAX_TOKENS = 8000;       // 7b: ridicat de la 4000 — concepte dense trunchiau JSON-ul
 const MAX_PAGES_PER_CONCEPT = 8;       // plafon pagini/concept (mărimea cererii)
 const BATCH_MAX_BYTES = 150 * 1024 * 1024; // margine sub 256 MB / batch
 const BATCH_MAX_REQUESTS = 1000;       // chunk-uri rezonabile
@@ -43,28 +43,45 @@ const asStr = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
 const asStrArr = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string' && x.trim() !== '').map((x) => x.trim()) : []);
 
 interface Concept { id: string; name: string; order_in_grade: number; sub_points: string[] }
-interface ContentRow { concept_id: string; definitie: string; formule_latex: string[]; conditii: string; exemplu: string; confidence: Confidence; source_pages: number[] }
+interface ContentRow { concept_id: string; definitie: string; formule_latex: string[]; conditii: string; exemplu: string; confidence: Confidence; source_pages: number[]; note: string }
 type BatchRequest = Anthropic.Messages.BatchCreateParams.Request;
 
 function makeClient(url: string, key: string) { return createClient(url, key); }
 type Db = ReturnType<typeof makeClient>;
 
-function extractJson(text: string): string | null {
-  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  if (fenced) return fenced[1].trim();
-  const start = text.indexOf('{'), end = text.lastIndexOf('}');
-  if (start !== -1 && end !== -1 && end > start) return text.slice(start, end + 1);
-  return null;
+// Structured output via TOOL USE — elimina ambiguitatea escape-urilor LaTeX in JSON text.
+const CONTENT_TOOL: Anthropic.Messages.Tool = {
+  name: 'record_content',
+  description: 'Inregistreaza continutul extras al conceptului matematic numit.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      definitie: { type: 'string', description: 'Definitia/enuntul conceptului NUMIT mai intai, apoi sub-aspectele.' },
+      formule_latex: { type: 'array', items: { type: 'string' }, description: 'Formule LaTeX; PRIMA e a conceptului numit.' },
+      conditii: { type: 'string' },
+      exemplu: { type: 'string' },
+      confidence: { type: 'string', enum: ['high', 'medium', 'low'] },
+    },
+    required: ['definitie', 'formule_latex', 'conditii', 'exemplu', 'confidence'],
+  },
+};
+
+/** Extrage ContentRow din blocul tool_use (input deja parsat de SDK — fara JSON manual, fara probleme de escaping). */
+function rowFromContent(content: Anthropic.Messages.ContentBlock[], conceptId: string, pages: number[], note: string): ContentRow | null {
+  const tu = content.find((b): b is Anthropic.Messages.ToolUseBlock => b.type === 'tool_use');
+  if (!tu) return null;
+  const o = (tu.input ?? {}) as Record<string, unknown>;
+  return { concept_id: conceptId, definitie: asStr(o.definitie), formule_latex: asStrArr(o.formule_latex), conditii: asStr(o.conditii), exemplu: asStr(o.exemplu), confidence: asConf(o.confidence), source_pages: pages, note };
 }
 
 // ── Prompt (ancorat pe conceptul numit — 6c) ─────────────────────────────────
 const SYSTEM_PROMPT =
   'Ești un extractor de conținut din manuale de matematică (BAC Republica Moldova). Primești ' +
-  'IMAGINILE paginilor sursă și extragi conținutul unui concept ANUME, în format JSON strict. ' +
-  'Conduci MEREU cu conceptul NUMIT: definiția și prima formulă trebuie să fie ALE LUI; ' +
-  'sub-punctele sunt sub-aspecte secundare, acoperite DUPĂ conținutul de bază. Formulele în ' +
-  'LaTeX. NU inventezi nimic care nu e pe pagină — câmp gol dacă lipsește. Răspunzi EXCLUSIV ' +
-  'cu obiectul JSON, fără proză, fără ```.';
+  'IMAGINILE paginilor sursă și extragi conținutul unui concept ANUME. Conduci MEREU cu ' +
+  'conceptul NUMIT: definiția și prima formulă trebuie să fie ALE LUI; sub-punctele sunt ' +
+  'sub-aspecte secundare, acoperite DUPĂ conținutul de bază. Formulele în LaTeX. NU inventezi ' +
+  'nimic care nu e pe pagină — câmp gol dacă lipsește. Înregistrezi rezultatul EXCLUSIV prin ' +
+  'tool-ul record_content.';
 
 function buildUserPrompt(name: string, subPoints: string[]): string {
   const subs = subPoints.length
@@ -74,16 +91,8 @@ function buildUserPrompt(name: string, subPoints: string[]): string {
 ${subs}
 
 Caută în TOATE imaginile paginilor de mai sus DEFINIȚIA și FORMULA CENTRALĂ ale conceptului numit
-(pot fi pe o pagină ulterioară, nu neapărat prima). Extrage conținutul ANCORAT pe acest nume.
-
-Întoarce STRICT un singur obiect JSON, exact cu cheile:
-{
-  "definitie": "<definiția/enunțul CONCEPTULUI NUMIT mai întâi; apoi, pe scurt, fiecare sub-aspect ca sub-secțiune. Conceptul numit conduce.>",
-  "formule_latex": ["<PRIMA = formula centrală A CONCEPTULUI NUMIT; apoi formulele sub-aspectelor>"],
-  "conditii": "<condiții/ipoteze ale conceptului numit dacă există; gol altfel>",
-  "exemplu": "<UN exemplu rezolvat scurt pentru conceptul numit dacă apare: enunț + pași esențiali; gol altfel>",
-  "confidence": "high" | "medium" | "low"
-}
+(pot fi pe o pagină ulterioară, nu neapărat prima). Extrage conținutul ANCORAT pe acest nume și
+înregistrează-l prin tool-ul record_content.
 
 REGULI:
 1. ANCORARE: definitie + PRIMA formulă din formule_latex trebuie să fie ALE CONCEPTULUI NUMIT,
@@ -91,9 +100,7 @@ REGULI:
 2. NU inventa conținut care nu e pe pagini. Dacă ceva lipsește, lasă câmpul gol ("" sau []).
 3. Formulele în LaTeX valid (fără $...$, doar corpul). Păstrează notația din manual.
 4. Păstrează terminologia și diacriticele exact ca în manual (română-moldovenească).
-5. confidence: "high" = conținutul conceptului numit e clar pe pagini; "low" = parțial/ambiguu.
-
-Răspunde DOAR cu obiectul JSON.`;
+5. confidence: "high" = conținutul conceptului numit e clar pe pagini; "low" = parțial/ambiguu.`;
 }
 
 function buildRequest(conceptId: string, images: string[], name: string, subPoints: string[]): BatchRequest {
@@ -101,7 +108,18 @@ function buildRequest(conceptId: string, images: string[], name: string, subPoin
     type: 'image', source: { type: 'base64', media_type: 'image/png', data: b64 },
   }));
   content.push({ type: 'text', text: buildUserPrompt(name, subPoints) });
-  return { custom_id: conceptId, params: { model: MODEL, max_tokens: MAX_TOKENS, system: SYSTEM_PROMPT, messages: [{ role: 'user', content }] } };
+  return { custom_id: conceptId, params: { model: MODEL, max_tokens: MAX_TOKENS, system: SYSTEM_PROMPT, tools: [CONTENT_TOOL], tool_choice: { type: 'tool', name: 'record_content' }, messages: [{ role: 'user', content }] } };
+}
+
+/** Retry SYNC pe un singur concept (tool use). Întoarce rândul + tokeni, sau null. */
+async function syncExtract(anthropic: Anthropic, images: string[], name: string, subPoints: string[], conceptId: string, pages: number[]): Promise<{ row: ContentRow; inTok: number; outTok: number } | null> {
+  const content: Anthropic.Messages.ContentBlockParam[] = images.map((b64) => ({ type: 'image', source: { type: 'base64', media_type: 'image/png', data: b64 } }));
+  content.push({ type: 'text', text: buildUserPrompt(name, subPoints) });
+  try {
+    const msg = await anthropic.messages.create({ model: MODEL, max_tokens: MAX_TOKENS, system: SYSTEM_PROMPT, tools: [CONTENT_TOOL], tool_choice: { type: 'tool', name: 'record_content' }, messages: [{ role: 'user', content }] });
+    const row = rowFromContent(msg.content, conceptId, pages, '');
+    return row ? { row, inTok: msg.usage.input_tokens, outTok: msg.usage.output_tokens } : null;
+  } catch { return null; }
 }
 
 async function pollBatch(anthropic: Anthropic, id: string, label: string): Promise<Anthropic.Messages.MessageBatch> {
@@ -117,9 +135,10 @@ async function pollBatch(anthropic: Anthropic, id: string, label: string): Promi
 }
 
 // ── Procesare per clasă ──────────────────────────────────────────────────────
-interface GradeReport { grade: number; concepts: number; inserted: number; withDef: number; withFormulas: number; withExample: number; failed: number; conf: Record<string, number>; inTok: number; outTok: number }
+interface GradeReport { grade: number; concepts: number; inserted: number; withDef: number; withFormulas: number; withExample: number; failed: number; retried: number; conf: Record<string, number>; inTok: number; outTok: number }
+const emptyReport = (grade: number): GradeReport => ({ grade, concepts: 0, inserted: 0, withDef: 0, withFormulas: 0, withExample: 0, failed: 0, retried: 0, conf: {}, inTok: 0, outTok: 0 });
 
-async function processGrade(anthropic: Anthropic, supabase: Db, grade: number, fromPage: number | null, toPage: number | null): Promise<GradeReport> {
+async function processGrade(anthropic: Anthropic, supabase: Db, grade: number, fromPage: number | null, toPage: number | null, onlyFailed: boolean): Promise<GradeReport> {
   console.log(`\n════════════ CLASA ${grade} ════════════`);
   // 1. Concepte (toată clasa, sau felia din [from,to]).
   let q = supabase.from('concepts').select('id, name, order_in_grade, sub_points').eq('grade_level', grade);
@@ -127,8 +146,25 @@ async function processGrade(anthropic: Anthropic, supabase: Db, grade: number, f
   if (toPage != null) q = q.lte('order_in_grade', toPage);
   const { data: cData, error: cErr } = await q.order('order_in_grade', { ascending: true });
   if (cErr) throw new Error(`Citire concepts: ${cErr.message}`);
-  const concepts: Concept[] = (cData ?? []).map((c) => ({ id: c.id as string, name: c.name as string, order_in_grade: (c.order_in_grade as number) ?? 0, sub_points: Array.isArray(c.sub_points) ? (c.sub_points as string[]) : [] }));
-  if (concepts.length === 0) { console.log('   (nicio concept) — sar.'); return { grade, concepts: 0, inserted: 0, withDef: 0, withFormulas: 0, withExample: 0, failed: 0, conf: {}, inTok: 0, outTok: 0 }; }
+  let concepts: Concept[] = (cData ?? []).map((c) => ({ id: c.id as string, name: c.name as string, order_in_grade: (c.order_in_grade as number) ?? 0, sub_points: Array.isArray(c.sub_points) ? (c.sub_points as string[]) : [] }));
+  if (concepts.length === 0) { console.log('   (nicio concept) — sar.'); return emptyReport(grade); }
+
+  // --only-failed: păstrează doar conceptele cu propunere goală sau note='parse_fail'.
+  if (onlyFailed) {
+    const allIds = concepts.map((c) => c.id);
+    const failedSet = new Set<string>();
+    for (let i = 0; i < allIds.length; i += 100) {
+      const { data, error } = await supabase.from('concept_content_proposals').select('concept_id, definitie, formule_latex, note').in('concept_id', allIds.slice(i, i + 100));
+      if (error) throw new Error(`Citire propuneri (only-failed): ${error.message}`);
+      for (const r of (data ?? []) as { concept_id: string; definitie: string | null; formule_latex: unknown; note: string | null }[]) {
+        const empty = (r.definitie ?? '') === '' && (Array.isArray(r.formule_latex) ? r.formule_latex.length : 0) === 0;
+        if (empty || r.note === 'parse_fail') failedSet.add(r.concept_id);
+      }
+    }
+    concepts = concepts.filter((c) => failedSet.has(c.id));
+    console.log(`🔁 only-failed: ${concepts.length} concepte de re-rulat.`);
+    if (concepts.length === 0) { console.log('   (niciun eșec) — sar.'); return emptyReport(grade); }
+  }
   console.log(`📥 ${concepts.length} concepte.`);
 
   // dedup + inventory maps (pentru source_pages).
@@ -205,9 +241,10 @@ async function processGrade(anthropic: Anthropic, supabase: Db, grade: number, f
   await submit();
   console.log(`📦 ${concepts.length} cereri → ${batchIds.length} batch(uri).`);
 
-  // 4. Poll + colectează rezultatele.
+  // 4. Poll + colectează rezultatele (cu retry SYNC la parse-fail / eroare per-cerere).
+  const conceptById = new Map(concepts.map((c) => [c.id, c]));
   const rowByConcept = new Map<string, ContentRow>();
-  let inTok = 0, outTok = 0, failed = 0;
+  let inTok = 0, outTok = 0, failed = 0, retried = 0;
   for (let i = 0; i < batchIds.length; i++) {
     const id = batchIds[i];
     const ended = await pollBatch(anthropic, id, `cl.${grade} batch ${i + 1}/${batchIds.length}`);
@@ -215,28 +252,32 @@ async function processGrade(anthropic: Anthropic, supabase: Db, grade: number, f
     for await (const item of await anthropic.messages.batches.results(id)) {
       const cid = item.custom_id;
       const pages = sourcePages.get(cid) ?? [];
+      let row: ContentRow | null = null;
       if (item.result.type === 'succeeded') {
         const msg = item.result.message;
         inTok += msg.usage.input_tokens; outTok += msg.usage.output_tokens;
-        const text = msg.content.map((b) => (b.type === 'text' ? b.text : '')).join('');
-        const jsonStr = extractJson(text);
-        if (jsonStr) {
-          try {
-            const o = JSON.parse(jsonStr) as Record<string, unknown>;
-            rowByConcept.set(cid, { concept_id: cid, definitie: asStr(o.definitie), formule_latex: asStrArr(o.formule_latex), conditii: asStr(o.conditii), exemplu: asStr(o.exemplu), confidence: asConf(o.confidence), source_pages: pages });
-            continue;
-          } catch { /* cade în failed */ }
-        }
-        failed++;
-        rowByConcept.set(cid, { concept_id: cid, definitie: '', formule_latex: [], conditii: '', exemplu: '', confidence: 'low', source_pages: pages });
-      } else {
-        failed++;
-        rowByConcept.set(cid, { concept_id: cid, definitie: '', formule_latex: [], conditii: '', exemplu: '', confidence: 'low', source_pages: pages });
+        row = rowFromContent(msg.content, cid, pages, '');
       }
+      // Retry SYNC o dată pe parse-fail SAU eroare per-cerere.
+      if (!row) {
+        const c = conceptById.get(cid);
+        if (c) {
+          const r = await syncExtract(anthropic, pages.map(renderPage), c.name, c.sub_points, cid, pages);
+          if (r) { row = r.row; inTok += r.inTok; outTok += r.outTok; retried++; }
+        }
+      }
+      if (!row) { failed++; row = { concept_id: cid, definitie: '', formule_latex: [], conditii: '', exemplu: '', confidence: 'low', source_pages: pages, note: 'parse_fail' }; }
+      rowByConcept.set(cid, row);
     }
   }
-  // Concepte care nu au apărut în niciun rezultat → failed.
-  for (const c of concepts) if (!rowByConcept.has(c.id)) { failed++; rowByConcept.set(c.id, { concept_id: c.id, definitie: '', formule_latex: [], conditii: '', exemplu: '', confidence: 'low', source_pages: sourcePages.get(c.id) ?? [] }); }
+  // Concepte care nu au apărut în niciun rezultat → încearcă sync, altfel parse_fail.
+  for (const c of concepts) {
+    if (rowByConcept.has(c.id)) continue;
+    const pages = sourcePages.get(c.id) ?? [];
+    const r = await syncExtract(anthropic, pages.map(renderPage), c.name, c.sub_points, c.id, pages);
+    if (r) { rowByConcept.set(c.id, r.row); inTok += r.inTok; outTok += r.outTok; retried++; }
+    else { failed++; rowByConcept.set(c.id, { concept_id: c.id, definitie: '', formule_latex: [], conditii: '', exemplu: '', confidence: 'low', source_pages: pages, note: 'parse_fail' }); }
+  }
 
   // 5. Insert.
   const rows = [...rowByConcept.values()];
@@ -254,7 +295,7 @@ async function processGrade(anthropic: Anthropic, supabase: Db, grade: number, f
     withDef: rows.filter((r) => r.definitie).length,
     withFormulas: rows.filter((r) => r.formule_latex.length > 0).length,
     withExample: rows.filter((r) => r.exemplu).length,
-    failed, conf, inTok, outTok,
+    failed, retried, conf, inTok, outTok,
   };
   return rep;
 }
@@ -274,11 +315,12 @@ function parseGrades(spec: string | undefined): number[] {
 }
 
 async function main() {
-  const { values } = parseArgs({ options: { grades: { type: 'string' }, 'from-page': { type: 'string' }, 'to-page': { type: 'string' } } });
+  const { values } = parseArgs({ options: { grades: { type: 'string' }, 'from-page': { type: 'string' }, 'to-page': { type: 'string' }, 'only-failed': { type: 'boolean' } } });
   const grades = parseGrades(values.grades);
   if (grades.length === 0) { console.error('❌ Nicio clasă validă.'); process.exit(1); }
   const fromPage = values['from-page'] ? parseInt(values['from-page'], 10) : null;
   const toPage = values['to-page'] ? parseInt(values['to-page'], 10) : null;
+  const onlyFailed = !!values['only-failed'];
 
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -288,9 +330,10 @@ async function main() {
   const anthropic = new Anthropic({ apiKey: anthropicKey });
   const supabase = makeClient(supabaseUrl, serviceKey);
 
-  console.log(`🎯 Extracție conținut (BATCH 50%) pentru clasele: [${grades.join(', ')}]` + (fromPage != null || toPage != null ? ` · felie pagini [${fromPage ?? '*'}, ${toPage ?? '*'}]` : ''));
+  console.log(`🎯 Extracție conținut (BATCH 50%) pentru clasele: [${grades.join(', ')}]` +
+    (fromPage != null || toPage != null ? ` · felie pagini [${fromPage ?? '*'}, ${toPage ?? '*'}]` : '') + (onlyFailed ? ' · DOAR eșecuri' : ''));
   const reports: GradeReport[] = [];
-  for (const g of grades) reports.push(await processGrade(anthropic, supabase, g, fromPage, toPage));
+  for (const g of grades) reports.push(await processGrade(anthropic, supabase, g, fromPage, toPage, onlyFailed));
 
   console.log('\n════════════ VERIFICARE (din DB) ════════════');
   let totIn = 0, totOut = 0;
@@ -298,7 +341,7 @@ async function main() {
     totIn += r.inTok; totOut += r.outTok;
     const cost = ((r.inTok / 1e6) * PRICE_IN + (r.outTok / 1e6) * PRICE_OUT) * BATCH_DISCOUNT;
     console.log(`Clasa ${String(r.grade).padStart(2)} · proposals ${r.inserted}/${r.concepts} · def ${r.withDef} · formule ${r.withFormulas} · exemplu ${r.withExample} · ` +
-      `conf[h${r.conf.high ?? 0}/m${r.conf.medium ?? 0}/l${r.conf.low ?? 0}] · eșuate ${r.failed} · ~$${cost.toFixed(4)}`);
+      `conf[h${r.conf.high ?? 0}/m${r.conf.medium ?? 0}/l${r.conf.low ?? 0}] · retry ${r.retried} · eșuate ${r.failed} · ~$${cost.toFixed(4)}`);
   }
   const totalCost = ((totIn / 1e6) * PRICE_IN + (totOut / 1e6) * PRICE_OUT) * BATCH_DISCOUNT;
   console.log(`\nTokeni: in ${totIn} / out ${totOut}  ·  Cost total (batch 50%): ~$${totalCost.toFixed(4)}`);
