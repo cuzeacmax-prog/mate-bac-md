@@ -1,5 +1,5 @@
 /**
- * 04-dedup-propose.ts — ETAPA 3.2: DEDUP CONCEPTE, GRANULARITATE MEDIE (AI propune, omul aprobă)
+ * 04-dedup-propose.ts — ETAPA 3.2b: DEDUP CONCEPTE, GRANULARITATE MEDIE + TRASABILITATE EXACTĂ
  *
  * Rulează:  npm run extract:dedup -- --grade 12
  *           (sau: tsx --env-file=.env.local scripts/extraction/04-dedup-propose.ts --grade 12)
@@ -13,10 +13,12 @@
  *        (b) consolidare părinte-copil → proprietățile/cazurile/sub-formulele aceluiași
  *            concept devin SUB-PUNCTE (sub_points) în nodul-părinte, nu noduri separate.
  *      Modelul întoarce noduri prin INDECȘI (nu re-scrie textul) → compact, fără pierderi.
- *   3. Validează acoperirea: fiecare concept apare EXACT O DATĂ — ori ca variantă de nume,
- *      ori ca sub-punct. Negrupatele devin singleton (confidence "low", "not_grouped_by_model").
- *   4. Încarcă propunerile în staging-ul concept_dedup_proposals (cu sub_points jsonb).
- *      Idempotent: șterge propunerile clasei înainte de reinserare.
+ *   3. raw_names (de nod ȘI de sub-punct) sunt copiate VERBATIM după indecși — niciun text
+ *      rescris/scurtat. "label"-ul sub-punctului e doar afișare, separat de numele original.
+ *   4. VERIFICĂ acoperirea 100% ÎNAINTE de încărcare: aplatizează raw_names + sub_points și
+ *      compară ca multiset cu lista de intrare. Dacă lipsește/se dublează ceva → OPREȘTE,
+ *      raportează, NU încarcă date incomplete. Apoi încarcă în concept_dedup_proposals
+ *      (idempotent: șterge propunerile clasei înainte de reinserare).
  *
  * NU atinge tabela `concepts` reală. Doar propuneri — nimic definitiv până la aprobarea umană.
  *
@@ -123,7 +125,7 @@ Folosește DOUĂ mecanisme, ambele păstrează TOT (niciun concept aruncat):
       "kind": "notiune" | "definitie" | "teorema" | "formula" | "procedeu",
       "members": [<indecșii care sunt VARIANTE DE NUME ale acestui nod; [] dacă nodul e doar părinte>],
       "sub_points": [
-        { "label": "<sub-proprietate/caz/sub-formulă scurt>", "members": [<indecșii bruți ai acestui sub-punct>] }
+        { "label": "<etichetă scurtă de afișare>", "members": [<indecșii bruți ai acestui sub-punct>] }
       ],
       "confidence": "high" | "medium" | "low",
       "note": "<gol sau o remarcă scurtă>"
@@ -131,11 +133,16 @@ Folosește DOUĂ mecanisme, ambele păstrează TOT (niciun concept aruncat):
   ]
 }
 
+TRASABILITATE (CRUCIAL): te referi la concepte DOAR prin INDEX (numărul [i]) — NU rescrie, NU
+scurta, NU traduce textul conceptelor. Sistemul copiază automat numele EXACT original (verbatim
+din listă) în raw_names, după indecșii pe care îi dai. "label" e doar o etichetă scurtă de
+afișare pentru sub-punct; ea NU înlocuiește textul original (acela e păstrat separat prin index).
+
 REGULI OBLIGATORII:
 
-1. PARTIȚIE COMPLETĂ: fiecare index din 0 până la ${raw.length - 1} apare EXACT O DATĂ în tot
-   răspunsul — ORI în "members" al unui nod (ca variantă de nume), ORI în "members" al unui
-   "sub_points" (ca sub-punct). Nimic dublat, nimic omis.
+1. PARTIȚIE COMPLETĂ (constrângere DURĂ): reuniunea TUTUROR indecșilor din toate "members"
+   (de nod ȘI de sub_points) trebuie să fie EXACT mulțimea {0, 1, …, ${raw.length - 1}} —
+   fiecare index apare EXACT O DATĂ. Nimic omis, nimic dublat. Verifică tu însuți înainte de a răspunde.
 
 2. Variante de nume (members ale nodului): singular/plural, diacritice sparte/lipsă, ordine de
    cuvinte; "metoda X" = "X" = "formula lui X" când denumesc același lucru;
@@ -402,6 +409,37 @@ async function main() {
     };
   });
   rows.sort((a, b) => (a.min_pdf_page ?? 1e9) - (b.min_pdf_page ?? 1e9));
+
+  // 4b. VERIFICARE ACOPERIRE 100% ÎNAINTE de încărcare (principiul „nimic aruncat").
+  // Aplatizez raw_names + sub_points[].raw_names și compar ca MULTISET cu lista de intrare.
+  // Dacă lipsește sau se dublează ceva → OPRESC, NU încarc date incomplete.
+  const inputCounts = new Map<string, number>();
+  for (const c of raw) inputCounts.set(c.name, (inputCounts.get(c.name) ?? 0) + 1);
+  const flatCounts = new Map<string, number>();
+  let flatTotal = 0;
+  for (const r of rows) {
+    for (const n of r.raw_names) { flatCounts.set(n, (flatCounts.get(n) ?? 0) + 1); flatTotal++; }
+    for (const sp of r.sub_points) for (const n of sp.raw_names) { flatCounts.set(n, (flatCounts.get(n) ?? 0) + 1); flatTotal++; }
+  }
+  const missing: string[] = [];
+  for (const [name, cnt] of inputCounts) {
+    const got = flatCounts.get(name) ?? 0;
+    if (got < cnt) missing.push(`"${name}" (×${cnt - got})`);
+  }
+  const duplicated: string[] = [];
+  for (const [name, cnt] of flatCounts) {
+    const exp = inputCounts.get(name) ?? 0;
+    if (cnt > exp) duplicated.push(`"${name}" (+${cnt - exp})`);
+  }
+  if (missing.length || duplicated.length || flatTotal !== raw.length) {
+    console.error(`\n❌ ACOPERIRE INCOMPLETĂ — NU încarc nimic. Aplatizat ${flatTotal} vs input ${raw.length}.`);
+    if (missing.length) console.error(`   LIPSESC (${missing.length}): ${missing.slice(0, 40).join(' | ')}${missing.length > 40 ? ' …' : ''}`);
+    if (duplicated.length) console.error(`   DUBLATE (${duplicated.length}): ${duplicated.slice(0, 40).join(' | ')}${duplicated.length > 40 ? ' …' : ''}`);
+    console.error('   (Date incomplete NU se scriu în staging. Re-rulează.)');
+    process.exit(1);
+  }
+  console.log(`✅ Acoperire verificată ÎNAINTE de încărcare: ${flatTotal}/${raw.length} ` +
+    `(toate numele brute, verbatim, fiecare exact o dată).`);
 
   // 5. Idempotent: șterge propunerile clasei, apoi inserează.
   console.log(`🧹 Șterg propunerile existente pentru clasa ${grade} …`);
