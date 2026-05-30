@@ -25,6 +25,7 @@
     "diagnostic:generate-pool": "tsx --env-file=.env.local scripts/diagnostic/generate-pool.ts",
     "extract:inventory": "tsx --env-file=.env.local scripts/extraction/01-inventory.ts",
     "extract:all": "tsx --env-file=.env.local scripts/extraction/00-batch-inventory.ts",
+    "extract:dedup": "tsx --env-file=.env.local scripts/extraction/04-dedup-propose.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
