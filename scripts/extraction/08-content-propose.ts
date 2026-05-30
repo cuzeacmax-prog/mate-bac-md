@@ -1,8 +1,10 @@
 /**
- * 08-content-propose.ts — ETAPA 6/6b: PROBĂ extracție CONȚINUT al nodurilor (AI propune)
+ * 08-content-propose.ts — ETAPA 6/6b/6c: PROBĂ extracție CONȚINUT al nodurilor (AI propune)
  *
  * 6b: source_pages = paginile TUTUROR componentelor conceptului (name + raw_names + sub_points,
  *     via concept_dedup_proposals + concept_inventory_raw.first_seen_pdf_page), nu doar prima apariție.
+ * 6c: extracția conduce MEREU cu conceptul NUMIT (definiție + prima formulă sunt ale lui);
+ *     sub_points = sub-aspecte secundare, acoperite după conținutul de bază.
  *
  * Rulează:  npm run extract:content -- --grade 12 --from-page 60 --to-page 66
  *           (sau: tsx --env-file=.env.local scripts/extraction/08-content-propose.ts)
@@ -72,30 +74,41 @@ function extractJson(text: string): string | null {
 
 const SYSTEM_PROMPT =
   'Ești un extractor de conținut din manuale de matematică (BAC Republica Moldova). Primești ' +
-  'IMAGINILE paginilor unde apare un anumit concept și extragi DOAR conținutul ACELUI concept, ' +
-  'în format JSON strict. Formulele se dau în LaTeX. NU inventezi nimic care nu e pe pagină — ' +
-  'dacă un câmp lipsește, îl lași gol. Răspunzi EXCLUSIV cu obiectul JSON, fără proză, fără ```.';
+  'IMAGINILE paginilor sursă și extragi conținutul unui concept ANUME, în format JSON strict. ' +
+  'Conduci MEREU cu conceptul NUMIT: definiția și prima formulă trebuie să fie ALE LUI; ' +
+  'sub-punctele sunt sub-aspecte secundare, acoperite DUPĂ conținutul de bază. Formulele în ' +
+  'LaTeX. NU inventezi nimic care nu e pe pagină — câmp gol dacă lipsește. Răspunzi EXCLUSIV ' +
+  'cu obiectul JSON, fără proză, fără ```.';
 
 function buildUserPrompt(name: string, subPoints: string[]): string {
-  const subs = subPoints.length ? `Sub-puncte (părți ale conceptului): ${subPoints.join('; ')}.` : 'Fără sub-puncte listate.';
-  return `Conceptul de extras: „${name}".
+  const subs = subPoints.length
+    ? `Sub-aspecte de acoperit DUPĂ conținutul principal (sub-secțiuni, NU subiectul central): ${subPoints.join('; ')}.`
+    : 'Fără sub-aspecte listate.';
+  return `Concept PRINCIPAL (numit): „${name}".
 ${subs}
 
-Din imaginile paginilor de mai sus, extrage DOAR conținutul acestui concept (ignoră restul paginii).
+Caută în TOATE imaginile paginilor de mai sus DEFINIȚIA și FORMULA CENTRALĂ ale conceptului numit
+(pot fi pe o pagină ulterioară, nu neapărat prima). Extrage conținutul ANCORAT pe acest nume.
+
 Întoarce STRICT un singur obiect JSON, exact cu cheile:
 {
-  "definitie": "<definiția sau enunțul, text curat în română; gol dacă nu apare>",
-  "formule_latex": ["<formulele relevante în LaTeX, ex. \\\\int_a^b f(x)\\\\,dx>"],
-  "conditii": "<condiții/ipoteze dacă există; gol altfel>",
-  "exemplu": "<UN exemplu rezolvat scurt dacă apare pe pagină: enunț + pașii esențiali; gol altfel>",
+  "definitie": "<definiția/enunțul CONCEPTULUI NUMIT mai întâi; apoi, pe scurt, fiecare sub-aspect ca sub-secțiune. Conceptul numit conduce.>",
+  "formule_latex": ["<PRIMA = formula centrală A CONCEPTULUI NUMIT; apoi formulele sub-aspectelor>"],
+  "conditii": "<condiții/ipoteze ale conceptului numit dacă există; gol altfel>",
+  "exemplu": "<UN exemplu rezolvat scurt pentru conceptul numit dacă apare: enunț + pași esențiali; gol altfel>",
   "confidence": "high" | "medium" | "low"
 }
 
 REGULI:
-1. NU inventa conținut care nu e pe pagină. Dacă ceva lipsește, lasă câmpul gol ("" sau []).
-2. Formulele în LaTeX valid (fără $...$, doar corpul). Păstrează notația din manual.
-3. Păstrează terminologia și diacriticele exact ca în manual (română-moldovenească).
-4. confidence: "high" = conținutul e clar și complet pe pagină; "low" = parțial/ambiguu.
+1. ANCORARE: definitie + PRIMA formulă din formule_latex trebuie să fie ALE CONCEPTULUI NUMIT,
+   NU ale unui sub-aspect. Ex.: pentru „aria mulțimii delimitate de graficele a două funcții",
+   conținutul principal e definiția și formula ariei DINTRE DOUĂ CURBE (A = ∫(g−f)); cazul
+   funcției negative (∫|f|) e DOAR un sub-caz, acoperit după.
+2. Dacă un sub-aspect diverge de numele conceptului, tot îl acoperi pe scurt, dar NU el conduce.
+3. NU inventa conținut care nu e pe pagini. Dacă ceva lipsește, lasă câmpul gol ("" sau []).
+4. Formulele în LaTeX valid (fără $...$, doar corpul). Păstrează notația din manual.
+5. Păstrează terminologia și diacriticele exact ca în manual (română-moldovenească).
+6. confidence: "high" = conținutul conceptului numit e clar pe pagini; "low" = parțial/ambiguu.
 
 Răspunde DOAR cu obiectul JSON.`;
 }
