@@ -1,0 +1,5 @@
+{
+  "private": true,
+  "type": "module",
+  "//": "Scope ESM doar pentru scripturile de extracție: mupdf (mupdf.js) e ESM cu top-level await pentru init-ul WASM și nu poate fi transformat la CJS. Aceste scripturi folosesc deja sintaxă ESM (import / import.meta.url)."
+}

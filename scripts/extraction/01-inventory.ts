@@ -5,8 +5,11 @@
  *
  * Ce face:
  *   Construiește o HARTĂ a manualului (NU extrage conținut, NU atinge baza de date).
- *   1. Randează fiecare pagină PDF → PNG (~130 DPI), PUR JavaScript (pdf-to-img / pdfjs),
- *      fără binare de sistem (fără poppler / imagemagick / ghostscript). Merge pe Windows.
+ *   1. Randează fiecare pagină PDF → PNG (~130 DPI) cu MuPDF (mupdf.js, WASM oficial Artifex),
+ *      fără binare de sistem (fără poppler / imagemagick / ghostscript) și cu decodor
+ *      JPEG2000 compilat în librărie. Merge pe Windows și decodează imaginile JPEG2000
+ *      din manuale (unde pdfjs eșua cu "JpxError: OpenJPEG failed to initialize", lăsând
+ *      pagini cu ilustrații goale).
  *   2. Pentru fiecare pagină, un apel vision (Claude Sonnet 4.6) care întoarce STRICT JSON
  *      cu structura din INVENTORY_SCHEMA de mai jos.
  *   3. Salvează rezultatul ca scripts/extraction/output/clasa-<NN>-inventory.json cu trei
@@ -27,7 +30,7 @@
  */
 
 import Anthropic from '@anthropic-ai/sdk';
-import { pdf } from 'pdf-to-img';
+import * as mupdf from 'mupdf';
 import { parseArgs } from 'node:util';
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
@@ -36,7 +39,7 @@ import { fileURLToPath } from 'node:url';
 // ── Config ──────────────────────────────────────────────────────────────────
 const MODEL = 'claude-sonnet-4-6';
 const DEFAULT_DPI = 130;          // ~130 DPI cerut
-const PDFJS_BASE_DPI = 72;        // pdfjs: scale 1.0 == 72 DPI
+const MUPDF_BASE_DPI = 72;        // MuPDF: matricea scale 1.0 == 72 DPI
 const MAX_TOKENS = 2000;
 const THROTTLE_MS = 1200;         // pauză mică între apeluri
 const MAX_RETRIES = 6;            // retry pe rețea / rate-limit
@@ -148,6 +151,41 @@ Răspunde DOAR cu obiectul JSON.`;
 
 /** Pauză. */
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+/**
+ * Document randabil — interfață minimă, stabilă, peste MuPDF.
+ * `length` = numărul de pagini; `getPage(pdfPage)` randează pagina (1-based)
+ * la PNG și întoarce un Buffer. MuPDF decodează JPEG2000 nativ (compilat în
+ * librărie), spre deosebire de pdfjs care eșua cu OpenJPEG WASM.
+ */
+export interface RenderedDoc {
+  length: number;
+  getPage(pdfPage: number): Buffer; // 1-based, întoarce PNG Buffer
+}
+
+/** Deschide un PDF pentru randare PNG la `dpi` dat, folosind MuPDF (pur WASM, fără binare). */
+export async function openPdfForRender(pdfPath: string, dpi: number): Promise<RenderedDoc> {
+  const data = await fs.readFile(pdfPath);
+  const doc = mupdf.Document.openDocument(new Uint8Array(data), 'application/pdf');
+  const scale = dpi / MUPDF_BASE_DPI;
+  const matrix = mupdf.Matrix.scale(scale, scale);
+  return {
+    length: doc.countPages(),
+    getPage(pdfPage: number): Buffer {
+      const page = doc.loadPage(pdfPage - 1); // 1-based → 0-based (MuPDF)
+      try {
+        const pixmap = page.toPixmap(matrix, mupdf.ColorSpace.DeviceRGB, false);
+        try {
+          return Buffer.from(pixmap.asPNG());
+        } finally {
+          pixmap.destroy();
+        }
+      } finally {
+        page.destroy();
+      }
+    },
+  };
+}
 
 /** Parsează argumentul --pages: listă "4,31,91", interval "10-15", sau mixt "1-5,10". */
 function parsePages(spec: string | undefined, total: number): number[] {
@@ -403,10 +441,10 @@ export async function runInventory(opts: RunInventoryOptions): Promise<RunInvent
   await fs.mkdir(OUTPUT_DIR, { recursive: true });
   await fs.mkdir(RAW_DIR, { recursive: true });
 
-  // Randare PDF → imagini (pur-JS, fără binare de sistem)
-  const scale = dpi / PDFJS_BASE_DPI;
-  console.log(`📄 Deschid PDF: ${pdfPathArg}  (scale ${scale.toFixed(3)} ≈ ${dpi} DPI)`);
-  const doc = await pdf(pdfPathArg, { scale });
+  // Randare PDF → imagini (MuPDF WASM, fără binare de sistem; decodează JPEG2000 nativ)
+  const scale = dpi / MUPDF_BASE_DPI;
+  console.log(`📄 Deschid PDF: ${pdfPathArg}  (scale ${scale.toFixed(3)} ≈ ${dpi} DPI, MuPDF)`);
+  const doc = await openPdfForRender(pdfPathArg, dpi);
   const pageCount = doc.length;
   console.log(`   → ${pageCount} pagini în PDF.`);
 
@@ -427,7 +465,7 @@ export async function runInventory(opts: RunInventoryOptions): Promise<RunInvent
   for (const pdfPage of todo) {
     process.stdout.write(`  📄 pagina ${pdfPage}/${pageCount} … `);
     try {
-      const png = await doc.getPage(pdfPage); // Buffer PNG, 1-based
+      const png = doc.getPage(pdfPage); // Buffer PNG, 1-based (MuPDF, sincron)
       const b64 = png.toString('base64');
 
       const { text, inputTokens, outputTokens } = await callVision(anthropic, b64, pdfPage);
