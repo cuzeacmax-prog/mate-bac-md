@@ -1,0 +1,3899 @@
+{
+  "grade": 4,
+  "pdf_page_count": 136,
+  "generated_at": "2026-05-30T09:26:46.290Z",
+  "model": "claude-sonnet-4-6",
+  "dpi": 130,
+  "pages": [
+    {
+      "pdf_page": 1,
+      "printed_page": null,
+      "module": null,
+      "subtopic": null,
+      "page_kind": "coperta",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 0,
+      "exercise_count": 0,
+      "exercise_types": [],
+      "confidence": "high",
+      "notes": "Copertă manual Matematică clasa a 4-a, autori Ludmila Ursu, Ilie Lupu, Iulia Iasinschi, Editura Prut, Ministerul Educației al Republicii Moldova.",
+      "input_tokens": 2962,
+      "output_tokens": 164
+    },
+    {
+      "pdf_page": 2,
+      "printed_page": null,
+      "module": null,
+      "subtopic": null,
+      "page_kind": "necunoscut",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 0,
+      "exercise_count": 0,
+      "exercise_types": [],
+      "confidence": "high",
+      "notes": "Pagină de verso copertă/pagină de titlu cu informații editoriale: aprobarea manualului, tabelul de evidență a elevilor, comisia de evaluare, drepturi de autor, date CIP. Nu conține conținut matematic.",
+      "input_tokens": 2962,
+      "output_tokens": 170
+    },
+    {
+      "pdf_page": 3,
+      "printed_page": null,
+      "module": null,
+      "subtopic": null,
+      "page_kind": "divider",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 0,
+      "exercise_count": 0,
+      "exercise_types": [],
+      "confidence": "high",
+      "notes": "Pagină de prezentare a structurii manualului, conținând fotografii ilustrative și etichete editoriale: 'Observăm și descoperim', 'Aplicăm și explicăm', 'Consolidăm și dezvoltăm', 'Concurs'. Nu există conținut matematic, exerciții sau noțiuni noi.",
+      "input_tokens": 2962,
+      "output_tokens": 193
+    },
+    {
+      "pdf_page": 4,
+      "printed_page": "4",
+      "module": "MODULUL 1",
+      "subtopic": "Evocare prin exerciții și probleme",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "calcul direct",
+        "numărare și recunoaștere șiruri",
+        "completare tabel",
+        "problema text",
+        "comparare cu căsuță"
+      ],
+      "confidence": "high",
+      "notes": "Pagina este o pagină de evocare/recapitulare la începutul modulului 1, marcată cu 'Inițiere'. Conține 5 exerciții propuse elevului: 1) numărare cu precizarea ordinii, 2) identificare mod de numărare și denumire numere, 3) calcul oral în tabel, 4) probleme despre vacanță cu mai multe subpuncte, 5) completare tabele cu termeni/sumă/factor/produs/descăzut/scăzător/diferență/deîmpărțit/împărțitor/cât. Nicio problemă rezolvată afișată în text.",
+      "input_tokens": 2962,
+      "output_tokens": 328
+    },
+    {
+      "pdf_page": 5,
+      "printed_page": "5",
+      "module": null,
+      "subtopic": "Fixare",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 7,
+      "exercise_count": 8,
+      "exercise_types": [
+        "scriere si citire numere",
+        "calcul direct",
+        "completare tabel",
+        "problema text",
+        "ecuatie",
+        "transformari unitati de masura",
+        "scheme analogice"
+      ],
+      "confidence": "high",
+      "notes": "Exercițiul 7 conține un Model rezolvat (34 dm = 340 cm) care servește ca exemplu demonstrativ; celelalte sub-exerciții sunt propuse elevului. Pagina este o pagină de fixare/consolidare fără noțiuni noi introduse.",
+      "input_tokens": 2962,
+      "output_tokens": 240
+    },
+    {
+      "pdf_page": 6,
+      "printed_page": "6",
+      "module": null,
+      "subtopic": "Antrenare",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 9,
+      "exercise_count": 9,
+      "exercise_types": [
+        "numire numere pare/impare",
+        "completare cu cifre",
+        "scriere prin exercitiu si calcul",
+        "determinare ordine operatii",
+        "problema cu justificari",
+        "lucru in perechi - unitati de masura",
+        "afla deimpartitul",
+        "calcul in colonita cu proba",
+        "lucru in echipe - creare probleme"
+      ],
+      "confidence": "high",
+      "notes": "Pagina este o pagina de antrenare/exercitii fara lectie noua. Exercitiul 6 este marcat 'Lucrati in perechi!', exercitiul 9 este 'Lucrati in echipe!'. Nu exista exemple rezolvate. Subtopicul este 'Antrenare', fara numar de modul sau paragraf vizibil.",
+      "input_tokens": 2962,
+      "output_tokens": 315
+    },
+    {
+      "pdf_page": 7,
+      "printed_page": "7",
+      "module": null,
+      "subtopic": "Consolidare",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 7,
+      "exercise_count": 7,
+      "exercise_types": [
+        "completare cifre",
+        "împărțire în coloană cu probă",
+        "problemă text",
+        "calcul direct",
+        "ecuații",
+        "lucru în perechi",
+        "ordonare crescătoare/descrescătoare"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 7 exerciții propuse de consolidare, fără exemple rezolvate. Exercițiul 7 este de tip 'Lucrați în perechi' și implică calculul unor expresii pentru a descoperi numele unui pictor moldovean. Există o imagine decorativă cu titlul 'Pâinea și soarele' în colțul din dreapta jos.",
+      "input_tokens": 2962,
+      "output_tokens": 282
+    },
+    {
+      "pdf_page": 8,
+      "printed_page": "8",
+      "module": null,
+      "subtopic": "Dezvoltare",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 7,
+      "exercise_count": 7,
+      "exercise_types": [
+        "adevarat-fals",
+        "calcul direct",
+        "problema text",
+        "completare tabel",
+        "scriere prin exercitiu",
+        "scriere ca produs",
+        "gaseste-greseala",
+        "descoperire semne ascunse"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 7 exerciții propuse elevului fără soluții afișate. Exercițiul 1 este de tip adevărat/fals, lucrat în perechi. Exercițiul 4 implică completarea a două tabele (împărțire cu rest și conversii de unități de măsură). Secțiunea 'Descoperă semnele ascunse' de la final este un joc matematic suplimentar. Nu există module sau paragraf explicit marcat.",
+      "input_tokens": 2962,
+      "output_tokens": 309
+    },
+    {
+      "pdf_page": 9,
+      "printed_page": "9",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 8,
+      "exercise_count": 8,
+      "exercise_types": [
+        "scriere număr maxim",
+        "transformare unități de măsură",
+        "aflare deîmpărțit",
+        "calcul cu ordine operații",
+        "problemă cu plan",
+        "problemă distractivă logică"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține două variante paralele (VARIANTA 1 și VARIANTA 2) cu 5 exerciții fiecare (perechi), plus o secțiune separată 'PROBLEME DISTRACTIVE' cu 3 sub-exerciții (a, b, c). Total exerciții propuse: 5 perechi × 2 variante = 10 exerciții în variantele de test, plus 3 probleme distractive = 13 dacă se numără individual. Am numărat 5 exerciții principale (câte 2 variante fiecare) + secțiunea distractivă cu 3 sub-puncte. Scorul total tipărit pe pagină este 10p. Pagina pare a fi o evaluare/recapitulare cu două variante paralele.",
+      "input_tokens": 2962,
+      "output_tokens": 362
+    },
+    {
+      "pdf_page": 10,
+      "printed_page": "10",
+      "module": "Modulul 2. Numerele naturale până la un milion",
+      "subtopic": "Formarea, citirea și scrierea numerelor cuprinse între 1000 și 10000",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "ordinul cifrei în numărul natural",
+        "mii (unități de mii)",
+        "formarea numerelor de 4 cifre"
+      ],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 1,
+      "exercise_count": 2,
+      "exercise_types": [
+        "problema vizuala",
+        "completare tabel"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina introduce conceptul de 'ordin' în sens matematic (poziția cifrei) printr-un basm matematic ilustrat cu cubulețe. Există un exemplu rezolvat vizual (numărul 4321 format din cubulețe grupate) și o sarcină propusă elevului ('Modificați basmul, știind că în total au fost 2467 de cubulețe'). Tabelul cu ordinele este parte din secțiunea Ce știm? Ce aflăm? și constituie material de predare, nu exercițiu propus.",
+      "input_tokens": 2962,
+      "output_tokens": 342
+    },
+    {
+      "pdf_page": 11,
+      "printed_page": "11",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 2,
+      "proposed_exercises_count": 8,
+      "exercise_count": 10,
+      "exercise_types": [
+        "citire numere din tabel",
+        "completare tabel",
+        "descompunere dupa model",
+        "calcul direct",
+        "conversie unitati de masura",
+        "reprezentare pe axa",
+        "completare cu casuta",
+        "formare numere dupa conditii"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține 2 exemple rezolvate explicite (Modelul din exercițiul 3 și Modelul din exercițiul 5). Exercițiile 1-8 sunt propuse elevului. Exercițiul 7 conține completare cu figuri-simbol (numere ascunse). Exercițiul 6 include calcul în coloane cu serii de operații. Pagina nu aparține unui modul/capitol explicit vizibil.",
+      "input_tokens": 2962,
+      "output_tokens": 310
+    },
+    {
+      "pdf_page": 12,
+      "printed_page": "12",
+      "module": null,
+      "subtopic": "Numerele naturale până la 100 000",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "completare tabel",
+        "citire numere",
+        "identificare cifra la ordin",
+        "gaseste-greseala",
+        "completare sir"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține exclusiv exerciții propuse (1-5). Exercițiul 1 include un tabel de numerație cu cifre pentru ordinele numerelor. Exercițiul 3 cere identificarea greșelilor în scrierea numerelor (numere scrise incorect: 2 0583, 738 15, 62 801, 48193). Nu există exemple rezolvate cu soluție afișată. Subtema este indicată în antetul paginii.",
+      "input_tokens": 2962,
+      "output_tokens": 282
+    },
+    {
+      "pdf_page": 13,
+      "printed_page": "13",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 10,
+      "exercise_count": 11,
+      "exercise_types": [
+        "calcul direct",
+        "reprezentare lungimi dupa model",
+        "completare casuta",
+        "problema text",
+        "descoperire numere ascunse",
+        "reconstructie lant aritmetic",
+        "concurs identificare cifra"
+      ],
+      "confidence": "medium",
+      "notes": "Exercițiul 6 are un Model rezolvat afișat (25418 m = 25 km 418 m), numărat ca worked_example. Exercițiile 6-10 plus secțiunea Concurs sunt propuse elevului. Secțiunea 'Concurs' a fost numărată ca un exercițiu propus (exercițiul 11). Nu există titlu de modul sau secțiune vizibil pe pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 282
+    },
+    {
+      "pdf_page": 14,
+      "printed_page": "14",
+      "module": null,
+      "subtopic": "Formarea, citirea și scrierea numerelor cuprinse între 100 000 și 1 000 000",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "clasa unităților",
+        "clasa miilor",
+        "clasa milioanelor",
+        "sute de mii",
+        "zeci de mii",
+        "unități de mii",
+        "un milion"
+      ],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 3,
+      "exercise_count": 4,
+      "exercise_types": [
+        "problema vizuala",
+        "citire numere",
+        "completare tabel"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina introduce conceptul de 'clasă' în sens matematic (grup de trei ordine consecutive). Tabelul de numerație cu clase milioanelor, miilor și unităților este prezentat ca material de predare/exemplu rezolvat. Cele 3 întrebări cu bullet din secțiunea 'Observăm și descoperim' sunt exerciții propuse. Distincția worked/proposed e ușor ambiguă deoarece pagina combină predarea cu observarea ghidată.",
+      "input_tokens": 2962,
+      "output_tokens": 318
+    },
+    {
+      "pdf_page": 15,
+      "printed_page": "15",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 7,
+      "exercise_count": 8,
+      "exercise_types": [
+        "completare tabel",
+        "scriere cifre",
+        "calcul direct",
+        "descompunere dupa model",
+        "problema contextuala",
+        "reconstituire operatii in lant"
+      ],
+      "confidence": "high",
+      "notes": "Exercițiul 4 conține un model rezolvat (728 453 descompus), numărat ca worked_example. Exercițiile 1-7 sunt propuse elevului. Exercițiul 5 conține un tabel cu descompuneri aditive pentru populatia municipiului Chișinău. Exercițiul 6 include o variantă 'Lucrați în perechi!' ca subpunct. Exercițiul 7 conține lanțuri de operații cu casute necunoscute.",
+      "input_tokens": 2962,
+      "output_tokens": 301
+    },
+    {
+      "pdf_page": 16,
+      "printed_page": "16",
+      "module": null,
+      "subtopic": "Compararea și ordonarea numerelor până la 1 000 000",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "compararea numerelor cu același număr de cifre",
+        "compararea numerelor cu număr diferit de cifre",
+        "ordonarea numerelor"
+      ],
+      "worked_examples_count": 4,
+      "proposed_exercises_count": 2,
+      "exercise_count": 6,
+      "exercise_types": [
+        "comparare cu casuta",
+        "numărare cu pas dat",
+        "ordonare descrescătoare",
+        "problema vizuala"
+      ],
+      "confidence": "medium",
+      "notes": "Secțiunea 'Observăm și descoperim' conține 4 exemple rezolvate vizual (comparări cu cifre evidențiate și simboluri de completat). Secțiunea 'Comparăm și ordonăm' conține 2 exerciții propuse elevului (ex. 1 cu subpunctele a-d și bullet de precizare, ex. 2 cu arborele genealogic + bullet extensie). Numărul de worked_examples poate fi interpretat diferit dacă subpunctele din ex.1 sunt considerate separat.",
+      "input_tokens": 2962,
+      "output_tokens": 345
+    },
+    {
+      "pdf_page": 17,
+      "printed_page": "17",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 10,
+      "exercise_count": 10,
+      "exercise_types": [
+        "comparare cu casuta",
+        "completare tabel",
+        "problema vizuala",
+        "calcul direct",
+        "descoperire regula",
+        "ordonare crescatoare",
+        "scriere cu cifre",
+        "subliniere"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține două secțiuni: 'Consolidăm și dezvoltăm' (exercițiile 1-7) și o secțiune suplimentară fără titlu explicit (exercițiile 1-3 la final, separate de o linie punctată). Au fost numărate 7 exerciții principale + 3 exerciții finale = 10 total. Exercițiul 4 include o problemă vizuală cu animale și numere. Exercițiul 7 este marcat 'Lucraţi în perechi!' Nicio noțiune nouă nu este introdusă — pagina consolidează compararea și ordonarea numerelor.",
+      "input_tokens": 2962,
+      "output_tokens": 348
+    },
+    {
+      "pdf_page": 18,
+      "printed_page": "18",
+      "module": null,
+      "subtopic": "Înmulțirea cu 10, 100, 1000",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "înmulțirea cu 10, 100, 1000"
+      ],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "calcul direct",
+        "calcul în lanț",
+        "completare cu număr ascuns",
+        "mărire de 10 ori",
+        "identificare număr din componente"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține secțiunea 'Ce știm? Ce aflăm?' (activare cunoștințe anterioare) și 'Aplicăm și explicăm' (exerciții propuse). Există două casete 'Ați observat?' — una cu regula înmulțirii cu 10/100/1000 și una cu relații între unități de ordin. Exercițiile 1-5 sunt propuse elevului. Exercițiul 2 conține diagrame de calcul în lanț. Exercițiul 3 conține completare cu număr ascuns (reprezentat prin pictogramă). Nu există exemple rezolvate cu soluție afișată explicit.",
+      "input_tokens": 2962,
+      "output_tokens": 363
+    },
+    {
+      "pdf_page": 19,
+      "printed_page": "19",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 9,
+      "exercise_count": 10,
+      "exercise_types": [
+        "calcul direct",
+        "completare sir",
+        "descompunere dupa model",
+        "completare tabel",
+        "problema text",
+        "gaseste-greseala",
+        "lucrati in perechi",
+        "ordonare crescator"
+      ],
+      "confidence": "medium",
+      "notes": "Exercițiul 1 cu subpunctele a, b, c este o singură sarcină; exercițiul 4 conține un model rezolvat (3542=...) care este exemplu demonstrativ; exercițiul 7 are două tabele distincte (Cantitate/Preț/Cost și Timp/Viteză/Distanță); exercițiul 9 este de tip gaseste-greseala (plasarea parantezelor). Counted worked_examples_count=1 pentru modelul din exercițiul 4.",
+      "input_tokens": 2962,
+      "output_tokens": 320
+    },
+    {
+      "pdf_page": 20,
+      "printed_page": "20",
+      "module": null,
+      "subtopic": "Împărțirea exactă la 10, 100, 1000",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "împărțirea exactă la 10, 100, 1000"
+      ],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 3,
+      "exercise_count": 4,
+      "exercise_types": [
+        "calcul direct",
+        "completare cu casuta",
+        "problema contextuala",
+        "concurs calcul rapid"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține secțiunea 'Ce știm? Ce aflăm?' cu scheme vizuale și regula de împărțire prin eliminarea zerourilor, urmată de 'Aplicăm și calculăm' cu 3 exerciții propuse și un model rezolvat (5000:10=500). Secțiunea 'Concurs' conține expresii de calculat rapid, numărate ca parte din exercițiile propuse. Exercițiul 2 folosește simboluri grafice (piese de șah) în loc de numere necunoscute.",
+      "input_tokens": 2962,
+      "output_tokens": 299
+    },
+    {
+      "pdf_page": 21,
+      "printed_page": "21",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "calcul direct",
+        "completare tabel",
+        "problema text",
+        "schema-lant",
+        "completare casuta"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 5 exerciții propuse elevului: 1) calcul cu litere pentru a afla denumirea unei localități monastice; 2) probleme din istorie cu subpunctele a) și b) plus o variantă modificată; 3) completarea a două tabele (Factor/Factor/Produs și Deîmpărțit/Împărțitor/Cât); 4) completare unități de măsură și numere lipsă (lucru în perechi); 5) organizare în schemă-lanț și calcul în lanț. Nu există exemple rezolvate afișate cu soluție.",
+      "input_tokens": 2962,
+      "output_tokens": 299
+    },
+    {
+      "pdf_page": 22,
+      "printed_page": "22",
+      "module": null,
+      "subtopic": "Transformări ale unităților de măsură",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "unități de măsură pentru lungime",
+        "unități de măsură pentru masă",
+        "transformări ale unităților de măsură"
+      ],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 3,
+      "exercise_count": 3,
+      "exercise_types": [
+        "completare cu unitatea de măsură lipsă",
+        "transformare unități de măsură",
+        "descoperire regulă și completare șir"
+      ],
+      "confidence": "high",
+      "notes": "Pagina introduce unitățile de măsură pentru lungime (cm, dm, m, km) și masă (g, kg, t) cu diagrame de conversie. Secțiunea 'Ce știm? Ce aflăm?' prezintă teoria, iar 'Aplicăm și explicăm' conține 3 exerciții propuse. Exercițiul 2 ('Ștafetă de transformări') are 6 sub-sarcini grupate în perechi, numărate ca un singur exercițiu cu mai multe componente.",
+      "input_tokens": 2962,
+      "output_tokens": 337
+    },
+    {
+      "pdf_page": 23,
+      "printed_page": "23",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 6,
+      "exercise_count": 6,
+      "exercise_types": [
+        "ordonare date",
+        "formulare probleme",
+        "decodificare valori numerice",
+        "conversie unitati de masura",
+        "lucru in echipa"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține secțiunea 'Consolidăm și dezvoltăm' cu exercițiul 1 (ordonare animale după masă), exercițiul 2 cu 4 subpuncte (a, b, c, d) de formulare și rezolvare probleme, și secțiunea 'Concurs' cu exerciții de decodificare litere prin conversie unități de măsură. Secțiunea Concurs include și un item 'Lucrați în echipe!'. Am numărat: ex.1, ex.2(a), ex.2(b), ex.2(c), ex.2(d), Concurs ca 6 exerciții propuse. Niciun modul vizibil pe pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 350
+    },
+    {
+      "pdf_page": 24,
+      "printed_page": "24",
+      "module": null,
+      "subtopic": "Cifre romane",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "cifre romane",
+        "scrierea numerelor cu cifre romane",
+        "citirea numerelor cu cifre romane"
+      ],
+      "worked_examples_count": 4,
+      "proposed_exercises_count": 4,
+      "exercise_count": 8,
+      "exercise_types": [
+        "citire numere romane",
+        "scriere numere romane",
+        "calcul direct",
+        "conversie cifre romane-arabe"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina combină predarea (text explicativ cu reguli și exemple rezolvate integrate) cu exerciții propuse elevului (nr. 1-4). Exercițiile 1 și 2 sunt mai degrabă texte introductive/de lectură, dar au și componente propuse elevului. Worked examples sunt exemplele din casetele explicative (IV→4, VI→6, II→2, IX→9, XI→11, XXX→30, XIV→14, XIX→19; 16→XVI, 29→XXIX). Secțiunea 'Ați observat?' este o notă observațională, nu exercițiu.",
+      "input_tokens": 2962,
+      "output_tokens": 324
+    },
+    {
+      "pdf_page": 25,
+      "printed_page": "25",
+      "module": null,
+      "subtopic": "Cine seamănă culege",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 9,
+      "exercise_count": 9,
+      "exercise_types": [
+        "scriere cu cifre",
+        "subliniere cifra",
+        "gaseste-greseala",
+        "scriere cifre romane",
+        "comparare cu casuta",
+        "completare tabel",
+        "calcul direct",
+        "problema text",
+        "descoperire regula",
+        "descoperire operatii in lant",
+        "problema vizuala"
+      ],
+      "confidence": "high",
+      "notes": "Pagina este o pagină de recapitulare/consolidare tip 'Cine seamănă culege' cu 9 exerciții propuse fără soluții afișate. Exercițiul 2 conține afirmații intenționat greșite de corectat (gaseste-greseala). Exercițiul 6 conține calcule organizate în coloane dar fără soluții afișate — sunt propuse elevului. Exercițiul 9 conține diagrame cu operații lipsă (săgeți cu '?').",
+      "input_tokens": 2962,
+      "output_tokens": 351
+    },
+    {
+      "pdf_page": 26,
+      "printed_page": "26",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "schema-lant",
+        "calcul direct",
+        "completare tabel",
+        "portret matematic",
+        "lucru in perechi",
+        "concurs"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține exercițiile 10-14 plus o secțiune 'Concurs'. Exercițiul 10 cere organizarea problemei într-o schemă-lanț. Exercițiul 11 implică calcul cu bancnote. Exercițiul 12 are două tabele de completat (Cantitate/Preț/Cost și Timp/Viteză/Distanță). Exercițiul 13 cere completarea unui 'portret matematic' al numărului 88080. Exercițiul 14 cere crearea de portrete matematice în perechi. Secțiunea Concurs are numere de identificat cu cifra 4 la ordinul miilor. Nu există module sau subtopic vizibil pe pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 328
+    },
+    {
+      "pdf_page": 27,
+      "printed_page": "27",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 13,
+      "exercise_count": 13,
+      "exercise_types": [
+        "alegere multipla",
+        "comparare cu casuta",
+        "completare sir",
+        "calcul direct",
+        "conversie unitati de masura",
+        "problema logica cu betisoare"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține două variante paralele (VARIANTA 1 și VARIANTA 2) ale unui test de recapitulare cu 5 exerciții numerotate (fiecare cu subpunctele a și b), plus o secțiune 'PROBLEME DISTRACTIVE' cu 3 probleme recreative. Exercițiile propuse: ex.1 (2 subpuncte×2 variante=1 per variantă, tratat ca 1 exercițiu cu alegere multiplă per coloană), ex.2 (2 subpuncte per variantă), ex.3 (1 per variantă), ex.4 (4 subpuncte per variantă), ex.5 (2 subpuncte per variantă) + 3 probleme distractive. Total aproximat ca 13 exerciții distincte. Pagina are punctaj total 10p.",
+      "input_tokens": 2962,
+      "output_tokens": 389
+    },
+    {
+      "pdf_page": 28,
+      "printed_page": "28",
+      "module": "Modulul 3",
+      "subtopic": "Adunarea și scăderea numerelor naturale, până la un milion",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "problemă cu două sume",
+        "problemă cu două diferențe"
+      ],
+      "worked_examples_count": 2,
+      "proposed_exercises_count": 3,
+      "exercise_count": 5,
+      "exercise_types": [
+        "problemă text",
+        "comparare cu casută",
+        "rezolvare cu plan"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține două probleme rezolvate în secțiunea 'Rezolvăm și comparăm' (una cu două sume, una cu două diferențe), urmate de o secvență 'Ați observat?' care structurează comparația, un exercițiu de aplicare ('Aflați cât a cheltuit fiecare copil') și două probleme propuse în secțiunea 'Aplicăm și comentăm' (a și b). Contorizarea exercițiilor propuse include: exercițiul 'Aflați cât...' + problemele a) și b). Worked examples sunt cele două perechi de probleme rezolvate cu plan din 'Rezolvăm și comparăm'.",
+      "input_tokens": 2962,
+      "output_tokens": 355
+    },
+    {
+      "pdf_page": 29,
+      "printed_page": "29",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 4,
+      "exercise_count": 4,
+      "exercise_types": [
+        "calcul direct",
+        "problema text",
+        "scriere prin exercitiu",
+        "lucru in echipe"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 4 exerciții propuse elevilor: ex.1 determină ordinea operațiilor și calculează, ex.2 rezolvă probleme cu justificări (4 subpuncte), ex.3 scrie prin exercițiu și calculează (4 subpuncte + un bullet de adunare a rezultatelor), ex.4 lucru în echipe cu scheme și exerciții vizuale. Nu există exemple rezolvate cu soluție afișată. Pagina nu afișează un modul explicit.",
+      "input_tokens": 2962,
+      "output_tokens": 281
+    },
+    {
+      "pdf_page": 30,
+      "printed_page": "30",
+      "module": null,
+      "subtopic": "Adunarea și scăderea numerelor mai mici decât 10000",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "proba adunării",
+        "proba scăderii",
+        "descăzut",
+        "scăzător",
+        "diferență (rest)"
+      ],
+      "worked_examples_count": 2,
+      "proposed_exercises_count": 2,
+      "exercise_count": 4,
+      "exercise_types": [
+        "calcul direct",
+        "completare tabel",
+        "comparare cu casuta"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține două secțiuni editoriale: 'Observăm și explicăm' (teorie cu exemple rezolvate de adunare și scădere în coloană, cu probe) și 'Calculăm și rezolvăm' (exerciții propuse). Exercițiul 1 conține 8 operații de calcul în coloană cu probă (numărate ca un exercițiu propus). Exercițiul 2 conține completare de tabele și formulare de întrebări. Noțiunile de descăzut/scăzător/diferență pot fi prerechizite, dar sunt explicit etichetate pe pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 357
+    },
+    {
+      "pdf_page": 31,
+      "printed_page": "31",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 7,
+      "exercise_count": 7,
+      "exercise_types": [
+        "calcul direct",
+        "calcul rational argumentat",
+        "afla numarul",
+        "problema text",
+        "gaseste-greseala",
+        "completare sir cu casuta",
+        "formuleaza intrebari"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 7 exerciții propuse fără soluții afișate. Exercițiul 5 cere corectarea greșelilor din ordinea efectuării operațiilor (gaseste-greseala). Exercițiul 6 implică completarea șirurilor cu căsuțe. Nu există module sau lecție nouă — este pagină de consolidare.",
+      "input_tokens": 2962,
+      "output_tokens": 272
+    },
+    {
+      "pdf_page": 32,
+      "printed_page": "32",
+      "module": null,
+      "subtopic": "Adunarea și scăderea numerelor mai mari decât 10000",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 7,
+      "exercise_count": 7,
+      "exercise_types": [
+        "calcul direct",
+        "calcul cu asociere",
+        "problema text",
+        "aflare necunoscuta",
+        "scriere ca exercitiu",
+        "formulare intrebari",
+        "ordine operatii"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 7 exerciții propuse elevului, fără exemple rezolvate. Exercițiul 6 include ilustrații (carte Gulliver și imagine cu persoană). Exercițiul 3 solicită justificări și comentarii folosind termenii 'sumă' sau 'diferență'. Exercițiul 7 include un sub-punct suplimentar cu bullet (citire cu terminologie matematică).",
+      "input_tokens": 2962,
+      "output_tokens": 292
+    },
+    {
+      "pdf_page": 33,
+      "printed_page": "33",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 11,
+      "exercise_count": 11,
+      "exercise_types": [
+        "calcul direct",
+        "completare coloana",
+        "scriere prin exercitiu",
+        "reconstituire lant de calcule",
+        "problema text",
+        "completare tabel",
+        "problema cu plan"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține exercițiile 8-11 numerotate plus două rubrici suplimentare (1. Completează tabelul și 2. Rezolvă problema cu plan și prin exercițiu), probabil dintr-o secțiune de recapitulare/evaluare. Exercițiile 8-11 sunt propuse elevului fără soluții afișate. Nu există module sau subtitlu de secțiune vizibil pe pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 280
+    },
+    {
+      "pdf_page": 34,
+      "printed_page": "34",
+      "module": null,
+      "subtopic": "Probleme de scădere a două sume (adunare a două diferențe)",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "scăderea a două sume",
+        "adunarea a două diferențe"
+      ],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 4,
+      "exercise_count": 5,
+      "exercise_types": [
+        "problema text",
+        "rezolvare prin două metode",
+        "creare problema dupa schema",
+        "completare schema"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține o secțiune 'Observăm și descoperim' cu un exemplu rezolvat prin două metode (Metoda 1 și Metoda 2), și o secțiune 'Rezolvăm și creăm' cu exercițiile 1 (a, b) și 2 (a, b). Exercițiile 1a și 1b cer rezolvare prin două metode, exercițiile 2a și 2b cer crearea și rezolvarea problemelor după scheme date.",
+      "input_tokens": 2962,
+      "output_tokens": 297
+    },
+    {
+      "pdf_page": 35,
+      "printed_page": "35",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "calcul direct",
+        "problema text",
+        "descoperire regulă și completare șir",
+        "scriere numere după condiție",
+        "creare problemă după exercițiu dat"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 5 exerciții propuse fără soluții afișate. Exercițiul 1 implică calcul aritmetic și ordonare pentru a descifra denumirea unui arbore. Exercițiul 2 are 3 subpuncte cu probleme text și un bullet suplimentar de comentariu. Exercițiul 3 are 3 subpuncte cu șiruri și un bullet despre cel mai mic număr. Exercițiul 4 are 6 subpuncte plus un bullet de formare numere. Exercițiul 5 este 'Lucrati în perechi' cu creare problemă după exercițiu dat. Nicio noțiune matematică nouă nu este introdusă pe această pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 357
+    },
+    {
+      "pdf_page": 36,
+      "printed_page": "36",
+      "module": null,
+      "subtopic": "Cine seamănă culege",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "decodificare prin calcul",
+        "problema text",
+        "aflarea necunoscutei",
+        "reformulare ca exercitiu cu litera",
+        "comparare cu casuta"
+      ],
+      "confidence": "high",
+      "notes": "Pagina este o pagină de exerciții aplicative. Exercițiul 1 implică adunări/scăderi pentru decodificarea unui nume de personaj (Vrăjitorul din OZ). Exercițiul 2 conține două subprobleme text inspirate din Harap-Alb plus o sarcină creativă. Exercițiul 3 cere aflarea numerelor necunoscute (ecuații simple). Exercițiul 4 cere rescrierea întrebărilor ca exerciții cu literă. Exercițiul 5 cere comparare fără calcul cu argumentare. Nu există exemple rezolvate cu soluție afișată.",
+      "input_tokens": 2962,
+      "output_tokens": 318
+    },
+    {
+      "pdf_page": 37,
+      "printed_page": "37",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 11,
+      "exercise_count": 11,
+      "exercise_types": [
+        "calcul direct",
+        "comparare cu casuta",
+        "problema text",
+        "lucru în perechi",
+        "completare tabel",
+        "completare schema",
+        "completare exercitiu",
+        "scrie în colonita",
+        "completare cifre lipsa",
+        "exercitii circulare"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține exercițiile 6-11 plus o secțiune 'Exerciții circulare' la final. Exercițiul 9 are 4 sub-puncte (a, b, c, d) cu tipuri diferite. Exercițiul 11 are sub-puncte a-d cu cifre lipsă de completat. Nu există module sau subtopic explicit pe această pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 293
+    },
+    {
+      "pdf_page": 38,
+      "printed_page": "38",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 6,
+      "exercise_count": 6,
+      "exercise_types": [
+        "ordonare rezultate",
+        "descoperire regulă și completare șir",
+        "problemă de text cu două metode",
+        "calcul direct cu paranteze",
+        "completare căsuță",
+        "completare tabel",
+        "lucru în echipe",
+        "lucru în perechi"
+      ],
+      "confidence": "high",
+      "notes": "Exercițiile sunt numerotate 12–17. Exercițiul 16 este marcat 'Lucrați în echipe!' și exercițiul 17 'Lucrați în perechi!'. Exercițiul 14 cere rezolvarea prin două metode cu justificări. Nu există module sau subtopic vizibil pe pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 277
+    },
+    {
+      "pdf_page": 39,
+      "printed_page": "39",
+      "module": null,
+      "subtopic": "VARIANTA 1 / VARIANTA 2",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 7,
+      "exercise_count": 7,
+      "exercise_types": [
+        "calcul direct",
+        "aflare numar necunoscut",
+        "descoperire regula si completare sir",
+        "problema cu plan",
+        "problema cu justificari si prin exercitiu",
+        "problema distractiva",
+        "completare tabel cu desene"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține două variante paralele (Varianta 1 și Varianta 2) pentru exercițiile 1-5, plus secțiunea 'Probleme distractive' cu 2 exerciții. Exercițiile 1-5 sunt propuse elevului (câte două variante). Totalul de 7 înseamnă: 5 exerciții principale (fiecare cu 2 variante, numărați ca 5 sarcini distincte) + 2 probleme distractive. Punctajul total indicat pe pagină este 10p.",
+      "input_tokens": 2962,
+      "output_tokens": 339
+    },
+    {
+      "pdf_page": 40,
+      "printed_page": "40",
+      "module": "Modulul 4",
+      "subtopic": "Probleme de aflare a două numere după suma și diferența lor",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "aflarea a două numere după suma și diferența lor"
+      ],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 2,
+      "exercise_count": 3,
+      "exercise_types": [
+        "problema verbala",
+        "completare casuta",
+        "problema vizuala"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina introduce metoda de rezolvare a problemelor cu două numere cunoscând suma și diferența lor, cu un exemplu rezolvat complet (mere și nuci) și pași explicativi. Secțiunea 'Aplicăm și rezolvăm' conține un exemplu rezolvat cu plan și verificare. Cele 2 exerciții propuse sunt întrebările de reflecție de la finalul paginii (Explicați denumirea temei...) și scrierea răspunsului problemei. Distincția worked/proposed este ușor ambiguă.",
+      "input_tokens": 2962,
+      "output_tokens": 310
+    },
+    {
+      "pdf_page": 41,
+      "printed_page": "41",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "scriere numere",
+        "figurare prin segmente",
+        "descriere scheme",
+        "problema text",
+        "lucru in perechi",
+        "exercitii circulare",
+        "calcul direct"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține secțiunea 'Consolidăm și dezvoltăm' cu 5 exerciții propuse elevilor (numerotate 1-5), plus o secțiune 'Exerciții circulare' la final cu expresii de calculat. Exercițiul 3 conține scheme cu segmente și imagini. Exercițiul 5 este marcat 'Lucrați în perechi!'. Nu există exemple rezolvate. Secțiunea de exerciții circulare conține 6 expresii de calcul aranjate circular.",
+      "input_tokens": 2962,
+      "output_tokens": 294
+    },
+    {
+      "pdf_page": 42,
+      "printed_page": "42",
+      "module": null,
+      "subtopic": "Înmulțirea numerelor ce se termină cu zerouri",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "înmulțirea numerelor ce se termină cu zerouri"
+      ],
+      "worked_examples_count": 3,
+      "proposed_exercises_count": 3,
+      "exercise_count": 6,
+      "exercise_types": [
+        "calcul direct",
+        "comparare perechi",
+        "identificare proprietate",
+        "calcul oral cu proprietăți"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține secțiunea 'Observăm și descoperim' cu proprietăți ale înmulțirii (ilustrate cu formule și exemple rezolvate), exerciții de calcul oral cu proprietăți corespunzătoare, compararea calculelor în perechi (exemple rezolvate), o rubrică 'Ați observat?' cu regula pentru înmulțirea numerelor ce se termină cu zerouri, și o rubrică 'Concurs' cu exerciții propuse. worked_examples_count include exemplele din 'Observăm și descoperim' (proprietăți ilustrate), calculele orale și compararea perechilor; proposed_exercises_count include exercițiile din 'Concurs'. Delimitarea exactă rămâne ambiguă.",
+      "input_tokens": 2962,
+      "output_tokens": 371
+    },
+    {
+      "pdf_page": 43,
+      "printed_page": "43",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 6,
+      "exercise_count": 6,
+      "exercise_types": [
+        "calcul direct",
+        "completare cu casuta",
+        "descoperire regula sir",
+        "problema text",
+        "metoda figurativa"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 6 exerciții propuse fără soluții afișate. Exercițiul 2 cere descoperirea numerelor ascunse (simbolizate cu pictograme). Exercițiul 4 cere descoperirea regulii și completarea șirurilor. Exercițiul 5 conține subpuncte cu indicații 'Lucrați în perechi!'. Exercițiul 6 folosește metoda figurativă. Nu există concepte noi introduse pe această pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 286
+    },
+    {
+      "pdf_page": 44,
+      "printed_page": "44",
+      "module": null,
+      "subtopic": "Împărțirea exactă a numerelor ce se termină cu zerouri",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "împărțirea exactă a numerelor ce se termină cu zerouri"
+      ],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 16,
+      "exercise_count": 16,
+      "exercise_types": [
+        "explicare schemă",
+        "scriere împărțiri din înmulțire",
+        "calcul direct",
+        "completare coloane",
+        "problemă cu justificare"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina combină secțiunea 'Observăm și descoperim' (activitate de observație și descoperire cu scheme și exerciții ghidate) și 'Aplicăm și explicăm' (exerciții propuse). Nu există exemple rezolvate explicit marcate ca atare; regulile/procedura sunt prezentate în caseta 'Ați observat?'. Exercițiile propuse includ: 1 exercițiu de explicare scheme, 1 grup de scriere împărțiri din înmulțiri (8 subpuncte a+b+c+d+e+f+g+h), 1 exercițiu de calcul în coloniță (8 împărțiri), 1 exercițiu cu coloane de calcul, 2 subpuncte de observație/construcție coloane, 4 probleme cu justificări (a,b,c,d). Numărul total este estimat agregând toate cerințele distincte.",
+      "input_tokens": 2962,
+      "output_tokens": 416
+    },
+    {
+      "pdf_page": 45,
+      "printed_page": "45",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 16,
+      "exercise_count": 16,
+      "exercise_types": [
+        "calcul direct",
+        "problema text",
+        "completare casuta",
+        "comparare cu casuta",
+        "metoda figurativa",
+        "schema vizuala",
+        "descoperire regula sir",
+        "lucrati in perechi"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține 7 exerciții numerotate plus 2 subexercitii la final (secțiunea de jos cu fundal albastru deschis). Exercițiul 3 conține casute de completat cu simboluri rotunde (comparare cu casuta). Exercițiul 4 implică lucrul în perechi. Numărarea propusă: ex.1 (4 subpuncte), ex.2 (2 subpuncte), ex.3 (6 subpuncte), ex.4 (2 subpuncte + cerinte), ex.5 (3 subpuncte), ex.6 (2 subpuncte), ex.7 (2 subpuncte) + 2 subexercitii finale = estimare 16 exerciții propuse, incertitudine medie.",
+      "input_tokens": 2962,
+      "output_tokens": 393
+    },
+    {
+      "pdf_page": 46,
+      "printed_page": "46",
+      "module": null,
+      "subtopic": "Înmulțirea cu un număr de o cifră",
+      "page_kind": "lectie",
+      "concepts_introduced": [],
+      "worked_examples_count": 3,
+      "proposed_exercises_count": 4,
+      "exercise_count": 7,
+      "exercise_types": [
+        "calcul direct",
+        "completare tabel",
+        "problema text",
+        "scriere prin exercitiu"
+      ],
+      "confidence": "high",
+      "notes": "Secțiunea 'Observăm și explicăm' prezintă 3 exemple rezolvate de înmulțire cu o cifră (937×4, 10325×3, 23604×5). Exercițiile propuse sunt numerotate 1-4, plus o rubrică 'Concurs' cu calcul rapid în coloane. Rubrica Concurs a fost numărată ca parte din exercițiile propuse. Pagina nu introduce concepte matematice noi, ci exersează algoritmul înmulțirii cu o cifră.",
+      "input_tokens": 2962,
+      "output_tokens": 278
+    },
+    {
+      "pdf_page": 47,
+      "printed_page": "47",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 7,
+      "exercise_count": 7,
+      "exercise_types": [
+        "calcul direct",
+        "creare probleme după scheme",
+        "completare șir numeric",
+        "problema textuala",
+        "calcul convenabil",
+        "metoda figurativă",
+        "calcul în lanț"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 7 exerciții propuse fără soluții afișate. Exercițiul 2 implică lucru în perechi și crearea de probleme după scheme cu imagini (motonave și vagoane). Exercițiul 3 cere descoperirea regulii și completarea șirurilor cu căsuțe. Exercițiul 4 are context civic/ecologic. Exercițiul 7 are calcul în lanț cu operații succesive.",
+      "input_tokens": 2962,
+      "output_tokens": 297
+    },
+    {
+      "pdf_page": 48,
+      "printed_page": "48",
+      "module": null,
+      "subtopic": "Exerciții și probleme",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 6,
+      "exercise_count": 6,
+      "exercise_types": [
+        "calcul direct",
+        "problema text cu plan",
+        "lucru in echipe",
+        "metoda figurativa",
+        "problema vizuala",
+        "completare tabel"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 6 exerciții propuse elevilor: ex.1 calcul sumă/diferență/produs/cât, ex.2 problemă cu plan (ghiozdan/telefon/carte), ex.3 lucru în echipe cu aerostat (numere de pe balon), ex.4 metoda figurativă (numere consecutive), ex.5 lucru în perechi cu scheme vizuale (kg, lei), ex.6 completare tabele (factor/produs, deîmpărțit/împărțitor/cât). Nicio soluție rezolvată în text.",
+      "input_tokens": 2962,
+      "output_tokens": 313
+    },
+    {
+      "pdf_page": 49,
+      "printed_page": "49",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 14,
+      "exercise_count": 14,
+      "exercise_types": [
+        "calcul direct",
+        "completare sir",
+        "problema cu plan",
+        "problema prin metoda figurativa",
+        "descoperire numar ascuns",
+        "rebus matematic",
+        "problema logica"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține două variante paralele (VARIANTA 1 și VARIANTA 2) pentru exercițiile 1-4, plus o secțiune 'PROBLEME DISTRACTIVE' cu 3 exerciții suplimentare. Fiecare exercițiu din variantele 1-2 are câte 2 sub-exerciții (a, b sau problema text), numărate separat. Exercițiul 1: 2 variante × 2 subpuncte = 4; Exercițiul 2: 2 variante = 2; Exercițiul 3: 2 variante = 2; Exercițiul 4: 2 variante = 2; Probleme distractive: 3 exerciții = 3. Total = 13 sau 14 în funcție de granularitate. Punctajele sunt indicate pe margine (2p, 1p, 4p, 3p, 10p total). Nu există exemple rezolvate.",
+      "input_tokens": 2962,
+      "output_tokens": 410
+    },
+    {
+      "pdf_page": 50,
+      "printed_page": "50",
+      "module": null,
+      "subtopic": "Probleme de aflare a două numere după suma sau diferența și câtul lor",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "aflarea a două numere după sumă și cât",
+        "aflarea a două numere după diferență și cât"
+      ],
+      "worked_examples_count": 2,
+      "proposed_exercises_count": 1,
+      "exercise_count": 3,
+      "exercise_types": [
+        "problema text",
+        "schema grafică (segmente)",
+        "rezolvare cu plan",
+        "verificare",
+        "scriere răspuns scurt"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține secțiunea 'Figurăm și explicăm' (predare cu scheme grafice) și 'Aplicăm și rezolvăm' cu 2 probleme rezolvate complet (cu plan și verificare). La final există un exercițiu propus: 'Scrieți răspunsul scurt al fiecărei probleme.' – care poate fi considerat o continuare a exercițiilor rezolvate, nu un exercițiu separat. Numărul modulului nu este vizibil pe pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 334
+    },
+    {
+      "pdf_page": 51,
+      "printed_page": "51",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 7,
+      "exercise_count": 7,
+      "exercise_types": [
+        "calcul direct",
+        "completare tabel",
+        "problema vizuala",
+        "reprezentare prin segmente",
+        "problema text",
+        "lucru in perechi",
+        "descoperire numere ascunse"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 7 exerciții propuse elevului, fără exemple rezolvate. Exercițiul 4 implică scheme cu segmente și descriere în cuvinte. Exercițiul 6 este marcat 'Lucrati în perechi!'. Exercițiul 7 implică descoperirea a două numere egale ascunse sub frunze. Nu există noțiuni noi introduse pe această pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 286
+    },
+    {
+      "pdf_page": 52,
+      "printed_page": "52",
+      "module": null,
+      "subtopic": "Cercetăm și descoperim — Probleme rezolvabile prin metoda figurativă",
+      "page_kind": "lectie",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 11,
+      "exercise_count": 11,
+      "exercise_types": [
+        "problema textuala",
+        "alegere schema figurativa",
+        "completare schema",
+        "calcul direct"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține o secțiune 'Cercetăm și descoperim' cu 3 probleme propuse spre rezolvare (nr. 1, 2, 3) și instrucțiuni de lucru în echipă, plus o secțiune 'Exerciții circulare' cu 8 expresii de calcul direct propuse. Nu există exemple rezolvate cu soluție afișată. Metodele figurative sunt aplicate, nu introduse ca noțiuni noi pe această pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 285
+    },
+    {
+      "pdf_page": 53,
+      "printed_page": "53",
+      "module": null,
+      "subtopic": "Turnir de desene / Turnir de probleme / Turnir de creație",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 14,
+      "exercise_count": 14,
+      "exercise_types": [
+        "reformulare propoziție",
+        "reprezentare prin segmente",
+        "problemă textuală",
+        "problemă vizuală",
+        "creare și rezolvare după schemă"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține trei secțiuni de tip 'Turnir': 'Turnir de desene' (6 exerciții de reformulare + instrucțiune de lucru în perechi), 'Turnir de probleme' (5 probleme textuale), 'Turnir de creație' (4 scheme vizuale pentru creat și rezolvat probleme în perechi). Total exerciții propuse estimate: 6+5+4=15, dar instrucțiunea de lucru în perechi din 'Turnir de desene' reduce exercițiile distincte; am contorizat 14 ca exerciții individuale propuse. Nu există exemple rezolvate. Nicio noțiune matematică nouă introdusă pe această pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 364
+    },
+    {
+      "pdf_page": 54,
+      "printed_page": "54",
+      "module": null,
+      "subtopic": "Împărțirea la un număr de o cifră",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "deîmpărțitul",
+        "împărțitorul",
+        "câtul",
+        "restul",
+        "proba împărțirii exacte",
+        "proba împărțirii cu rest"
+      ],
+      "worked_examples_count": 2,
+      "proposed_exercises_count": 4,
+      "exercise_count": 6,
+      "exercise_types": [
+        "calcul direct",
+        "determinare număr cifre cât",
+        "completare pătrățel",
+        "problema cu metoda figurativă"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține atât secțiunea 'Observăm și explicăm' (teorie cu exemple rezolvate: împărțiri demonstrative cu algoritmul coloanei și legenda termenilor) cât și 'Aplicăm și calculăm' (exerciții propuse 1-4). Worked examples includ cele două exemple de împărțire demonstrate vizual (69853:3 și 29853:3). Exercițiul 4 implică metoda figurativă pentru numere consecutive – posibil extins ca problemă de tip verbal.",
+      "input_tokens": 2962,
+      "output_tokens": 358
+    },
+    {
+      "pdf_page": 55,
+      "printed_page": "55",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 8,
+      "exercise_count": 8,
+      "exercise_types": [
+        "calcul direct",
+        "completare lant numeric",
+        "comparare cu casuta",
+        "problema text cu justificari",
+        "creare probleme dupa scheme",
+        "problema figurativa",
+        "completare tabel"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 8 exerciții propuse elevului în cadrul secțiunii de consolidare. Exercițiul 2 include și o subîntrebare de observație/comparare. Exercițiul 5 cere comparare fără calcul și verificare ulterioară. Exercițiul 6 cere crearea de probleme după scheme date (3 subpuncte). Nicio problemă nu este rezolvată/modelată în text.",
+      "input_tokens": 2962,
+      "output_tokens": 292
+    },
+    {
+      "pdf_page": 56,
+      "printed_page": "56",
+      "module": null,
+      "subtopic": "Cazuri speciale de împărțire",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "cazuri speciale de împărțire"
+      ],
+      "worked_examples_count": 3,
+      "proposed_exercises_count": 3,
+      "exercise_count": 6,
+      "exercise_types": [
+        "calcul in coloana",
+        "gaseste-greseala",
+        "calcul oral",
+        "problema text",
+        "exercitii circulare"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține secțiunea 'Observăm și explicăm' cu 3 exemple rezolvate (800004:2, 8234:4, 13951:3), și secțiunea 'Aplicăm și calculăm' cu 3 exerciții propuse (ex.1 gaseste-greseala, ex.2 calcul oral în tabel, ex.3 probleme despre spectatori). Secțiunea 'Exerciții circulare' la final conține 6 expresii de calculat, dar acestea pot fi considerate parte din exercițiile propuse. proposed_exercises_count include ex.1, ex.2, ex.3 plus exercițiile circulare dacă sunt separate; am contabilizat doar ex.1-3 ca exerciții propuse principale.",
+      "input_tokens": 2962,
+      "output_tokens": 352
+    },
+    {
+      "pdf_page": 57,
+      "printed_page": "57",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 8,
+      "exercise_count": 8,
+      "exercise_types": [
+        "calcul direct",
+        "completare cu cifre",
+        "descoperire regulă și completare șir",
+        "aflare număr necunoscut",
+        "scriere sub formă de exercițiu și rezolvare",
+        "rezolvare prin metoda figurativă",
+        "organizare problemă în lanț",
+        "problemă contextuală"
+      ],
+      "confidence": "high",
+      "notes": "Pagina este o secțiune de consolidare și dezvoltare fără noțiuni noi introduse. Conține 8 exerciții propuse, fiecare cu mai multe subpuncte. Exercițiul 7 include și un subpunct creativ (creează o problemă asemănătoare). Exercițiul 2 implică completare cu cifre în căsuțe. Exercițiul 3 implică completare de șiruri cu regulă. Nu există exemple rezolvate.",
+      "input_tokens": 2962,
+      "output_tokens": 334
+    },
+    {
+      "pdf_page": 58,
+      "printed_page": "58",
+      "module": null,
+      "subtopic": "Rezolvare de exerciții și probleme",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 6,
+      "exercise_count": 6,
+      "exercise_types": [
+        "gaseste-greseala",
+        "completare tabel",
+        "problema text",
+        "calcul direct",
+        "modifica deimpartitul",
+        "ordine operatii"
+      ],
+      "confidence": "high",
+      "notes": "Exercițiul 1 cere descoperirea și corectarea greșelilor lui Nătăfleață (gaseste-greseala). Exercițiul 2 conține două tabele de completat (înmulțire și împărțire). Exercițiul 3 are 4 subpuncte cu probleme text rezolvate prin metoda figurativă. Exercițiul 4 cere calculul și modificarea deîmpărțitului. Exercițiul 5 are 2 subpuncte cu probleme cu justificări. Exercițiul 6 cere determinarea ordinii operațiilor și calculul.",
+      "input_tokens": 2962,
+      "output_tokens": 312
+    },
+    {
+      "pdf_page": 59,
+      "printed_page": "59",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 9,
+      "exercise_count": 9,
+      "exercise_types": [
+        "calcul direct",
+        "problema text",
+        "problema vizuala",
+        "creare problema",
+        "desen pe rețea"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține exercițiul 7 (Lucraţi în echipe! - creare și rezolvare probleme cu sub-puncte a-e), apoi două variante paralele (VARIANTA 1 și VARIANTA 2) cu câte 2 exerciții fiecare (1. Calculează în coloniță - câte 2 sub-puncte per variantă; 2. Rezolvă problemele prin metoda figurativă - câte 2 sub-puncte per variantă), plus o secțiune PROBLEMĂ DISTRACTIVĂ (desen pe rețeaua de pătrățele). Am numărat exercițiul 7 ca 1, varianta 1 ex.1 ca 1, varianta 1 ex.2 ca 1, varianta 2 ex.1 ca 1, varianta 2 ex.2 ca 1, problema distractivă ca 1 = total ~7 exerciții propuse elevului, dar numărul exact depinde de granularitate; am ales 9 incluzând sub-punctele majore distincte.",
+      "input_tokens": 2962,
+      "output_tokens": 402
+    },
+    {
+      "pdf_page": 60,
+      "printed_page": "60",
+      "module": null,
+      "subtopic": "Înmulțirea cu un număr de două cifre",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "produs parțial",
+        "înmulțirea cu un număr de două cifre"
+      ],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 3,
+      "exercise_count": 4,
+      "exercise_types": [
+        "calcul în coloniță",
+        "calcul conform indicației",
+        "problemă text",
+        "decodificare valoare numerică"
+      ],
+      "confidence": "high",
+      "notes": "Pagina introduce algoritmul înmulțirii cu un număr de două cifre prin produse parțiale. Secțiunea 'Observăm și descoperim' conține un exemplu rezolvat (calcul oral și scris). Secțiunea 'Aplicăm și explicăm' conține 3 exerciții propuse (1, 2, 3). Secțiunea 'Concurs' de la final este un exercițiu-joc de decodificare (calculul pătratelor unor numere și decodificarea unui cuvânt), numărat ca exercițiu propus suplimentar inclus în exercițiile propuse.",
+      "input_tokens": 2962,
+      "output_tokens": 331
+    },
+    {
+      "pdf_page": 61,
+      "printed_page": "61",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 7,
+      "exercise_count": 7,
+      "exercise_types": [
+        "gaseste-greseala",
+        "calcul direct",
+        "problema text",
+        "ordine crescatoare",
+        "ordinea operatiilor",
+        "scriere prin exercitiu",
+        "plasare paranteze",
+        "lucrati in perechi"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 7 exerciții propuse fără soluții afișate. Exercițiul 1 este de tip 'gaseste-greseala' (descoperă și corectează greșelile lui Nătăfleață). Exercițiul 7 este marcat 'Lucrați în perechi!'. Unele exerciții conțin sub-puncte marcate cu bullet (•) care sunt extensii/bonus ale exercițiului principal.",
+      "input_tokens": 2962,
+      "output_tokens": 307
+    },
+    {
+      "pdf_page": 62,
+      "printed_page": "62",
+      "module": null,
+      "subtopic": "Cine seamănă culege",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 4,
+      "exercise_count": 4,
+      "exercise_types": [
+        "calcul direct",
+        "comparare cu casuta",
+        "problema text",
+        "metoda figurativa",
+        "lucrati in perechi"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 4 exerciții propuse (numerotate 1-4) plus o rubrică 'Concurs' care poate fi considerată exercițiu suplimentar; exercițiul 2 implică comparare cu simboluri (<, =, >); exercițiul 3 conține probleme cu text și justificări; exercițiul 4 implică metoda figurativă. Rubrica 'Concurs' nu a fost numărată ca exercițiu separat, dar ar putea fi considerată un al 5-lea exercițiu propus.",
+      "input_tokens": 2962,
+      "output_tokens": 281
+    },
+    {
+      "pdf_page": 63,
+      "printed_page": "63",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 11,
+      "exercise_count": 11,
+      "exercise_types": [
+        "calcul direct",
+        "problema text",
+        "completare casuta",
+        "descoperire regula sir",
+        "calcul rational",
+        "creare problema"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține exercițiile numerotate 5–11. Exercițiul 8 implică completarea unor casute cu valori numerice. Exercițiul 9 cere descoperirea regulii și scrierea următoarelor două numere din șir. Exercițiul 11 cere crearea de probleme după informații date (Lucrați în perechi). Nu există exemple rezolvate pe pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 257
+    },
+    {
+      "pdf_page": 64,
+      "printed_page": "64",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "calcul direct",
+        "ordonare valori",
+        "problema vizuala",
+        "completare schema",
+        "aflare necunoscuta",
+        "lucru in echipe"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține exercițiile 12-16 plus secțiunea 'Concurs'. Ex. 12 = ordonare litere după valori numerice (calcul direct). Ex. 13 = creare și rezolvare probleme după scheme vizuale (3 subpuncte). Ex. 14 = aflarea numerelor necunoscute (9 subpuncte). Ex. 15 = probleme cu plan și exercițiu (2 subpuncte + o întrebare suplimentară). Ex. 16 = lucru în echipă cu context imagistic (masă restaurant). Secțiunea 'Concurs' este activitate de grup suplimentară. Numărul exact de exerciții propuse este estimat la 5 sarcini majore (numerotate 12-16), fiecare cu multiple subpuncte.",
+      "input_tokens": 2962,
+      "output_tokens": 349
+    },
+    {
+      "pdf_page": 65,
+      "printed_page": "65",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 6,
+      "exercise_count": 6,
+      "exercise_types": [
+        "calcul în coloniță",
+        "ordine operații",
+        "completare șir numeric",
+        "problemă vizuală",
+        "completare enunț problemă",
+        "identificare pattern vizual"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține două variante paralele (VARIANTA 1 și VARIANTA 2) cu 4 exerciții fiecare (numerotate 1-4), plus o secțiune separată 'PROBLEME DISTRACTIVE' cu 2 exerciții suplimentare. Exercițiile 1-4 sunt propuse în dublu exemplar (variante), numărate ca 4 exerciții distincte cu două variante fiecare. Secțiunea Probleme Distractive include completare enunț cu răspuns 'un milion' și identificare glob lipsă din matrice colorată. Total propuse: 4 exerciții principale (cu variante) + 2 distractive = 6.",
+      "input_tokens": 2962,
+      "output_tokens": 347
+    },
+    {
+      "pdf_page": 66,
+      "printed_page": "66",
+      "module": "Modulul 5",
+      "subtopic": "Fracții. Formarea, scrierea și citirea fracțiilor",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "fracție",
+        "numărător",
+        "numitor",
+        "linie de fracție"
+      ],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 2,
+      "exercise_count": 2,
+      "exercise_types": [
+        "problema vizuala",
+        "observare desen",
+        "scriere si citire fractii"
+      ],
+      "confidence": "high",
+      "notes": "Pagina introduce conceptul de fracție cu definiție, explicarea numărătorului și numitorului, și exemple vizuale (mere, ciocolată, figuri geometrice). Secțiunea 'Observăm și descoperim' conține sarcini de observare fără soluție afișată, deci sunt propuse elevului. Secțiunea 'Aplicăm și rezolvăm' conține un exercițiu cu sub-punctele a-e plus un bullet suplimentar, numărate ca 2 exerciții propuse distincte.",
+      "input_tokens": 2962,
+      "output_tokens": 300
+    },
+    {
+      "pdf_page": 67,
+      "printed_page": "67",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 7,
+      "exercise_count": 7,
+      "exercise_types": [
+        "construire segment si scriere fractie",
+        "reprezentare fractie prin dreptunghi",
+        "problema vizuala",
+        "identificare fractie din desen",
+        "scriere fractie pentru multimi de obiecte",
+        "gaseste-greseala",
+        "scriere fractii cu cifre si citire"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 7 exerciții propuse elevului, toate fără soluții afișate. Exercițiul 6 este de tip 'gasește-greșeala' (Nătăfleață a reprezentat greșit fracția 3/4). Exercițiile acoperă noțiunea de fracție deja introdusă anterior.",
+      "input_tokens": 2962,
+      "output_tokens": 289
+    },
+    {
+      "pdf_page": 68,
+      "printed_page": "68",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 6,
+      "exercise_count": 6,
+      "exercise_types": [
+        "problema vizuala",
+        "reprezentare fractie",
+        "scriere ca fractie",
+        "completare text",
+        "descoperire regula",
+        "lucrati in perechi"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține exclusiv exerciții propuse (8-13) referitoare la fracții: identificare fracții din desene, reprezentare pe segment, reprezentare grafică a fracțiilor, scriere ca fracție a unor părți din întreg, și descoperirea regulii unui șir. Exercițiile 10 și 12b sunt marcate 'Lucrați în perechi!'. Nu există noțiuni noi introduse și niciun exemplu rezolvat.",
+      "input_tokens": 2962,
+      "output_tokens": 260
+    },
+    {
+      "pdf_page": 69,
+      "printed_page": "69",
+      "module": null,
+      "subtopic": "Adunarea fracțiilor cu același numitor",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "adunarea fracțiilor cu același numitor"
+      ],
+      "worked_examples_count": 3,
+      "proposed_exercises_count": 4,
+      "exercise_count": 7,
+      "exercise_types": [
+        "calcul direct",
+        "problema text",
+        "completare cu casuta",
+        "problema vizuala"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține secțiunea 'Observăm și descoperim' cu exemple vizuale rezolvate (3 exemple cu fracții ilustrate), apoi 'Aplicăm și explicăm' cu 4 exerciții propuse. Exercițiul 3 ('Descoperiți numerele ascunse') implică completare cu căsuțe — conține numere lipsă marcate cu simboluri. Exercițiul 1 are sub-punctele a) și b) ca probleme text, exercițiul 4 la fel. Worked examples count include cele 3 exemple din secțiunea de observare.",
+      "input_tokens": 2962,
+      "output_tokens": 316
+    },
+    {
+      "pdf_page": 70,
+      "printed_page": "70",
+      "module": null,
+      "subtopic": "Scăderea fracțiilor cu același numitor",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "scăderea fracțiilor cu același numitor"
+      ],
+      "worked_examples_count": 3,
+      "proposed_exercises_count": 3,
+      "exercise_count": 6,
+      "exercise_types": [
+        "calcul direct",
+        "problema text",
+        "completare cu casuta"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține secțiunea 'Observăm și descoperim' cu 3 probleme ilustrate rezolvate și reguli deduse, apoi 'Aplicăm și explicăm' cu 3 exerciții propuse elevului (ex.1 calcul direct cu fracții, ex.2 probleme text cu fracții, ex.3 descoperire numere ascunse cu simboluri). Exercițiul 3 implică completarea unor căsuțe reprezentate prin simboluri grafice (imagini de fluturi/frunze). Numărul de subpuncte propuse este mare, dar sunt grupate în 3 exerciții numerotate principale.",
+      "input_tokens": 2962,
+      "output_tokens": 304
+    },
+    {
+      "pdf_page": 71,
+      "printed_page": "71",
+      "module": null,
+      "subtopic": "Adunarea și scăderea fracțiilor cu același numitor",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 8,
+      "exercise_count": 8,
+      "exercise_types": [
+        "problema vizuala",
+        "problema text",
+        "completare cu casuta",
+        "gaseste-greseala",
+        "calcul direct"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 5 exerciții principale (1-5) plus o secțiune suplimentară de teme (1-3) în josul paginii, delimitată de o bordură. Exercițiile 1 și 2 implică reprezentări vizuale (desene cu fracții colorate). Exercițiul 3 are 4 sub-probleme text (a,b,c,d). Exercițiul 4 are completare de fracții lipsă (căsuțe). Exercițiul 5 cere identificarea greșelilor comise de 'Nătăfleață'. Secțiunea de jos include probleme vizuale, scriere în cuvinte a fracțiilor și calcul direct.",
+      "input_tokens": 2962,
+      "output_tokens": 342
+    },
+    {
+      "pdf_page": 72,
+      "printed_page": "72",
+      "module": null,
+      "subtopic": "Aflarea unei fracții dintr-un număr",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "aflarea unei fracții dintr-un număr"
+      ],
+      "worked_examples_count": 3,
+      "proposed_exercises_count": 5,
+      "exercise_count": 8,
+      "exercise_types": [
+        "calcul direct",
+        "problema vizuala",
+        "desen potrivit",
+        "problema text"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține secțiunea 'Observăm și descoperim' cu 3 exemple rezolvate și o regulă tip 'Ați observat?', urmată de secțiunea 'Aplicăm și explicăm' cu 2 exerciții propuse (exercițiul 1 cu 5 subpuncte perechi și exercițiul 2 cu 3 subpuncte problemă text). Exercițiul 1 are 5 perechi de calcule (a-e), fiecare cu câte 2 expresii, deci 10 calcule, dar numărat ca 1 exercițiu structural cu subpuncte.",
+      "input_tokens": 2962,
+      "output_tokens": 314
+    },
+    {
+      "pdf_page": 73,
+      "printed_page": "73",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "calcul direct",
+        "problema text",
+        "problema cu plan",
+        "descoperire regula",
+        "problema vizuala"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 5 exerciții propuse elevului, fără exemple rezolvate. Exercițiul 5 implică figuri geometrice (cercuri/pătrate împărțite) cu serii vizuale. Există o imagine decorativă a cărții 'Morcoveață' lângă exercițiul 2.",
+      "input_tokens": 2962,
+      "output_tokens": 224
+    },
+    {
+      "pdf_page": 74,
+      "printed_page": "74",
+      "module": null,
+      "subtopic": "Cine seamănă culege",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 6,
+      "exercise_count": 6,
+      "exercise_types": [
+        "problema vizuala",
+        "calcul direct",
+        "problema text cu fractii",
+        "descoperire regula si desen",
+        "completare cu casuta",
+        "completare tabel"
+      ],
+      "confidence": "high",
+      "notes": "Pagina este o pagină de exerciții recapitulative marcată cu rubrica 'Cine seamănă culege'. Conține 6 exerciții propuse: 1) citire fracții din figuri colorate, 2) calcul cu fracții, 3) probleme text cu fracții, 4) descoperire regulă și desen figuri/fracții, 5) completare fracții lipsă cu căsuțe, 6) completare tabel (lucru în perechi). Nu există noțiuni noi introduse.",
+      "input_tokens": 2962,
+      "output_tokens": 304
+    },
+    {
+      "pdf_page": 75,
+      "printed_page": "75",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 6,
+      "exercise_count": 6,
+      "exercise_types": [
+        "calcul direct",
+        "completare cu casuta",
+        "problema text",
+        "scriere ca fractie"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține exclusiv exerciții propuse (nr. 7–12), fără exemple rezolvate. Exercițiul 9 implică completare cu numere potrivite în căsuțe. Exercițiile 8 și 10 sunt probleme cu text (cu justificări și cu plan). Exercițiul 11 cere calcul și descrierea fracțiilor cu terminologie matematică. Exercițiul 12 cere scrierea ca fracție a unor părți din unități de măsură.",
+      "input_tokens": 2962,
+      "output_tokens": 253
+    },
+    {
+      "pdf_page": 76,
+      "printed_page": "76",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 3,
+      "exercise_count": 3,
+      "exercise_types": [
+        "completare casuta",
+        "problema text",
+        "calcul direct",
+        "concurs/joc didactic"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține exercițiile 13, 14, 15 și o rubrică 'Concurs'. Ex. 13 cere descoperirea numerelor lipsă (completare căsuță cu fracții și imagini-simbol). Ex. 14 are 3 subpuncte cu probleme text. Ex. 15 cere calculul unor fracții din unități de măsură. Rubrica 'Concurs' este un joc didactic cu litere și valori numerice. Nu există exemple rezolvate. Numărul de exerciții propuse este 3 (numerotate 13, 14, 15) plus rubrica Concurs — am numărat rubricile numerotate ca exerciții principale (3), Concursul putând fi considerat exercițiu separat dar nenumarotat explicit în seria exercițiilor; am ales să număr 3 exerciții principale propuse.",
+      "input_tokens": 2962,
+      "output_tokens": 350
+    },
+    {
+      "pdf_page": 77,
+      "printed_page": "77",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 10,
+      "exercise_count": 10,
+      "exercise_types": [
+        "problema vizuala",
+        "reprezentare pe segment",
+        "calcul direct",
+        "problema text"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține două variante de test (VARIANTA 1 și VARIANTA 2) cu 4 exerciții fiecare (numerotate 1-4), plus o secțiune 'PROBLEME DISTRACTIVE' cu 2 probleme suplimentare. Total: 4 exerciții Varianta 1 + 4 exerciții Varianta 2 + 2 probleme distractive = 10. Punctajele sunt afișate (2p, 2p, 3p, 3p, total 10p). Nu există exemple rezolvate.",
+      "input_tokens": 2962,
+      "output_tokens": 274
+    },
+    {
+      "pdf_page": 78,
+      "printed_page": "78",
+      "module": "Modulul 6. Elemente de geometrie și măsurări",
+      "subtopic": "Poligoane",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "poligon",
+        "laturile poligonului",
+        "vârfurile poligonului",
+        "triunghi",
+        "patrulater",
+        "pentagon",
+        "hexagon"
+      ],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 3,
+      "exercise_count": 3,
+      "exercise_types": [
+        "identificare figuri geometrice",
+        "argumentare",
+        "problema vizuala",
+        "observare desene"
+      ],
+      "confidence": "high",
+      "notes": "Pagina introduce conceptul de poligon cu definiție în rubrica 'Rețineți!', prezintă clasificarea poligoanelor după numărul de laturi (triunghiuri, patrulatere, pentagoane, hexagoane). Secțiunea 'Observăm și ne amintim' recapitulează tipuri de linii (prerechizite). Exercițiul 3 este de tip observare în lumea reală cu imagini foto.",
+      "input_tokens": 2962,
+      "output_tokens": 305
+    },
+    {
+      "pdf_page": 79,
+      "printed_page": "79",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "recunoastere forme",
+        "clasificare",
+        "problema vizuala",
+        "lucru in echipa",
+        "constructie geometrica"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 5 exerciții propuse elevilor pentru consolidare pe tema poligoanelor (recunoaștere, clasificare după număr de vârfuri/laturi, identificare figuri geometrice în desene, construcție). Nicio noțiune nouă nu este introdusă. Exercițiul 2 este marcat 'Lucrați în echipe!', exercițiul 5 'Atelier geometric. Lucrați în perechi!'. Nu există exemple rezolvate.",
+      "input_tokens": 2962,
+      "output_tokens": 272
+    },
+    {
+      "pdf_page": 80,
+      "printed_page": "80",
+      "module": null,
+      "subtopic": "Perimetrul poligonului",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "perimetrul poligonului"
+      ],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 4,
+      "exercise_count": 4,
+      "exercise_types": [
+        "calcul direct",
+        "problema vizuala",
+        "problema aplicata",
+        "activitate practica"
+      ],
+      "confidence": "high",
+      "notes": "Exercițiul 1 introduce noțiunea prin observare și calcul direct pe un traseu poligonal ilustrat. Exercițiul 2 cere calculul perimetrului pentru 3 poligoane și identificarea contextului real. Exercițiul 3 cere calculul perimetrului și rezolvarea unor probleme aplicative (a, b, c). Exercițiul 4 este un atelier geometric în echipă. Nicio problemă nu este rezolvată explicit cu soluție afișată.",
+      "input_tokens": 2962,
+      "output_tokens": 267
+    },
+    {
+      "pdf_page": 81,
+      "printed_page": "81",
+      "module": null,
+      "subtopic": "Unități de măsură pentru lungime",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "milimetru",
+        "centimetru",
+        "decimetru",
+        "metru",
+        "kilometru",
+        "unități standard de lungime"
+      ],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 2,
+      "exercise_count": 2,
+      "exercise_types": [
+        "problema vizuala",
+        "completare cu casuta"
+      ],
+      "confidence": "high",
+      "notes": "Pagina introduce unitățile de măsură pentru lungime și relațiile dintre ele (mm, cm, dm, m, km). Secțiunea 'Ce știm? Ce aflăm?' conține activitate de vocabular (antonime). Secțiunea 'Aplicăm și explicăm' conține 2 exerciții propuse: exercițiul 1 cere alegerea rezultatului potrivit al măsurării și descrierea imaginilor, exercițiul 2 cere completarea relațiilor dintre unități de măsură.",
+      "input_tokens": 2962,
+      "output_tokens": 312
+    },
+    {
+      "pdf_page": 82,
+      "printed_page": "82",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 8,
+      "exercise_count": 8,
+      "exercise_types": [
+        "comparare cu casuta",
+        "adevarat-fals",
+        "completare casuta",
+        "transformare unitati de masura",
+        "gaseste-greseala",
+        "problema text",
+        "problema vizuala",
+        "lucrati in echipe"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 8 exerciții propuse în secțiunea 'Consolidăm și dezvoltăm', plus o rubrică 'Concurs' cu 3 expresii de calculat (funie, stânjen, prăjină - unități de măsură tradiționale). Exercițiul 5 este de tip 'gaseste-greseala'. Exercițiul 7 implică calculul perimetrului unor poligoane vizualizate grafic. Rubrica Concurs nu a fost numărată ca exercițiu separat deoarece face parte din activitatea opțională de concurs.",
+      "input_tokens": 2962,
+      "output_tokens": 342
+    },
+    {
+      "pdf_page": 83,
+      "printed_page": "83",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 8,
+      "exercise_count": 8,
+      "exercise_types": [
+        "calcul direct",
+        "problema text",
+        "comparare cu casuta",
+        "lucrati in echipe",
+        "lucrati in perechi",
+        "problema vizuala",
+        "completare casuta",
+        "transformari unitati de masura"
+      ],
+      "confidence": "medium",
+      "notes": "Exercițiile 9-15 sunt propuse elevului, plus un exercițiu suplimentar de transformări la final (marcat cu bulină). Exercițiul 11 conține comparații cu simboluri (<, =, >) — tip 'comparare cu casuta'. Exercițiul 13 (Lucrați în echipe) și 15 (Lucrați în perechi) sunt activități colaborative. Exercițiul 15 include o schemă vizuală cu distanțe între localități. Nu există module sau subtopic vizibil pe pagină. Numărul total de exerciții propuse este estimat la 8 (exercițiile 9–15 + exercițiul cu bulină), deși unele au subpuncte multiple.",
+      "input_tokens": 2962,
+      "output_tokens": 362
+    },
+    {
+      "pdf_page": 84,
+      "printed_page": "84",
+      "module": null,
+      "subtopic": "Perimetrul pătratului",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "perimetrul pătratului",
+        "formula perimetrului pătratului"
+      ],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 3,
+      "exercise_count": 4,
+      "exercise_types": [
+        "calcul direct",
+        "completare tabel",
+        "aflare latura din perimetru"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține secțiunea 'Explorăm și descoperim' cu un exemplu rezolvat (perimetrul unui pătrat cu latura de 3 cm) și secțiunea 'Aplicăm și rezolvăm' cu 3 exerciții propuse. Există și o casetă 'Rețineți!' cu formula P = 4 × a și o casetă 'Ați observat?' cu formula inversă a = P : 4.",
+      "input_tokens": 2962,
+      "output_tokens": 267
+    },
+    {
+      "pdf_page": 85,
+      "printed_page": "85",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 10,
+      "exercise_count": 10,
+      "exercise_types": [
+        "calcul direct",
+        "problema text",
+        "calcul în lanț",
+        "constructie geometrica",
+        "lucru în perechi",
+        "lucru în echipe"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 10 exerciții propuse elevului în secțiunea de consolidare. Exercițiul 5 include diagrame de calcul în lanț (scheme cu săgeți). Exercițiul 9 este activitate în perechi, exercițiul 10 este activitate în echipe. Nu există exemple rezolvate. Nicio noțiune nouă introdusă.",
+      "input_tokens": 2962,
+      "output_tokens": 263
+    },
+    {
+      "pdf_page": 86,
+      "printed_page": "86",
+      "module": null,
+      "subtopic": "Perimetrul dreptunghiului",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "perimetrul dreptunghiului",
+        "formula perimetrului dreptunghiului"
+      ],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 2,
+      "exercise_count": 3,
+      "exercise_types": [
+        "calcul direct",
+        "completare tabel",
+        "problema aplicata"
+      ],
+      "confidence": "high",
+      "notes": "Pagina introduce formula perimetrului dreptunghiului în două moduri: P = 2×(L+l) și P = 2×L + 2×l. Există o secțiune 'Explorăm și descoperim' cu un exemplu rezolvat și o secțiune 'Aplicăm și rezolvăm' cu 2 exerciții propuse. Exercițiul 2 conține un tabel de completat cu 4 coloane.",
+      "input_tokens": 2962,
+      "output_tokens": 266
+    },
+    {
+      "pdf_page": 87,
+      "printed_page": "87",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 6,
+      "exercise_count": 6,
+      "exercise_types": [
+        "calcul direct",
+        "constructie geometrica",
+        "problema text",
+        "completare casuta",
+        "lucru in echipe",
+        "atelier geometric"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 6 exerciții propuse în cadrul secțiunii de consolidare. Exercițiul 3 include subprobleme cu justificări și variante de exercițiu cu casute de completat (480:(160-140) și 120 kg:(16+24)). Exercițiul 5 este marcat 'Lucrați în echipe!' și implică identificarea formelor rectangulare în contexte reale. Exercițiul 6 este 'Atelier geometric. Lucrați în perechi!' cu construcție și completare de propoziție logică. Nu se introduc noțiuni matematice noi pe această pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 327
+    },
+    {
+      "pdf_page": 88,
+      "printed_page": "88",
+      "module": null,
+      "subtopic": "Rezolvare de exerciții și probleme",
+      "page_kind": "exercitii",
+      "concepts_introduced": [
+        "semiperimetrul dreptunghiului"
+      ],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 7,
+      "exercise_count": 7,
+      "exercise_types": [
+        "problema text",
+        "calcul direct",
+        "completare tabel",
+        "lucrati in perechi",
+        "completare diagrama",
+        "problema vizuala"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține rubrica 'Ai observat?' cu formula semiperimetrului dreptunghiului (1/2 din P = L + l), care introduce noțiunea de semiperimetru. Exercițiul 6 conține două subpuncte cu diagrame de unități de măsură pentru lungime. Exercițiul 5 este marcat 'Lucrați în perechi!'. Nu există exemple rezolvate cu soluție afișată.",
+      "input_tokens": 2962,
+      "output_tokens": 278
+    },
+    {
+      "pdf_page": 89,
+      "printed_page": "89",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 6,
+      "exercise_count": 6,
+      "exercise_types": [
+        "calcul direct",
+        "problema text",
+        "problema vizuala",
+        "constructie geometrica",
+        "completare tabel"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține exercițiile 8-13 plus o secțiune bonus 'Află perimetrul'. Exercițiile acoperă operații cu unități de măsură, numărarea patrulatere/triunghiuri în desene geometrice, construirea pătratelor și dreptunghiurilor cu perimetru dat, și completarea tabelelor cu laturi și perimetre. Nu sunt introduse noțiuni noi. Exercițiile 8-13 + bonusul final sunt numărate ca 6 propuse.",
+      "input_tokens": 2962,
+      "output_tokens": 263
+    },
+    {
+      "pdf_page": 90,
+      "printed_page": "90",
+      "module": null,
+      "subtopic": "Corpuri geometrice",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "figuri geometrice",
+        "corpuri geometrice",
+        "cerc",
+        "sferă",
+        "cilindru",
+        "con",
+        "pătrat",
+        "cub",
+        "dreptunghi",
+        "cuboid",
+        "paralelipiped dreptunghic"
+      ],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 7,
+      "exercise_count": 7,
+      "exercise_types": [
+        "recunoastere forme geometrice",
+        "problema vizuala",
+        "identificare proprietati"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina este de tip 'Ce știm? Ce aflăm?' — secțiune introductivă cu recunoaștere de figuri și corpuri geometrice din imagini reale. Exercițiile propuse sunt întrebările cu bullet de la finalul paginii (4 întrebări principale, unele cu subpuncte a/b/c/d). Am numărat 7 subîntrebări distincte. Unele concepte (cerc, pătrat, dreptunghi) sunt figuri plane recunoscute, altele (sferă, cilindru, con, cub, cuboid) sunt corpuri geometrice introduse formal pe această pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 351
+    },
+    {
+      "pdf_page": 91,
+      "printed_page": "91",
+      "module": null,
+      "subtopic": "Explorăm, modelăm și calculăm",
+      "page_kind": "exercitii",
+      "concepts_introduced": [
+        "desfășurare a unui cuboid"
+      ],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "recunoastere forme geometrice",
+        "activitate practica",
+        "identificare elemente geometrice",
+        "problema vizuala",
+        "calcul perimetru",
+        "problema text",
+        "completare secventa"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 5 exerciții propuse elevilor (numerotate 1-5) plus o secțiune de pattern logic la final ('Descrieți construcția care urmează'). Exercițiul 2 introduce explicit noțiunea de desfășurare a unui cuboid. Exercițiul 4 include subpunctele a, b, c cu cuburi/cuboide și calcul de perimetru. Nicio problemă rezolvată cu soluție afișată nu este prezentă.",
+      "input_tokens": 2962,
+      "output_tokens": 299
+    },
+    {
+      "pdf_page": 92,
+      "printed_page": "92",
+      "module": null,
+      "subtopic": "Unități de măsură pentru masă",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "gram",
+        "kilogram",
+        "tonă"
+      ],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 3,
+      "exercise_count": 3,
+      "exercise_types": [
+        "alegere unitate de măsură",
+        "completare cu numere lipsă",
+        "problema vizuala"
+      ],
+      "confidence": "high",
+      "notes": "Pagina introduce unitățile de măsură pentru masă (gram, kilogram, tonă) cu relațiile dintre ele. Secțiunea 'Ce știm? Ce aflăm?' prezintă teoria, iar 'Aplicăm și explicăm' conține 3 exerciții propuse. Exercițiul 3 implică mase etalon ilustrate vizual.",
+      "input_tokens": 2962,
+      "output_tokens": 243
+    },
+    {
+      "pdf_page": 93,
+      "printed_page": "93",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 7,
+      "exercise_count": 8,
+      "exercise_types": [
+        "conversie unitati de masura",
+        "gaseste-greseala",
+        "problema textuala",
+        "ordonare",
+        "comparare",
+        "lucrati in echipe"
+      ],
+      "confidence": "medium",
+      "notes": "Exercițiul 2 conține afirmații intenționat greșite (greșelile lui Nătăfleață) pe care elevul trebuie să le corecteze — marcat ca gaseste-greseala. Exercițiul 1 cu transformări de unități de măsură (tone, kg, g) este tratat ca worked_examples_count=1 deoarece pare a fi un exercițiu cu model implicit, dar de fapt e propus elevului; reconsiderat: worked_examples_count=0 dacă nu există soluție afișată. Exercițiul 7 'Lucrați în echipe!' este exercițiu propus. Pagina nu introduce noțiuni matematice noi, ci consolidează unitățile de măsură a masei.",
+      "input_tokens": 2962,
+      "output_tokens": 346
+    },
+    {
+      "pdf_page": 94,
+      "printed_page": "94",
+      "module": null,
+      "subtopic": "Unități de măsură pentru capacitate",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "capacitate",
+        "litrul"
+      ],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 1,
+      "exercise_count": 1,
+      "exercise_types": [
+        "calcul direct",
+        "decodificare litere"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina introduce noțiunea de capacitate și litrul ca unitate de măsură standard. Secțiunea 'Concurs' conține un singur exercițiu compus cu mai multe sub-calcule (D, B, V, R, E, A, I, O, M, Ă, T, C, L) și decodificarea unor denumiri istorice de unități de măsură. Secțiunea 'Vreți să știți mai mult?' prezintă informații conexe (relație capacitate-masă-lungime) fără exerciții propriu-zise. Nu există exemple rezolvate cu soluție afișată.",
+      "input_tokens": 2962,
+      "output_tokens": 291
+    },
+    {
+      "pdf_page": 95,
+      "printed_page": "95",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 6,
+      "exercise_count": 6,
+      "exercise_types": [
+        "scriere si citire numere",
+        "problema text",
+        "descoperire regula sir",
+        "problema cu justificari",
+        "problema vizuala",
+        "lucrati in perechi"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 6 exerciții propuse elevului în secțiunea de consolidare. Exercițiul 6 implică scheme vizuale (diagrame cu bare/săgeți) pentru crearea și rezolvarea de probleme în perechi. Nu există exemple rezolvate.",
+      "input_tokens": 2962,
+      "output_tokens": 226
+    },
+    {
+      "pdf_page": 96,
+      "printed_page": "96",
+      "module": null,
+      "subtopic": "Unități monetare",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "unități monetare",
+        "leu",
+        "ban",
+        "monede",
+        "bancnote"
+      ],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 4,
+      "exercise_count": 4,
+      "exercise_types": [
+        "completare tabel",
+        "calcul direct",
+        "problema aplicata",
+        "decodificare numerica"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține secțiunea 'Ne amintim și generalizăm' cu informații teoretice despre unitățile monetare din Republica Moldova, secțiunea 'Observăm și investigăm' cu un tabel de ingrediente și cerințe de calcul al costului unui tort, și secțiunea 'Concurs' cu o activitate de decodificare a literelor prin valori numerice. Nu există exemple rezolvate explicit. Numărul de exerciții propuse este estimat (3 sarcini în 'Observăm și investigăm' + 1 în 'Concurs'). Modulul nu este indicat pe pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 341
+    },
+    {
+      "pdf_page": 97,
+      "printed_page": "97",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 6,
+      "exercise_count": 6,
+      "exercise_types": [
+        "problema text",
+        "completare spatii libere",
+        "calcul direct",
+        "scriere prin exercitiu",
+        "lucrati in perechi",
+        "descoperire regula sir",
+        "comparare cu casuta"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 6 exerciții propuse: ex.1 problemă contextuală cu formulare întrebare și rezolvare; ex.2 completare cu numere lipsă (conversii lei/bani); ex.3 rezolvare probleme text cu subpuncte a,b,c; ex.4 scriere prin exercițiu și calcul; ex.5 lucru în perechi - compunere și rezolvare problemă; ex.6 descoperire regulă și completare șir. La final exercițiu de comparare cu simboluri <, =, >. Nicio soluție rezolvată nu este afișată în text.",
+      "input_tokens": 2962,
+      "output_tokens": 342
+    },
+    {
+      "pdf_page": 98,
+      "printed_page": "98",
+      "module": null,
+      "subtopic": "Unități de măsură pentru timp",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "secundă",
+        "minut",
+        "oră",
+        "orar",
+        "minutar",
+        "secundar"
+      ],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "alegere unitate de măsură",
+        "citire ceas analogic",
+        "citire ceas electronic",
+        "calcul direct",
+        "problema contextualizata"
+      ],
+      "confidence": "high",
+      "notes": "Pagina combină lecție (Ce știm? Ce aflăm?) cu exerciții aplicative (Aplicăm și explicăm). Secțiunea teoretică prezintă echivalențele 1 min = 60 s și 1 oră = 60 min cu ilustrații de ceasuri. Exercițiul 3 implică citirea ceasului electronic și calcul de timp rămas. Exercițiul 5 are subpuncte cu probleme despre insecte.",
+      "input_tokens": 2962,
+      "output_tokens": 292
+    },
+    {
+      "pdf_page": 99,
+      "printed_page": "99",
+      "module": null,
+      "subtopic": "Observăm și descoperim",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "deceniu",
+        "secol",
+        "mileniu",
+        "an bisect"
+      ],
+      "worked_examples_count": 2,
+      "proposed_exercises_count": 2,
+      "exercise_count": 4,
+      "exercise_types": [
+        "completare tabel",
+        "problema vizuala",
+        "calcul direct"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina introduce unități mari de timp (deceniu, secol, mileniu) și noțiunea de an bisect. Sunt prezentate 2 exemple rezolvate (2000:4 și 2018:4). Sunt propuse 2 exerciții: reconstituirea lanțurilor de transformări și întrebarea despre câte zile durează un an bisect. Ceasul cosmic este o activitate de observare/explicare fără soluție afișată. Structura paginii este de tip descoperire/introducere, nu exerciții clasice.",
+      "input_tokens": 2962,
+      "output_tokens": 304
+    },
+    {
+      "pdf_page": 100,
+      "printed_page": "100",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 7,
+      "exercise_count": 7,
+      "exercise_types": [
+        "alegere unitate de măsură",
+        "completare spații libere",
+        "problema vizuala",
+        "calcul direct",
+        "comparare cu casuta",
+        "problema aplicata",
+        "determinare interval de timp"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 7 exerciții propuse cu subpuncte multiple despre unități de măsură a timpului, conversii, calcule cu fracții din unități de timp, comparații și determinare intervale. Exercițiul 7 este marcat 'Lucrați în perechi!'. Nu există exemple rezolvate.",
+      "input_tokens": 2962,
+      "output_tokens": 262
+    },
+    {
+      "pdf_page": 101,
+      "printed_page": "101",
+      "module": null,
+      "subtopic": "Cine seamănă culege",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 6,
+      "exercise_count": 6,
+      "exercise_types": [
+        "completare spatiu liber",
+        "estimare si calcul",
+        "comparare cu casuta",
+        "problema vizuala",
+        "lucru in echipe",
+        "lucru in perechi"
+      ],
+      "confidence": "high",
+      "notes": "Pagina este o pagină de recapitulare/consolidare cu 6 exerciții propuse elevilor. Exercițiul 1 cere completarea cu unități de măsură potrivite și cuvinte potrivite. Exercițiul 3 cere compararea cu semnul *, fără soluție dată. Exercițiul 4 implică o problemă vizuală cu forme geometrice. Exercițiul 5 este lucru în echipă cu forme geometrice. Exercițiul 6 este lucru în perechi cu un plan al căsuței păpușii și calcul de perimetru. Nu sunt noțiuni noi introduse.",
+      "input_tokens": 2962,
+      "output_tokens": 339
+    },
+    {
+      "pdf_page": 102,
+      "printed_page": "102",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 14,
+      "exercise_count": 14,
+      "exercise_types": [
+        "problema text",
+        "calcul direct",
+        "unitati de masura",
+        "completare tabel",
+        "gaseste posibilitati",
+        "concurs - formare triade"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține exercițiile 7-14 și o secțiune 'Concurs' la final. Exercițiile acoperă: probleme text (7), calcul cu fracții în unități de măsură (8), schimb de bancnote/monede (9-10), completare tabel perimetre dreptunghi/pătrat (11), determinare dimensiuni dreptunghi după perimetru (12-13), problemă de preț (14). Secțiunea 'Concurs' propune formarea de triade din cuvinte date - tratată ca un exercițiu propus. Nu există module sau subtitlu de secțiune vizibil.",
+      "input_tokens": 2962,
+      "output_tokens": 323
+    },
+    {
+      "pdf_page": 103,
+      "printed_page": "103",
+      "module": null,
+      "subtopic": "VARIANTA 1 / VARIANTA 2",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 10,
+      "exercise_count": 10,
+      "exercise_types": [
+        "identificare forme geometrice",
+        "comparare cu casuta",
+        "adevarat sau fals",
+        "calcul direct",
+        "problema text",
+        "problema vizuala"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține două variante paralele (VARIANTA 1 și VARIANTA 2) cu 4 exerciții numerotate fiecare, plus o secțiune 'PROBLEME DISTRACTIVE' cu 2 probleme recreative. Exercițiile sunt propuse elevului fără soluții afișate. Punctajul total indicat este 10p. Secțiunea distractivă include un problem de logică (motanul și șoricelul) și un exercițiu despre fețele cubului. Numărul de exerciții propuse a fost estimat considerând sub-punctele tuturor itemilor.",
+      "input_tokens": 2962,
+      "output_tokens": 326
+    },
+    {
+      "pdf_page": 104,
+      "printed_page": "104",
+      "module": "MODULUL 7",
+      "subtopic": "Matematica în viața noastră. Roadele învățării",
+      "page_kind": "lectie",
+      "concepts_introduced": [],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 9,
+      "exercise_count": 10,
+      "exercise_types": [
+        "problema text",
+        "schema vizuala",
+        "calcul direct",
+        "completare cu casuta",
+        "exercitii circulare"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține o problemă rezolvată (ridichea uriașă cu schema și pașii de rezolvare), urmată de cerințe propuse elevului (observați, scrieți rezolvarea, aflați masa personajelor, aflați masa ridichii). Secțiunea 'Exerciții circulare' conține 6 expresii de calcul propuse. Distincția worked/proposed este ușor ambiguă deoarece rezolvarea afișată este parțial completată cu casute goale.",
+      "input_tokens": 2962,
+      "output_tokens": 283
+    },
+    {
+      "pdf_page": 105,
+      "printed_page": "105",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 4,
+      "exercise_count": 4,
+      "exercise_types": [
+        "completare tabel",
+        "problema text",
+        "calcul direct",
+        "comparare cu casuta",
+        "problema vizuala"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 4 exerciții propuse: 1) completare tabele cu operații aritmetice, 2) recunoaștere povești și rezolvare probleme (subpunctele a, b, c, d), 3) calcul și comparare fracții, 4) problemă cu schemă figurativă. Secțiunea 'Concurs' este o activitate creativă suplimentară. Exercițiul 2 are mai multe subpuncte dar este numărat ca un singur exercițiu propus; totuși, subpunctele a, b, c, d sunt distincte - s-a ales să se numere exercițiul 2 ca unul singur.",
+      "input_tokens": 2962,
+      "output_tokens": 315
+    },
+    {
+      "pdf_page": 106,
+      "printed_page": "106",
+      "module": null,
+      "subtopic": "Calculăm și descoperim / Rezolvăm și explicăm",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "decodificare valoare numerica",
+        "completare casuta",
+        "problema textuala",
+        "lucrati in perechi"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina are două secțiuni distincte: 'Calculăm și descoperim' (activitate de decodificare cu metoda mersului invers + exerciții cu completare) și 'Rezolvăm și explicăm' (exercițiu 1 cu 5 subpuncte despre fracții din durata medie a vieții și exercițiul 2 lucrat în perechi despre carași și plătici). Nicio noțiune nouă nu este introdusă. Exercițiile de decodificare și completare sunt numărate ca parte din exercițiile propuse. Secțiunea 'Calculăm și descoperim' conține mai multe sub-itemi tratați ca un singur exercițiu complex.",
+      "input_tokens": 2962,
+      "output_tokens": 333
+    },
+    {
+      "pdf_page": 107,
+      "printed_page": "107",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "lanțuri de calcule",
+        "schemă-lanț",
+        "problema text",
+        "ecuații",
+        "lucru în perechi",
+        "concurs cu simboluri"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 5 exerciții propuse elevului (1-5) plus o secțiune 'Concurs' cu exerciții suplimentare. Exercițiul 4 include ecuații simple. Exercițiul 5 este marcat 'Lucrați în perechi!'. Secțiunea Concurs are subpunctele a) și b) cu simboluri grafice în loc de numere. Nicio problemă rezolvată nu este prezentă.",
+      "input_tokens": 2962,
+      "output_tokens": 272
+    },
+    {
+      "pdf_page": 108,
+      "printed_page": "108",
+      "module": null,
+      "subtopic": "Matematica în construcții",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 3,
+      "exercise_count": 3,
+      "exercise_types": [
+        "problema vizuala",
+        "completare tabel",
+        "calcul direct"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține rubrica 'Rezolvăm și explicăm' cu context aplicat (matematica în construcții). Primul exercițiu cere aflarea perimetrului unui lot dreptunghiular cu indiciu 'Vă amintiți' și 'Indicație' vizibile, deci este propus spre rezolvare, nu rezolvat. Al doilea exercițiu cere aflarea numărului de scânduri pentru gard. Al treilea exercițiu cere completarea numerelor care lipsesc în planul garsonierelor (variante a și b). Toate sunt propuse elevului, fără soluție afișată. Indicația oferă structura de rezolvare dar nu soluția completă.",
+      "input_tokens": 2962,
+      "output_tokens": 306
+    },
+    {
+      "pdf_page": 109,
+      "printed_page": "109",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "decodificare litere prin calcul cu fracții",
+        "problema vizuala",
+        "lucrati in perechi",
+        "comparare cu casuta",
+        "problema prin metoda figurativa"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 5 exerciții propuse elevului, fără exemple rezolvate. Exercițiul 1 este un exercițiu de decodificare a unui nume prin calcul cu fracții dintr-un număr. Exercițiul 2 are 3 subpuncte (a, b, c) cu probleme aplicate. Exercițiul 3 este marcat 'Lucrați în perechi!'. Exercițiul 4 este marcat 'Lucrați în echipe!' și conține comparații fără calcul. Exercițiul 5 este o problemă prin metoda figurativă.",
+      "input_tokens": 2962,
+      "output_tokens": 328
+    },
+    {
+      "pdf_page": 110,
+      "printed_page": "110",
+      "module": null,
+      "subtopic": "Rezolvăm și explicăm",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 4,
+      "exercise_count": 4,
+      "exercise_types": [
+        "problema text",
+        "completare tabel",
+        "creare problema",
+        "lucru in perechi",
+        "lucru in echipe"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține exerciții aplicative cu context agricol. Secțiunea 'Rezolvăm și explicăm' include două subpuncte a) și b) ale aceleiași probleme (numărate ca 1 exercițiu propus), o activitate de completare tabel (Lucrați în perechi) și o activitate de creare de probleme (Lucrați în echipe!) cu 3 date/informații furnizate. Nicio problemă nu este rezolvată cu soluție afișată. Antetul tematic este 'Matematica în agricultură'.",
+      "input_tokens": 2962,
+      "output_tokens": 291
+    },
+    {
+      "pdf_page": 111,
+      "printed_page": "111",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 4,
+      "exercise_count": 4,
+      "exercise_types": [
+        "decodificare expresii",
+        "problema text",
+        "completare casuta",
+        "reconstituire lant de calcule",
+        "concurs-problema versificata"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 4 exerciții propuse: ex.1 decodificare denumire fabrică prin calcul expresii, ex.2 probleme cu plan și prin exercițiu (3 subpuncte a/b/c), ex.3 completare condiție și formulare întrebare (3 subpuncte a/b/c), ex.4 reconstituire lanțuri de calcule cu fracții (2 subpuncte a/b). Secțiunea 'Concurs' prezintă o problemă versificată (Poznașu). Nicio problemă rezolvată cu soluție afișată.",
+      "input_tokens": 2962,
+      "output_tokens": 308
+    },
+    {
+      "pdf_page": 112,
+      "printed_page": "112",
+      "module": null,
+      "subtopic": "Matematica în producție",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "productivitatea muncii"
+      ],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 3,
+      "exercise_count": 3,
+      "exercise_types": [
+        "problema contextuala",
+        "completare tabel",
+        "dezbatere/argumentare"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina introduce noțiunea de productivitate în context aplicativ (matematica în producție). Secțiunea 'Explicăm și rezolvăm' prezintă o problemă cu trei traducătoare dar fără soluție afișată explicit — tratată ca exercițiu propus. Tabelul cu Strungar/Frezor/Croitoreasă conține căsuțe de completat. Secțiunea 'Concurs' (PRO sau CONTRA) este un exercițiu de argumentare în echipă. Modulul nu este indicat explicit pe pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 280
+    },
+    {
+      "pdf_page": 113,
+      "printed_page": "113",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 7,
+      "exercise_count": 7,
+      "exercise_types": [
+        "completare sir numeric",
+        "problema text",
+        "aflare necunoscuta",
+        "problema vizuala",
+        "creare problema dupa schema",
+        "concurs"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 7 exerciții propuse fără soluții afișate. Exercițiul 6 este marcat 'Lucrați în perechi!'. Exercițiul 7 include scheme vizuale cu tabele și imagini. Secțiunea 'Concurs' de la final este tot un exercițiu propus elevului. Nu sunt noțiuni noi introduse.",
+      "input_tokens": 2962,
+      "output_tokens": 265
+    },
+    {
+      "pdf_page": 114,
+      "printed_page": "114",
+      "module": null,
+      "subtopic": "Matematica în comerț",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 8,
+      "exercise_count": 8,
+      "exercise_types": [
+        "problema text",
+        "calcul direct",
+        "completare coloana",
+        "problema vizuala",
+        "creare problema dupa schema",
+        "concurs calcul rapid"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține două secțiuni: 'Cercetăm în echipe' (2 probleme de tip problemă-text aplicată la comerț) și 'Observăm și explicăm' (3 exerciții cu subpuncte, inclusiv calcul cu fracții ordinare, relații de proporționalitate, creare de probleme după scheme). La final există o secțiune 'Concurs' cu 3 exerciții de calcul rapid. Numărarea exercițiilor propuse este aproximativă din cauza subpunctelor multiple. Nu există exemple rezolvate afișate cu soluție.",
+      "input_tokens": 2962,
+      "output_tokens": 316
+    },
+    {
+      "pdf_page": 115,
+      "printed_page": "115",
+      "module": null,
+      "subtopic": "Consolidăm și dezvoltăm",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "completare tabel",
+        "problema text",
+        "calcul direct",
+        "transformări de unități",
+        "lucrati in perechi"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 5 exerciții propuse: 1) completarea a două tabele, 2) probleme cu justificări (două subpuncte + extensii), 3) calcul cu fracții, 4) transformări de unități de măsură, 5) problemă de tip 'lucraţi în perechi' cu salarii. Niciun exemplu rezolvat nu este afișat.",
+      "input_tokens": 2962,
+      "output_tokens": 249
+    },
+    {
+      "pdf_page": 116,
+      "printed_page": "116",
+      "module": null,
+      "subtopic": "Învățăm să gestionăm timpul liber",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "problema text",
+        "completare tabel",
+        "problema vizuala",
+        "calcul direct"
+      ],
+      "confidence": "high",
+      "notes": "Pagina face parte din rubrica 'Matematica în timpul liber'. Toate cele 5 sarcini sunt propuse elevului spre rezolvare, fără soluții afișate. Exercițiul 1 include o diagramă circulară (Somn/Învățare/Timp liber) ca suport vizual. Exercițiul 5 conține un tabel de completat despre vacanțele din anul școlar curent.",
+      "input_tokens": 2962,
+      "output_tokens": 249
+    },
+    {
+      "pdf_page": 117,
+      "printed_page": "117",
+      "module": null,
+      "subtopic": "Optăm pentru activități potrivite în timpul liber",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 4,
+      "exercise_count": 4,
+      "exercise_types": [
+        "ordonare valori numerice",
+        "decodificare/codificare",
+        "problema text",
+        "completare tabel",
+        "lucru in echipa"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 4 exerciții propuse: ex.1 - ordonare litere după valori numerice și decodificare activitate preferată; ex.2 - problemă text cu fete și băieți; ex.3 - problemă text cu justificări și prin exercițiu + subpunct creativ; ex.4 - lucru în echipe cu tabel 'ceasul florar' (4 plante, ore deschidere/închidere). Niciun exemplu rezolvat. Nu există modul vizibil pe pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 293
+    },
+    {
+      "pdf_page": 118,
+      "printed_page": "118",
+      "module": null,
+      "subtopic": "*Matematica prin imaginație",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "raționament prin schiță (metoda grafică de rezolvare a problemelor cu animale)"
+      ],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 1,
+      "exercise_count": 2,
+      "exercise_types": [
+        "problema text",
+        "formulare propozitii dupa model"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține o secțiune 'Observăm și explicăm' cu ilustrații și un exercițiu de formulare a propozițiilor (a, b), și o secțiune 'Schițăm și rezolvăm' cu o problemă complet rezolvată (iepuri și găini). Exercițiul propus elevului (punctul a și b din 'Observăm și explicăm') este distinct de exemplul rezolvat. Noțiunea introdusă este metoda de rezolvare prin schiță, specifică acestei lecții de 'matematică prin imaginație'.",
+      "input_tokens": 2962,
+      "output_tokens": 297
+    },
+    {
+      "pdf_page": 119,
+      "printed_page": "119",
+      "module": null,
+      "subtopic": "Turnir de probleme",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 10,
+      "exercise_count": 10,
+      "exercise_types": [
+        "problema text",
+        "problema cu date suplimentare (Informatie)",
+        "problema de logica",
+        "concurs poezie-problema"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 9 probleme propuse elevului (numerotate 1-9) în secțiunea 'Turnir de probleme', plus o secțiune 'Concurs' cu o problemă suplimentară formulată dintr-o poezie ilustrată. Problema 1 are două subpuncte a) și b), dar este numărată ca un singur exercițiu. Secțiunea 'Concurs' invită elevul să formuleze și să rezolve o problemă din contextul poeziei, numărată ca al 10-lea exercițiu propus.",
+      "input_tokens": 2962,
+      "output_tokens": 285
+    },
+    {
+      "pdf_page": 120,
+      "printed_page": "120",
+      "module": null,
+      "subtopic": "Concurs de proiecte",
+      "page_kind": "necunoscut",
+      "concepts_introduced": [
+        "bancă de informații",
+        "supliment artistic"
+      ],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 0,
+      "exercise_count": 1,
+      "exercise_types": [
+        "proiect de grup"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina descrie instrucțiunile pentru un concurs de proiecte la matematică, cu roluri în echipă și etape de realizare. Există un exemplu de proiect realizat (Proiect la matematică - Matematica ecologică) cu cuprins, considerat worked_example. Nu sunt exerciții propuse clasic. Noțiunile 'bancă de informații' și 'supliment artistic' sunt introduse ca termeni specifici proiectului pe această pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 255
+    },
+    {
+      "pdf_page": 121,
+      "printed_page": "121",
+      "module": null,
+      "subtopic": "Matematica ecologică; Matematica pe harta Republicii Moldova",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 0,
+      "exercise_count": 0,
+      "exercise_types": [
+        "banca de informatii",
+        "observatie si completare"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține două secțiuni de tip 'bancă de informații' cu date numerice reale despre ecologie și geografia Republicii Moldova, prezentate ca material informativ pentru elevi. Nu există exerciții propuse explicit și nu există exemple rezolvate. Instrucțiunea 'Observați, completați și folosiți băncile de informații' sugerează că datele urmează a fi utilizate în exerciții din altă parte. Nu sunt introduse concepte matematice noi.",
+      "input_tokens": 2962,
+      "output_tokens": 257
+    },
+    {
+      "pdf_page": 122,
+      "printed_page": "122",
+      "module": null,
+      "subtopic": "Cum înțelegem numerele naturale?",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 7,
+      "exercise_count": 7,
+      "exercise_types": [
+        "selectare si ordonare numere",
+        "comparare numere",
+        "identificare cifra in numar",
+        "predecessor si succesor",
+        "problema vizuala",
+        "lucru in echipa"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține o structură de tip fagure (hexagoane colorate în mov, galben și verde) cu numere naturale. Activitatea 'Lucrați în echipe!' propune 7 sarcini distincte elevilor. Nu există exemple rezolvate. Numărul de exerciții propuse este estimat după cele 7 bullet-uri din secțiunea de activitate.",
+      "input_tokens": 2962,
+      "output_tokens": 254
+    },
+    {
+      "pdf_page": 123,
+      "printed_page": "123",
+      "module": null,
+      "subtopic": "Cum ne pricepem să folosim operații aritmetice?",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "gaseste-greseala",
+        "calcul direct",
+        "calcul rational cu proprietati",
+        "comparare cu casuta",
+        "problema text",
+        "concurs"
+      ],
+      "confidence": "high",
+      "notes": "Pagina este de recapitulare/consolidare a operațiilor aritmetice. Exercițiul 1 cere corectarea greșelilor lui Nătăfleață (gaseste-greseala). Exercițiul 4 implică comparare fără calcule cu simboluri <, =, >. Secțiunea 'Concurs' conține 5 expresii cu litere (R, A, M, B, U) — numărate ca un singur exercițiu de tip concurs. Nu sunt introduse noțiuni noi.",
+      "input_tokens": 2962,
+      "output_tokens": 295
+    },
+    {
+      "pdf_page": 124,
+      "printed_page": "124",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 7,
+      "exercise_count": 8,
+      "exercise_types": [
+        "gaseste-greseala",
+        "calcul direct",
+        "completare spatiu",
+        "descoperire regula si completare sir",
+        "lant de calcule",
+        "problema vizuala",
+        "completare tabel"
+      ],
+      "confidence": "medium",
+      "notes": "Exercitiul 6 este de tip gaseste-greseala (Corectează greșelile lui Nătăfleață) și conține exemple rezolvate greșit intenționat — numărat ca worked_examples_count=1 deoarece are soluții afișate (greșite). Exercițiile 7-12 sunt propuse elevului. Rubrica 'Concurs' de la final este o activitate suplimentară de tip problema vizuala/completare tabel cu figuri geometrice. Nu există modul sau subtopic explicit pe această pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 313
+    },
+    {
+      "pdf_page": 125,
+      "printed_page": "125",
+      "module": null,
+      "subtopic": "Cum ne pricepem să rezolvăm probleme?",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
+      "exercise_types": [
+        "problema cu plan",
+        "problema cu justificări",
+        "problema cu segmente",
+        "problema cu lanț",
+        "problema prin exercițiu"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 5 probleme propuse elevului spre rezolvare, fără soluții afișate. Fiecare problemă are indicații metodice pentru lucrul în perechi (marcate cu bullet-uri în chenare colorate). Nu sunt introduse noțiuni matematice noi.",
+      "input_tokens": 2962,
+      "output_tokens": 223
+    },
+    {
+      "pdf_page": 126,
+      "printed_page": "126",
+      "module": null,
+      "subtopic": "Cum ne pricepem să creăm probleme?",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 8,
+      "exercise_count": 8,
+      "exercise_types": [
+        "creare problema",
+        "calcul direct",
+        "problema contextuala",
+        "problema cu imagini",
+        "poezie matematica"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina este structurată pe categorii: CONDIȚIE (2 texte-problemă), ÎNTREBARE (2 întrebări), OPERAȚII (2 seturi), EXERCIȚIU (2 expresii de calculat), TEMATICĂ (2 teme), IMAGINI (obiecte cu prețuri pentru creat probleme), POEZIE (problemă în versuri). Toate sunt propuse elevului spre rezolvare/creare. Nu există exemple rezolvate cu soluție afișată. Secțiunea 'Lucrați în echipe!' sugerează activitate de grup.",
+      "input_tokens": 2962,
+      "output_tokens": 295
+    },
+    {
+      "pdf_page": 127,
+      "printed_page": "127",
+      "module": null,
+      "subtopic": "Cum înțelegem fracțiile?",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 6,
+      "exercise_count": 6,
+      "exercise_types": [
+        "scriere si citire fractii",
+        "completare tabel",
+        "reconstituire lanturi de calcule",
+        "calcul direct",
+        "problema text",
+        "problema vizuala",
+        "lucrati in perechi"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 6 exerciții propuse elevilor, fără exemple rezolvate. Exercițiul 3 conține lanțuri de calcule cu fracții (completare cu operații lipsă). Exercițiul 6 este marcat 'Lucrați în perechi!' și implică desene de covoare cu fracții reprezentate vizual. Conceptele de fracție (numărător, numitor) sunt recapitulate/exersate, nu introduse pentru prima dată pe această pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 306
+    },
+    {
+      "pdf_page": 128,
+      "printed_page": "128",
+      "module": null,
+      "subtopic": "Cum ne pricepem să recunoaștem și să descriem forme geometrice?",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 4,
+      "exercise_count": 4,
+      "exercise_types": [
+        "problema vizuala",
+        "completare cu litere",
+        "identificare poligoane",
+        "completare cu cuvânt potrivit"
+      ],
+      "confidence": "high",
+      "notes": "Pagina este o recapitulare/evaluare a cunoștințelor despre forme geometrice. Exercițiul 2 cere scrierea literelor corespunzătoare variantelor corecte pentru a obține un cuvânt cifrat. Exercițiul 3 implică identificarea literelor corespunzătoare poligoanelor. Exercițiul 4 cere înlocuirea pictogramelor (picăturilor) cu cuvinte potrivite în propoziții despre forme geometrice. Nu sunt introduse noțiuni noi.",
+      "input_tokens": 2962,
+      "output_tokens": 306
+    },
+    {
+      "pdf_page": 129,
+      "printed_page": "129",
+      "module": null,
+      "subtopic": "Cum ne pricepem să calculăm perimetrul unui poligon?",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 8,
+      "exercise_count": 8,
+      "exercise_types": [
+        "calcul direct",
+        "problema vizuala",
+        "completare tabel",
+        "gaseste posibilitati",
+        "lucru in perechi"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține exclusiv exerciții propuse elevilor pentru calculul perimetrului poligoanelor (pătrat, dreptunghi). Exercițiul 3 solicită măsurători și aplicarea formulelor. Exercițiul 8 este marcat 'Lucrati în perechi!' și implică calculul perimetrului încăperilor dintr-un plan de garsonieră. Nu există exemple rezolvate cu soluție afișată.",
+      "input_tokens": 2962,
+      "output_tokens": 270
+    },
+    {
+      "pdf_page": 130,
+      "printed_page": "130",
+      "module": null,
+      "subtopic": "Cât de iscusiți suntem la măsurări?",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 4,
+      "exercise_count": 4,
+      "exercise_types": [
+        "asociere",
+        "problema vizuala",
+        "completare casuta",
+        "completare propozitie"
+      ],
+      "confidence": "high",
+      "notes": "Pagina este de recapitulare/evaluare pe tema măsurărilor. Exercițiul 1 cere asocierea perechilor de cuvinte cu mărimi (lungime, masă, timp, capacitate, valoare). Exercițiul 2 implică identificarea instrumentului de măsurare potrivit. Exercițiul 3 cere completarea unităților de măsură lipsă (marcate cu picătură/romb). Exercițiul 4 ('Lucrați în echipe!') cere completarea propozițiilor cu numere potrivite referitoare la bancnote/monede.",
+      "input_tokens": 2962,
+      "output_tokens": 302
+    },
+    {
+      "pdf_page": 131,
+      "printed_page": "131",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 3,
+      "exercise_count": 3,
+      "exercise_types": [
+        "problema text",
+        "lucru in perechi",
+        "schema cu timp"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține exercițiile 5, 6, 7. Exercițiul 7 este de tip 'Lucrați în perechi' și implică o schemă narativă cu intervale de timp (poveste despre cocoș), elevii trebuind să stabilească orele și să le reprezinte pe cadranul unui ceas. Un ceas ilustrativ este prezent pe pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 220
+    },
+    {
+      "pdf_page": 132,
+      "printed_page": "132",
+      "module": null,
+      "subtopic": "Cum ne pricepem să organizăm datele?",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 3,
+      "exercise_count": 3,
+      "exercise_types": [
+        "completare tabel",
+        "completare spatiu liber",
+        "lant numeric",
+        "problema textuala"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține 3 exerciții propuse elevului: ex.1 cu subpunctele a) și b) privind organizarea activităților zilnice într-un tabel, ex.2 privind completarea unui tabel cu date din enunțuri (cumpărături), ex.3 privind completarea unui lanț numeric conform unei probleme. Nu există exemple rezolvate. Titlul paginii este un subtitlu de recapitulare/evaluare, nu o secțiune de lecție nouă.",
+      "input_tokens": 2962,
+      "output_tokens": 273
+    },
+    {
+      "pdf_page": 133,
+      "printed_page": "133",
+      "module": null,
+      "subtopic": "Cum ne pricepem să investigăm situații-problemă din viața cotidiană?",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 9,
+      "exercise_count": 9,
+      "exercise_types": [
+        "adevarat-fals",
+        "posibil-imposibil",
+        "problema aplicata",
+        "problema vizuala",
+        "ecuatie din context"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține exclusiv exerciții propuse elevilor, grupate în 4 sarcini numerotate. Sarcina 1 are subsarcini de tip adevărat/fals și posibil/imposibil. Sarcinile 2 și 3 sunt probleme aplicative. Sarcina 4 (Lucrați în perechi!) are subsarcini cu ilustrații (balanță, vase cu lichid). Nu există exemple rezolvate. Numărul de exerciții propuse este aproximativ (9 subsarcini distincte identificate). Niciun concept matematic nou nu este introdus pe această pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 320
+    },
+    {
+      "pdf_page": 134,
+      "printed_page": "134",
+      "module": null,
+      "subtopic": "Cât de isteți am devenit?",
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 6,
+      "exercise_count": 6,
+      "exercise_types": [
+        "completare tabel",
+        "problema vizuala",
+        "problema text",
+        "logica/ordonare",
+        "numarare figuri geometrice",
+        "lucru in perechi",
+        "decodificare/ecuatii"
+      ],
+      "confidence": "high",
+      "notes": "Pagina este o secțiune de evaluare/recapitulare ('Cât de isteți am devenit?') cu 6 exerciții propuse: 1) completare tabel cu figuri geometrice după reguli; 2) problemă text cu hârciog și grâu (include subpunct); 3) problemă logică cu relații de ordine în familie; 4) numărare cubulețe în construcție; 5) lucru în perechi cu pătrate și chibrituri; 6) lucru în echipe - decodificare mesaj prin rezolvare ecuații. Nu sunt concepte noi introduse.",
+      "input_tokens": 2962,
+      "output_tokens": 343
+    },
+    {
+      "pdf_page": 135,
+      "printed_page": "135",
+      "module": null,
+      "subtopic": "CUPRINS",
+      "page_kind": "divider",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 0,
+      "exercise_count": 0,
+      "exercise_types": [],
+      "confidence": "high",
+      "notes": "Pagina reprezintă tabla de materii (cuprinsul) a manualului, listând 4 capitole principale cu subtitlurile și paginile corespunzătoare. Nu conține conținut matematic propriu-zis.",
+      "input_tokens": 2962,
+      "output_tokens": 169
+    },
+    {
+      "pdf_page": 136,
+      "printed_page": "136",
+      "module": null,
+      "subtopic": null,
+      "page_kind": "recapitulare",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 0,
+      "exercise_count": 0,
+      "exercise_types": [],
+      "confidence": "high",
+      "notes": "Pagină de cuprins (tabla de materii) pentru capitolele 5, 6 și 7 ale manualului. Conține doar titluri de secțiuni și numerele de pagini corespunzătoare. Nu există conținut matematic, exerciții sau exemple rezolvate pe această pagină. Notă de subsol: * Extindere.",
+      "input_tokens": 2962,
+      "output_tokens": 199
+    }
+  ],
+  "concept_inventory": [
+    {
+      "name": "ordinul cifrei în numărul natural",
+      "first_seen_pdf_page": 10,
+      "module": "Modulul 2. Numerele naturale până la un milion",
+      "subtopic": "Formarea, citirea și scrierea numerelor cuprinse între 1000 și 10000",
+      "occurrences": 1
+    },
+    {
+      "name": "mii (unități de mii)",
+      "first_seen_pdf_page": 10,
+      "module": "Modulul 2. Numerele naturale până la un milion",
+      "subtopic": "Formarea, citirea și scrierea numerelor cuprinse între 1000 și 10000",
+      "occurrences": 1
+    },
+    {
+      "name": "formarea numerelor de 4 cifre",
+      "first_seen_pdf_page": 10,
+      "module": "Modulul 2. Numerele naturale până la un milion",
+      "subtopic": "Formarea, citirea și scrierea numerelor cuprinse între 1000 și 10000",
+      "occurrences": 1
+    },
+    {
+      "name": "clasa unităților",
+      "first_seen_pdf_page": 14,
+      "module": null,
+      "subtopic": "Formarea, citirea și scrierea numerelor cuprinse între 100 000 și 1 000 000",
+      "occurrences": 1
+    },
+    {
+      "name": "clasa miilor",
+      "first_seen_pdf_page": 14,
+      "module": null,
+      "subtopic": "Formarea, citirea și scrierea numerelor cuprinse între 100 000 și 1 000 000",
+      "occurrences": 1
+    },
+    {
+      "name": "clasa milioanelor",
+      "first_seen_pdf_page": 14,
+      "module": null,
+      "subtopic": "Formarea, citirea și scrierea numerelor cuprinse între 100 000 și 1 000 000",
+      "occurrences": 1
+    },
+    {
+      "name": "sute de mii",
+      "first_seen_pdf_page": 14,
+      "module": null,
+      "subtopic": "Formarea, citirea și scrierea numerelor cuprinse între 100 000 și 1 000 000",
+      "occurrences": 1
+    },
+    {
+      "name": "zeci de mii",
+      "first_seen_pdf_page": 14,
+      "module": null,
+      "subtopic": "Formarea, citirea și scrierea numerelor cuprinse între 100 000 și 1 000 000",
+      "occurrences": 1
+    },
+    {
+      "name": "unități de mii",
+      "first_seen_pdf_page": 14,
+      "module": null,
+      "subtopic": "Formarea, citirea și scrierea numerelor cuprinse între 100 000 și 1 000 000",
+      "occurrences": 1
+    },
+    {
+      "name": "un milion",
+      "first_seen_pdf_page": 14,
+      "module": null,
+      "subtopic": "Formarea, citirea și scrierea numerelor cuprinse între 100 000 și 1 000 000",
+      "occurrences": 1
+    },
+    {
+      "name": "compararea numerelor cu același număr de cifre",
+      "first_seen_pdf_page": 16,
+      "module": null,
+      "subtopic": "Compararea și ordonarea numerelor până la 1 000 000",
+      "occurrences": 1
+    },
+    {
+      "name": "compararea numerelor cu număr diferit de cifre",
+      "first_seen_pdf_page": 16,
+      "module": null,
+      "subtopic": "Compararea și ordonarea numerelor până la 1 000 000",
+      "occurrences": 1
+    },
+    {
+      "name": "ordonarea numerelor",
+      "first_seen_pdf_page": 16,
+      "module": null,
+      "subtopic": "Compararea și ordonarea numerelor până la 1 000 000",
+      "occurrences": 1
+    },
+    {
+      "name": "înmulțirea cu 10, 100, 1000",
+      "first_seen_pdf_page": 18,
+      "module": null,
+      "subtopic": "Înmulțirea cu 10, 100, 1000",
+      "occurrences": 1
+    },
+    {
+      "name": "împărțirea exactă la 10, 100, 1000",
+      "first_seen_pdf_page": 20,
+      "module": null,
+      "subtopic": "Împărțirea exactă la 10, 100, 1000",
+      "occurrences": 1
+    },
+    {
+      "name": "unități de măsură pentru lungime",
+      "first_seen_pdf_page": 22,
+      "module": null,
+      "subtopic": "Transformări ale unităților de măsură",
+      "occurrences": 1
+    },
+    {
+      "name": "unități de măsură pentru masă",
+      "first_seen_pdf_page": 22,
+      "module": null,
+      "subtopic": "Transformări ale unităților de măsură",
+      "occurrences": 1
+    },
+    {
+      "name": "transformări ale unităților de măsură",
+      "first_seen_pdf_page": 22,
+      "module": null,
+      "subtopic": "Transformări ale unităților de măsură",
+      "occurrences": 1
+    },
+    {
+      "name": "cifre romane",
+      "first_seen_pdf_page": 24,
+      "module": null,
+      "subtopic": "Cifre romane",
+      "occurrences": 1
+    },
+    {
+      "name": "scrierea numerelor cu cifre romane",
+      "first_seen_pdf_page": 24,
+      "module": null,
+      "subtopic": "Cifre romane",
+      "occurrences": 1
+    },
+    {
+      "name": "citirea numerelor cu cifre romane",
+      "first_seen_pdf_page": 24,
+      "module": null,
+      "subtopic": "Cifre romane",
+      "occurrences": 1
+    },
+    {
+      "name": "problemă cu două sume",
+      "first_seen_pdf_page": 28,
+      "module": "Modulul 3",
+      "subtopic": "Adunarea și scăderea numerelor naturale, până la un milion",
+      "occurrences": 1
+    },
+    {
+      "name": "problemă cu două diferențe",
+      "first_seen_pdf_page": 28,
+      "module": "Modulul 3",
+      "subtopic": "Adunarea și scăderea numerelor naturale, până la un milion",
+      "occurrences": 1
+    },
+    {
+      "name": "proba adunării",
+      "first_seen_pdf_page": 30,
+      "module": null,
+      "subtopic": "Adunarea și scăderea numerelor mai mici decât 10000",
+      "occurrences": 1
+    },
+    {
+      "name": "proba scăderii",
+      "first_seen_pdf_page": 30,
+      "module": null,
+      "subtopic": "Adunarea și scăderea numerelor mai mici decât 10000",
+      "occurrences": 1
+    },
+    {
+      "name": "descăzut",
+      "first_seen_pdf_page": 30,
+      "module": null,
+      "subtopic": "Adunarea și scăderea numerelor mai mici decât 10000",
+      "occurrences": 1
+    },
+    {
+      "name": "scăzător",
+      "first_seen_pdf_page": 30,
+      "module": null,
+      "subtopic": "Adunarea și scăderea numerelor mai mici decât 10000",
+      "occurrences": 1
+    },
+    {
+      "name": "diferență (rest)",
+      "first_seen_pdf_page": 30,
+      "module": null,
+      "subtopic": "Adunarea și scăderea numerelor mai mici decât 10000",
+      "occurrences": 1
+    },
+    {
+      "name": "scăderea a două sume",
+      "first_seen_pdf_page": 34,
+      "module": null,
+      "subtopic": "Probleme de scădere a două sume (adunare a două diferențe)",
+      "occurrences": 1
+    },
+    {
+      "name": "adunarea a două diferențe",
+      "first_seen_pdf_page": 34,
+      "module": null,
+      "subtopic": "Probleme de scădere a două sume (adunare a două diferențe)",
+      "occurrences": 1
+    },
+    {
+      "name": "aflarea a două numere după suma și diferența lor",
+      "first_seen_pdf_page": 40,
+      "module": "Modulul 4",
+      "subtopic": "Probleme de aflare a două numere după suma și diferența lor",
+      "occurrences": 1
+    },
+    {
+      "name": "înmulțirea numerelor ce se termină cu zerouri",
+      "first_seen_pdf_page": 42,
+      "module": null,
+      "subtopic": "Înmulțirea numerelor ce se termină cu zerouri",
+      "occurrences": 1
+    },
+    {
+      "name": "împărțirea exactă a numerelor ce se termină cu zerouri",
+      "first_seen_pdf_page": 44,
+      "module": null,
+      "subtopic": "Împărțirea exactă a numerelor ce se termină cu zerouri",
+      "occurrences": 1
+    },
+    {
+      "name": "aflarea a două numere după sumă și cât",
+      "first_seen_pdf_page": 50,
+      "module": null,
+      "subtopic": "Probleme de aflare a două numere după suma sau diferența și câtul lor",
+      "occurrences": 1
+    },
+    {
+      "name": "aflarea a două numere după diferență și cât",
+      "first_seen_pdf_page": 50,
+      "module": null,
+      "subtopic": "Probleme de aflare a două numere după suma sau diferența și câtul lor",
+      "occurrences": 1
+    },
+    {
+      "name": "deîmpărțitul",
+      "first_seen_pdf_page": 54,
+      "module": null,
+      "subtopic": "Împărțirea la un număr de o cifră",
+      "occurrences": 1
+    },
+    {
+      "name": "împărțitorul",
+      "first_seen_pdf_page": 54,
+      "module": null,
+      "subtopic": "Împărțirea la un număr de o cifră",
+      "occurrences": 1
+    },
+    {
+      "name": "câtul",
+      "first_seen_pdf_page": 54,
+      "module": null,
+      "subtopic": "Împărțirea la un număr de o cifră",
+      "occurrences": 1
+    },
+    {
+      "name": "restul",
+      "first_seen_pdf_page": 54,
+      "module": null,
+      "subtopic": "Împărțirea la un număr de o cifră",
+      "occurrences": 1
+    },
+    {
+      "name": "proba împărțirii exacte",
+      "first_seen_pdf_page": 54,
+      "module": null,
+      "subtopic": "Împărțirea la un număr de o cifră",
+      "occurrences": 1
+    },
+    {
+      "name": "proba împărțirii cu rest",
+      "first_seen_pdf_page": 54,
+      "module": null,
+      "subtopic": "Împărțirea la un număr de o cifră",
+      "occurrences": 1
+    },
+    {
+      "name": "cazuri speciale de împărțire",
+      "first_seen_pdf_page": 56,
+      "module": null,
+      "subtopic": "Cazuri speciale de împărțire",
+      "occurrences": 1
+    },
+    {
+      "name": "produs parțial",
+      "first_seen_pdf_page": 60,
+      "module": null,
+      "subtopic": "Înmulțirea cu un număr de două cifre",
+      "occurrences": 1
+    },
+    {
+      "name": "înmulțirea cu un număr de două cifre",
+      "first_seen_pdf_page": 60,
+      "module": null,
+      "subtopic": "Înmulțirea cu un număr de două cifre",
+      "occurrences": 1
+    },
+    {
+      "name": "fracție",
+      "first_seen_pdf_page": 66,
+      "module": "Modulul 5",
+      "subtopic": "Fracții. Formarea, scrierea și citirea fracțiilor",
+      "occurrences": 1
+    },
+    {
+      "name": "numărător",
+      "first_seen_pdf_page": 66,
+      "module": "Modulul 5",
+      "subtopic": "Fracții. Formarea, scrierea și citirea fracțiilor",
+      "occurrences": 1
+    },
+    {
+      "name": "numitor",
+      "first_seen_pdf_page": 66,
+      "module": "Modulul 5",
+      "subtopic": "Fracții. Formarea, scrierea și citirea fracțiilor",
+      "occurrences": 1
+    },
+    {
+      "name": "linie de fracție",
+      "first_seen_pdf_page": 66,
+      "module": "Modulul 5",
+      "subtopic": "Fracții. Formarea, scrierea și citirea fracțiilor",
+      "occurrences": 1
+    },
+    {
+      "name": "adunarea fracțiilor cu același numitor",
+      "first_seen_pdf_page": 69,
+      "module": null,
+      "subtopic": "Adunarea fracțiilor cu același numitor",
+      "occurrences": 1
+    },
+    {
+      "name": "scăderea fracțiilor cu același numitor",
+      "first_seen_pdf_page": 70,
+      "module": null,
+      "subtopic": "Scăderea fracțiilor cu același numitor",
+      "occurrences": 1
+    },
+    {
+      "name": "aflarea unei fracții dintr-un număr",
+      "first_seen_pdf_page": 72,
+      "module": null,
+      "subtopic": "Aflarea unei fracții dintr-un număr",
+      "occurrences": 1
+    },
+    {
+      "name": "poligon",
+      "first_seen_pdf_page": 78,
+      "module": "Modulul 6. Elemente de geometrie și măsurări",
+      "subtopic": "Poligoane",
+      "occurrences": 1
+    },
+    {
+      "name": "laturile poligonului",
+      "first_seen_pdf_page": 78,
+      "module": "Modulul 6. Elemente de geometrie și măsurări",
+      "subtopic": "Poligoane",
+      "occurrences": 1
+    },
+    {
+      "name": "vârfurile poligonului",
+      "first_seen_pdf_page": 78,
+      "module": "Modulul 6. Elemente de geometrie și măsurări",
+      "subtopic": "Poligoane",
+      "occurrences": 1
+    },
+    {
+      "name": "triunghi",
+      "first_seen_pdf_page": 78,
+      "module": "Modulul 6. Elemente de geometrie și măsurări",
+      "subtopic": "Poligoane",
+      "occurrences": 1
+    },
+    {
+      "name": "patrulater",
+      "first_seen_pdf_page": 78,
+      "module": "Modulul 6. Elemente de geometrie și măsurări",
+      "subtopic": "Poligoane",
+      "occurrences": 1
+    },
+    {
+      "name": "pentagon",
+      "first_seen_pdf_page": 78,
+      "module": "Modulul 6. Elemente de geometrie și măsurări",
+      "subtopic": "Poligoane",
+      "occurrences": 1
+    },
+    {
+      "name": "hexagon",
+      "first_seen_pdf_page": 78,
+      "module": "Modulul 6. Elemente de geometrie și măsurări",
+      "subtopic": "Poligoane",
+      "occurrences": 1
+    },
+    {
+      "name": "perimetrul poligonului",
+      "first_seen_pdf_page": 80,
+      "module": null,
+      "subtopic": "Perimetrul poligonului",
+      "occurrences": 1
+    },
+    {
+      "name": "milimetru",
+      "first_seen_pdf_page": 81,
+      "module": null,
+      "subtopic": "Unități de măsură pentru lungime",
+      "occurrences": 1
+    },
+    {
+      "name": "centimetru",
+      "first_seen_pdf_page": 81,
+      "module": null,
+      "subtopic": "Unități de măsură pentru lungime",
+      "occurrences": 1
+    },
+    {
+      "name": "decimetru",
+      "first_seen_pdf_page": 81,
+      "module": null,
+      "subtopic": "Unități de măsură pentru lungime",
+      "occurrences": 1
+    },
+    {
+      "name": "metru",
+      "first_seen_pdf_page": 81,
+      "module": null,
+      "subtopic": "Unități de măsură pentru lungime",
+      "occurrences": 1
+    },
+    {
+      "name": "kilometru",
+      "first_seen_pdf_page": 81,
+      "module": null,
+      "subtopic": "Unități de măsură pentru lungime",
+      "occurrences": 1
+    },
+    {
+      "name": "unități standard de lungime",
+      "first_seen_pdf_page": 81,
+      "module": null,
+      "subtopic": "Unități de măsură pentru lungime",
+      "occurrences": 1
+    },
+    {
+      "name": "perimetrul pătratului",
+      "first_seen_pdf_page": 84,
+      "module": null,
+      "subtopic": "Perimetrul pătratului",
+      "occurrences": 1
+    },
+    {
+      "name": "formula perimetrului pătratului",
+      "first_seen_pdf_page": 84,
+      "module": null,
+      "subtopic": "Perimetrul pătratului",
+      "occurrences": 1
+    },
+    {
+      "name": "perimetrul dreptunghiului",
+      "first_seen_pdf_page": 86,
+      "module": null,
+      "subtopic": "Perimetrul dreptunghiului",
+      "occurrences": 1
+    },
+    {
+      "name": "formula perimetrului dreptunghiului",
+      "first_seen_pdf_page": 86,
+      "module": null,
+      "subtopic": "Perimetrul dreptunghiului",
+      "occurrences": 1
+    },
+    {
+      "name": "semiperimetrul dreptunghiului",
+      "first_seen_pdf_page": 88,
+      "module": null,
+      "subtopic": "Rezolvare de exerciții și probleme",
+      "occurrences": 1
+    },
+    {
+      "name": "figuri geometrice",
+      "first_seen_pdf_page": 90,
+      "module": null,
+      "subtopic": "Corpuri geometrice",
+      "occurrences": 1
+    },
+    {
+      "name": "corpuri geometrice",
+      "first_seen_pdf_page": 90,
+      "module": null,
+      "subtopic": "Corpuri geometrice",
+      "occurrences": 1
+    },
+    {
+      "name": "cerc",
+      "first_seen_pdf_page": 90,
+      "module": null,
+      "subtopic": "Corpuri geometrice",
+      "occurrences": 1
+    },
+    {
+      "name": "sferă",
+      "first_seen_pdf_page": 90,
+      "module": null,
+      "subtopic": "Corpuri geometrice",
+      "occurrences": 1
+    },
+    {
+      "name": "cilindru",
+      "first_seen_pdf_page": 90,
+      "module": null,
+      "subtopic": "Corpuri geometrice",
+      "occurrences": 1
+    },
+    {
+      "name": "con",
+      "first_seen_pdf_page": 90,
+      "module": null,
+      "subtopic": "Corpuri geometrice",
+      "occurrences": 1
+    },
+    {
+      "name": "pătrat",
+      "first_seen_pdf_page": 90,
+      "module": null,
+      "subtopic": "Corpuri geometrice",
+      "occurrences": 1
+    },
+    {
+      "name": "cub",
+      "first_seen_pdf_page": 90,
+      "module": null,
+      "subtopic": "Corpuri geometrice",
+      "occurrences": 1
+    },
+    {
+      "name": "dreptunghi",
+      "first_seen_pdf_page": 90,
+      "module": null,
+      "subtopic": "Corpuri geometrice",
+      "occurrences": 1
+    },
+    {
+      "name": "cuboid",
+      "first_seen_pdf_page": 90,
+      "module": null,
+      "subtopic": "Corpuri geometrice",
+      "occurrences": 1
+    },
+    {
+      "name": "paralelipiped dreptunghic",
+      "first_seen_pdf_page": 90,
+      "module": null,
+      "subtopic": "Corpuri geometrice",
+      "occurrences": 1
+    },
+    {
+      "name": "desfășurare a unui cuboid",
+      "first_seen_pdf_page": 91,
+      "module": null,
+      "subtopic": "Explorăm, modelăm și calculăm",
+      "occurrences": 1
+    },
+    {
+      "name": "gram",
+      "first_seen_pdf_page": 92,
+      "module": null,
+      "subtopic": "Unități de măsură pentru masă",
+      "occurrences": 1
+    },
+    {
+      "name": "kilogram",
+      "first_seen_pdf_page": 92,
+      "module": null,
+      "subtopic": "Unități de măsură pentru masă",
+      "occurrences": 1
+    },
+    {
+      "name": "tonă",
+      "first_seen_pdf_page": 92,
+      "module": null,
+      "subtopic": "Unități de măsură pentru masă",
+      "occurrences": 1
+    },
+    {
+      "name": "capacitate",
+      "first_seen_pdf_page": 94,
+      "module": null,
+      "subtopic": "Unități de măsură pentru capacitate",
+      "occurrences": 1
+    },
+    {
+      "name": "litrul",
+      "first_seen_pdf_page": 94,
+      "module": null,
+      "subtopic": "Unități de măsură pentru capacitate",
+      "occurrences": 1
+    },
+    {
+      "name": "unități monetare",
+      "first_seen_pdf_page": 96,
+      "module": null,
+      "subtopic": "Unități monetare",
+      "occurrences": 1
+    },
+    {
+      "name": "leu",
+      "first_seen_pdf_page": 96,
+      "module": null,
+      "subtopic": "Unități monetare",
+      "occurrences": 1
+    },
+    {
+      "name": "ban",
+      "first_seen_pdf_page": 96,
+      "module": null,
+      "subtopic": "Unități monetare",
+      "occurrences": 1
+    },
+    {
+      "name": "monede",
+      "first_seen_pdf_page": 96,
+      "module": null,
+      "subtopic": "Unități monetare",
+      "occurrences": 1
+    },
+    {
+      "name": "bancnote",
+      "first_seen_pdf_page": 96,
+      "module": null,
+      "subtopic": "Unități monetare",
+      "occurrences": 1
+    },
+    {
+      "name": "secundă",
+      "first_seen_pdf_page": 98,
+      "module": null,
+      "subtopic": "Unități de măsură pentru timp",
+      "occurrences": 1
+    },
+    {
+      "name": "minut",
+      "first_seen_pdf_page": 98,
+      "module": null,
+      "subtopic": "Unități de măsură pentru timp",
+      "occurrences": 1
+    },
+    {
+      "name": "oră",
+      "first_seen_pdf_page": 98,
+      "module": null,
+      "subtopic": "Unități de măsură pentru timp",
+      "occurrences": 1
+    },
+    {
+      "name": "orar",
+      "first_seen_pdf_page": 98,
+      "module": null,
+      "subtopic": "Unități de măsură pentru timp",
+      "occurrences": 1
+    },
+    {
+      "name": "minutar",
+      "first_seen_pdf_page": 98,
+      "module": null,
+      "subtopic": "Unități de măsură pentru timp",
+      "occurrences": 1
+    },
+    {
+      "name": "secundar",
+      "first_seen_pdf_page": 98,
+      "module": null,
+      "subtopic": "Unități de măsură pentru timp",
+      "occurrences": 1
+    },
+    {
+      "name": "deceniu",
+      "first_seen_pdf_page": 99,
+      "module": null,
+      "subtopic": "Observăm și descoperim",
+      "occurrences": 1
+    },
+    {
+      "name": "secol",
+      "first_seen_pdf_page": 99,
+      "module": null,
+      "subtopic": "Observăm și descoperim",
+      "occurrences": 1
+    },
+    {
+      "name": "mileniu",
+      "first_seen_pdf_page": 99,
+      "module": null,
+      "subtopic": "Observăm și descoperim",
+      "occurrences": 1
+    },
+    {
+      "name": "an bisect",
+      "first_seen_pdf_page": 99,
+      "module": null,
+      "subtopic": "Observăm și descoperim",
+      "occurrences": 1
+    },
+    {
+      "name": "productivitatea muncii",
+      "first_seen_pdf_page": 112,
+      "module": null,
+      "subtopic": "Matematica în producție",
+      "occurrences": 1
+    },
+    {
+      "name": "raționament prin schiță (metoda grafică de rezolvare a problemelor cu animale)",
+      "first_seen_pdf_page": 118,
+      "module": null,
+      "subtopic": "*Matematica prin imaginație",
+      "occurrences": 1
+    },
+    {
+      "name": "bancă de informații",
+      "first_seen_pdf_page": 120,
+      "module": null,
+      "subtopic": "Concurs de proiecte",
+      "occurrences": 1
+    },
+    {
+      "name": "supliment artistic",
+      "first_seen_pdf_page": 120,
+      "module": null,
+      "subtopic": "Concurs de proiecte",
+      "occurrences": 1
+    }
+  ],
+  "stats": {
+    "page_count": 136,
+    "pages_processed": 136,
+    "total_exercises": 833,
+    "low_confidence_pages": [],
+    "parse_failures": []
+  }
+}

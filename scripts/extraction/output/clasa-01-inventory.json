@@ -1,7 +1,7 @@
 {
   "grade": 1,
   "pdf_page_count": 136,
-  "generated_at": "2026-05-30T07:11:46.155Z",
+  "generated_at": "2026-05-30T09:18:54.927Z",
   "model": "claude-sonnet-4-6",
   "dpi": 130,
   "pages": [
@@ -17,9 +17,9 @@
       "exercise_count": 0,
       "exercise_types": [],
       "confidence": "high",
-      "notes": "Copertă manual Matematica clasa 1, autori Ludmila URSU, Ilie LUPU, Iulia IASINSCHI, Editura PRUT, ediție revizuită, Ministerul Educației al Republicii Moldova.",
+      "notes": "Pagina de copertă a manualului de Matematică pentru clasa 1, autori Ludmila Ursu, Ilie Lupu, Iulia Iasinschi, editura Prut, ediție revizuită, Ministerul Educației al Republicii Moldova.",
       "input_tokens": 2962,
-      "output_tokens": 169
+      "output_tokens": 177
     },
     {
       "pdf_page": 2,
@@ -33,25 +33,25 @@
       "exercise_count": 0,
       "exercise_types": [],
       "confidence": "high",
-      "notes": "Pagină de verso copertă cu informații editoriale: aprobare minister, tabel de evidență a manualului, comisia de evaluare, drepturi de autor, date editura Prut Internațional, CZU și ISBN.",
+      "notes": "Pagină de verso copertă cu informații administrative: aprobare ministerială, tabel de evidență a manualului, comisia de evaluare, date editoriale, CZU, ISBN. Nu conține conținut matematic.",
       "input_tokens": 2962,
-      "output_tokens": 162
+      "output_tokens": 159
     },
     {
       "pdf_page": 3,
       "printed_page": null,
       "module": null,
       "subtopic": null,
-      "page_kind": "coperta",
+      "page_kind": "divider",
       "concepts_introduced": [],
       "worked_examples_count": 0,
       "proposed_exercises_count": 0,
       "exercise_count": 0,
       "exercise_types": [],
       "confidence": "high",
-      "notes": "Pagină ilustrativă decorativă cu cifre animate (0-9) personificate, înconjurate de imagini cu fructe, păpuși, mașini, broaște, rațe, creioane. Nu conține conținut matematic explicit, exerciții sau text didactic. Servește ca pagină introductivă/decorativă pentru un manual de matematică pentru clasele primare.",
+      "notes": "Pagină ilustrativă/decorativă cu cifre animate (0-10) personificate și obiecte de numărat pe margini (mere, păpuși, mașini, broaște, creioane, rațe). Nu conține text matematic, exerciții sau definiții. Servește ca pagină de titlu sau divider vizual pentru introducerea cifrelor.",
       "input_tokens": 2962,
-      "output_tokens": 206
+      "output_tokens": 198
     },
     {
       "pdf_page": 4,
@@ -68,30 +68,32 @@
       "exercise_count": 0,
       "exercise_types": [],
       "confidence": "medium",
-      "notes": "Pagina conține o ilustrație mare (copii construind un zid) și o bandă de grafică/scriere la baza paginii (linii și forme geometrice pentru scriere). Nu există exerciții explicite sau exemple rezolvate vizibile. Pagina pare a fi introducere vizuală a temei.",
+      "notes": "Pagina conține doar o ilustrație mare (copii construind un zid) și un rând de trasare grafică (linii verticale, orizontale, oblice) la bază, fără text explicativ sau exerciții numerotate vizibile. Banda de trasare de la baza paginii poate fi un exercițiu grafomotric introductiv, dar nu este numerotată explicit ca exercițiu.",
       "input_tokens": 2962,
-      "output_tokens": 211
+      "output_tokens": 233
     },
     {
       "pdf_page": 5,
       "printed_page": "5",
       "module": null,
       "subtopic": null,
-      "page_kind": "exercitii",
-      "concepts_introduced": [],
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "pereche de obiecte",
+        "șir de obiecte",
+        "repetiție de modele"
+      ],
       "worked_examples_count": 0,
-      "proposed_exercises_count": 6,
-      "exercise_count": 6,
+      "proposed_exercises_count": 2,
+      "exercise_count": 2,
       "exercise_types": [
         "problema vizuala",
-        "recunoastere perechi",
-        "identificare diferente",
-        "continuare sir"
+        "completare sir"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține exerciții vizuale fără text explicativ: perechi de imagini cu obiecte/scene (fată, iepure, ceașcă, omidă), perechi de figuri geometrice colorate (cercuri, pătrate, triunghiuri, cuburi 3D), șiruri de bile și forme geometrice de continuat, și exerciții grafice pe caroiaj (puncte și linii frânte). Nu există titlu de secțiune sau modul vizibil. Numărul de exerciții propuse este estimat pe baza grupurilor vizuale distincte.",
+      "notes": "Pagina conține imagini ilustrative cu perechi de obiecte (fată cu măr, pălărie cu iepure, ceașcă cu lingură, omidă pe frunză) și exerciții vizuale cu forme geometrice colorate și șiruri de bile/forme. Nu există text tipărit de titlu sau modul vizibil. Există două exerciții marcate cu pictograme specifice. Ultima bandă conține pattern-uri grafice de completat pe caroiaj.",
       "input_tokens": 2962,
-      "output_tokens": 279
+      "output_tokens": 261
     },
     {
       "pdf_page": 6,
@@ -107,14 +109,12 @@
       "proposed_exercises_count": 1,
       "exercise_count": 1,
       "exercise_types": [
-        "problema vizuala",
-        "identificare similarities-differences",
-        "completare șir"
+        "problema vizuala"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține o ilustrație mare cu doi clovni și obiecte geometrice (cercuri, pătrate, romburi, triunghiuri) pentru identificarea obiectelor identice și diferite. În josul paginii există un șir de forme colorate (pătrate verzi/roșii și cercuri) care par a fi un exercițiu de completare a unui șablon. Nu există exemple rezolvate explicite.",
+      "notes": "Pagina conține o ilustrație cu doi clovni și obiecte identice/diferite, plus un rând de pattern-uri grafice la bază. Sarcina pare să fie identificarea elementelor identice și diferite din imagine. Nu există text suplimentar de predare sau exerciții numerotate explicit.",
       "input_tokens": 2962,
-      "output_tokens": 243
+      "output_tokens": 201
     },
     {
       "pdf_page": 7,
@@ -131,13 +131,13 @@
       "exercise_count": 3,
       "exercise_types": [
         "problema vizuala",
-        "comparare imagini",
-        "numărare după proprietăți"
+        "comparare obiecte",
+        "numărare figuri după proprietăți"
       ],
       "confidence": "medium",
-      "notes": "Pagina introduce noțiunile de identic și diferit prin exerciții vizuale cu imagini. Trei sarcini distincte: comparare imagini (Ce este identic/diferit?), identificare element nepotrivit, numărare figuri după formă și culoare. Ultima zonă de jos pare un spațiu de lucru (caroiaj gol). Subtopic principal este primul titlu, al doilea titlu 'Ce nu se potrivește?' este subsarcină pe aceeași pagină.",
+      "notes": "Pagina introduce conceptele de identic și diferit prin imagini. Exercițiul 1 cere identificarea a ce este identic/diferit în grupuri de imagini. Exercițiul 2 cere identificarea ce nu se potrivește/ce s-ar mai potrivi. Exercițiul 3 cere numărarea figurilor după formă identică, culoare identică, formă și culoare identică. La baza paginii există un rând de figuri geometrice în grilă (posibil activitate de colorat/completat). Numărul de exerciții propuse este aproximativ 3.",
       "input_tokens": 2962,
-      "output_tokens": 265
+      "output_tokens": 295
     },
     {
       "pdf_page": 8,
@@ -155,13 +155,13 @@
       "exercise_count": 3,
       "exercise_types": [
         "problema vizuala",
-        "corespondenta unu-la-unu",
-        "completare grafic punctat"
+        "corelare perechi",
+        "comparare multimi"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține 3 exerciții vizuale ilustrate: (1) pisici cu gheme de lână pentru comparare cantități, (2) perechi de personaje legate prin linii pentru corespondență unu-la-unu, (3) animale cu telefoane pentru corespondență, plus un exercițiu de completare pe caroiaj cu puncte și simboluri X. Nu există exemple rezolvate explicit. Subtema este introdusă prin bullet în antet verde.",
+      "notes": "Pagina conține ilustrații cu pisici și gheme (comparare cantități egale), copii cu sfori (comparare perechi, mai puțin/mai mult), animale cu telefoane (corelare), și un rând de exerciții grafice cu puncte și semne X la baza paginii. Exercițiile propuse sunt vizuale, fără text explicit de enunț. Numărul exact de exerciții propuse este aproximat la 3 blocuri ilustrative distincte.",
       "input_tokens": 2962,
-      "output_tokens": 274
+      "output_tokens": 267
     },
     {
       "pdf_page": 9,
@@ -169,19 +169,24 @@
       "module": null,
       "subtopic": null,
       "page_kind": "exercitii",
-      "concepts_introduced": [],
+      "concepts_introduced": [
+        "mai multe",
+        "mai puține",
+        "tot atîtea",
+        "egalizare"
+      ],
       "worked_examples_count": 0,
       "proposed_exercises_count": 3,
       "exercise_count": 3,
       "exercise_types": [
-        "problema vizuala",
-        "comparare cu casuta",
-        "desenare forme geometrice"
+        "comparare cu jetoane",
+        "egalizare in doua moduri",
+        "desenare dupa criteriu"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține trei sarcini vizuale pentru elevi: prima grupă de imagini (fără instrucțiune explicită vizibilă) implică compararea mulțimilor cu reprezentare prin puncte colorate; a doua sarcină cere compararea și egalizarea în două moduri diferite ('Compară, apoi egalează în două moduri diferite'); a treia sarcină cere desenarea de forme geometrice în raport cu cantitățile date (tot atîtea triunghiuri, mai multe pătrate, mai puține cercuri). La baza paginii există și un exercițiu de copiere/continuare a șirurilor grafice (borduri). Numărul exact de sub-sarcini din prima grupă de imagini este ambiguu.",
+      "notes": "Pagina conține trei sarcini vizuale fără numere scrise: prima prezintă imagini cu obiecte și jetoane pentru comparare/egalizare, a doua cere compararea și egalizarea în două moduri a unor grupuri de obiecte, a treia cere desenarea de forme geometrice conform criteriilor 'tot atîtea', 'mai multe', 'mai puține'. La baza paginii există și un exercițiu grafomotric cu modele de linii. Nu există un titlu de modul sau secțiune vizibil.",
       "input_tokens": 2962,
-      "output_tokens": 310
+      "output_tokens": 285
     },
     {
       "pdf_page": 10,
@@ -196,12 +201,12 @@
       "exercise_types": [
         "problema vizuala",
         "ordonare succesiva",
-        "eliminare element"
+        "eliminare element nepotrivit"
       ],
       "confidence": "high",
-      "notes": "Pagina conține trei exerciții propuse: 1) 'Ce s-a schimbat?' – comparare imagini cu elefanți; 2) 'Ordonează succesiv' – ordonare imagini cu arici; 3) 'Elimină ceea ce nu se potrivește. Numește grupul rămas' – clasificare obiecte în trei grupuri. La final există și o întrebare suplimentară despre grupul cu cele mai multe/puține obiecte și o zonă grafică de completat (căsuțe cu figuri). Nicio noțiune matematică nouă nu este introdusă explicit.",
+      "notes": "Pagina conține 3 exerciții propuse elevului: 1) Ce s-a schimbat? (comparare imagini cu elefanți), 2) Ordonează succesiv (imagini cu arici), 3) Elimină ceea ce nu se potrivește / Numește grupul rămas (grupuri de obiecte). La final există o întrebare suplimentară despre grupul cu cele mai multe/puține obiecte și o zonă de desenat în casetă.",
       "input_tokens": 2962,
-      "output_tokens": 289
+      "output_tokens": 259
     },
     {
       "pdf_page": 11,
@@ -214,16 +219,16 @@
       "proposed_exercises_count": 4,
       "exercise_count": 4,
       "exercise_types": [
-        "reproducere figura",
-        "desenare forma geometrica",
-        "comparare cantitati cu forme",
-        "continuare sir",
-        "copiere si completare desene identice"
+        "reproducere forma geometrica",
+        "desen relativ pozitie",
+        "comparare cantitativa vizuala",
+        "continuare sir grafic",
+        "copiere si completare desen"
       ],
       "confidence": "high",
-      "notes": "Pagina conține 4 exerciții propuse: 1) Reprodu figura pe caroiaj; 2) Desenează în stînga un pătrat, deasupra un triunghi, în interior un cerc; 3) Desenează tot atîtea cercuri, mai puține triunghiuri, mai multe pătrate față de imaginile date; 4) Reprodu și continuă șirul de forme; plus o rubrică 'JOC' de copiere și completare desene identice (casă). Nu există noțiuni matematice noi introduse explicit.",
+      "notes": "Pagina conține 4 sarcini practice pentru elevi: 1) Reprodu (un octogon pe grilă), 2) Desenează în stînga/deasupra/în interior forme geometrice față de o figură dată, 3) Desenează tot atîtea cercuri, mai puține triunghiuri, mai multe pătrate față de imaginile date, 4) Reprodu și continuă un șir de forme, 5) Copiază și completează pentru a obține desene identice (case). Ultima activitate e marcată cu pictograma 'JOC'. Nu sunt noțiuni matematice noi introduse explicit.",
       "input_tokens": 2962,
-      "output_tokens": 286
+      "output_tokens": 308
     },
     {
       "pdf_page": 12,
@@ -240,14 +245,13 @@
       "exercise_count": 3,
       "exercise_types": [
         "problema vizuala",
-        "identificare cantitate",
-        "scriere cifra",
-        "completare sir"
+        "numărare obiecte",
+        "scriere cifră"
       ],
       "confidence": "high",
-      "notes": "Pagina introduce numărul și cifra 1 prin imagini ilustrative (ziua/noaptea, ceas cu ora 1, calendar cu cifra 1). Exercițiile propuse: 1) numărarea oualelor (bobocilor) în șir; 2) identificarea pattern-ului alternant (cuburi verzi și mingi) cu completare; 3) scrierea cifrei 1 pe liniatura caietului alternând cu obiecte (măr, cerc, pătrat, triunghi, punct).",
+      "notes": "Pagina introduce numărul și cifra 1 prin imagini ilustrative (fată care sare coarda/doarme, ceas, calendar cu cifra 1). Exercițiile propuse includ: numărarea bobocilor (1 din 10), identificarea pattern-ului cu obiecte grupate câte 1, și scrierea cifrei 1 în casetele de pe rândul de jos.",
       "input_tokens": 2962,
-      "output_tokens": 292
+      "output_tokens": 259
     },
     {
       "pdf_page": 13,
@@ -268,9 +272,9 @@
         "recunoastere cifra"
       ],
       "confidence": "medium",
-      "notes": "Pagina introduce numărul și cifra 2 printr-o ilustrație cu trecere de pietoni (1 copil vs 2 copii), exerciții de numărare a obiectelor grupate câte 1 și 2, și un rând de scriere/recunoaștere a cifrei 2 cu perechi de obiecte. Numărul de exerciții propuse este estimat din cele 3 secțiuni vizuale distincte.",
+      "notes": "Pagina introduce numărul și cifra 2 prin imagini ilustrative (copii la trecere de pietoni, ceas, calendar). Exercițiile propuse includ: identificarea grupurilor de obiecte (rațe, ouă), gruparea obiectelor în perechi cu indicarea numărului 2, și recunoașterea cifrei 2 în contexte vizuale diverse (cercuri, pătrate, triunghiuri). Numărul de exerciții propuse este estimat, deoarece activitățile sunt integrate vizual fără numerotare explicită.",
       "input_tokens": 2962,
-      "output_tokens": 261
+      "output_tokens": 287
     },
     {
       "pdf_page": 14,
@@ -280,32 +284,33 @@
       "page_kind": "lectie",
       "concepts_introduced": [
         "relații de comparație",
-        "egal",
-        "mai mic",
-        "mai mare"
+        "mai mic (<)",
+        "mai mare (>)",
+        "egal (=)"
       ],
       "worked_examples_count": 4,
-      "proposed_exercises_count": 2,
-      "exercise_count": 6,
+      "proposed_exercises_count": 8,
+      "exercise_count": 12,
       "exercise_types": [
         "problema vizuala",
         "comparare cu casuta",
-        "completare simbol"
+        "completare tabel",
+        "gaseste-greseala"
       ],
       "confidence": "medium",
-      "notes": "Pagina introduce relațiile de comparație (=, <, >) prin ilustrații cu balanțe și figurine. Secțiunea de sus prezintă 4 exemple ilustrate rezolvate (1<2, 2>1, 1=1, 2=2). Rândul de mijloc conține exerciții cu casete (unele cu '?' ca răspuns de completat). Rândul de jos conține 4 exerciții pe caroiaj cu simbolul * de completat. Distincția worked/proposed este aproximativă.",
+      "notes": "Pagina introduce relațiile de comparație (1<2, 2>1, 1=1, 2=2) prin imagini ilustrative cu balanțe și copii. Secțiunea de jos conține exerciții cu simbolul * care trebuie completat cu semnul corect de comparație. Delimitarea exactă dintre exemplele demonstrate și exercițiile propuse este ambiguă; rândul cu imagini de rațe/ouă pare a fi o activitate de numărare și comparare propusă elevului.",
       "input_tokens": 2962,
-      "output_tokens": 285
+      "output_tokens": 290
     },
     {
       "pdf_page": 15,
       "printed_page": "15",
       "module": null,
       "subtopic": "Cîți merg în rînd? A cîta merge buburuza?",
-      "page_kind": "exercitii",
+      "page_kind": "lectie",
       "concepts_introduced": [
-        "compararea numerelor naturale (>, =, <)",
-        "numărul de ordine"
+        "compararea numerelor 1 și 2",
+        "relații de ordine: mai mare, mai mic, egal"
       ],
       "worked_examples_count": 0,
       "proposed_exercises_count": 3,
@@ -313,12 +318,12 @@
       "exercise_types": [
         "problema vizuala",
         "comparare cu casuta",
-        "scriere dupa model"
+        "completare sir grafic"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține 3 sarcini distincte: exercițiul 1 (șir de animale - număr de ordine), exercițiul 2 (perechi de obiecte cu diagrame arborescente și comparații numerice), un exercițiu fără număr cu imagini și relații 2>1, 1=1, 2=2, 1<2, plus un rând de scriere după model (cifre și forme geometrice). Numărul de exerciții propuse este estimat ca 3 blocuri distincte.",
+      "notes": "Pagina conține exerciții vizuale pentru clasa I: numărare în șir (buburuze și melci), asociere mulțimi prin săgeți (păsări, mere, bancnote, broaște, cuburi, titirez), comparare perechi de obiecte cu relații 2>1, 1=1, 2=2, 1<2, și un exercițiu de scriere a cifrelor pe linie cu noduri. Nu există exemple rezolvate explicite marcate ca atare.",
       "input_tokens": 2962,
-      "output_tokens": 298
+      "output_tokens": 299
     },
     {
       "pdf_page": 16,
@@ -339,9 +344,9 @@
         "scriere cifră"
       ],
       "confidence": "high",
-      "notes": "Pagina introduce numărul și cifra 3 prin imagini ilustrative (biciclete, rățuște, obiecte grupate câte 3), un rând de scriere a cifrei 3 pe liniatură, și o serie de obiecte pentru numărare. Numerele 2 și 3 apar pe foi în imaginea principală ca referință vizuală de comparație.",
+      "notes": "Pagina introduce numărul și cifra 3 prin imagine ilustrativă (copii pe biciclete, ceas arătând ora 3, baloane, număr pe calendar), exerciții de numărare a obiectelor grupate câte 3, și un rând de scriere a cifrei 3 cu ghidaj liniar.",
       "input_tokens": 2962,
-      "output_tokens": 239
+      "output_tokens": 225
     },
     {
       "pdf_page": 17,
@@ -350,22 +355,23 @@
       "subtopic": null,
       "page_kind": "exercitii",
       "concepts_introduced": [
-        "ordonarea numerelor 1, 2, 3",
-        "relații de ordine: <, >, ="
+        "ordinea crescătoare a numerelor",
+        "ordinea descrescătoare a numerelor"
       ],
-      "worked_examples_count": 0,
-      "proposed_exercises_count": 3,
-      "exercise_count": 3,
+      "worked_examples_count": 2,
+      "proposed_exercises_count": 5,
+      "exercise_count": 7,
       "exercise_types": [
         "problema vizuala",
         "comparare cu casuta",
-        "completare casuta",
-        "ordonare crescatoare"
+        "completare tabel",
+        "ordonare numere",
+        "calcul direct"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține 3 exerciții numerotate (1, 2, 3) plus o sarcină suplimentară cu arici și veverițe (Numără și scrie cîte ciuperci duce fiecare) și o întrebare despre ordinea crescătoare. Exercițiul 1 implică descompunerea numărului 3 cu ajutorul imaginilor. Exercițiul 2 cere completarea relațiilor de ordine între mulțimi de obiecte colorate. Exercițiul 3 cere completarea semnelor *, <, >, = în expresii cu 1, 2, 3. Sarcina bonus cu arici/veverițe este o problemă vizuală de numărare și ordonare. Nu există exemple rezolvate explicit marcate ca atare.",
+      "notes": "Pagina conține exerciții pentru numerele 1, 2, 3. Exercițiul 2 prezintă exemple rezolvate (1<2<3 și 3>2>1) cu ilustrații color. Exercițiul 3 conține comparări cu simboluri * ce trebuie înlocuite și căsuțe goale de completat. Secțiunea de jos cu arici și veverițe este o problemă contextualizată. Numărul de exerciții propuse este estimat, delimitarea worked/proposed e parțial ambiguă.",
       "input_tokens": 2962,
-      "output_tokens": 361
+      "output_tokens": 295
     },
     {
       "pdf_page": 18,
@@ -383,12 +389,12 @@
       "exercise_types": [
         "problema vizuala",
         "numărare obiecte",
-        "scriere cifră pe caroiaj"
+        "scriere cifră"
       ],
       "confidence": "medium",
-      "notes": "Pagina introduce numărul și cifra 4 prin imagini ilustrative (scene cu obiecte în număr de 3 și 4), exerciții de numărare a obiectelor (rățuște, ouă, bancnote, frunze, cuburi, ramă), și exersarea scrierii cifrei 4 pe caroiaj cu model grafic tip copac. Nu există exerciții cu soluție rezolvată explicit; toate sunt propuse elevului.",
+      "notes": "Pagina introduce numărul și cifra 4 prin ilustrații (scene cu obiecte în grupuri de 4), exerciții de numărare cu diferite grupuri de obiecte (rațe, ouă, blocuri, frunze, bancnote, rame) și exerciții de scriere a cifrei 4 pe caroiaj. Nu există exemple rezolvate explicit, ci activități de explorare vizuală propuse elevului.",
       "input_tokens": 2962,
-      "output_tokens": 262
+      "output_tokens": 252
     },
     {
       "pdf_page": 19,
@@ -396,24 +402,20 @@
       "module": null,
       "subtopic": null,
       "page_kind": "exercitii",
-      "concepts_introduced": [
-        "compararea numerelor 1-4",
-        "șirul crescător și descrescător"
-      ],
+      "concepts_introduced": [],
       "worked_examples_count": 2,
-      "proposed_exercises_count": 4,
-      "exercise_count": 6,
+      "proposed_exercises_count": 2,
+      "exercise_count": 4,
       "exercise_types": [
         "problema vizuala",
-        "comparare cu semne",
-        "completare casuta",
+        "comparare cu casuta",
         "completare tabel",
-        "numarare figuri"
+        "comparare siruri de inegalitati"
       ],
       "confidence": "medium",
-      "notes": "Exercițiul 2 conține exemple rezolvate parțial (1<2<3<4 și 4>3>2>1 sunt date ca model, restul sunt propuse). Exercițiul 3 folosește simbolul * pentru a înlocui semnele de relație (<, =, >) — elevul trebuie să completeze. Exercițiul 4 cere numărarea figurilor și completarea unui tabel. La baza paginii există un șir de numere și căsuțe de completat (exercițiu suplimentar). Distincția worked/proposed este aproximativă.",
+      "notes": "Exercițiul 1 prezintă descompuneri ale numărului 4 cu ilustrații (iepure, arici, veveriță) — model vizual rezolvat parțial. Exercițiul 2 arată șiruri de inegalități cu bare colorate — primele două sunt rezolvate ca model, celelalte două sunt propuse. Exercițiul 3 conține completare cu semne de comparație (<, =, >) în căsuțe — propus elevului. Exercițiul 4 cere numărarea figurilor înșiruite de iepuraș și completarea unui tabel — propus elevului. La baza paginii există un șir de numere și căsuțe de completat (posibil exercițiu de consolidare).",
       "input_tokens": 2962,
-      "output_tokens": 306
+      "output_tokens": 326
     },
     {
       "pdf_page": 20,
@@ -433,9 +435,9 @@
         "scriere cifra"
       ],
       "confidence": "medium",
-      "notes": "Pagina introduce numărul și cifra 5 prin ilustrații (portrete pe perete, rățuște, ouă, obiecte cu numărul 5 - monedă, bancnotă, stea de mare, mână). Există un rând de scriere a cifrei 5 cu model. Exercițiile propuse sunt: numărarea obiectelor din imagine și exersarea scrierii cifrei 5. Bara laterală stângă indică scala 1-5.",
+      "notes": "Pagina introduce numărul și cifra 5 prin ilustrații (portrete, rațe, ouă, monedă, bancnotă, stea de mare, mână). Secțiunea de jos conține o lupă cu cifra 5 și un rând de pentagoane cu cifra 5 pentru exersarea scrierii. Nu există exerciții clasice numerotate; activitățile sunt de numărare vizuală și scriere. Numărul de exerciții propuse este estimat pe baza structurii vizuale.",
       "input_tokens": 2962,
-      "output_tokens": 252
+      "output_tokens": 265
     },
     {
       "pdf_page": 21,
@@ -454,20 +456,26 @@
         "problema vizuala",
         "comparare cu casuta",
         "completare sir",
-        "ordonare numere"
+        "ordonare numere",
+        "gaseste-greseala"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține 4 exerciții propuse elevului: ex.1 - descompunere/reprezentare a numărului 5 cu imagini (bancnote, cuburi); ex.2 - completarea șirurilor de inegalități cu bare colorate (5>4>... și 1<2<...); ex.3 - comparații cu * și căsuțe de completat; ex.4 - ordonare crescătoare și descrescătoare a numerelor câștigătoare la LOTO. Nu există module sau subtopic vizibil tipărit pe pagină.",
+      "notes": "Pagina conține 4 exerciții numerotate. Exercițiul 1 implică descompunerea numărului 5 folosind imagini (bancnote, cuburi). Exercițiul 2 cere completarea șirurilor de inegalități cu reprezentări vizuale prin bare colorate. Exercițiul 3 cere identificarea semnului corect (* între simboluri <, =, >) și completarea căsuțelor cu numere. Exercițiul 4 cere ordonarea crescătoare și descrescătoare a numerelor câștigătoare la LOTO. Nu există un titlu de modul sau secțiune vizibil pe pagină.",
       "input_tokens": 2962,
-      "output_tokens": 288
+      "output_tokens": 318
     },
     {
       "pdf_page": 22,
       "printed_page": "22",
       "module": null,
       "subtopic": "Numerele de la 1 pînă la 5",
-      "page_kind": "exercitii",
-      "concepts_introduced": [],
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "numerele de la 1 pînă la 5",
+        "vecini ai numărului",
+        "ordonare crescătoare",
+        "ordonare descrescătoare"
+      ],
       "worked_examples_count": 1,
       "proposed_exercises_count": 4,
       "exercise_count": 5,
@@ -478,10 +486,10 @@
         "completare tabel",
         "ordonare numere"
       ],
-      "confidence": "high",
-      "notes": "Exercițiul 1 prezintă recunoașterea cantităților 2-5 prin imagini cu cuburi și obiecte. Exercițiul 2 conține un model rezolvat (3<5) urmat de comparații propuse. Exercițiul 3 este completare de șiruri cu numere și puncte. Exercițiul 4 cere reproducerea și completarea unui tabel pe baza unui desen, plus ordonare crescătoare/descrescătoare și numirea vecinilor. Modelul din exercițiul 2 este socotit worked example.",
+      "confidence": "medium",
+      "notes": "Exercițiul 1 prezintă reprezentări vizuale ale numerelor 2-5 cu obiecte și cuburi; exercițiul 2 include un model rezolvat (3 < 5) urmat de exerciții de comparare cu căsuțe goale; exercițiul 3 este un șir de numere de continuat; exercițiul 4 cere reproducerea și completarea unui tabel pe baza unui desen geometric, plus ordonare și identificarea vecinilor. Worked example = modelul din ex. 2.",
       "input_tokens": 2962,
-      "output_tokens": 294
+      "output_tokens": 319
     },
     {
       "pdf_page": 23,
@@ -494,18 +502,16 @@
       "proposed_exercises_count": 8,
       "exercise_count": 8,
       "exercise_types": [
-        "numărare și completare cu cifre lipsă",
-        "colorare/hașurare după număr",
         "completare tabel",
-        "comparare cu căsuță",
-        "completare șir numeric",
+        "comparare cu casuta",
+        "calcul direct",
         "problema vizuala",
-        "ordonare piese"
+        "ordonare"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține două variante paralele (VARIANTA 1 și VARIANTA 2) cu exerciții de tip test pentru numerele 1-5. Secțiunea JOC la bază cere ordonarea pieselor unui jucărie. Numărul de exerciții propuse este estimat grupând tipurile de sarcini din ambele variante; fiecare variantă conține exerciții identice ca tip. Nu există module sau titlu de secțiune vizibil.",
+      "notes": "Pagina conține exerciții organizate în VARIANTA 1 și VARIANTA 2 (două coloane paralele), fiecare cu mai multe tipuri de sarcini: completare căsuțe cu numere, comparații cu simboluri (<, >, *), și exerciții de ordonare/secvențiere. Rubrica JOC întreabă 'În ce ordine trebuie asamblate piesele?' cu imagini ilustrative. Numărul de exerciții propuse este estimat grupând sarcinile principale din ambele variante.",
       "input_tokens": 2962,
-      "output_tokens": 303
+      "output_tokens": 271
     },
     {
       "pdf_page": 24,
@@ -523,13 +529,13 @@
       "exercise_types": [
         "problema vizuala",
         "numărare obiecte",
-        "scriere cifră",
-        "asociere cantitate-cifră"
+        "completare sir numeric",
+        "recunoastere cifra"
       ],
       "confidence": "medium",
-      "notes": "Pagina introduce numărul și cifra 6 prin imagini ilustrative (copii cu struguri, ceas arătând 6, rațe, riglă, cuburi, bancnote, bile pe piramidă). Exercițiile propuse implică numărarea obiectelor, completarea seriei pe riglă până la 6, recunoașterea grupurilor de 6 obiecte și scrierea cifrei 6. Nu există exemple rezolvate explicit marcate ca atare.",
+      "notes": "Pagina introduce numărul și cifra 6 prin imagini ilustrative (copii cu struguri, rațe, ouă, ceas, jucării, bancnote). Sunt prezente activități vizuale de numărare și recunoaștere. Numărul de exerciții propuse este estimat pe baza grupurilor de sarcini vizuale identificate.",
       "input_tokens": 2962,
-      "output_tokens": 271
+      "output_tokens": 241
     },
     {
       "pdf_page": 25,
@@ -542,16 +548,16 @@
       "proposed_exercises_count": 5,
       "exercise_count": 5,
       "exercise_types": [
-        "completare tabel",
+        "completare casuta",
         "scriere cifre",
         "comparare cu casuta",
         "problema vizuala",
-        "ordonare numere"
+        "completare sir numeric"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține 5 exerciții numerotate. Exercițiul 1: completarea unui tren cu numere lipsă (secvențe 1-6 în ordine crescătoare și descrescătoare). Exercițiul 2: scriere/copiere cifre pe caroiaj (cifra 6 și combinații). Exercițiul 3: comparare expresii cu * și completare inegalități cu căsuțe. Exercițiul 4: probleme vizuale cu cuburi/zaruri și numere. Exercițiul 5: numărare animale (pui) în imagini. La baza paginii există un rând de completare cu numere și căsuțe. Nu se identifică modul sau subtopic explicit pe pagină.",
+      "notes": "Pagina conține 5 exerciții numerotate 1-5 legate de numărul 6. Ex.1: tren cu cifre în ordine crescătoare/descrescătoare; Ex.2: scriere cifre pe caroiaj; Ex.3: comparații cu semnele <, =, > și completare căsuțe; Ex.4: cuburi cu cifre de asociat; Ex.5: probleme vizuale cu pui/păsări pentru numărare. La baza paginii există un șir numeric de completat. Nu există module sau subtopic vizibil tipărit.",
       "input_tokens": 2962,
-      "output_tokens": 324
+      "output_tokens": 283
     },
     {
       "pdf_page": 26,
@@ -567,12 +573,12 @@
       "proposed_exercises_count": 3,
       "exercise_count": 3,
       "exercise_types": [
-        "problema vizuala",
         "numărare obiecte",
-        "scriere cifră după model"
+        "scriere cifră",
+        "șir numeric"
       ],
-      "confidence": "high",
-      "notes": "Pagina introduce numărul și cifra 7 prin imagini ilustrative (copii jucând volei, rațuște, riglă cu numerele 1-7, cuburi). Secțiunea de jos conține exerciții de scriere a cifrei 7 pe caroiaj. Nu există exemple rezolvate explicit, toate elementele sunt propuse elevului spre observare/execuție.",
+      "confidence": "medium",
+      "notes": "Pagina introduce numărul și cifra 7 prin ilustrații (copii jucând, rațe, ouă, riglă cu numere 1-7, blocuri). Secțiunea de scriere a cifrei 7 pe caroiaj sugerează exercițiu de grafomotricitate. Numărul de exerciții propuse este estimat (3 sarcini vizuale distincte).",
       "input_tokens": 2962,
       "output_tokens": 241
     },
@@ -590,13 +596,13 @@
         "problema vizuala",
         "completare casuta",
         "comparare cu casuta",
-        "ordonare imagini",
-        "calcul direct"
+        "descompunere numar",
+        "sir numeric"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține exerciții variate cu numărul 7: ordonare mingilor de fotbal (ex.1), completare operații cu casute (ex.2), numărare puncte pe frunze (ex.3), comparare cu semne și casute (ex.4), probleme vizuale cu coșuri/veverițe/arici (ex.5). Nu este vizibil niciun titlu de modul sau secțiune. Exercițiile par să exerseze numărul 7 și comparații.",
+      "notes": "Pagina conține 5 exerciții numerotate 1-5 legate de numărul 7. Ex.1: mingii de fotbal cu numere lipsă (completare casuta, problema vizuala). Ex.2: descompuneri ale lui 7 cu casute de completat. Ex.3: frunze cu puncte de completat (sir numeric/pattern). Ex.4: comparații cu *, <, > și casute de completat. Ex.5: ilustrații cu ciuperci/animale și completare tabel de numere. Nu există exemple rezolvate explicit marcate ca atare.",
       "input_tokens": 2962,
-      "output_tokens": 262
+      "output_tokens": 284
     },
     {
       "pdf_page": 28,
@@ -612,14 +618,14 @@
       "proposed_exercises_count": 3,
       "exercise_count": 3,
       "exercise_types": [
-        "problema vizuala",
-        "numărare pe axa numerică",
+        "numărare obiecte",
+        "șir numeric pe riglă",
         "scriere cifră după model"
       ],
       "confidence": "high",
-      "notes": "Pagina introduce numărul și cifra 8 prin ilustrații (scenă cu dansatori, pui de rață, ouă), o axă numerică de la 1 la 8, cuburi de numărat și un rând de scriere a cifrei 8. Numărul 7 și 8 sunt prezente ca etichete de pagină anterioare/curente în imagine. Nu există exemple rezolvate explicite, ci activități de explorare vizuală și scriere.",
+      "notes": "Pagina introduce numărul și cifra 8 prin ilustrații (rațuște, orologiu, personaje), o riglă numerică 1-8, blocuri de construcție și un rând de exersare a scrierii cifrei 8. Numărul 7 apare în ilustrație ca reper anterior.",
       "input_tokens": 2962,
-      "output_tokens": 263
+      "output_tokens": 228
     },
     {
       "pdf_page": 29,
@@ -639,9 +645,9 @@
         "siruri numerice"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține 5 exerciții numerotate 1-5. Exercițiul 1 implică flori cu cifre și tabele de completat cu numărul 8. Exercițiul 2 implică completarea căsuțelor în structuri grafice (zigzag) cu numărul 8. Exercițiul 3 implică compararea expresiilor cu * și completarea căsuțelor cu inegalități. Exercițiul 4 implică șiruri cu inegalități și piese de șah cu numere. Exercițiul 5 implică compararea barelor vizuale (figuri dreptunghiulare) cu imagini de rățuște. La final există două rânduri de numere cu căsuțe de completat (șiruri numerice). Nu există module sau subtopic vizibil pe pagină.",
+      "notes": "Pagina conține 5 exerciții numerotate 1-5. Ex.1: completare tabel cu flori și cifra 8. Ex.2: completare căsuțe în expresii cu 8. Ex.3: comparare expresii cu * și completare inegalități/egalități cu căsuțe. Ex.4: șir de inegalități cu căsuțe și piese de șah cu numere. Ex.5: probleme vizuale cu bare colorate și rațe (comparare mărimi). Tabelul de jos pare un exercițiu suplimentar de șiruri numerice cu căsuțe de completat. Numărul exact de subexerciții e ambiguu; am numărat grupurile principale (1-5) ca exerciții propuse.",
       "input_tokens": 2962,
-      "output_tokens": 353
+      "output_tokens": 327
     },
     {
       "pdf_page": 30,
@@ -654,17 +660,17 @@
         "cifra 9"
       ],
       "worked_examples_count": 0,
-      "proposed_exercises_count": 1,
-      "exercise_count": 1,
+      "proposed_exercises_count": 3,
+      "exercise_count": 3,
       "exercise_types": [
-        "scriere cifra",
-        "recunoastere cantitate",
-        "problema vizuala"
+        "problema vizuala",
+        "numărare pe riglă",
+        "recunoastere cifra in reprezentari grafice"
       ],
       "confidence": "medium",
-      "notes": "Pagina introduce numărul și cifra 9 prin ilustrații (rățuște, riglă cu numere 1-9, boabe în păstaie, cuburi). Rândul de jos conține exerciții de scriere a cifrei 9 în caroiaj. Numărul de exerciții propuse este estimat ca 1 (scrierea cifrei 9 în diverse variante grafice). Nu există exemple rezolvate explicit marcate.",
+      "notes": "Pagina introduce numărul și cifra 9 printr-o ilustrație narativă (girafa în pat cu ceas arătând ora 9), o riglă numerică 1-9, rațuște pentru numărare, mazăre cu boabe, și un exercițiu de recunoaștere a cifrei 9 în diverse reprezentări cu cuburi colorate. Nu există exemple rezolvate explicit; exercițiile propuse sunt vizual-intuitive.",
       "input_tokens": 2962,
-      "output_tokens": 255
+      "output_tokens": 265
     },
     {
       "pdf_page": 31,
@@ -680,14 +686,13 @@
         "completare tabel",
         "scriere cifre",
         "comparare cu casuta",
-        "asociere vizuala",
-        "sir numeric cu lacune",
-        "problema vizuala"
+        "problema vizuala",
+        "siruri numerice"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține exerciții cu numărul 9. Exercițiul 1: completarea vagoanelor unui tren cu cifre lipsă (două trenuri). Exercițiul 2: scrierea cifrelor după model pe caroiaj. Exercițiul 3: completarea căsuțelor cu inegalități/egalități implicate de 9. Exercițiul 4: asociere cutii poștale cu numere. Exercițiul 5: șiruri de imagini cu element lipsă (iepuri, baloane). La baza paginii: două șiruri numerice cu lacune (1,3,5,7,9... și 9,7,5,3,1...). Nu există modul sau subtopic explicit tipărit.",
+      "notes": "Pagina conține 5 exerciții numerotate: 1) completarea vagoanelor trenului cu cifre lipsă (două trenuri); 2) scrierea cifrelor în caroiaj (exercițiu grafic); 3) completarea inegalităților/egalităților cu căsuțe (□<9, □=9, 9>□, 5<□<9); 4) identificarea cifrelor pe cutii/pachete ilustrate; 5) pattern vizual cu iepuri și baloane (continuarea șirului). La baza paginii există două șiruri numerice de continuat. Numărul exact al exercițiilor propuse poate varia dacă șirurile de jos sunt socotite separat.",
       "input_tokens": 2962,
-      "output_tokens": 328
+      "output_tokens": 314
     },
     {
       "pdf_page": 32,
@@ -704,13 +709,14 @@
       "exercise_count": 3,
       "exercise_types": [
         "problema vizuala",
-        "scriere cifra",
-        "completare sir numeric"
+        "sir de numere",
+        "numarat obiecte",
+        "completare tabel"
       ],
       "confidence": "medium",
-      "notes": "Pagina introduce numărul și cifra 0 prin imagini ilustrative (arici cu păsări care zboară vs. scenă cu ploaie fără păsări), un șir numeric 0-9 pe riglă, grupuri de obiecte (frunze/rațe), și exerciții de scriere a cifrei 0 cu ghidaj grafic. Numărul de exerciții propuse este estimat (3 secțiuni distincte de activitate pentru elev).",
+      "notes": "Pagina introduce numărul și cifra 0 printr-o ilustrație narativă (arici și ploaie), un șir de numere 0-9, un rând cu frunze de numărat, și exerciții de completare cu obiecte și cifre pe baza unor indicii vizuale. Nu există exemple rezolvate explicit, exercițiile sunt propuse vizual elevului.",
       "input_tokens": 2962,
-      "output_tokens": 262
+      "output_tokens": 244
     },
     {
       "pdf_page": 33,
@@ -729,16 +735,16 @@
         "problema vizuala"
       ],
       "confidence": "high",
-      "notes": "Pagina introduce numărul 10 prin reprezentări vizuale: șiraguri de bile, rațuște pe un raft, ceas, riglă gradată 0-10, cuburi, mâini cu 10 degete, monedă de 10 bani, bancnotă de 10 lei, și scrierea cifrei 10 pe liniație. Nu conține exerciții propuse sau exemple rezolvate explicit, este o pagină de introducere a numărului.",
+      "notes": "Pagina introduce numărul 10 prin reprezentări vizuale diverse: mărgele pe ață, rațuște, riglă numerică 0-10, cuburi, mâini, monedă de 10 bani, bancnotă de 10 lei, scrierea cifrei 10. Nu există exerciții propuse sau exemple rezolvate explicite, ci doar ilustrații demonstrative ale numărului 10.",
       "input_tokens": 2962,
-      "output_tokens": 243
+      "output_tokens": 227
     },
     {
       "pdf_page": 34,
       "printed_page": "34",
       "module": null,
       "subtopic": "Cine seamănă, culege",
-      "page_kind": "recapitulare",
+      "page_kind": "exercitii",
       "concepts_introduced": [],
       "worked_examples_count": 0,
       "proposed_exercises_count": 5,
@@ -746,37 +752,37 @@
       "exercise_types": [
         "problema vizuala",
         "ordonare numere",
-        "vecini ai numărului",
-        "completare tabel",
+        "completare casuta",
         "comparare cu casuta",
-        "completare sageți"
+        "diagrama sageata"
       ],
       "confidence": "high",
-      "notes": "Pagina este o pagină de recapitulare/consolidare cu 5 exerciții numerotate. Exercițiul 1 cere numărarea vișinelor din pahare și ordonarea numerelor crescător/descrescător, plus identificarea vecinilor. Exercițiul 2 cere identificarea fructelor după poziție ordinală (al cîtelea/a cîta). Exercițiul 3 implică completarea unor expresii cu 10 pe un fundal caroiat. Exercițiul 4 cere completarea semnelor de comparație și a căsuțelor. Exercițiul 5 implică diagrame cu săgeți și completarea valorilor lipsă.",
+      "notes": "Pagina conține 5 exerciții numerotate. Exercițiul 1 cere numărarea vișinelor din pahare și ordonarea numerelor crescător/descrescător, plus vecinii. Exercițiul 2 identifică poziția ordinală a fructelor (al cîtelea / a cîta). Exercițiul 3 completează casete în serii cu 10. Exercițiul 4 cere completarea semnului de comparație (*, cu semne <, =, >) și completarea casetelor cu numere. Exercițiul 5 conține diagrame săgeată cu numere de completat.",
       "input_tokens": 2962,
-      "output_tokens": 345
+      "output_tokens": 306
     },
     {
       "pdf_page": 35,
       "printed_page": "35",
       "module": null,
       "subtopic": null,
-      "page_kind": "recapitulare",
+      "page_kind": "exercitii",
       "concepts_introduced": [],
       "worked_examples_count": 0,
-      "proposed_exercises_count": 10,
-      "exercise_count": 10,
+      "proposed_exercises_count": 14,
+      "exercise_count": 14,
       "exercise_types": [
-        "colorare sir de patratele",
         "completare casuta",
+        "colorare diagrama",
+        "arbore de descompunere",
         "comparare cu casuta",
-        "completare semn operatie",
-        "problema vizuala"
+        "completare sir numeric",
+        "joc - ce cifra ascunde fiecare"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține două variante paralele (VARIANTA 1 și VARIANTA 2) cu exerciții de același tip, fiecare variantă cu exerciții de completat casute, comparare numere, semne de inegalitate/egalitate și completare șiruri. Secțiunea de jos 'JOC' conține întrebarea 'Ce cifră ascunde fiecare?' cu ilustrații de animale care ascund cifre — exercițiu vizual-ludic. Numărul de exerciții propuse este estimat grupând sarcinile pe blocuri tematice din cele două variante plus jocul.",
+      "notes": "Pagina este structurata in doua variante paralele (VARIANTA 1 si VARIANTA 2) cu exercitii identice ca tip dar cu valori diferite. Exercitiile includ: completarea diagramelor colorate (bare), arbori de descompunere a numerelor, completarea sirurilor numerice, completarea inegalitatilor/egalitarilor cu casute, si o sectiune de joc 'Ce cifra ascunde fiecare?' cu animale ilustrate. Numararea exercitiilor per varianta este aproximativa; totalul de 14 reprezinta estimarea grupurilor distincte de sarcini. Pagina nu introduce concepte noi, ci exerseaza notiunile de compunere/descompunere a numerelor pana la 10.",
       "input_tokens": 2962,
-      "output_tokens": 311
+      "output_tokens": 341
     },
     {
       "pdf_page": 36,
@@ -794,12 +800,12 @@
       "exercise_count": 3,
       "exercise_types": [
         "calcul direct",
-        "completare casuta"
+        "completare cu casuta"
       ],
       "confidence": "high",
-      "notes": "Pagina introduce operația de adunare cu formula 4+1=5 etichetată TERMEN+TERMEN=SUMĂ. Primul exercițiu (4+1=5) este rezolvat ca model, celelalte două (4+2=□ și 4+3=□) sunt propuse elevului. Se folosește și o axă numerică 0-5 ca suport vizual.",
+      "notes": "Pagina introduce operația de adunare cu exemplul rezolvat 4+1=5, cu termenii TERMEN și SUMĂ etichetați explicit. Există o axă numerică ilustrativă (0-5). Două exerciții propuse cu căsuțe de completat: 4+2=□ și 4+3=□. Prima expresie 4+1=5 este considerată exemplu rezolvat/model.",
       "input_tokens": 2962,
-      "output_tokens": 252
+      "output_tokens": 261
     },
     {
       "pdf_page": 37,
@@ -808,8 +814,7 @@
       "subtopic": null,
       "page_kind": "exercitii",
       "concepts_introduced": [
-        "mărirea unui număr cu 1",
-        "numere vecine"
+        "mărirea unui număr cu 1"
       ],
       "worked_examples_count": 1,
       "proposed_exercises_count": 5,
@@ -817,39 +822,37 @@
       "exercise_types": [
         "calcul direct",
         "problema vizuala",
-        "completare cu rezultat",
-        "asociere imagine-expresie"
+        "completare tabel",
+        "desen pe caroiaj"
       ],
       "confidence": "medium",
-      "notes": "Exercițiul 2 conține un model rezolvat (5+1=6), iar restul sunt propuse elevului. Exercițiul 3 cere explicarea legăturii dintre numerele vecine folosind rigle/linii numerice. Exercițiul 4 pare a fi un exercițiu de scriere/caligrafie pe caroiaj. Exercițiul 5 include imagini cu obiecte și expresii de calcul pereche (2+1, 1+2; 6+1, 1+6; 9+1, 1+9).",
+      "notes": "Exercițiul 1 conține 4 serii de adunări cu 1 (1+1=, 2+1=, 3+1=, 4+1=) fără soluție afișată — propuse elevului. Exercițiul 2 are un model rezolvat (5+1=6) plus imagini propuse spre rezolvare. Exercițiul 3 cere explicarea legăturii dintre numere vecine pe axe numerice (4 axe). Exercițiul 4 pare a fi un exercițiu de scriere/desen pe caroiaj. Exercițiul 5 conține imagini și 6 expresii de adunare propuse. Numărul exact de sub-exerciții este dificil de stabilit cu certitudine din imagine.",
       "input_tokens": 2962,
-      "output_tokens": 290
+      "output_tokens": 336
     },
     {
       "pdf_page": 38,
       "printed_page": "38",
       "module": null,
-      "subtopic": "• Operația de scădere",
+      "subtopic": "Operația de scădere",
       "page_kind": "lectie",
       "concepts_introduced": [
         "descăzut",
         "scăzător",
-        "diferență",
-        "rest"
+        "diferență (rest)"
       ],
       "worked_examples_count": 1,
-      "proposed_exercises_count": 4,
-      "exercise_count": 5,
+      "proposed_exercises_count": 3,
+      "exercise_count": 4,
       "exercise_types": [
         "problema vizuala",
-        "calcul direct",
         "completare casuta",
-        "axa numerica"
+        "calcul direct"
       ],
       "confidence": "high",
-      "notes": "Pagina introduce operația de scădere cu exemplul 6-1=5 și termenii specifici (descăzut, scăzător, diferență/rest). Exercițiile propuse sunt 4 completări de tipul 6-1=5, 6-2=[], 6-3=[], 6-4=[]. Există și o axă numerică 0-6 ca suport vizual. Imaginile ilustrează scăderea prin context concret (păsări care zboară de pe masă, arici care ia pere).",
+      "notes": "Pagina introduce operația de scădere cu terminologia specifică: descăzut, scăzător, diferență/rest. Exemplul rezolvat este 6-1=5 cu suport vizual (ilustrații cu păsări și pere). Exercițiile propuse sunt 6-2=□, 6-3=□, 6-4=□. Este prezentă și o axă numerică de la 0 la 6 ca suport vizual.",
       "input_tokens": 2962,
-      "output_tokens": 287
+      "output_tokens": 261
     },
     {
       "pdf_page": 39,
@@ -867,14 +870,14 @@
       "exercise_types": [
         "calcul direct",
         "problema vizuala",
-        "completare tabel",
+        "completare casuta",
         "scriere dupa model",
-        "numere vecine pe rigla"
+        "numere vecine pe axa"
       ],
       "confidence": "medium",
-      "notes": "Exercițiul 2 conține modele rezolvate (3-1=2 și 3+1=4) urmate de exerciții propuse cu imagini. Exercițiul 3 pare a fi scriere/trasare după model. Exercițiul 4 folosește rigle numerice pentru a explica numerele vecine. Exercițiul 5 combină imagini cu expresii de calcul (adunare și scădere cu 1). Numerotarea exercițiilor este 1-5 pe pagină.",
+      "notes": "Exercițiul 2 conține două modele rezolvate (scădere și adunare cu 1), restul sunt propuse. Exercițiul 3 pare un exercițiu de scriere/caligrafie a liniilor. Exercițiul 4 folosește rigle gradate pentru a explica numerele vecine. Exercițiul 5 combină imagini cu expresii de calcul cu căsuțe de completat.",
       "input_tokens": 2962,
-      "output_tokens": 282
+      "output_tokens": 260
     },
     {
       "pdf_page": 40,
@@ -894,13 +897,12 @@
         "trasare drum",
         "completare casuta",
         "gaseste-greseala",
-        "problema vizuala",
-        "sir numeric"
+        "problema vizuala"
       ],
       "confidence": "medium",
-      "notes": "Exercițiul 1 prezintă o riglă numerică cu săgeți ilustrative pentru adunarea și scăderea cu 1 — tratat ca exemplu/worked model. Exercițiile 2-5 sunt propuse elevului. Exercițiul 4 conține asteriscuri în loc de semne (+ sau -) pe care elevul trebuie să le determine — etichetat 'gaseste-greseala'. Exercițiul 5 prezintă două autobuze cu 5 și 6 copii, probabil problemă vizuală de adunare cu 1. Secțiunea JOC de la bază conține un șir de flori — numărare/continuare șir.",
+      "notes": "Exercițiul 1 prezintă axa numerică cu ilustrație ca model/introducere — contorizat ca worked example. Exercițiile 2-5 sunt propuse elevului. Exercițiul 4 conține simbolul * unde elevul trebuie să determine semnul (+/-), etichetat 'gaseste-greseala'. Exercițiul 5 prezintă două autobuze cu copii (problemă vizuală). La final există un element de joc (JOC) cu flori, posibil extensie. Modulul nu este vizibil pe pagină.",
       "input_tokens": 2962,
-      "output_tokens": 339
+      "output_tokens": 305
     },
     {
       "pdf_page": 41,
@@ -923,9 +925,9 @@
         "problema text"
       ],
       "confidence": "medium",
-      "notes": "Exercițiul 6 conține modele rezolvate (cu 1 mai mult / cu 1 mai puțin), numărate ca worked_examples. Exercițiile 6 (partea propusă cu imagini), 7, 8, 9 și exercițiul cu Cuțu/Miaunică sunt propuse elevului. Exercițiul 7 folosește * pentru a înlocui semnul de comparație (<, =, >) pe care elevul trebuie să-l găsească. Pagina introduce conceptele de 'cu 1 mai mult' și 'cu 1 mai puțin' cu suport vizual și verbal.",
+      "notes": "Exercițiile 6-9 plus o problemă bonus (Cuțu/Miaunică) fără număr de exercițiu. Exercițiul 6 conține modele rezolvate (2 modele: +1 și -1), restul sunt propuse. Exercițiul 7 conține comparări cu simboluri de inegalitate. Exercițiul 9 conține coloane de expresii propuse spre calcul/observare. Problema bonus (Cuțu și Miaunică) este o problemă aplicativă fără număr atribuit, numărată ca exercițiu propus.",
       "input_tokens": 2962,
-      "output_tokens": 311
+      "output_tokens": 299
     },
     {
       "pdf_page": 42,
@@ -947,10 +949,10 @@
         "comparare cu casuta",
         "gaseste-greseala"
       ],
-      "confidence": "high",
-      "notes": "Exercițiul 1 introduce noțiunile de termen și sumă cu ilustrație și tabel explicativ — tratat ca exemplu rezolvat/predat. Exercițiile 2-5 sunt propuse elevului. Exercițiul 5 conține comparări cu * unde elevul pune semnul corect (<, =, >).",
+      "confidence": "medium",
+      "notes": "Exercițiul 1 introduce vizual noțiunile de termen și sumă (material de predare). Exercițiul 2 este tabel cu adunări sistematice +2 (propus). Exercițiul 3 cere transcrierea și mărirea cu 2 a unor numere date. Exercițiul 4 are casute de completat în egalități. Exercițiul 5 cere compararea expresiilor cu simboluri <, =, >. Bara numerică laterală (0-10) este element vizual auxiliar, nu exercițiu separat.",
       "input_tokens": 2962,
-      "output_tokens": 235
+      "output_tokens": 292
     },
     {
       "pdf_page": 43,
@@ -971,12 +973,13 @@
         "calcul direct",
         "completare casuta",
         "comparare cu casuta",
-        "micsorare/marire cu numar dat"
+        "micsorare cu 2",
+        "marire cu 2"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 1 introduce terminologia (descăzut, scăzător, diferență/rest) cu ilustrație — tratat ca exemplu rezolvat/predat. Exercițiile 2-5 sunt propuse elevului. Exercițiul 3 include și un sub-punct cu bullet (Mărește cu 2 numerele obținute). Exercițiul 5 conține comparări cu * unde elevul alege semnul corect (<, =, >).",
+      "notes": "Exercițiul 1 introduce terminologia descăzut/scăzător/diferență(rest) cu ilustrație vizuală - tratat ca exemplu rezolvat/predat. Exercițiile 2-5 sunt propuse elevului. Exercițiul 3 include și o subîntrebare cu bullet (Mărește cu 2...). Exercițiul 5 conține comparări cu simboluri de ales (mai mic/egal/mai mare).",
       "input_tokens": 2962,
-      "output_tokens": 284
+      "output_tokens": 283
     },
     {
       "pdf_page": 44,
@@ -990,15 +993,15 @@
       "exercise_count": 6,
       "exercise_types": [
         "calcul direct",
-        "completare tabel",
         "completare casuta",
+        "completare tabel",
         "problema vizuala",
         "gaseste-greseala"
       ],
       "confidence": "medium",
-      "notes": "Exercițiul 1 conține exemple rezolvate (model cu descompunere) plus sarcina 'Calculează analog' pentru elev. Exercițiul 3 are două tabele de completat (adunare și scădere). Exercițiul 4 implică bancnote moldovenești (lei) pentru explicarea schimbului de bani. Exercițiul 5 conține expresii cu * unde elevul trebuie să determine semnul (+/-), ceea ce poate fi interpretat ca 'gaseste-greseala' sau 'completare semn'. Worked example contabilizat: modelul din exercițiul 1.",
+      "notes": "Exercițiul 1 conține exemple model rezolvate (3-2=1, 4-2=2, 5-2=3) urmate de o cerință analogă, tratat ca worked_example. Exercițiul 5 conține expresii cu * unde elevul trebuie să determine semnul (+/-), tratat ca gaseste-greseala. Exercițiile 3 și 4 implică tabele și imagini cu bancnote moldovenești. Numărul exercițiilor propuse: 2, 3, 4, 5 plus cerința 'Calculează analog' din ex.1 = 5 propuse.",
       "input_tokens": 2962,
-      "output_tokens": 304
+      "output_tokens": 305
     },
     {
       "pdf_page": 45,
@@ -1013,13 +1016,12 @@
       "exercise_types": [
         "problema vizuala",
         "comparare cu casuta",
-        "completare tabel",
-        "calcul direct cu lacune"
+        "completare tabel"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține 3 exerciții numerotate (6, 7, 8) plus o secțiune suplimentară nenumerotată cu flori și expresii cu lacune. Exercițiul 6 implică mărire cu 2 și micșorare cu 1 prin imagini cu ciuperci. Exercițiul 7 are comparări cu simboluri și completare de căsuțe. Exercițiul 8 are două tabele: unul cu Termen/Termen/Sumă și altul cu Descăzut/Scăzător/Rest. Secțiunea de jos (flori) pare un exercițiu suplimentar nenumerotat. Numărul total de exerciții propuse este estimat ca 3 exerciții numerotate; secțiunea florilor e tratată ca parte din pagină dar nenumerotată.",
+      "notes": "Pagina conține 3 exerciții numerotate (6, 7, 8) plus o secțiune nenumerovitatã cu flori la final. Exercițiul 6 implică mărire/micșorare cu numere pe ciuperci-ilustrații. Exercițiul 7 cere găsirea semnelor de comparație (*) și completarea căsuțelor. Exercițiul 8 are două tabele de completat (sumă și rest). Secțiunea cu flori pare exercițiu suplimentar nenumerotat de completare expresii. Nu sunt identificate noțiuni matematice genuin noi introduse pe această pagină.",
       "input_tokens": 2962,
-      "output_tokens": 344
+      "output_tokens": 287
     },
     {
       "pdf_page": 46,
@@ -1032,19 +1034,19 @@
         "sumă"
       ],
       "worked_examples_count": 1,
-      "proposed_exercises_count": 4,
-      "exercise_count": 5,
+      "proposed_exercises_count": 5,
+      "exercise_count": 6,
       "exercise_types": [
+        "problema vizuala",
         "calcul direct",
-        "observare model vizual",
-        "scriere numere marite cu 3",
         "completare casuta",
-        "problema vizuala"
+        "scriere numere obtinute",
+        "numarare obiecte"
       ],
-      "confidence": "high",
-      "notes": "Exercițiul 1 introduce noțiunile de termen și sumă cu suport vizual (maimuțe cu banane și puncte). Exercițiul 2 prezintă șirul adunărilor cu 3 (0+3 până la 7+3 și invers), considerat model/worked example parțial. Exercițiul 5 este o problemă vizuală cu albine și semnul întrebării, fără text explicativ suplimentar.",
+      "confidence": "medium",
+      "notes": "Exercițiul 1 introduce vizual conceptele de termen și sumă (material de predare). Exercițiile 2-5 sunt propuse elevului. Exercițiul 5 pare să ceară numărarea albinelor și găsirea rezultatului (semnul ? sugerează răspuns necompletat). Exercițiul 3 cere mărirea cu 3 a unor numere date. Exercițiul 4 conține completări de căsuțe în egalități.",
       "input_tokens": 2962,
-      "output_tokens": 271
+      "output_tokens": 274
     },
     {
       "pdf_page": 47,
@@ -1057,19 +1059,20 @@
         "scăzător",
         "diferență"
       ],
-      "worked_examples_count": 1,
-      "proposed_exercises_count": 4,
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 5,
       "exercise_count": 5,
       "exercise_types": [
         "problema vizuala",
         "calcul direct",
         "completare casuta",
-        "transcriere si operare cu numere"
+        "transcriere si micsorare",
+        "gaseste-greseala"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 1 introduce noțiunile de descăzut, scăzător, diferență printr-un model ilustrat (worked example). Exercițiile 2-5 sunt propuse elevului. Exercițiul 5 este o problemă vizuală cu ouă și pui (întrebare cu ?). Exercițiul 3 conține sub-sarcini cu bullet suplimentar (Mărește cu 3). Bara numerică 0-10 apare pe marginea dreaptă ca suport vizual.",
+      "notes": "Exercițiul 1 introduce terminologia descăzut/scăzător/diferență prin reprezentare vizuală. Exercițiul 2 conține seria de scăderi cu 3 ilustrate prin bile colorate. Exercițiul 3 cere transcrierea, micșorarea cu 3 și observarea unui pattern. Exercițiul 4 conține completări de căsuțe cu egalități. Exercițiul 5 este o problemă vizuală cu ouă și pui. Termenii descăzut/scăzător/diferență par a fi introduși explicit pe această pagină.",
       "input_tokens": 2962,
-      "output_tokens": 285
+      "output_tokens": 310
     },
     {
       "pdf_page": 48,
@@ -1081,20 +1084,20 @@
         "adunarea cu 3",
         "scăderea cu 3"
       ],
-      "worked_examples_count": 1,
+      "worked_examples_count": 3,
       "proposed_exercises_count": 5,
-      "exercise_count": 6,
+      "exercise_count": 8,
       "exercise_types": [
         "calcul direct",
         "completare cu casuta",
         "problema vizuala",
-        "calcul analog",
-        "gaseste-greseala"
+        "gaseste-greseala",
+        "calcul analog"
       ],
       "confidence": "medium",
-      "notes": "Exercițiul 1 conține exemple rezolvate (4-3=1, 5-3=2) și o casuță de completat (6-3=□), plus un subpunct 'Calculează analog' propus elevului. Exercițiul 3 este o problemă vizuală cu imagini (fructe, arici) fără expresii numerice explicite. Exercițiul 5 conține operatori * cu simboluri + și - de ales (gaseste-greseala / completare semn). Numărul de exerciții propuse și exemple poate fi interpretat diferit în funcție de cum se tratează subpunctele.",
+      "notes": "Exercițiul 1 prezintă exemple rezolvate (4-3=1, 5-3=2) și unul parțial rezolvat (6-3=□) plus sarcină de calcul analog; exercițiile 2-5 sunt propuse elevului. Exercițiul 3 conține imagini cu fructe/arici fără expresii numerice explicite, necesitând formularea problemei. Exercițiul 5 conține expresii cu * unde elevul trebuie să determine operatorul (+/-), posibil inclusiv afirmații greșite intenționat.",
       "input_tokens": 2962,
-      "output_tokens": 318
+      "output_tokens": 306
     },
     {
       "pdf_page": 49,
@@ -1107,23 +1110,22 @@
         "mărește cu",
         "descăzut",
         "scăzător",
-        "diferență",
-        "termen",
-        "sumă"
+        "diferență"
       ],
       "worked_examples_count": 0,
-      "proposed_exercises_count": 4,
-      "exercise_count": 4,
+      "proposed_exercises_count": 9,
+      "exercise_count": 9,
       "exercise_types": [
         "problema vizuala",
         "completare tabel",
         "comparare cu casuta",
-        "calcul direct"
+        "calcul direct",
+        "gaseste-greseala"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține 4 exerciții numerotate (6-9) plus o activitate vizuală cu frunze la final (nenumerotată). Exercițiul 6 - micșorare/mărire cu ciuperci ilustrate; Ex.7 - tabele de adunare/scădere cu imagini; Ex.8 - comparare cu semne (<, =, >) și căsuțe de completat; Ex.9 - tabele cu termen/sumă și descăzut/scăzător/diferență. Conceptele 'descăzut', 'scăzător', 'diferență', 'termen', 'sumă' pot fi prerechizite dacă au fost introduse anterior; nu se poate confirma că sunt GENUIN NOI pe această pagină.",
+      "notes": "Pagina conține 9 exerciții numerotate explicit (6-9) plus un exercițiu suplimentar nenumerotat cu frunze și expresii. Exercițiul 6 implică transformări vizuale cu ciuperci (micșorează cu 3, mărește cu 2). Exercițiul 7 are tabele de tipul 'Avea/A primit/În total' și 'Avea/A dat/I-au rămas'. Exercițiul 8 implică comparare cu semne (<, =, >) și casute de completat. Exercițiul 9 are tabele cu termeni/sumă și descăzut/scăzător/diferență. Conceptele 'descăzut', 'scăzător', 'diferență' pot fi introduse pe această pagină sau anterior; incluse cu rezervă.",
       "input_tokens": 2962,
-      "output_tokens": 361
+      "output_tokens": 390
     },
     {
       "pdf_page": 50,
@@ -1143,9 +1145,9 @@
         "completare schema"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 1 este o problemă rezolvată complet (cu condiția, schema, operația și răspunsul). Exercițiul 2 este propus elevului să identifice condiția, întrebarea, să completeze schema și să rezolve problema. Pagina introduce termenii 'TERMEN' și 'SUMĂ' printr-o ilustrație vizuală cu conuri de brad.",
+      "notes": "Exercițiul 1 este rezolvat complet (model cu condiția, întrebarea, rezolvarea și răspunsul). Exercițiul 2 este propus elevului spre rezolvare (completează schema și rezolvă). Pagina introduce termenii 'TERMEN' și 'SUMĂ' printr-un bloc vizual-definitorie.",
       "input_tokens": 2962,
-      "output_tokens": 234
+      "output_tokens": 221
     },
     {
       "pdf_page": 51,
@@ -1158,16 +1160,18 @@
       "proposed_exercises_count": 6,
       "exercise_count": 6,
       "exercise_types": [
-        "problema text",
+        "problema textuala",
         "problema vizuala",
+        "formulare intrebari",
+        "compunere problema dupa imagine",
+        "compunere problema dupa schema",
         "completare casuta",
-        "gaseste-greseala",
-        "compune problema"
+        "gaseste-greseala"
       ],
-      "confidence": "medium",
-      "notes": "Pagina conține 6 exerciții numerotate. Ex.3: rezolvă probleme text cu adunare. Ex.4: formulează întrebări și rezolvă oral probleme cu imagini. Ex.5: compune și rezolvă probleme după imagine, schemă și exercițiu (6+3=[]). Ex.6: completare casute și determinare semn operație (* = + sau -). Worked_examples_count este 0 deoarece nicio problemă nu este rezolvată cu soluție afișată. Nu se introduc noțiuni noi.",
+      "confidence": "high",
+      "notes": "Pagina conține 6 exerciții numerotate. Ex.3: rezolvă probleme text cu adunare. Ex.4: formulează întrebări și rezolvă oral după imagini cu simboluri vizuale (câini, pisici, bani). Ex.5: compune și rezolvă probleme după imagine, schemă și exercițiu (6+3=[]). Ex.6: completare căsuțe și determinare semn operație (* = + sau -), posibil exerciții cu afirmații de verificat.",
       "input_tokens": 2962,
-      "output_tokens": 275
+      "output_tokens": 285
     },
     {
       "pdf_page": 52,
@@ -1184,16 +1188,16 @@
       "exercise_count": 5,
       "exercise_types": [
         "problema vizuala",
+        "completare tabel",
         "calcul direct",
-        "completare casuta",
-        "analogie",
+        "calcul analog",
         "problema text",
         "modificare date problema"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 1 conține imagini cu rafturi de cărți și servește ca introducere vizuală cu completare casuță (4+4=, 8-4=). Exercițiul 2 prezintă tabele de adunare și scădere cu 4 ilustrate cu bile pe abac. Exercițiul 3 prezintă un model rezolvat (5-4=1) și cere calculul analog pentru alte expresii. Exercițiul 4 cere citirea și calculul unor expresii în diferite moduri. Exercițiul 5 este o problemă text cu sub-sarcină de modificare a datelor. Exercițiul 2 este considerat material de predare (worked example), celelalte 4 sunt propuse elevului.",
+      "notes": "Exercițiul 1 prezintă ilustrații cu calcule model (4+4 și 8-4), considerat worked example. Exercițiul 2 este un tabel vizual cu bile pentru adunare și scădere cu 4. Exercițiul 3 prezintă un model rezolvat (5-4=1) și cere calculul analog. Exercițiul 5 include o subvariantă cu modificarea datelor problemei (cu 1 mai mare / cu 1 mai mic).",
       "input_tokens": 2962,
-      "output_tokens": 350
+      "output_tokens": 288
     },
     {
       "pdf_page": 53,
@@ -1210,36 +1214,39 @@
         "comparare cu casuta",
         "problema text",
         "completare prin cuvinte",
-        "completare lant numeric",
-        "completare tabel vizual"
+        "completare lant",
+        "calcul direct cu casuta"
       ],
-      "confidence": "medium",
-      "notes": "Pagina conține exercițiile numerotate 6–10, plus un bloc vizual (case cu numere) fără număr de exercițiu explicit — acesta a fost numărat separat. Exercițiul 7 implică comparare cu semn lipsă (*, <, >, =), ceea ce poate fi 'gaseste-greseala' sau 'comparare cu casuta'. Exercițiul 9 cere completare cu cuvinte și rezolvarea problemei rezultate. Blocul de case colorate din josul paginii pare a fi un exercițiu suplimentar de completare tabel vizual fără număr atribuit explicit, inclus în numărul 10 sau separat — marcat ca ambiguu.",
+      "confidence": "high",
+      "notes": "Exercițiile 6-10 sunt propuse elevului. Exercițiul 6 cere completarea căsuțelor în ecuații de adunare/scădere. Exercițiul 7 cere compararea expresiilor cu simboluri <, =, >. Exercițiul 8 conține două probleme text cu animale. Exercițiul 9 cere completarea unui enunț prin cuvinte și rezolvarea problemei obținute. Exercițiul 10 cere completarea unui lanț numeric cu imagini de cărucioare. Secțiunea de jos (casele cu numerele 3,4,5,6) pare un exercițiu suplimentar de completare a operațiilor de adunare/scădere cu căsuțe.",
       "input_tokens": 2962,
-      "output_tokens": 339
+      "output_tokens": 346
     },
     {
       "pdf_page": 54,
       "printed_page": "54",
       "module": null,
       "subtopic": "Adunarea și scăderea cu 5",
-      "page_kind": "exercitii",
-      "concepts_introduced": [],
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "adunarea cu 5",
+        "scăderea cu 5"
+      ],
       "worked_examples_count": 1,
       "proposed_exercises_count": 6,
       "exercise_count": 7,
       "exercise_types": [
         "calcul direct",
-        "completare casuta",
+        "completare cu casuta",
         "problema vizuala",
         "calcul analog",
-        "formulare problema",
-        "problema contextuala zile saptamina"
+        "ecuatie simpla",
+        "problema text"
       ],
       "confidence": "medium",
-      "notes": "Exercițiul 3 conține un model rezolvat (6−5=1) urmat de exerciții propuse (7−5, 8−5) și instrucțiunea 'Calculează analog', deci este contorizat parțial ca worked example. Exercițiul 6 implică raționament cu zilele săptămînii (context calendaristic). Exercițiul 5 conține două seturi de ecuații cu căsuțe de completat.",
+      "notes": "Exercițiul 3 conține un model rezolvat (6-5=1 cu descompunere) urmat de 'Calculează analog', marcat ca worked_example. Exercițiile 1-6 sunt propuse elevului. Exercițiul 4 implică formularea și rezolvarea de probleme pe baza unor imagini. Exercițiul 6 implică raționament cu zilele săptămînii și adunare/scădere cu 5.",
       "input_tokens": 2962,
-      "output_tokens": 270
+      "output_tokens": 280
     },
     {
       "pdf_page": 55,
@@ -1254,14 +1261,14 @@
       "exercise_types": [
         "problema vizuala",
         "calcul direct",
-        "completare tabel",
         "completare casuta",
-        "formulare problema"
+        "completare tabel",
+        "problema cu imagini"
       ],
-      "confidence": "high",
-      "notes": "Pagina conține 10 exerciții numerotate (7-10). Exercițiul 7 implică mărirea cu 5 folosind imagini cu ciuperci. Exercițiul 8 conține serii de calcule cu adunare și scădere cu numărul 5, cu căsuțe de completat. Exercițiul 9 conține două tabele de completat (Termen-Termen-Sumă și Descăzut-Scăzător-Diferență). Exercițiul 10 cere formularea și rezolvarea unor probleme pe baza imaginilor, plus o sarcină creativă suplimentară. Nu sunt introduse concepte noi; termenii 'Termen', 'Sumă', 'Descăzut', 'Scăzător', 'Diferență' sunt utilizați ca prerechizite deja cunoscute.",
+      "confidence": "medium",
+      "notes": "Pagina conține exercițiile numerotate 7-10. Exercițiul 7 implică mărirea cu 5 folosind imagini cu ciuperci și animale. Exercițiul 8 are seturi de calcul cu căsuțe de completat (adunare și scădere cu 5). Exercițiul 9 are două tabele de completat (Termen/Sumă și Descăzut/Scăzător/Diferență). Exercițiul 10 cere formularea și rezolvarea de probleme după imagini cu vehicule și fructe, plus o activitate creativă suplimentară. Numărul exact de sub-exerciții din nr. 8 este dificil de delimitat precis, estimat global ca 10 exerciții propuse.",
       "input_tokens": 2962,
-      "output_tokens": 367
+      "output_tokens": 344
     },
     {
       "pdf_page": 56,
@@ -1280,12 +1287,12 @@
       "exercise_types": [
         "problema vizuala",
         "completare schema",
-        "problema text"
+        "rezolvare problema"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 1 este un exemplu rezolvat complet (cu schemă, calcul și răspuns afișat). Exercițiul 2 este propus elevului spre rezolvare, cu schemă parțial completată. Pagina introduce terminologia: descăzutul, scăzătorul, diferența (restul), ilustrate vizual cu mere.",
+      "notes": "Exercițiul 1 este o problemă rezolvată complet (model cu schemă și rezolvare afișată). Exercițiul 2 este propus elevului să completeze schema și să rezolve. Pagina introduce terminologia: descăzutul, scăzătorul, diferența (restul).",
       "input_tokens": 2962,
-      "output_tokens": 239
+      "output_tokens": 228
     },
     {
       "pdf_page": 57,
@@ -1305,9 +1312,9 @@
         "problema cu variante"
       ],
       "confidence": "high",
-      "notes": "Pagina conține 5 exerciții numerotate: ex.3 calcul în lanț cu adunare/scădere, ex.4 trei probleme text, ex.5 compunere problemă după imagine și schemă, plus un exercițiu suplimentar (cu bufniță) cu două variante. Numărul de exerciții propuse a fost calculat ca: ex.3=1, ex.4=3 subprobleme (numărate ca 1 exercițiu cu 3 itemi), ex.5=1, ex. bufniță=1 (cu 2 variante). Total ajustat la 5 unități distincte de exercițiu.",
+      "notes": "Exercițiul 3 este calcul în lanț cu adunare și scădere, folosind expresiile 'măresc cu' și 'micșorez cu'. Exercițiul 4 conține 3 sub-probleme text. Exercițiul 5 cere compunerea și rezolvarea problemelor după imagine și schemă. Ultimul exercițiu (fără număr, cu ilustrație broască) conține 2 sub-întrebări (1 și 2). Total: ex.3+ex.4(3 sub)+ex.5+ex.fara_nr(2 sub) = contorizat ca 5 exerciții distincte numerotate/grupate.",
       "input_tokens": 2962,
-      "output_tokens": 298
+      "output_tokens": 303
     },
     {
       "pdf_page": 58,
@@ -1324,12 +1331,12 @@
         "comparare cu casuta",
         "completare tabel",
         "gaseste-greseala",
-        "completare lant"
+        "lant numeric"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 4 cere elevilor să corecteze problemele lui Nătăfleață (greșeli intenționate) și apoi să le rezolve. Exercițiul 3 conține două tabele de adunare și scădere de completat. Exercițiul 5 conține un lanț numeric cu operații și o sarcină creativă de creare a unui lanț similar.",
+      "notes": "Exercițiul 4 cere corectarea problemelor lui Nătăfleață (greșeli intenționate în probleme text), apoi rezolvarea lor. Exercițiul 5 implică completarea unui lanț numeric și crearea unui lanț asemănător. Tabelele din exercițiul 3 sunt tabele de adunare și scădere de completat.",
       "input_tokens": 2962,
-      "output_tokens": 252
+      "output_tokens": 246
     },
     {
       "pdf_page": 59,
@@ -1339,21 +1346,21 @@
       "page_kind": "exercitii",
       "concepts_introduced": [],
       "worked_examples_count": 0,
-      "proposed_exercises_count": 37,
-      "exercise_count": 37,
+      "proposed_exercises_count": 28,
+      "exercise_count": 28,
       "exercise_types": [
-        "completare casuta",
         "calcul direct",
+        "completare casuta",
         "comparare cu casuta",
         "problema text",
+        "reproducere model",
         "calcul in lant",
-        "reproducere model grafic",
-        "exercitii cu variante"
+        "calcul cu ferestre (case cu numere)"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține mai multe secțiuni: case cu numere 6-10 (exerciții cu completare căsuțe), Varianta 1 și Varianta 2 cu calcul direct și completare, două probleme text (mere în coș), un joc de reproducere model pe grilă, și un arc de cerc cu calcul în lanț. Numărarea exercițiilor este aproximativă din cauza densității mari a elementelor vizuale și a variabilității formelor. Exercițiile din casele numerelor au căsuțe de completat cu numere lipsă.",
+      "notes": "Pagina conține 4 'case' cu exerciții de adunare/scădere cu numere lipsă (casele 7-10), două variante de exerciții (VARIANTA 1 și VARIANTA 2) cu calcul direct, completare casuță și comparare, două probleme text (mere în coș), un joc de reproducere model grafic și un exercițiu de calcul în lanț cu curcubeu. Numărul exact de exerciții propuse este estimat; sunt grupuri multiple de sarcini pe pagină.",
       "input_tokens": 2962,
-      "output_tokens": 310
+      "output_tokens": 287
     },
     {
       "pdf_page": 60,
@@ -1373,9 +1380,9 @@
         "comparare cu imagini"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 1 este o problemă rezolvată complet cu schemă vizuală (condiția, întrebarea, rezolvarea, răspunsul). Exercițiul 2 conține 3 subprobleme propuse elevului plus o sarcină de compunere de probleme. Exercițiul 3 este o problemă vizuală de comparare (cu cît mai multe/cu cît mai puține) fără soluție afișată. Numărul de exerciții propuse a fost estimat ca 2 (ex. 2 și ex. 3), deoarece ex. 2 are 3 sub-itemi dar reprezintă un singur exercițiu numerotetat.",
+      "notes": "Exercițiul 1 este un exemplu rezolvat (cu schemă CONDIȚIA/ÎNTREBAREA și rezolvare completă). Exercițiul 2 conține 3 sub-probleme propuse plus o sarcină de compunere de probleme. Exercițiul 3 este o problemă vizuală de comparare (cu cît mai multe/cu cît mai puține) cu imagini. Sarcinile de compunere de probleme asemănătoare din ex. 2 sunt incluse în proposed_exercises_count ca parte a aceluiași exercițiu.",
       "input_tokens": 2962,
-      "output_tokens": 328
+      "output_tokens": 297
     },
     {
       "pdf_page": 61,
@@ -1388,23 +1395,24 @@
       "proposed_exercises_count": 8,
       "exercise_count": 8,
       "exercise_types": [
-        "problema verbala",
-        "observare pattern",
-        "sir de calcul",
         "problema vizuala",
-        "problema cu bețișoare",
-        "joc"
+        "calcul direct",
+        "observatie pattern",
+        "completare sir",
+        "creare problema",
+        "problema text",
+        "joc manipulativ"
       ],
       "confidence": "high",
-      "notes": "Pagina conține 8 exerciții numerotate. Exercițiul 4 cere formularea și rezolvarea problemelor după imagini. Exercițiul 5 implică observarea relației de mărire/micșorare cu 5. Exercițiul 6 cere observarea șirurilor de adunare și scădere cu 5. Exercițiul 7 cere crearea și rezolvarea problemelor după imagini (creioane și mingi). Exercițiul 8 este o problemă cu bețișoare (pătrat vs triunghi). Ultima secțiune JOC cere mutarea unui bețișor în casă. Nu există exemple rezolvate cu soluție afișată.",
+      "notes": "Pagina conține 8 exerciții numerotate (4-8 + JOC). Exercițiul 4 cere formularea și rezolvarea problemelor după situații ilustrate. Exercițiul 5 vizează observarea unui pattern de mărire/micșorare cu 5. Exercițiul 6 cere observarea modului în care se schimbă răspunsurile în șiruri de adunări/scăderi cu 5. Exercițiul 7 cere crearea și rezolvarea problemelor după imagini. Exercițiul 8 este o problemă text despre figuri geometrice. Secțiunea JOC este un joc de manipulare a bețișoarelor. Nu există module sau subtopic vizibil pe pagină.",
       "input_tokens": 2962,
-      "output_tokens": 332
+      "output_tokens": 331
     },
     {
       "pdf_page": 62,
       "printed_page": "62",
       "module": null,
-      "subtopic": "Adunarea cu 6, 7, 8, 9",
+      "subtopic": "• Adunarea cu 6, 7, 8, 9",
       "page_kind": "lectie",
       "concepts_introduced": [
         "comutativitatea adunării"
@@ -1415,14 +1423,14 @@
       "exercise_types": [
         "calcul direct",
         "completare cu casuta",
-        "schimbarea ordinii termenilor",
+        "schimbare ordine termeni",
         "problema text",
         "problema vizuala"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 1 este un exemplu demonstrativ cu abac vizual care ilustrează comutativitatea — numărat ca worked_example. Exercițiile 2-5 sunt propuse elevului. Exercițiul 3 conține un set de completări cu căsuță și întrebarea 'Ce observi?' (pattern descrescător). Exercițiul 5 implică o problemă vizuală cu prețuri și monede (Dana și Dan).",
+      "notes": "Exercițiul 1 este un exemplu demonstrativ (rezolvat cu abac vizual) care introduce comutativitatea adunării. Exercițiile 2-5 sunt propuse elevului. Exercițiul 4 are două subprobleme (Acușor și Ghimpușor). Exercițiul 5 este o problemă vizuală cu bani (Dana și Dan).",
       "input_tokens": 2962,
-      "output_tokens": 273
+      "output_tokens": 258
     },
     {
       "pdf_page": 63,
@@ -1436,15 +1444,16 @@
       "exercise_count": 4,
       "exercise_types": [
         "problema vizuala",
+        "marire si micsorare cu un numar",
         "creare problema dupa imagine",
-        "creare problema dupa conditie",
         "calcul direct",
+        "observare pattern in coloana",
         "comparare cu casuta"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 6 cere completarea rezultatelor pentru 'mărește cu 7' și 'micșorează cu 5' pe baza unor piramide colorate. Exercițiul 7 cere crearea și rezolvarea problemelor după imagine, condiție și exercițiu. Exercițiul 8 cere observarea pattern-ului în coloane de adunări. Exercițiul 9 conține completarea căsuțelor pentru egalități și inegalități. Numărul paginii tipărit: 63.",
+      "notes": "Exercițiul 6 cere mărirea/micșorarea unor numere reprezentate prin turnuri (imagini); exercițiul 7 cere crearea și rezolvarea unei probleme după imagine, condiție și exercițiu dat ca model; exercițiul 8 cere observarea cum se schimbă răspunsurile în coloane de adunări; exercițiul 9 conține completare de căsuțe cu relații de egalitate/inegalitate (comparare cu căsuță).",
       "input_tokens": 2962,
-      "output_tokens": 274
+      "output_tokens": 276
     },
     {
       "pdf_page": 64,
@@ -1461,12 +1470,12 @@
       "exercise_types": [
         "problema text",
         "problema vizuala",
-        "compunere problema"
+        "compune problema"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 2 conține 4 sub-probleme propuse elevului plus o sarcină de compunere a unor probleme asemănătoare. Exercițiul 1 este o problemă rezolvată (model). La baza paginii apare un element grafic tip joc (JOC) cu ilustrații de casute.",
+      "notes": "Exercițiul 2 conține 4 sub-probleme text propuse elevului + 1 sarcină de compunere a unor probleme asemănătoare. Exercițiul 1 este o problemă model rezolvată cu ilustrație vizuală (castane). La baza paginii apare un element de joc ilustrativ (JOC) cu casute de colorat.",
       "input_tokens": 2962,
-      "output_tokens": 239
+      "output_tokens": 250
     },
     {
       "pdf_page": 65,
@@ -1480,24 +1489,25 @@
       "exercise_count": 6,
       "exercise_types": [
         "problema vizuala",
-        "corespondenta prin sageti",
-        "problema text",
-        "mareste/micsoreaza cu un numar",
+        "comparare cu casuta",
+        "completare casuta",
         "gaseste-greseala",
-        "completare casuta"
+        "problema text"
       ],
       "confidence": "medium",
-      "notes": "Exercițiul 3 cere compararea cantităților prin corespondență vizuală (legătură unu-la-unu). Exercițiul 4 are 3 sub-puncte de probleme text fără soluție afișată. Exercițiul 5 implică mărirea și micșorarea unor numere cu valori date. Exercițiul 6 conține expresii cu * (semn necunoscut) și căsuțe de completat; unele expresii sunt intenționat incomplete/greșite pentru ca elevul să determine operatorul sau valoarea lipsă.",
+      "notes": "Pagina conține 6 exerciții numerotate (3-6). Ex.3: comparare cantități cu imagini. Ex.4: formulare întrebări și rezolvare probleme text cu imagini. Ex.5: mărește/micșorează cu valori date (diagramă vizuală). Ex.6: înlocuire simbol * cu semn operație și completare căsuțe - tip gaseste-greseala/completare. Exercițiile 3,4,5,6 sunt distincte; numărarea lor ca 6 ține cont de sub-itemii principali.",
       "input_tokens": 2962,
-      "output_tokens": 330
+      "output_tokens": 298
     },
     {
       "pdf_page": 66,
       "printed_page": "66",
       "module": null,
       "subtopic": "Scăderea cu 6, 7, 8, 9",
-      "page_kind": "exercitii",
-      "concepts_introduced": [],
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "scăderea cu 6, 7, 8, 9"
+      ],
       "worked_examples_count": 1,
       "proposed_exercises_count": 5,
       "exercise_count": 6,
@@ -1508,10 +1518,10 @@
         "problema text",
         "problema vizuala"
       ],
-      "confidence": "high",
-      "notes": "Exercițiul 1 conține un exemplu rezolvat (7-6=1) urmat de completări, tratat ca worked example. Exercițiul 5 implică comparare de prețuri cu imagini (Ana, Dan, Doru) și întrebări despre rest din bancnotă.",
+      "confidence": "medium",
+      "notes": "Exercițiul 1 conține un model rezolvat (7-6=1) și continuă cu casute de completat, tratat ca worked example + exerciții propuse. Exercițiul 5 implică imagini cu prețuri și bancnota de 10 lei, cerând comparare și calcul rest. Numărul exercițiilor propuse include ex. 1 (parțial), 2, 3, 4, 5.",
       "input_tokens": 2962,
-      "output_tokens": 220
+      "output_tokens": 271
     },
     {
       "pdf_page": 67,
@@ -1528,18 +1538,18 @@
         "completare tabel",
         "problema vizuala",
         "comparare cu casuta",
-        "schema problema"
+        "creare problema"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține exerciții numerotate 6-9. Ex.6: micșorează numere cu 6 și 7 (calcul direct). Ex.7: coloane de scăderi cu observarea pattern-ului. Ex.8: două tabele de completat (erau/au plecat/au rămas și erau/au venit/în total). Ex.9: creați și rezolvați probleme după imagine și schemă (avion 8, elicopter ?, cu 6 mai puține). La baza paginii: exerciții decorative cu ciuperci și arici cu expresii de completat în căsuțe. Numerotarea exercițiilor din josul paginii este neclară dacă sunt exerciții separate sau parte din ex.9.",
+      "notes": "Pagina conține 9 exerciții numerotate: ex.6 - micșorează numere cu 6 și 7; ex.7 - coloane de scăderi cu pattern; ex.8 - două tabele cu 'Erau/Au plecat/Au rămas' și 'Erau/Au venit/În total' cu celule goale de completat; ex.9 - creați și rezolvați probleme după imagine și schemă; plus exerciții de calcul cu imagini de arici la baza paginii (casute goale de completat). Numărul exact de sub-exerciții la ex.8 și ex.6 e ambiguu ca unitate de numărare.",
       "input_tokens": 2962,
-      "output_tokens": 320
+      "output_tokens": 307
     },
     {
       "pdf_page": 68,
       "printed_page": "68",
       "module": null,
-      "subtopic": "Adunarea și scăderea pînă la 10",
+      "subtopic": "• Adunarea și scăderea pînă la 10",
       "page_kind": "exercitii",
       "concepts_introduced": [],
       "worked_examples_count": 0,
@@ -1547,14 +1557,14 @@
       "exercise_count": 4,
       "exercise_types": [
         "calcul direct",
-        "completare casuta",
+        "completare cu casuta",
         "problema vizuala",
-        "sir cu operatii in lant"
+        "sir de operatii in lant"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține 4 exerciții numerotate (1-4) cu tematică de iarnă/Crăciun. Exercițiul 1: calcul direct cu globuri de pom, completare expresii. Exercițiul 2: găsire valoare simbol (steluță) în ecuații. Exercițiul 3: numărare globuri pe brazi (problem vizuală cu completare căsuțe). Exercițiul 4: lanț de operații cu căsuțe de completat. Numărul exact de sub-exerciții poate varia; s-au numărat ca 4 exerciții principale propuse.",
+      "notes": "Pagina conține 4 exerciții numerotate (1-4). Exercițiul 1: completare expresii cu adunare/scădere pe globuri de Crăciun. Exercițiul 2: găsire valoare simbol necunoscut (steluță) în expresii. Exercițiul 3: probleme vizuale cu brazi și ornamente, completare căsuțe. Exercițiul 4: lanț de operații cu săgeți și căsuțe de completat. Unele rezultate par parțial afișate (ex. 10, 5) ca indicii sau răspunsuri model, ceea ce face dificilă distincția worked/proposed; tratate ca propuse.",
       "input_tokens": 2962,
-      "output_tokens": 305
+      "output_tokens": 327
     },
     {
       "pdf_page": 69,
@@ -1570,13 +1580,13 @@
         "calcul direct",
         "sir numeric",
         "problema text",
-        "perechi de numere",
-        "exercitiu circular"
+        "gaseste perechi",
+        "joc circular"
       ],
       "confidence": "high",
-      "notes": "Pagina conține 8 exerciții propuse elevului: ex.5 - mărire/micșorare cu 3; ex.6 - identificare șiruri numerice (a,b,c); ex.7 - rezolvare probleme text (a,b,c,d) cu subpunct de modificare; ex.8 - găsire perechi de numere pînă la 10 (a,b); secțiunea 'Exercițiu Circular JOC' cu exerciții în lanț. Nu există exemple rezolvate. Nicio noțiune matematică nouă introdusă.",
+      "notes": "Pagina conține exercițiile 5-8 plus un joc circular (Exercițiu Circular JOC). Exercițiul 5 cere mărire/micșorare cu 3 și observație. Exercițiul 6 cere identificarea regulii din șiruri numerice. Exercițiul 7 conține 4 subprobleme text (a-d) cu imagini și o cerință suplimentară de modificare a problemelor. Exercițiul 8 cere găsirea perechilor de numere până la 10 cu sumă/diferență dată. Jocul circular implică exerciții în lanț. Nu există module sau titlu de secțiune vizibil.",
       "input_tokens": 2962,
-      "output_tokens": 297
+      "output_tokens": 305
     },
     {
       "pdf_page": 70,
@@ -1590,37 +1600,38 @@
       "exercise_count": 5,
       "exercise_types": [
         "calcul direct",
-        "marire-micsorare",
+        "mareste-micsoreaza",
         "gaseste-greseala",
         "completare tabel",
         "problema vizuala"
       ],
       "confidence": "high",
-      "notes": "Pagina conține 5 exerciții propuse de recapitulare. Ex.3 conține egalități/inegalități cu operație necunoscută (*) — elevul trebuie să determine semnul operației (gaseste-greseala / completare). Ex.4 conține două tabele de completat (adunare și scădere). Ex.5 cere crearea și rezolvarea unei probleme după imagine, condiție, întrebare și exercițiu dat.",
+      "notes": "Pagina conține 5 exerciții de recapitulare: 1) calcul direct cu expresii aritmetice, 2) mărire/micșorare cu numere date, 3) identificarea operației corecte (semnul *), 4) completare tabel cu Termen/Sumă/Descăzut/Scăzător/Diferență, 5) creare și rezolvare de problemă după imagine/condiție/întrebare/exercițiu. Nicio noțiune nouă introdusă.",
       "input_tokens": 2962,
-      "output_tokens": 268
+      "output_tokens": 286
     },
     {
       "pdf_page": 71,
       "printed_page": "71",
       "module": null,
       "subtopic": null,
-      "page_kind": "recapitulare",
+      "page_kind": "exercitii",
       "concepts_introduced": [],
       "worked_examples_count": 0,
-      "proposed_exercises_count": 10,
-      "exercise_count": 10,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
       "exercise_types": [
-        "calcul direct",
-        "mareste/micsoreaza numarul",
+        "scrie si calculeaza",
+        "mareste cu numar dat",
+        "micsoreaza cu numar dat",
         "completare cu casuta",
         "problema text",
         "exercitii circulare joc"
       ],
-      "confidence": "medium",
-      "notes": "Pagina conține două variante paralele (VARIANTA 1 și VARIANTA 2) pentru 5 exerciții propuse, plus o secțiune de joc 'Exerciții circulare' cu expresii pe mașinuțe. Exercițiile propuse sunt numerotate 1-5, fiecare cu două variante, considerate ca 5 exerciții propuse per variantă dar numărate global ca 10 (5 tipuri × 2 variante). Secțiunea de joc circular a fost inclusă în numărul total. Page_kind setat recapitulare deoarece pagina consolidează operații de adunare și scădere fără a introduce noțiuni noi.",
+      "confidence": "high",
+      "notes": "Pagina conține două variante paralele (Varianta 1 și Varianta 2) pentru fiecare din cele 5 exerciții propuse. La final există o secțiune de joc 'Exercițiu circular' cu expresii pe bile legate în lanț. Numărul de exerciții propuse a fost contorizat ca 5 (câte un exercițiu cu două variante fiecare). Nu există exemple rezolvate.",
       "input_tokens": 2962,
-      "output_tokens": 320
+      "output_tokens": 261
     },
     {
       "pdf_page": 72,
@@ -1640,9 +1651,9 @@
         "calcul direct"
       ],
       "confidence": "high",
-      "notes": "Pagina introduce conceptul legăturii dintre adunare și scădere prin ilustrații cu copii pe patine. Exemplul rezolvat prezintă perechile 3+2=5, 5-2=3, 2+3=5, 5-3=2 cu diagramă vizuală. Exercițiul 1 propune elevului să scrie două adunări și două scăderi pentru cazuri date (a, b, c, d) + bonus: alegeți alte 3 numere potrivite.",
+      "notes": "Pagina introduce legătura dintre adunare și scădere prin ilustrații cu patinatori. Exemplul rezolvat prezintă tripletul 3,2,5 cu cele 4 operații. Exercițiul 1 propune elevului să scrie analog două adunări și două scăderi pentru 4 cazuri (a, b, c, d) date prin diagrame. Există și o sarcină suplimentară cu pictogramă 'Alegeți alte 3 numere potrivite și procedați analog'.",
       "input_tokens": 2962,
-      "output_tokens": 290
+      "output_tokens": 292
     },
     {
       "pdf_page": 73,
@@ -1657,16 +1668,16 @@
       "proposed_exercises_count": 5,
       "exercise_count": 6,
       "exercise_types": [
-        "calcul direct",
+        "completare casuta",
         "completare tabel",
         "problema vizuala",
-        "creare problema",
-        "completare casuta"
+        "calcul direct",
+        "creare problema"
       ],
       "confidence": "medium",
-      "notes": "Exercițiul 2 prezintă conceptul de operații inverse cu un model vizual (mărește/micșorează cu 2), considerat worked example. Exercițiile 3-5 sunt propuse elevului. Exercițiul 4 cere crearea și rezolvarea de probleme după exerciții și imagini (veverițe cu ciuperci). Exercițiul 5 conține două tabele de completat (Termen-Termen-Sumă și Descăzut-Scăzător-Diferență). La final există o sarcină suplimentară de scriere a tuturor adunărilor și scăderilor cu numerele date (Varianta 1 și Varianta 2), numărat ca exercițiu separat.",
+      "notes": "Exercițiul 2 este un exemplu demonstrativ (mărește/micșorează cu 2) care introduce noțiunea de operații inverse — tratat ca worked example. Exercițiile 3-5 și exercițiul final (Scrie toate adunările și scăderile posibile) sunt propuse elevului. Exercițiul 4 conține și imagini vizuale (veveriță cu ciuperci). Exercițiul 5 are două tabele de completat (sumă și descăzut/scăzător/diferență). Exercițiul final are două variante (6,1,7 și 2,6,8).",
       "input_tokens": 2962,
-      "output_tokens": 325
+      "output_tokens": 297
     },
     {
       "pdf_page": 74,
@@ -1685,9 +1696,9 @@
         "completare casuta"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 2 conține probleme text cu subpunctele a) și b), plus o cerință de creare și rezolvare a unor probleme asemănătoare cu completare de căsuțe. Exercițiul 3 cere calculul și verificarea prin operația inversă. Exercițiul 4 conține calcul în lanț cu verificare în sens invers, cu două subpuncte grafice (a și b). Exercițiul 5 conține expresii cu imagini de mașini asociate unor rânduri.",
+      "notes": "Pagina conține 5 exerciții propuse elevului: ex.1 calcul succesiv, ex.2 probleme text cu subpuncte a) și b) plus crearea unor probleme asemănătoare, ex.3 calcul și probă prin operația inversă, ex.4 calcul în lanț cu verificare în sens invers, ex.5 calcul succesiv cu imagini de mașini. Nicio problemă rezolvată afișată.",
       "input_tokens": 2962,
-      "output_tokens": 270
+      "output_tokens": 255
     },
     {
       "pdf_page": 75,
@@ -1696,23 +1707,22 @@
       "subtopic": null,
       "page_kind": "exercitii",
       "concepts_introduced": [
-        "asocierea termenilor în adunare"
+        "asocierea termenilor la adunare"
       ],
       "worked_examples_count": 1,
-      "proposed_exercises_count": 5,
-      "exercise_count": 6,
+      "proposed_exercises_count": 4,
+      "exercise_count": 5,
       "exercise_types": [
-        "problema vizuala",
         "calcul direct",
         "problema text",
-        "creare problema",
+        "problema vizuala",
         "completare casuta",
         "gaseste-greseala"
       ],
       "confidence": "medium",
-      "notes": "Exercițiul 6 introduce/ilustrează proprietatea asociativă a adunării cu imagini (sănii cu cuburi) și o regulă explicită — tratat ca exemplu rezolvat/predat. Exercițiile 7-10 sunt propuse elevului. Exercițiul 10 conține expresii cu * unde elevul găsește operatorul corect (+ sau -) și comparații — etichetat 'gaseste-greseala'. Exercițiul 9 implică suma a 4 numere dispuse în cerc. Nu există un titlu de modul sau secțiune vizibil pe pagină.",
+      "notes": "Exercițiul 6 prezintă proprietatea asociativă a adunării cu ilustrații vizuale (sănii cu cuburi) și o regulă explicată — tratat ca exemplu rezolvat/predat. Exercițiile 7-10 sunt propuse elevului. Exercițiul 9 are format vizual cu cercuri colorate conținând cifre (sumă de numere). Exercițiul 10 conține expresii cu * unde elevul trebuie să determine semnele +/- sau să compare, similar cu 'gaseste-greseala'. Nu există antet de modul sau titlu de secțiune explicit pe pagină.",
       "input_tokens": 2962,
-      "output_tokens": 303
+      "output_tokens": 301
     },
     {
       "pdf_page": 76,
@@ -1721,9 +1731,7 @@
       "subtopic": "Numerele naturale de la 11 pînă la 20",
       "page_kind": "lectie",
       "concepts_introduced": [
-        "unsprezece",
-        "doisprezece",
-        "treisprezece",
+        "numerele naturale de la 11 pînă la 20",
         "zeci și unități"
       ],
       "worked_examples_count": 3,
@@ -1731,12 +1739,13 @@
       "exercise_count": 4,
       "exercise_types": [
         "problema vizuala",
-        "identificare numar reprezentat"
+        "reprezentare cu obiecte",
+        "identificare numar"
       ],
-      "confidence": "high",
-      "notes": "Pagina introduce numerele 11, 12, 13 cu reprezentări vizuale (bețișoare, bancnote) și tabele zeci/unități. Exercițiul 1 cere elevului să identifice ce numere sînt reprezentate prin imagini (bețișoare și bancnote).",
+      "confidence": "medium",
+      "notes": "Pagina introduce numerele 11, 12, 13 cu reprezentări vizuale (bețișoare, bancnote) și tabele zeci/unități. Exercițiul 1 cere elevului să identifice numerele reprezentate prin imagini. Cele 3 exemple rezolvate (unsprezece, doisprezece, treisprezece) sunt modele de predare cu soluție afișată.",
       "input_tokens": 2962,
-      "output_tokens": 234
+      "output_tokens": 264
     },
     {
       "pdf_page": 77,
@@ -1750,16 +1759,16 @@
       "exercise_count": 6,
       "exercise_types": [
         "completare tabel",
-        "descompunere numar",
-        "identificare cifre",
+        "scriere cifre zeci/unitati",
+        "identificare valoare pozitionala",
         "schimb de bani",
         "problema text",
-        "problema vizuala"
+        "numarare forme geometrice"
       ],
       "confidence": "medium",
-      "notes": "Exercițiul 2 conține un model rezolvat (16) urmat de completări propuse elevului. Exercițiul 3 conține un model rezolvat (17) urmat de completări. Exercițiul JOC de la final este o problemă vizuală de numărare forme geometrice. Exercițiul 5 implică schimb de bani cu monede/bancnote. Pagina nu afișează titlu de modul sau secțiune.",
+      "notes": "Exercițiul 2 conține un exemplu rezolvat (16 este completat) și restul sunt propuse. Exercițiul 3 are un model rezolvat (17 = 1z. 7un.) și restul sunt propuse. Exercițiul 5 (Faceți schimb de bani) are două subpuncte a) și b). Secțiunea JOC de la final cere numărarea formelor geometrice. Page_kind este exercitii deoarece pagina este compusă predominant din exerciții propuse elevilor.",
       "input_tokens": 2962,
-      "output_tokens": 259
+      "output_tokens": 290
     },
     {
       "pdf_page": 78,
@@ -1777,15 +1786,15 @@
       "proposed_exercises_count": 2,
       "exercise_count": 8,
       "exercise_types": [
-        "comparare cu semn",
+        "comparare vizuala cu obiecte",
         "completare casuta",
-        "problema vizuala",
+        "comparare cu semn dat",
         "comparare cu casuta"
       ],
       "confidence": "medium",
-      "notes": "Primele 3 casete ilustrative (cu bețișoare) conțin exemple rezolvate (1<2, 5>3, 11<12, 15>13) și 2 cu căsuțe goale — ambigue dacă sunt exerciții sau modele. Al doilea rând de 3 casete conține exerciții parțial rezolvate/parțial propuse. Exercițiile numerotate 1 și 2 sunt clar propuse elevului. worked_examples_count estimat la 6 (casetele cu răspunsuri vizibile), proposed_exercises_count la 2 (exercițiile numerotate).",
+      "notes": "Pagina prezintă exemple ilustrate cu bețe/obiecte pentru compararea numerelor (1<2, 5>3, 11<12, 15>13) care sunt exemple rezolvate (worked), plus două serii de exerciții numerotate 1 și 2 propuse elevului. Exercițiul 1 cere completarea semnului de comparare (*), exercițiul 2 cere completarea cifrelor în casute. Numărul de worked examples (6) include cele 6 perechi ilustrate din secțiunile de demonstrație vizuală.",
       "input_tokens": 2962,
-      "output_tokens": 386
+      "output_tokens": 373
     },
     {
       "pdf_page": 79,
@@ -1798,18 +1807,17 @@
       "proposed_exercises_count": 6,
       "exercise_count": 6,
       "exercise_types": [
-        "completare dreapta numerica",
-        "ordonare crescator",
-        "ordonare descrescator",
+        "completare spatii pe axa numerelor",
+        "ordonare crescator/descrescator",
         "problema vizuala",
         "comparare cu casuta",
-        "completare vecini",
-        "descompunere zeci-unitati"
+        "completare numere vecine",
+        "scriere in ordine descrescatoare"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține 6 exerciții numerotate (3-6 în zona de sus, 1-4 în zona de jos care pare a fi o secțiune separată/temă pentru acasă). Exercițiul 3 implică o dreaptă numerică cu completare de valori lipsă. Exercițiul 4 cere ordonare crescătoare și descrescătoare. Exercițiul 5 implică cutii poștale cu numere (problemă vizuală). Exercițiul 6 cere ordonarea obiectelor după preț. Secțiunea de jos (1-4) pare a fi o rubrică de recapitulare/temă separată cu sub-exerciții. Numărătoarea propusă reflectă 6 grupuri principale de exerciții.",
+      "notes": "Pagina conține 6 exerciții numerotate (3-6 vizibile mare, plus sub-exerciții 1)-4) la final). Exercițiul 3 conține o axă numerică cu spații de completat. Exercițiul 4 cere ordonare crescătoare și descrescătoare. Exercițiul 5 implică imagini cu cutii și numere. Exercițiul 6 cere ordonarea obiectelor după preț. Sub-exercițiile finale (1-4) includ comparații cu simboluri <,=,> și completare numere vecine. Nu există exemple rezolvate. Numerotarea exercițiilor mari începe de la 3 (continuare din pagina anterioară).",
       "input_tokens": 2962,
-      "output_tokens": 376
+      "output_tokens": 340
     },
     {
       "pdf_page": 80,
@@ -1823,14 +1831,14 @@
       "exercise_count": 5,
       "exercise_types": [
         "calcul direct",
-        "scriere adunari si scaderi posibile",
+        "scriere expresii",
         "completare casuta",
         "problema vizuala"
       ],
       "confidence": "high",
-      "notes": "Ilustrația introductivă cu relațiile Z+U=ZU, ZU–U=Z, ZU–Z=U este tratată ca exemplu rezolvat/model. Exercițiile 1–4 sunt propuse elevului. Exercițiul 4 cere crearea și rezolvarea unei probleme după imagine (pinguini pe gheață).",
+      "notes": "Pagina consolidează adunarea și scăderea cu zeci și unități (numere 10-20). Exemplul rezolvat este ilustrația cu sania (10+3=13, 13-3=10, 3+10=13, 13-10=3). Exercițiul 1 conține grupuri de calcul direct fără soluție afișată. Exercițiul 2 cere scrierea tuturor adunărilor și scăderilor posibile cu trei numere date. Exercițiul 3 cere completarea căsuțelor. Exercițiul 4 cere crearea și rezolvarea unei probleme după imagine (pingwini).",
       "input_tokens": 2962,
-      "output_tokens": 244
+      "output_tokens": 313
     },
     {
       "pdf_page": 81,
@@ -1847,13 +1855,12 @@
         "completare tabel",
         "problema text",
         "calcul direct",
-        "proba prin operatia inversa",
         "modificare problema"
       ],
       "confidence": "high",
-      "notes": "Exercițiile 5-9 sunt propuse elevului. Exercițiul 5 implică șiruri de imagini cu case și operații de micșorare/mărire. Exercițiul 6 este o problemă vizuală cu rest la cumpărături. Exercițiul 7 conține două subprobleme (a și b) cu cerințe de modificare a problemei. Exercițiul 8 cere calcul și probă. Exercițiul 9 conține două tabele de completat (sumă și diferență).",
+      "notes": "Exercițiile 5-9 sunt propuse elevului. Exercițiul 5 implică operații de micșorare/mărire cu numere ilustrate vizual (case cu zăpadă). Exercițiul 6 este o problemă cu context vizual (lei cheltuiți). Exercițiul 7 conține două subprobleme text (a și b) cu cerințe suplimentare de modificare/creare problemă. Exercițiul 8 cere calcul și probă prin operația inversă. Exercițiul 9 implică completarea a două tabele (adunare și scădere).",
       "input_tokens": 2962,
-      "output_tokens": 293
+      "output_tokens": 286
     },
     {
       "pdf_page": 82,
@@ -1862,20 +1869,20 @@
       "subtopic": "Probleme de comparare prin scădere",
       "page_kind": "lectie",
       "concepts_introduced": [
-        "problemă de comparare prin scădere"
+        "probleme de comparare prin scădere"
       ],
-      "worked_examples_count": 1,
-      "proposed_exercises_count": 2,
+      "worked_examples_count": 2,
+      "proposed_exercises_count": 1,
       "exercise_count": 3,
       "exercise_types": [
         "problema vizuala",
-        "problema text",
-        "comparare prin scădere"
+        "problema text cu rezolvare",
+        "problema text propusa"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 1 este o activitate vizuală introductivă (cu pinguini și forme geometrice) fără soluție afișată — tratat ca exercițiu propus. Exercițiul 2 este un exemplu rezolvat complet (condiție, schemă, rezolvare, răspuns). Exercițiul 3 este propus elevului, cu o întrebare suplimentară marcată cu bullet.",
+      "notes": "Exercițiul 1 este o problemă vizuală rezolvată (cu imagini și întrebare 'Prin ce operație ai aflat?'). Exercițiul 2 este o problemă complet rezolvată cu schemă, reprezentare grafică și răspuns. Exercițiul 3 este o problemă propusă elevului (fără soluție afișată), cu două subîntrebări.",
       "input_tokens": 2962,
-      "output_tokens": 249
+      "output_tokens": 247
     },
     {
       "pdf_page": 83,
@@ -1888,16 +1895,17 @@
       "proposed_exercises_count": 8,
       "exercise_count": 8,
       "exercise_types": [
-        "completare sir numeric",
+        "completare tabel",
         "calcul direct",
-        "problema vizuala",
+        "marire/micsorare cu o unitate/zece",
         "problema text",
+        "problema vizuala",
         "alcatuire problema dupa schema",
         "alcatuire problema dupa conditie",
         "alcatuire problema dupa exercitiu"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 4 conține două șiruri numerice de completat (crescător și descrescător). Exercițiul 5 cere mărire/micșorare cu o unitate/zece. Exercițiul 6 este o problemă vizuală cu imagini de obiecte și subpuncte a) și b). Exercițiul 7 conține două subprobleme (a și b), cu imagini inline. Exercițiul 8 cere alcătuirea de probleme cu întrebarea 'Cu cît...?' după trei tipuri de suport (schemă, condiție, exercițiu). Nu există module sau subtopic tipărit pe pagină.",
+      "notes": "Pagina conține 8 exerciții propuse elevului: ex.4 completare șiruri numerice, ex.5 mărire/micșorare cu o unitate sau zece, ex.6 problemă cu imagini (obiecte aduse la ceai vs necesar), ex.7 rezolvare și reformulare probleme (a și b), ex.8 alcătuire probleme cu 'Cu cît?' după schemă/condiție/exercițiu. Nu există exemple rezolvate afișate cu soluție. Niciun modul sau subtitlu de lecție vizibil.",
       "input_tokens": 2962,
       "output_tokens": 344
     },
@@ -1911,19 +1919,19 @@
         "adunarea unităților la un număr de două cifre",
         "scăderea unităților dintr-un număr de două cifre"
       ],
-      "worked_examples_count": 4,
+      "worked_examples_count": 2,
       "proposed_exercises_count": 4,
-      "exercise_count": 8,
+      "exercise_count": 6,
       "exercise_types": [
         "calcul direct",
-        "completare arbore numeric",
+        "completare cu operatii pe braduti",
         "problema text",
-        "asociere perechi"
+        "operatii cu numere pe ramuri"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține o secțiune de predare cu exemple ilustrate (13+2=15, 2+13=15, 15-2=13, 15-3=12) și 4 exerciții propuse numerotate 1-4. Exercițiul 1 folosește arbori numerici cu brad, exercițiul 2 calcul direct în coloane, exercițiul 3 probleme text cu subpunctele a, b și o întrebare de comparare, exercițiul 4 asociere tip arbore cu simboluri. Worked_examples_count include exemplele ilustrate din caseta de predare.",
+      "notes": "Pagina prezintă ilustrații demonstrative cu pinguin și blocuri pentru adunare/scădere (considerate exemple rezolvate). Exercițiul 1 conține operații pe brăduți cu numere, exercițiul 2 calcul direct în coloane de expresii, exercițiul 3 probleme text cu subpunctele a) și b) plus o întrebare de comparare, exercițiul 4 operații pe ramuri cu numere. Distincția worked/proposed e ușor ambiguă pentru ilustrațiile introductive.",
       "input_tokens": 2962,
-      "output_tokens": 326
+      "output_tokens": 319
     },
     {
       "pdf_page": 85,
@@ -1936,18 +1944,17 @@
       "proposed_exercises_count": 10,
       "exercise_count": 10,
       "exercise_types": [
-        "calcul in lant cu bile",
-        "observare pattern in coloana",
-        "completare problema text",
+        "sir numeric cu operatii",
         "calcul direct",
-        "problema vizuala cu schema",
+        "completare tabel",
         "problema text",
+        "problema vizuala",
         "comparare cu casuta"
       ],
       "confidence": "high",
-      "notes": "Exercițiile sunt numerotate de la 5 la 10. Exercițiul 5 folosește bile ornamentale cu operații în lanț. Exercițiul 6 cere observarea schimbării răspunsurilor pe coloane. Exercițiul 7 cere continuarea unei probleme în două variante (adunare/scădere) și rezolvarea. Exercițiul 8 conține expresii cu trei termeni. Exercițiul 9 cere compunerea și rezolvarea problemelor după scheme (schemă vizuală și schemă text cu autobuz). Exercițiul 10 cere înlocuirea simbolului * cu semnul corect (<, =, >).",
+      "notes": "Pagina conține exercițiile numerotate 5-10. Exercițiul 5 are șiruri de operații cu bile de Crăciun (a și b). Exercițiul 6 cere observarea unui pattern în coloane de calcule. Exercițiul 7 cere continuarea unei probleme text prin adunare și scădere. Exercițiul 8 conține expresii cu operații mixte. Exercițiul 9 are scheme vizuale pentru compunerea problemelor. Exercițiul 10 cere completarea semnului * dintre expresii.",
       "input_tokens": 2962,
-      "output_tokens": 346
+      "output_tokens": 299
     },
     {
       "pdf_page": 86,
@@ -1956,7 +1963,7 @@
       "subtopic": "• ZU – ZU = U",
       "page_kind": "lectie",
       "concepts_introduced": [
-        "scăderea unui număr de două cifre dintr-un număr de două cifre cu trecere peste zece (ZU – ZU = U)"
+        "scăderea numerelor de două cifre cu trecere peste zece (ZU – ZU = U)"
       ],
       "worked_examples_count": 1,
       "proposed_exercises_count": 5,
@@ -1964,14 +1971,14 @@
       "exercise_types": [
         "calcul direct",
         "completare casuta",
-        "completare cu necunoscut (steluță)",
-        "problema contextuala",
-        "comparare cu casuta"
+        "problema vizuala",
+        "comparare cu casuta",
+        "ecuatie cu simbol"
       ],
-      "confidence": "medium",
-      "notes": "Exemplul ilustrat vizual (15 – 13 = ?) cu blocuri și descompunere este tratat ca worked example. Exercițiile 1–5 sunt propuse elevului. Exercițiul 4 implică raționament contextual (rest la cumpărături). Exercițiul 5 implică comparare cu semn lipsă (*).",
+      "confidence": "high",
+      "notes": "Exemplul rezolvat este cel din caseta ilustrată (15–13=?, descompunere și calcul pas cu pas). Exercițiile 1–5 sunt propuse elevului. Exercițiul 4 implică problemă cu rest (bani), exercițiul 5 implică comparare cu semnul * (găsire semn <, =, >). Exercițiul 3 conține căsuțe de completat cu valori lipsă.",
       "input_tokens": 2962,
-      "output_tokens": 276
+      "output_tokens": 283
     },
     {
       "pdf_page": 87,
@@ -1987,12 +1994,12 @@
         "calcul direct",
         "problema text",
         "reformulare problema",
-        "varianta paralela"
+        "variante paralele"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține exercițiile 6, 7, 8 și o secțiune cu două variante (VARIANTA 1 și VARIANTA 2), fiecare cu câte 2 subexercitii. Exercițiul 6 cere scrierea adunărilor și scăderilor posibile cu trei numere date (3 subpuncte). Exercițiul 7 are 3 probleme text cu subpuncte de reformulare/modificare. Exercițiul 8 conține coloane de calcule. Variantele 1 și 2 au fiecare câte 2 subpuncte (calcul și problemă). Numărătoarea propusă include: ex.6 (1), ex.7 (1), ex.8 (1), varianta 1 pct.1 (1), varianta 1 pct.2 (1), varianta 2 pct.1 (1), varianta 2 pct.2 (1), plus subpunctele de reformulare din ex.7 care sunt integrate. Total aproximativ 8 exerciții distincte propuse. Nu există exemple rezolvate cu soluție afișată.",
+      "notes": "Pagina conține exercițiile 6, 7, 8 și o secțiune de test cu Varianta 1 și Varianta 2. Exercițiul 6 cere scrierea adunărilor și scăderilor posibile cu numere date (3 subpuncte = 3 exerciții). Exercițiul 7 conține probleme text cu subpuncte a, b, c plus sarcini de reformulare (numărate ca 1 exercițiu complex). Exercițiul 8 este calcul direct cu expresii mixte (1 exercițiu). Secțiunea Varianta 1 și Varianta 2 conțin fiecare câte 2 subexercițiu (1+2 și 1+2), numărând ca 3 exerciții propuse. Total propus estimat la 8. Ambiguitate la numărul exact de sub-exerciții distincte din Varianta 1/2.",
       "input_tokens": 2962,
-      "output_tokens": 419
+      "output_tokens": 362
     },
     {
       "pdf_page": 88,
@@ -2003,8 +2010,8 @@
       "concepts_introduced": [
         "aflarea termenului necunoscut"
       ],
-      "worked_examples_count": 1,
-      "proposed_exercises_count": 2,
+      "worked_examples_count": 2,
+      "proposed_exercises_count": 1,
       "exercise_count": 3,
       "exercise_types": [
         "relatie aditie-scadere",
@@ -2012,9 +2019,9 @@
         "problema vizuala"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 1 prezintă relația dintre adunare și scădere cu etichete T/S (termen/sumă) — material de predare/observație. Exercițiul 2 conține două tabele de completat (propuse elevului). Exercițiul 3 este o problemă rezolvată complet (cu condiție, rezolvare și răspuns), deci worked example.",
+      "notes": "Exercițiul 1 este un exemplu rezolvat care ilustrează relația dintre adiție și scădere (T+T=S, S-T=T). Exercițiul 3 este o problemă rezolvată complet (cu soluție și răspuns). Exercițiul 2 este propus elevului (completare tabel cu termen necunoscut). Există două tabele în exercițiul 2 (stânga și dreapta), numărate ca un singur exercițiu propus.",
       "input_tokens": 2962,
-      "output_tokens": 247
+      "output_tokens": 273
     },
     {
       "pdf_page": 89,
@@ -2029,16 +2036,15 @@
       "exercise_types": [
         "problema text",
         "completare casuta",
+        "calcul in lant",
         "alcatuieste problema dupa schema",
         "alcatuieste problema dupa conditie",
-        "calcul in lant",
-        "problema vizuala",
         "joc geometric"
       ],
       "confidence": "high",
-      "notes": "Pagina conține 7 exerciții numerotate. Exercițiul 5 folosește formula T = S − T ca regulă dată (nu noțiune nouă). Exercițiul 6 cere alcătuirea și rezolvarea de probleme după schemă și condiție. Exercițiul 7 presupune calcul în lanț cu verificare inversă. Rubrica JOC cere mutarea a 2 bețișoare pentru a schimba direcția bărcii — exercițiu de tip geometric-ludic.",
+      "notes": "Pagina conține 7 exerciții numerotate (4-7 plus JOC). Exercițiul 4 are 2 subpuncte (probleme text). Exercițiul 5 conține completare de termeni necunoscuți cu formula T=S-T. Exercițiul 6 cere alcătuirea și rezolvarea problemelor după schemă și condiție. Exercițiul 7 are calcul în lanț cu verificare inversă (2 subpuncte). Secțiunea JOC cere mutarea bețișoarelor pentru schimbarea direcției bărcii. Nu există module sau subtopic vizibil pe pagină.",
       "input_tokens": 2962,
-      "output_tokens": 308
+      "output_tokens": 333
     },
     {
       "pdf_page": 90,
@@ -2058,13 +2064,12 @@
       "exercise_types": [
         "problema vizuala",
         "comparare cu casuta",
-        "ordonare crescatoare",
-        "formulare si rezolvare problema"
+        "completare valoare lipsa"
       ],
       "confidence": "medium",
-      "notes": "Exercițiul 1 conține atât material de predare (definirea masei și kilogramului prin imagini ilustrative) cât și o întrebare propusă elevului (Cum este cîntarul?), deci a fost contorizat parțial ca worked_example și parțial ca exercițiu propus. Exercițiul 2 are trei subpuncte (a, b, c) cu imagini de animale și mase, plus două cerințe suplimentare de ordonare și creare de probleme.",
+      "notes": "Exercițiul 1 introduce conceptul de masă și kilogram prin imagini ilustrative (cîntar cu greutăți), cu subexercițiile despre echilibru care par propuse elevului. Exercițiul 2 are trei subpuncte (a, b, c) cu valori lipsă (? kg) — propuse elevilor. Partea introductivă a exercițiului 1 (ilustrații cu un kilogram, 2 kg, 7 kg) funcționează ca exemplu demonstrativ/rezolvat.",
       "input_tokens": 2962,
-      "output_tokens": 299
+      "output_tokens": 293
     },
     {
       "pdf_page": 91,
@@ -2078,7 +2083,6 @@
       "exercise_count": 7,
       "exercise_types": [
         "calcul direct",
-        "scriere adunari si scaderi posibile",
         "completare tabel",
         "gaseste-greseala",
         "comparare cu casuta",
@@ -2086,9 +2090,9 @@
         "problema vizuala"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 4 conține expresii de tip '15 * 3 = 12' unde elevul trebuie să aleagă semnul + sau − (etichetă 'gaseste-greseala'). Exercițiul 7 este o problemă vizuală cu om de zăpadă care micșorează numerele cu 13. Exercițiul 6 are două subpuncte cu probleme text ilustrate.",
+      "notes": "Exercițiul 4 conține egalități cu semn lipsă (∗) pe care elevul trebuie să le completeze cu + sau −, marcate cu cercuri cu simboluri; exercițiul 7 este o problemă vizuală cu omuleți de zăpadă și operație de micșorare cu 13.",
       "input_tokens": 2962,
-      "output_tokens": 294
+      "output_tokens": 237
     },
     {
       "pdf_page": 92,
@@ -2096,10 +2100,7 @@
       "module": null,
       "subtopic": "ZU + U = 20. 20 – U = ZU. 20 – ZU = U",
       "page_kind": "lectie",
-      "concepts_introduced": [
-        "adunarea cu trecere peste zece la 20",
-        "scăderea cu trecere peste zece din 20"
-      ],
+      "concepts_introduced": [],
       "worked_examples_count": 2,
       "proposed_exercises_count": 4,
       "exercise_count": 6,
@@ -2109,9 +2110,9 @@
         "problema vizuala"
       ],
       "confidence": "medium",
-      "notes": "Pagina prezintă două secvențe de predare (adunare și scădere până la 20) cu ilustrații și grile vizuale cu cercuri, urmate de exerciții de calcul direct în tabel și completare secvențe numerice. Worked examples sunt cele două blocuri ilustrate cu pinguini și cercuri (16+4 și 20-4). Cele 4 blocuri de calcul direct și cele 2 secvențe de completat numere sunt exerciții propuse. Distincția worked/proposed este ușor ambiguă.",
+      "notes": "Pagina prezintă adunarea și scăderea cu trecere peste 10 până la 20, cu ilustrații de pinguini și bile. Sunt 2 exemple rezolvate vizual (Am o zece și 6 unități / Am 2 zeci), urmate de grile de calcul direct și serii de completare a numerelor lipsă în tabel. Numărul de exerciții propuse este estimat: 2 grile de calcul cu serii de expresii + 2 serii de completare tabel (numerele ordonate). Bullet-ul din antet rezumă relațiile, nu introduce noțiuni noi formal.",
       "input_tokens": 2962,
-      "output_tokens": 314
+      "output_tokens": 306
     },
     {
       "pdf_page": 93,
@@ -2124,15 +2125,16 @@
       "proposed_exercises_count": 9,
       "exercise_count": 9,
       "exercise_types": [
-        "aflare termen necunoscut",
-        "completare sir numeric",
+        "completare casuta",
+        "descoperire regula",
+        "completare sir",
         "problema text",
         "calcul direct"
       ],
       "confidence": "high",
-      "notes": "Pagina conține 3 exerciții numerotate (1-3) în partea principală și o secțiune de variante (VARIANTA 1 și VARIANTA 2) cu câte 2 subexerciții fiecare (1 calcul direct + 1 problemă text), totalizând 4 subexerciții în variante. Exercițiul 1 folosește formula T=S-T pentru aflarea termenului necunoscut. Exercițiul 2 presupune descoperirea regulii și completarea șirurilor. Exercițiul 3 are 3 subpuncte (a, b, c) cu probleme text. Variantele conțin exerciții suplimentare pentru evaluare/lucru independent.",
+      "notes": "Pagina conține 3 exerciții principale (1-3) și o secțiune de recapitulare/evaluare cu Varianta 1 și Varianta 2, fiecare cu câte 2 subexercițiii. Exercițiul 1 implică aflarea termenului necunoscut cu căsuțe. Exercițiul 2 presupune descoperirea regulei și completarea șirurilor. Exercițiul 3 are 3 subprobleme text (a, b, c). Varianta 1 și Varianta 2 au fiecare câte 2 exerciții (calcul direct și problemă text), totalizând 4 exerciții suplimentare. Total propuse: 3 principale + 4 din variante = 7, dar subproblemele lui 3 (a,b,c) și variantele sunt numărate separat; am numărat: ex.1, ex.2, ex.3a, ex.3b, ex.3c, V1-ex1, V1-ex2, V2-ex1, V2-ex2 = 9. Formula T=S-T este afișată ca ajutor didactic, nu ca exemplu rezolvat.",
       "input_tokens": 2962,
-      "output_tokens": 316
+      "output_tokens": 437
     },
     {
       "pdf_page": 94,
@@ -2150,12 +2152,12 @@
         "comparare numere",
         "calcul direct",
         "completare tabel",
-        "calcul cu adunari si scaderi"
+        "identificare vecini"
       ],
       "confidence": "high",
-      "notes": "Pagina este o pagină de recapitulare/consolidare cu 6 exerciții numerotate. Exercițiul 1 cere identificarea numerelor reprezentate vizual. Exercițiul 2 cere ordonare crescătoare și descrescătoare. Exercițiul 3 identifică cel mai mare și cel mai mic număr din imagini cu animale. Exercițiul 4 cere scrierea tuturor adunărilor și scăderilor posibile cu triplete de numere date. Exercițiul 5 cere descoperirea regulii și completarea unui tabel/șir. Exercițiul 6 conține coloane de expresii cu adunări și scăderi de calculat.",
+      "notes": "Pagina conține 6 exerciții propuse de recapitulare: 1) identificare numere reprezentate vizual și numirea vecinilor; 2) ordonare crescător și descrescător; 3) identificare număr maxim/minim din imagini cu animale; 4) scrierea adunărilor și scăderilor posibile cu triplete de numere date; 5) descoperirea regulii și completarea unui tabel/șir; 6) calcul cu expresii de trei termeni (adunări și scăderi mixte). Nu există exemple rezolvate.",
       "input_tokens": 2962,
-      "output_tokens": 349
+      "output_tokens": 311
     },
     {
       "pdf_page": 95,
@@ -2165,20 +2167,22 @@
       "page_kind": "exercitii",
       "concepts_introduced": [],
       "worked_examples_count": 0,
-      "proposed_exercises_count": 4,
-      "exercise_count": 4,
+      "proposed_exercises_count": 10,
+      "exercise_count": 10,
       "exercise_types": [
         "completare tabel",
         "problema vizuala",
-        "comparare cu casuta",
+        "calcul direct",
+        "comparare numere",
+        "creare problema",
         "problema text",
-        "activitate creativa",
-        "desen/colorare"
+        "ordonare",
+        "desen/colorare variante"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține exercițiile numerotate 7-10 plus o secțiune JOC. Exercițiul 7 are două tabele (autobuz și bani) de completat. Exercițiul 8 cere observarea desenelor și calculul. Exercițiul 9 cere comparare și creare de probleme. Exercițiul 10 este problemă text cu Ana și Ada. JOC-ul cere desenarea unui covoraș. Nu există titlu de modul sau secțiune vizibil. Numărul de exerciții propuse este estimat la 4 (7,8,9,10) fără a număra JOC separat.",
+      "notes": "Pagina conține 10 exerciții numerotate explicit. Exercițiul 7 implică completarea unui tabel cu valori lipsă (autobuze și bani). Exercițiul 8 cere observarea desenelor și calculul cu adunare/scădere. Exercițiul 9 cere compararea numerelor și crearea de probleme. Exercițiul 10 este o problemă text cu personaje Ana și Ada, urmată de ordonare. Ultima secțiune (JOC) cere desenarea covorașului în mai multe variante. Nu există module sau subtopic explicit tipărit pe pagină.",
       "input_tokens": 2962,
-      "output_tokens": 307
+      "output_tokens": 325
     },
     {
       "pdf_page": 96,
@@ -2191,14 +2195,14 @@
       "proposed_exercises_count": 5,
       "exercise_count": 5,
       "exercise_types": [
-        "gaseste-greseala",
         "comparare cu casuta",
-        "problema-text",
-        "completare casuta",
-        "descoperire pattern"
+        "gaseste-greseala",
+        "problema text",
+        "completare tabel",
+        "calcul direct"
       ],
       "confidence": "high",
-      "notes": "Pagina conține 5 exerciții numerotate 11-15. Ex.11: identificare semn operație (*) cu simboluri +/−. Ex.12: probleme-text cu subpuncte a,b,c (Nătăfleață). Ex.13: completare căsuțe în ecuații de adunare/scădere, organizate în 4 coloane. Ex.14: scriere și calculare sumă/diferență + creare probleme. Ex.15: descoperire numere lipsă în vagoane de tren (pattern). Nu există module sau subtopic tipărit vizibil pe pagină.",
+      "notes": "Pagina conține 5 exerciții numerotate 11-15. Ex.11: determinarea semnului operației (*, +, -). Ex.12: corectează enunțuri greșite și rezolvă probleme (Nătăfleață) - 3 subpuncte. Ex.13: completare cu simbolul floare în ecuații aritmetice, tip tabel cu 4 coloane. Ex.14: calcul și creare de probleme despre iepurași și morcovi. Ex.15: descoperă numerele lipsă din vagoanele unui tren (pattern/secvențe numerice).",
       "input_tokens": 2962,
       "output_tokens": 291
     },
@@ -2210,20 +2214,20 @@
       "page_kind": "recapitulare",
       "concepts_introduced": [],
       "worked_examples_count": 0,
-      "proposed_exercises_count": 11,
-      "exercise_count": 11,
+      "proposed_exercises_count": 10,
+      "exercise_count": 10,
       "exercise_types": [
         "calcul direct",
-        "completare cu casuta",
-        "scriere adunari si scaderi posibile",
-        "problema text",
+        "completare cu numere lipsă",
+        "scriere adunări și scăderi posibile",
+        "problemă text",
         "comparare",
-        "joc circular"
+        "joc exerciții circulare"
       ],
       "confidence": "high",
-      "notes": "Pagina conține două variante paralele (VARIANTA 1 și VARIANTA 2) cu 5 exerciții fiecare, plus un joc circular ('Exerciții JOC circular') cu expresii pe mașinuțe. Fiecare set de exerciții 1-5 apare în dublu (varianta 1 și varianta 2), numărate ca exerciții propuse separate. Jocul circular este numărat ca un exercițiu suplimentar.",
+      "notes": "Pagina este structurată în două variante paralele (Varianta 1 și Varianta 2) cu 5 exerciții fiecare, plus o secțiune de joc (Exerciții JOC circular) la final. Numărul total de exerciții propuse a fost calculat considerând fiecare dintre cele 5 sarcini (cu cele 2 variante) ca unități distincte plus jocul de la final ca exercițiu suplimentar.",
       "input_tokens": 2962,
-      "output_tokens": 266
+      "output_tokens": 271
     },
     {
       "pdf_page": 98,
@@ -2240,18 +2244,14 @@
         "șaizeci",
         "o sută"
       ],
-      "worked_examples_count": 6,
-      "proposed_exercises_count": 1,
-      "exercise_count": 7,
-      "exercise_types": [
-        "completare casuta",
-        "completare tabel",
-        "problema vizuala"
-      ],
-      "confidence": "medium",
-      "notes": "Pagina introduce numerele formate din zeci (10, 20, 30, 40, 60, 100) prin reprezentări vizuale cu bețe grupate și abacuri. Există un tabel parțial completat la baza paginii (1→10, 2→20, 3→30, 4→40, ..., 8→80, 9→90, 10→100) care pare a fi un exercițiu propus elevului (coloanele 5, 6, 7 lipsesc, sugerând completare). Numărul de exemple lucrate vs exerciții propuse este estimat.",
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 0,
+      "exercise_count": 0,
+      "exercise_types": [],
+      "confidence": "high",
+      "notes": "Pagina introduce numerele formate din zeci (10, 20, 30, 40, 60, 100) prin reprezentări vizuale cu bețișoare și abac. La final există un tabel parțial cu corespondența cifre-zeci (1→10, 2→20, 3→30, 4→40, 8→80, 9→90, 10→100). Nu există exerciții propuse sau exemple rezolvate explicit; pagina este de predare/introducere a conceptului.",
       "input_tokens": 2962,
-      "output_tokens": 335
+      "output_tokens": 292
     },
     {
       "pdf_page": 99,
@@ -2264,17 +2264,17 @@
       "proposed_exercises_count": 5,
       "exercise_count": 6,
       "exercise_types": [
-        "comparare cu model",
+        "comparare cu semn",
         "completare casuta",
-        "ordonare crescator-descrescator",
+        "ordonare crescator descrescator",
         "problema text",
         "completare tabel",
-        "desen geometric cu continuare"
+        "reproducere si continuare pattern geometric"
       ],
-      "confidence": "medium",
-      "notes": "Exercițiul 1 conține un model rezolvat (2<3, 20<30) urmat de sarcini propuse elevului; modelul e contat ca worked_example. Exercițiul 3 are subpunctele a), b) și un bullet suplimentar de creare probleme. Exercițiul 4 este un tabel cu trenulețe (completare valori). Exercițiul 5 cere reproducerea și continuarea unui desen cu triunghiuri și numărarea pătratelor formate. Nu există titlu de modul sau secțiune vizibil pe pagină.",
+      "confidence": "high",
+      "notes": "Exercițiul 1 conține un model rezolvat (2<3, 20<30) urmat de sarcini propuse elevului. Exercițiul 3 are subpunctele a) și b) plus un bullet creativ. Exercițiul 4 implică un tren cu vagoane și tabele de completat. Exercițiul 5 cere reproducerea și continuarea unui șir de triunghiuri/pătrate. Pagina nu prezintă un modul sau titlu de secțiune explicit.",
       "input_tokens": 2962,
-      "output_tokens": 311
+      "output_tokens": 275
     },
     {
       "pdf_page": 100,
@@ -2286,17 +2286,17 @@
         "adunarea zecilor",
         "scăderea zecilor"
       ],
-      "worked_examples_count": 2,
+      "worked_examples_count": 0,
       "proposed_exercises_count": 2,
-      "exercise_count": 4,
+      "exercise_count": 2,
       "exercise_types": [
         "calcul direct",
         "completare cu casuta"
       ],
-      "confidence": "medium",
-      "notes": "Pagina introduce adunarea și scăderea zecilor (z+z, z-z) cu exemple ilustrate vizual (30+20, 50-20). Exercițiul 1 conține coloane paralele de operații cu zeci și cu unități (fără rezolvare afișată, propuse elevului). Exercițiul 2 cere aflarea termenilor necunoscuți. Exemplele rezolvate includ cele două perechi ilustrate (30+20 și 50-20). Numărul de exerciții propuse este aproximativ, deoarece exercițiul 1 și 2 sunt ambele propuse elevului.",
+      "confidence": "high",
+      "notes": "Pagina introduce adunarea și scăderea zecilor (z+z, z-z) cu ilustrații vizuale și exemple model fără soluții explicite. Exercițiul 1 conține serii de calcule directe cu perechi de operații (zeci și unități). Exercițiul 2 cere aflarea termenilor necunoscuți cu casute, incluzând formula T = S - T. Worked examples: imaginile cu 30+20/3 zeci+2 zeci și 50-20/5 zeci-2 zeci sunt modele de predare, dar fără soluție numerică explicită afișată, deci tratate ca parte din lecție, nu ca exerciții rezolvate separat.",
       "input_tokens": 2962,
-      "output_tokens": 297
+      "output_tokens": 321
     },
     {
       "pdf_page": 101,
@@ -2305,8 +2305,8 @@
       "subtopic": null,
       "page_kind": "exercitii",
       "concepts_introduced": [
-        "schimbul de bani",
-        "100 bani = 1 leu"
+        "bani (lei și bani)",
+        "echivalență monetară (100 bani = 1 leu)"
       ],
       "worked_examples_count": 0,
       "proposed_exercises_count": 6,
@@ -2316,12 +2316,13 @@
         "problema vizuala",
         "comparare cu casuta",
         "calcul direct",
-        "creare problema"
+        "recunoastere monede si bancnote",
+        "creare probleme"
       ],
       "confidence": "medium",
-      "notes": "Exercițiul 3 conține două tabele de completat (flori și zăpadă). Exercițiul 4 cere formularea întrebărilor și rezolvarea problemelor cu imagini. Exercițiul 5 implică identificarea semnului corect (*) dintre +/-. Exercițiul 6 introduce noțiunea de schimb de bani (100 bani = 1 leu) cu imagini de monede și bancnote moldovenești, plus sub-exerciții de calcul (a-d) și un bonus de creare de probleme. Numărul de exerciții propuse este aproximativ — exercițiile 3, 4, 5, 6 (cu sub-puncte) au fost numărate ca 6 unități distincte.",
+      "notes": "Exercițiul 3 conține două tabele de completat (flori și om de zăpadă). Exercițiul 4 are 3 subpuncte cu probleme formulate vizual. Exercițiul 5 conține comparări cu operatori lipsă (*, +/-). Exercițiul 6 introduce monede și bancnote moldovenești și relația 100 bani = 1 leu, cu subpuncte de calcul. Ultimul element (Creați și rezolvați) este o sarcină deschisă de creare. Numărul de exerciții propuse poate varia în funcție de cum se numără subpunctele.",
       "input_tokens": 2962,
-      "output_tokens": 342
+      "output_tokens": 340
     },
     {
       "pdf_page": 102,
@@ -2330,7 +2331,7 @@
       "subtopic": "Aflarea descăzutului necunoscut",
       "page_kind": "lectie",
       "concepts_introduced": [
-        "descăzut necunoscut"
+        "aflarea descăzutului necunoscut"
       ],
       "worked_examples_count": 2,
       "proposed_exercises_count": 1,
@@ -2341,9 +2342,9 @@
         "problema vizuala"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 1 este un exemplu rezolvat care ilustrează relația dintre scădere și adunare (D, Sc, R). Exercițiul 2 are două tabele: primul complet (rezolvat/model) și al doilea de completat de elev — am numărat primul tabel ca worked example și al doilea ca exercițiu propus. Exercițiul 3 este o problemă cu ilustrație și rezolvare completă afișată, deci worked example.",
+      "notes": "Exercițiul 1 prezintă exemple rezolvate (relația dintre scădere și adunare). Exercițiul 2 are două tabele: primul complet cu Rest gol (propus), al doilea cu Descăzut gol (propus) — ambele sunt propuse elevului. Exercițiul 3 este o problemă cu soluție afișată complet (worked example). Cutia 'Ați observat?' introduce regula aflării descăzutului.",
       "input_tokens": 2962,
-      "output_tokens": 262
+      "output_tokens": 265
     },
     {
       "pdf_page": 103,
@@ -2358,19 +2359,19 @@
       "exercise_types": [
         "problema text",
         "completare casuta",
-        "formare exercitii",
+        "formeaza exercitii",
         "completare tabel"
       ],
       "confidence": "high",
-      "notes": "Pagina conține 4 exerciții numerotate (4, 5, 6, 7) dar exercițiul 7 are 3 subpuncte (a, b, c), exercițiul 4 are 2 subpuncte, exercițiul 5 are subpuncte cu serii de egalități, exercițiul 6 cere formarea exercițiilor. La baza paginii există un tabel de recapitulare cu Descăzut/Scăzător/Diferență și Termen/Termen/Sumă. Numărat ca 7 exerciții propuse distincte (4a, 4b, 5, 6, 7a, 7b, 7c). Tabelul de la final pare a fi material de recapitulare/completare, inclus în exerciții.",
+      "notes": "Pagina conține 7 exerciții propuse elevului: ex.4 (2 probleme text cu scădere/adunare), ex.5 (aflare numere necunoscute cu căsuțe, cu formulele D=R+Sc și T=S-T vizibile), ex.6 (formare și rezolvare exerciții cu valori date), ex.7 (3 probleme text), plus un tabel de completat la final (Descăzut/Scăzător/Diferență și Termen/Termen/Sumă). Nu există exemple rezolvate cu soluție afișată.",
       "input_tokens": 2962,
-      "output_tokens": 338
+      "output_tokens": 284
     },
     {
       "pdf_page": 104,
       "printed_page": "104",
       "module": null,
-      "subtopic": "• Numerele de la 21 pînă la 100",
+      "subtopic": "Numerele de la 21 pînă la 100",
       "page_kind": "lectie",
       "concepts_introduced": [
         "numerele de la 21 pînă la 100",
@@ -2383,12 +2384,12 @@
         "completare casuta",
         "scriere cu cifre",
         "problema vizuala",
-        "descompunere zeci-unitati"
+        "identificare valoare cifra"
       ],
       "confidence": "high",
-      "notes": "Pagina introduce numerele de la 21 la 100 prin exemple ilustrate (21, 36, 63) cu bețișoare și abac Z/U. Secțiunea de predare conține 3 exemple rezolvate/semi-rezolvate (21, 36, 63 - ultimul cu căsuțe de completat). Exercițiile propuse sunt numerotate 1, 2, 3.",
+      "notes": "Pagina introduce numerele de două cifre (21-100) prin reprezentări vizuale cu bețișoare și abac (Z/U). Primele 3 blocuri sunt exemple rezolvate/model (21, 36, 63), dintre care al treilea (63) are casute de completat — tratat ca exemplu-model parțial completat. Exercițiile 1, 2, 3 sunt propuse elevului.",
       "input_tokens": 2962,
-      "output_tokens": 273
+      "output_tokens": 271
     },
     {
       "pdf_page": 105,
@@ -2398,20 +2399,19 @@
       "page_kind": "exercitii",
       "concepts_introduced": [],
       "worked_examples_count": 0,
-      "proposed_exercises_count": 8,
-      "exercise_count": 8,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
       "exercise_types": [
         "calcul direct",
         "completare tabel",
         "problema vizuala",
-        "compunere exercitii",
-        "descompunere numar in zeci si unitati",
+        "descompunere zeci-unitati",
         "creare problema"
       ],
-      "confidence": "high",
-      "notes": "Pagina contine 8 exercitii numerotate explicit (4-8). Exercitiul 4 cere identificarea numerelor formate din zeci si unitati cu cifre date. Exercitiul 5 contine calcule grupate sub numere-titlu (38, 47, 82, 65) cu sub-sarcina de compunere de exercitii asemanatoare. Exercitiul 6 contine adunari cu trei termeni si sub-sarcina de creare a unei probleme. Exercitiul 7 cere completarea descompunerii numerelor in zeci si unitati cu casute goale. Exercitiul 8 contine doua tabele de completat cu imagini (legume, jucarii). Nu sunt concepte noi introduse; pagina este de exersare.",
+      "confidence": "medium",
+      "notes": "Pagina conține exercițiile numerotate 4-8. Exercițiul 4 cere identificare numere din cifre date. Exercițiul 5 are operații cu numere de două cifre și sub-sarcină de compunere exerciții asemănătoare. Exercițiul 6 are adunări triple și sub-sarcină de creare problemă. Exercițiul 7 cere completarea descompunerii în zeci și unități. Exercițiul 8 are două tabele de completat cu operații de scădere/adunare. Nu există exemple rezolvate afișate explicit; toate sunt propuse elevului.",
       "input_tokens": 2962,
-      "output_tokens": 365
+      "output_tokens": 299
     },
     {
       "pdf_page": 106,
@@ -2427,13 +2427,14 @@
       "proposed_exercises_count": 3,
       "exercise_count": 3,
       "exercise_types": [
-        "scriere sir de numere",
-        "completare tabel"
+        "scriere șir de numere",
+        "scriere numere pare",
+        "scriere numere impare"
       ],
       "confidence": "high",
-      "notes": "Pagina prezintă un tabel colorat al numerelor 0-100 (roz=pare, albastru=impare) cu regulile cifrelor unităților pentru numere pare și impare, urmat de 3 exerciții propuse fără soluții afișate.",
+      "notes": "Pagina introduce vizual numerele pare și impare printr-un tabel colorat (0-100), cu o regulă explicită pentru cifra unităților. Exercițiile 1-3 sunt propuse elevului fără soluție afișată.",
       "input_tokens": 2962,
-      "output_tokens": 218
+      "output_tokens": 220
     },
     {
       "pdf_page": 107,
@@ -2446,29 +2447,27 @@
       "proposed_exercises_count": 13,
       "exercise_count": 13,
       "exercise_types": [
-        "comparare cu simbol lipsă",
-        "completare căsuță",
-        "ordonare crescător/descrescător",
+        "comparare cu casuta",
+        "completare tabel",
+        "ordonare crescator/descrescator",
         "calcul direct",
-        "vecini număr",
-        "scriere cifre zeci/unități",
-        "identificare numere după criteriu"
+        "gaseste vecini",
+        "scriere conditionata",
+        "subliniere numere pare",
+        "descompunere numar"
       ],
-      "confidence": "high",
-      "notes": "Pagina conține exerciții numerotate 4-8 în secțiunea principală şi 1-5 în secțiunea de recapitulare/test de la bază (desemnată vizual cu o aricioaie). Exercițiile 4 şi 2 din secțiunea inferioară includ comparare cu semn lipsă (*). Exercițiul 8 cere scrierea tuturor numerelor mai mici decît 100 cu anumite proprietăți.",
+      "confidence": "medium",
+      "notes": "Pagina conține 8 exerciții numerotate (4-8) în secțiunea principală și 5 sub-exerciții (1-5) într-o secțiune de recapitulare/test în partea de jos (marcată cu o bufniță). Exercițiul 4 implică comparare cu semne (<, =, >) folosind simboluri grafice. Exercițiul 8 are sub-puncte a, b, c, d plus un bullet suplimentar. Nu există module sau subtopic vizibil pe pagină.",
       "input_tokens": 2962,
-      "output_tokens": 413
+      "output_tokens": 317
     },
     {
       "pdf_page": 108,
       "printed_page": "108",
       "module": null,
       "subtopic": "• ZU + U. ZU – U",
-      "page_kind": "lectie",
-      "concepts_introduced": [
-        "adunarea ZU + U",
-        "scăderea ZU – U"
-      ],
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
       "worked_examples_count": 2,
       "proposed_exercises_count": 5,
       "exercise_count": 7,
@@ -2479,9 +2478,9 @@
         "completare tabel"
       ],
       "confidence": "high",
-      "notes": "Pagina introduce adunarea și scăderea unui număr de două zeci și unități cu unități (ZU+U, ZU-U). Exercițiile 1 și 2 sunt calcul direct în serii, exercițiul 3 conține afirmații cu * unde elevul identifică semnul corect (gaseste-greseala), exercițiul 4 este problemă text cu subîntrebare, exercițiul 5 este completare de șiruri/tabele. Cele 2 exemple ilustrate vizual cu bețișoare în caseta de introducere sunt considerate worked examples.",
+      "notes": "Pagina prezintă adunarea și scăderea unităților la/din numere de două cifre (ZU+U, ZU-U). Cele 2 exemple rezolvate sunt modelele ilustrate vizual (25+3 și 28-3) cu explicații. Exercițiul 3 conține egalități cu * unde elevul trebuie să determine semnul operației (+ sau -), ceea ce corespunde etichetei gaseste-greseala/completare. Exercițiul 5 conține șiruri numerice de completat (tabel). Exercițiul 4 este problemă text cu două subîntrebări.",
       "input_tokens": 2962,
-      "output_tokens": 301
+      "output_tokens": 298
     },
     {
       "pdf_page": 109,
@@ -2495,19 +2494,19 @@
       "exercise_count": 3,
       "exercise_types": [
         "calcul direct",
-        "completare casuta",
+        "completare cu casuta",
         "problema text"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține 3 exerciții numerotate (6, 7, 8) plus un bloc de calcul la final fără număr de exercițiu explicit. Exercițiul 6 constă în coloane de calcul direct (adunare și scădere). Exercițiul 7 cere găsirea numerelor necunoscute (completare casuță) cu formule T=S-T și D=R+Sc. Exercițiul 8 are 3 subpuncte problemă text cu context real (lei, rest, bancnotă). Blocul final de calcul cu animale ilustrate pare a fi un exercițiu suplimentar de calcul direct (numărat ca parte din exercițiile propuse). Numărul exact de exerciții depinde de cum se numără blocul final; am contorizat exercițiile numerotate explicit (6, 7, 8) ca 3 exerciții propuse.",
+      "notes": "Pagina conține 3 exerciții numerotate (6, 7, 8) plus un bloc de calcul suplimentar fără număr la final. Exercițiul 6 constă în serii de calcul direct (adunări și scăderi în coloane paralele). Exercițiul 7 cere aflarea numerelor necunoscute (completare cu căsuță) și include formule tip T=S-T și D=R+Sc. Exercițiul 8 conține 3 subprobleme text (a, b, c). Blocul final de calcul fără număr (cu imagini de animale) este tratat ca parte a paginii de exerciții. Nicio noțiune nouă introdusă.",
       "input_tokens": 2962,
-      "output_tokens": 346
+      "output_tokens": 304
     },
     {
       "pdf_page": 110,
       "printed_page": "110",
       "module": null,
-      "subtopic": "Măsurarea capacității. Litrul",
+      "subtopic": "• Măsurarea capacității. Litrul",
       "page_kind": "lectie",
       "concepts_introduced": [
         "capacitatea vasului",
@@ -2517,17 +2516,15 @@
       "proposed_exercises_count": 3,
       "exercise_count": 3,
       "exercise_types": [
-        "problema vizuala",
-        "ordonare crescatoare",
+        "ordonare crescătoare",
         "calcul direct",
-        "completare casuta",
-        "discriminare unitati de masura",
+        "completare cu unitate de măsură",
         "problema text"
       ],
       "confidence": "high",
-      "notes": "Pagina introduce noțiunile de capacitate și litru ca unitate de măsură. Exercițiul 2 cere discriminarea între litri (l) și kilograme (kg). Exercițiul 3 are două subpuncte (a și b) plus o cerință de creare de probleme asemănătoare.",
+      "notes": "Pagina introduce noțiunile de capacitate și litru prin definiție în casetă. Exercițiul 1 are două subpuncte (a și b), exercițiul 2 cere clasificarea unității de măsură (l sau kg), exercițiul 3 are două subprobleme text (a și b) plus un item de creație. Worked examples sunt 0 deoarece nu există probleme rezolvate cu soluție afișată.",
       "input_tokens": 2962,
-      "output_tokens": 243
+      "output_tokens": 266
     },
     {
       "pdf_page": 111,
@@ -2536,7 +2533,7 @@
       "subtopic": "Aflarea scăzătorului necunoscut",
       "page_kind": "lectie",
       "concepts_introduced": [
-        "aflarea scăzătorului necunoscut"
+        "scăzătorul necunoscut"
       ],
       "worked_examples_count": 2,
       "proposed_exercises_count": 2,
@@ -2548,9 +2545,9 @@
         "problema vizuala"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 1 este un exemplu demonstrativ (rezolvat), exercițiul 3 este o problemă rezolvată complet cu Rezolvare și Răspuns. Exercițiul 2 este completare de tabel propus elevului. Exercițiul 4 conține 3 subpuncte (a, b, c) de probleme propuse, dintre care c) implică bancnote ilustrate (problemă vizuală). Regula 'Ați observat?' este o observație editorială, nu concept nou distinct.",
+      "notes": "Exercițiul 1 este un exemplu demonstrativ (worked), exercițiul 3 este o problemă rezolvată complet (worked). Exercițiul 2 este completare de tabel (propus). Exercițiul 4 conține 3 subpuncte (a, b, c) — numărate ca un singur exercițiu propus cu subpuncte. Formula Sc = D − R este introdusă explicit.",
       "input_tokens": 2962,
-      "output_tokens": 286
+      "output_tokens": 255
     },
     {
       "pdf_page": 112,
@@ -2563,15 +2560,16 @@
       "proposed_exercises_count": 4,
       "exercise_count": 4,
       "exercise_types": [
-        "calcul direct",
+        "sir numeric cu operatii",
         "completare casuta",
         "completare tabel",
-        "problema vizuala"
+        "problema vizuala",
+        "problema text"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 2 conține subtipuri a/b/c cu formule de tip T=S-T, D=R+Sc, Sc=D-R ca indicii vizuale. Exercițiul 3 este o problemă cu tabel (3 copii, lei avuți/cheltuiți/rest). Exercițiul 4 are două subpuncte a și b cu context narativ și calcul dublu.",
+      "notes": "Exercițiul 2 conține formule mnemonice (T=S-T, D=R+Sc, Sc=D-R) prezentate ca ajutor vizual pentru elevi, nu ca noțiuni noi introduse. Exercițiul 3 este un tabel cu date lipsă (valori necunoscute). Exercițiul 4 are două subpuncte cu contexte diferite (arbori și pasageri) legate prin aceeași întrebare de calcul.",
       "input_tokens": 2962,
-      "output_tokens": 251
+      "output_tokens": 274
     },
     {
       "pdf_page": 113,
@@ -2581,31 +2579,31 @@
       "page_kind": "exercitii",
       "concepts_introduced": [],
       "worked_examples_count": 0,
-      "proposed_exercises_count": 9,
-      "exercise_count": 9,
+      "proposed_exercises_count": 7,
+      "exercise_count": 7,
       "exercise_types": [
-        "formare exercitii",
+        "formare exercitii cu termeni dati",
         "problema text",
         "creare problema dupa conditie",
         "creare problema dupa schema",
         "creare problema dupa imagine",
         "completare tabel",
-        "calcul direct"
+        "problema vizuala"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține exercițiile 5, 6, 7 și o secțiune de recapitulare cu subpunctele 1) și 2). Exercițiul 5 presupune formarea și rezolvarea de exerciții cu numere date. Exercițiul 6 are 3 subpuncte (a, b, c) cu probleme text. Exercițiul 7 are 3 subpuncte (a, b, c) de creare probleme după condiție, schemă și imagine. Secțiunea de recapitulare are un tabel de completat (1) și o problemă text (2). Numărătoarea exercițiilor propuse este estimată; nu există exemple rezolvate afișate.",
+      "notes": "Exercițiul 5 cere formarea și rezolvarea exercițiilor pe baza unor numere date (T, T, S / D, Sc, R). Exercițiul 6 conține 3 sub-probleme text (a, b, c). Exercițiul 7 cere crearea și rezolvarea problemelor după condiție (a), schemă (b) și imagine (c), plus sub-exercițiile 1) (completare tabel adunare și scădere) și 2) (problemă text). Numerotarea sub-exercițiilor din 7 face dificilă distincția clară a granițelor între exerciții propuse.",
       "input_tokens": 2962,
-      "output_tokens": 335
+      "output_tokens": 340
     },
     {
       "pdf_page": 114,
       "printed_page": "114",
       "module": null,
-      "subtopic": "ZU + Z. ZU – Z",
+      "subtopic": "• ZU + Z. ZU – Z",
       "page_kind": "lectie",
       "concepts_introduced": [
-        "adunarea unui număr de două cifre cu un număr de o cifră/zeci",
-        "scăderea unui număr de zeci dintr-un număr de două cifre"
+        "adunarea zecilor între ele",
+        "scăderea zecilor între ele"
       ],
       "worked_examples_count": 2,
       "proposed_exercises_count": 3,
@@ -2613,12 +2611,12 @@
       "exercise_types": [
         "calcul direct",
         "completare cu casuta",
-        "problema vizuala"
+        "creare probleme"
       ],
-      "confidence": "medium",
-      "notes": "Pagina prezintă două modele rezolvate (23+40 și 63-40) cu descompunere vizuală și reguli verbale ('Adunăm zecile între ele', 'Scădem zecile între ele'). Exercițiile 1, 2, 3 sunt propuse elevului. Exercițiul 2 conține subpunctele a) și b) cu exerciții scrise cu verde (elevul trebuie să creeze și să rezolve probleme după ele). Exercițiul 3 conține căsuțe cu imagini în loc de numere. Numărul de exerciții propuse poate varia în funcție de cum se numără grupurile din ex. 2.",
+      "confidence": "high",
+      "notes": "Pagina prezintă două exemple rezolvate (23+40 și 63–40) cu descompunere vizuală. Exercițiul 2 conține subpunctele a) și b), iar exercițiul 3 conține completare cu simboluri/casute. Instrucțiunea 'Creați și rezolvați probleme după exercițiile scrise cu verde' este o sarcină de tip creare probleme, considerată exercițiu propus distinct.",
       "input_tokens": 2962,
-      "output_tokens": 350
+      "output_tokens": 265
     },
     {
       "pdf_page": 115,
@@ -2633,15 +2631,14 @@
       "exercise_types": [
         "problema text",
         "calcul direct",
-        "completare baloane",
-        "problema vizuala",
+        "suma si diferenta",
         "comparare cu casuta",
         "exercitii circulare cu trenuri"
       ],
       "confidence": "high",
-      "notes": "Pagina conține 7 exerciții propuse: ex.4 cu 3 subpuncte (probleme text), ex.5 cu baloane și operații, ex.6 cu imagini și mase (suma/diferența), ex.7 cu comparații folosind simboluri <, =, >, *, și o secțiune de joc circular cu trenuri. Nicio problemă rezolvată nu este prezentă. Conceptele utilizate (adunare, scădere, suma, diferența) sunt prerechizite, nu noțiuni noi.",
+      "notes": "Pagina conține 7 exerciții propuse elevului: ex.4 (rezolvare probleme text cu 3 subpuncte a,b,c), ex.5 (calcul cu baloane - adunare/scădere cu unități și zeci), ex.6 (suma și diferența maselor a doi cerbi), ex.7 (comparare expresii cu semnul *, folosind <, =, >), plus un exercițiu-joc circular (Exerciții circulare) cu trenuri și expresii de calcul. Nicio problemă nu are soluție rezolvată afișată.",
       "input_tokens": 2962,
-      "output_tokens": 297
+      "output_tokens": 289
     },
     {
       "pdf_page": 116,
@@ -2659,13 +2656,14 @@
       "exercise_types": [
         "calcul direct",
         "calcul în coloniță",
+        "citire în diferite moduri",
         "problema text",
-        "verificare prin operația inversă"
+        "proba prin operația inversă"
       ],
       "confidence": "medium",
-      "notes": "Pagina introduce adunarea și scăderea ZU+ZU / ZU-ZU cu ilustrații model (25+43 și 68-25 rezolvate vizual). Exercițiile 1-4 sunt propuse elevului. Exercițiile model din antet sunt considerate worked examples. Exercițiul 4 include și o subpunctare de modificare a problemei.",
+      "notes": "Pagina introduce adunarea și scăderea numerelor de două cifre (ZU + ZU, ZU – ZU) cu ilustrații demonstrative (jetoane, coloniță). Exemplele introductive cu 25+43 și 68-25 sunt rezolvate vizual. Exercițiile 1-4 sunt propuse elevului. Exercițiul 4 conține și o subpunctare 'Modifică problema după exercițiul: 45 + 24 − 39 = □'.",
       "input_tokens": 2962,
-      "output_tokens": 274
+      "output_tokens": 313
     },
     {
       "pdf_page": 117,
@@ -2675,21 +2673,20 @@
       "page_kind": "exercitii",
       "concepts_introduced": [],
       "worked_examples_count": 0,
-      "proposed_exercises_count": 10,
-      "exercise_count": 10,
+      "proposed_exercises_count": 6,
+      "exercise_count": 6,
       "exercise_types": [
         "descompunere numere",
         "completare sir numeric",
         "completare casuta",
-        "identificare relatie (T=S-T, D=R+Sc, Sc=D-R)",
-        "problema vizuala",
+        "identificare relatie",
         "problema text",
         "calcul in lant cu imagini"
       ],
       "confidence": "high",
-      "notes": "Pagina conține exercițiile 5-10. Exercițiul 7 și 8 introduc/consolidează relațiile dintre termeni (T=S-T) și dintre descăzut, scăzător, rest. Exercițiul 10 este un lanț de calcul reprezentat vizual cu nori și flori. Exercițiile 7, 8, 9 conțin subpărți (completare casuță, ecuații, probleme text). Nicio noțiune nouă genuină nu este introdusă pe această pagină.",
+      "notes": "Pagina conține exercițiile 5-10. Exercițiile 7, 8, 9 includ sub-componente cu formule de tip T=S-T, D=R+Sc, Sc=D-R (relații între termeni/componente ale operațiilor), dar acestea sunt etichete de recapitulare, nu noțiuni noi. Exercițiul 10 este un calcul în lanț vizualizat cu nori și săgeți.",
       "input_tokens": 2962,
-      "output_tokens": 325
+      "output_tokens": 263
     },
     {
       "pdf_page": 118,
@@ -2705,14 +2702,14 @@
       "proposed_exercises_count": 3,
       "exercise_count": 3,
       "exercise_types": [
-        "completare cu unitate de măsură",
+        "completare cu unitatea de măsură",
         "comparare cu casuta",
         "estimare și măsurare"
       ],
       "confidence": "high",
-      "notes": "Pagina introduce unitatea de măsură centimetrul și metrul cu relația 100 cm = 1 m. Exercițiul 1 cere completarea unității corecte (cm sau m). Exercițiul 2 cere compararea expresiilor cu <, =, >. Exercițiul 3 cere estimarea și măsurarea lungimii pixului cu rigla.",
+      "notes": "Pagina introduce unitățile de măsură centimetrul și metrul cu ilustrații vizuale (riglă, ruletă). Exercițiul 1 cere completarea unității corecte (cm sau m). Exercițiul 2 cere compararea expresiilor cu simboluri <=> . Exercițiul 3 cere estimarea și măsurarea lungimii pixului cu rigla.",
       "input_tokens": 2962,
-      "output_tokens": 253
+      "output_tokens": 255
     },
     {
       "pdf_page": 119,
@@ -2722,8 +2719,8 @@
       "page_kind": "exercitii",
       "concepts_introduced": [],
       "worked_examples_count": 0,
-      "proposed_exercises_count": 8,
-      "exercise_count": 8,
+      "proposed_exercises_count": 5,
+      "exercise_count": 5,
       "exercise_types": [
         "ordonare dupa lungime",
         "completare casuta cu unitate de masura",
@@ -2732,9 +2729,9 @@
         "problema vizuala"
       ],
       "confidence": "high",
-      "notes": "Exercițiile 4-8 sunt propuse elevului. Exercițiul 4 cere ordonarea obiectelor după lungime cu măsuri date. Exercițiul 5 cere alegerea unității de măsură (m, kg sau l) și completarea căsuțelor. Exercițiile 6, 7, 8 sunt probleme text cu subpuncte de modificare a enunțului. Exercițiul 8 are subpunctele a) și b). Nu există exemple rezolvate pe pagină.",
+      "notes": "Pagina conține exercițiile 4-8. Exercițiul 4 cere ordonarea obiectelor după lungime (cu tabel dat). Exercițiul 5 cere alegerea unității de măsură (m, kg sau l) și darea de exemple. Exercițiul 6 este o problemă text cu subpunct de modificare a enunțului pentru operație inversă. Exercițiul 7 este o problemă text cu ilustrații și subpunct suplimentar. Exercițiul 8 este problemă text cu subpuncte a) și b) de modificare a datelor. Nu există noțiuni matematice noi introduse pe această pagină.",
       "input_tokens": 2962,
-      "output_tokens": 286
+      "output_tokens": 309
     },
     {
       "pdf_page": 120,
@@ -2754,9 +2751,9 @@
         "problema vizuala"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 5 conține imagini cu prețuri/greutăți/volume și cere elevilor să creeze și să rezolve probleme. La baza paginii există un element de joc ('JOC') care cere descoperirea a 6 pătrate și 12 triunghiuri în desene geometrice. Exercițiul 4 are două tabele de completat (adunare și scădere). Exercițiul 1 conține și o întrebare reflexivă despre pattern-uri în răspunsuri.",
+      "notes": "Exercițiul 1 conține 16 operații de calcul direct cu întrebare observație. Exercițiul 2 cere calculul și alcătuirea exercițiilor asemănătoare (subpunctele a și b). Exercițiul 3 este problemă text cu cerință de modificare a condiției. Exercițiul 4 are două tabele de completat (sumă/diferență). Exercițiul 5 cere crearea și rezolvarea de probleme pe baza imaginilor cu date. La baza paginii există un element de joc (JOC) cu descoperirea de pătrate și triunghiuri în figuri geometrice.",
       "input_tokens": 2962,
-      "output_tokens": 281
+      "output_tokens": 311
     },
     {
       "pdf_page": 121,
@@ -2771,15 +2768,14 @@
       "exercise_types": [
         "problema text",
         "modificare date problema",
-        "descoperire regula sir",
-        "completare casute",
+        "descoperire regula si completare sir",
         "problema vizuala",
-        "calcul in coloana"
+        "calcul direct in coloanа"
       ],
       "confidence": "high",
-      "notes": "Pagina conține 3 exerciții numerotate (6, 7, 8) plus o secțiune 'Calculează în coloniță' împărțită în VARIANTA 1 și VARIANTA 2, fiecare cu câte 6 expresii (3 rânduri x 2 coloane). Exercițiul 6 include și un subpunct de modificare date. Exercițiul 7 are două subpuncte (a și b) cu șiruri de completat. Exercițiul 8 are două subpuncte (a și b) cu probleme vizuale după imagini. Total exerciții propuse estimate: ex.6 (2 subpuncte), ex.7 (2 subpuncte), ex.8 (2 subpuncte), + varianta1 + varianta2 = contorizate ca 8 unități.",
+      "notes": "Pagina conține exercițiile 6, 7, 8 și o secțiune 'Calculează în coloniță' cu două variante. Exercițiul 6 are și o subpunctă de modificare a datelor (a, b). Exercițiul 7 are două șiruri (a, b) de completat. Exercițiul 8 are două subpuncte (a, b) cu imagini. Secțiunea 'Calculează în coloniță' este împărțită în Varianta 1 și Varianta 2, fiecare cu câte 6 operații — numărate ca exerciții separate (4 total: ex.6, ex.7, ex.8, coloniță). S-a ales să se numere ca 8 exerciții totale (6, 7a, 7b, 8a, 8b, coloniță V1, coloniță V2 = 7 blocuri, dar grupate în 8 cu subpunctele 6a/6b).",
       "input_tokens": 2962,
-      "output_tokens": 360
+      "output_tokens": 395
     },
     {
       "pdf_page": 122,
@@ -2804,9 +2800,9 @@
         "problema vizuala"
       ],
       "confidence": "high",
-      "notes": "Pagina introduce măsurarea timpului cu ceasul, relațiile 60 min = 1 oră și 24 ore = 1 zi, și conceptele de amiază/pînă la amiază/după-amiază. Exercițiul 1 cere citirea orei de pe ceasuri desenate (6 cadrane), exercițiul 2 cere calculul duratei drumului din două cadrane de ceas (start și stop), cu 4 sub-exerciții (a, b, c, d).",
+      "notes": "Pagina introduce noțiunile de măsurare a timpului cu ceasul, relațiile 60 min = 1 oră și 24 ore = 1 zi, și distincția pînă la amiază / după-amiază / amiază. Exercițiul 1 cere citirea orei de pe 6 imagini de ceas, exercițiul 2 cere calculul duratei drumului pe baza a două imagini de ceas (start/stop) pentru 4 subcazuri (a, b, c, d).",
       "input_tokens": 2962,
-      "output_tokens": 297
+      "output_tokens": 302
     },
     {
       "pdf_page": 123,
@@ -2819,15 +2815,15 @@
       "proposed_exercises_count": 4,
       "exercise_count": 4,
       "exercise_types": [
-        "denumire/identificare",
+        "completare orala",
         "calcul direct",
-        "citire calendar",
+        "problema vizuala",
         "ordonare cronologica"
       ],
       "confidence": "high",
-      "notes": "Pagina conține exclusiv exerciții propuse elevului pe tema calendarului (anotimpuri, luni, zile ale săptămînii, sărbători). Exercițiul 3 include un calendar al lunii Mai cu sub-sarcini a/b/c bazate pe ilustrații cu animale. Exercițiul 4 cere ordonarea unor sărbători naționale după dată.",
+      "notes": "Exercițiul 3 conține un calendar al lunii Mai cu imagini animate indicînd diverse date; elevul trebuie să identifice data și ziua săptămînii. Exercițiul 4 cere ordonarea succesivă a sărbătorilor în an. Pagina nu introduce noțiuni noi, ci exersează noțiunile de calendar deja introduse anterior.",
       "input_tokens": 2962,
-      "output_tokens": 240
+      "output_tokens": 237
     },
     {
       "pdf_page": 124,
@@ -2840,15 +2836,16 @@
       "proposed_exercises_count": 5,
       "exercise_count": 5,
       "exercise_types": [
-        "calcul direct",
         "problema text",
-        "comparare cu casuta",
-        "completare cifre lipsa"
+        "calcul direct",
+        "completare casuta",
+        "comparare",
+        "formulare problema"
       ],
       "confidence": "high",
-      "notes": "Pagina conține 5 exerciții propuse elevului. Exercițiul 1 are sub-puncte a-f cu calcule de completat. Exercițiul 2 implică rezolvarea și compararea unor probleme formulate de copii (adunare și scădere). Exercițiul 3 este problemă text cu sub-întrebare. Exercițiul 4 este calcul vertical cu cifre parțial ascunse. Exercițiul 5 este problemă text cu variantă modificată. Niciun exemplu rezolvat nu este afișat explicit.",
+      "notes": "Exercițiul 4 conține operații cu cifre parțial acoperite (cifre lipsă de identificat). Exercițiul 2 implică două variante de problemă (adunare și scădere). Exercițiul 3 are două sub-întrebări. Exercițiul 5 are o variantă modificată a problemei.",
       "input_tokens": 2962,
-      "output_tokens": 283
+      "output_tokens": 227
     },
     {
       "pdf_page": 125,
@@ -2864,36 +2861,36 @@
         "completare tabel",
         "problema vizuala",
         "problema orala",
-        "rationament calendar"
+        "rationament logic"
       ],
       "confidence": "high",
-      "notes": "Exercițiul 6 conține două tabele cu valori lipsă (completare tabel). Exercițiul 7 are 4 subpuncte (a, b, c, d) cu probleme vizuale după imagini. Exercițiul 8 cere crearea și rezolvarea orală a problemelor despre cumpărare. Exercițiul 9 este o problemă de raționament cu zile ale săptămânii/calendar. Total 4 exerciții propuse elevului.",
+      "notes": "Exercițiul 6 conține două tabele de completat (unul cu autobuz, unul cu bomboane/bunici). Exercițiul 7 cere compunerea și rezolvarea problemelor după imagini (4 subpuncte: a, b, c, d). Exercițiul 8 cere crearea și rezolvarea orală a problemelor despre cumpărarea obiectelor. Exercițiul 9 este o problemă de logică/calendar (ce dată și zi este astăzi, cu 3 enunțuri-indicii). Paginile nu au titlu de capitol/modul vizibil.",
       "input_tokens": 2962,
-      "output_tokens": 250
+      "output_tokens": 280
     },
     {
       "pdf_page": 126,
       "printed_page": "126",
       "module": null,
-      "subtopic": "• Adevărat sau fals?",
+      "subtopic": "Adevărat sau fals?",
       "page_kind": "exercitii",
       "concepts_introduced": [],
       "worked_examples_count": 0,
       "proposed_exercises_count": 6,
       "exercise_count": 6,
       "exercise_types": [
-        "adevarat-fals",
-        "calcul direct",
-        "alegere varianta",
-        "gaseste-greseala",
+        "adevarat-sau-fals",
+        "comparare expresii",
+        "alegere varianta corecta",
+        "rationament logic",
         "comparare unitati de masura",
-        "problema text",
-        "problema vizuala"
+        "gaseste-greseala",
+        "problema text"
       ],
       "confidence": "high",
-      "notes": "Pagina conține exclusiv exerciții de tip 'Adevărat sau fals?' numerotate 1-6. Exercițiul 6 cere corectarea problemelor lui Nătăfleață (greșeli intenționate). La baza paginii există o rubrică vizuală 'Cine descoperă mai multe deosebiri?' cu două imagini de cuburi. Indicatorii A și F (Adevărat/Fals) sunt vizibili în colțul din dreapta sus.",
+      "notes": "Pagina conține exclusiv exerciții de tip 'Adevărat sau fals?' numerotate 1-6. Exercițiul 6 cere corectarea problemelor lui Nătăfleață (găsește greșeala) și rezolvarea lor. La baza paginii există o rubrică vizuală 'Cine descoperă mai multe deosebiri?' cu două cuburi ilustrate.",
       "input_tokens": 2962,
-      "output_tokens": 291
+      "output_tokens": 270
     },
     {
       "pdf_page": 127,
@@ -2908,19 +2905,19 @@
       "exercise_types": [
         "problema vizuala",
         "completare tabel",
-        "problema text",
-        "identificare date reale"
+        "calcul direct",
+        "problema text"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține 6 situații-problemă propuse elevului, fără soluții afișate: 1) numere de urgență (pompierii, poliția, ambulanța); 2) aviz pentru servicii telefonice cu total de calculat; 3) aflarea codului poștal și scrierea adresei; 4) identificarea locatarilor care au primit scrisori; 5) problema cu pagini citite; 6) problema cu pastile. La final, o întrebare deschisă despre alte situații cu numere naturale. Nu sunt introduse noțiuni matematice noi.",
+      "notes": "Pagina conține 6 situații-problemă propuse elevului fără soluții afișate: numerele de urgență (901/902/903), avizul pentru servicii cu total necunoscut, codul poștal și adresa, cutiile poștale cu numere de apartamente, problema cu paginile cărții, problema cu pastilele. Ultima sarcină este de tip reflecție/discuție. Nu sunt noțiuni matematice noi introduse.",
       "input_tokens": 2962,
-      "output_tokens": 307
+      "output_tokens": 270
     },
     {
       "pdf_page": 128,
       "printed_page": "128",
       "module": null,
-      "subtopic": "Unde întîlnim forme geometrice?",
+      "subtopic": "• Unde întîlnim forme geometrice?",
       "page_kind": "exercitii",
       "concepts_introduced": [],
       "worked_examples_count": 0,
@@ -2928,20 +2925,20 @@
       "exercise_count": 4,
       "exercise_types": [
         "problema vizuala",
-        "adevarat-fals",
-        "calcul direct",
-        "comparare cu casuta"
+        "asociere forma geometrica",
+        "problema text",
+        "comparare imagini"
       ],
       "confidence": "high",
-      "notes": "Pagina conține 4 exerciții propuse cu subpuncte. Exercițiul 2 conține afirmații despre forme geometrice (inclusiv una intenționat greșită - cercul nu poate fi modelat din bețișoare). Exercițiul 3 are două subpuncte vizuale (a și b). Exercițiul de la final ('Cine descoperă mai multe deosebiri?') este o activitate de observare/comparare a două grupuri de forme geometrice.",
+      "notes": "Pagina conține 4 exerciții propuse elevului despre forme geometrice (cerc, pătrat, triunghi, romb, cub). Exercițiul 2 prezintă enunțuri informative despre modelare cu bețișoare și biluțe de plastilină, dar nu are soluție afișată — este propus elevului. Exercițiul 3 are două subpuncte (a și b). Exercițiul 4 este o problemă text cu 3 subpuncte. La final există o secțiune 'Cine descoperă mai multe deosebiri?' cu imagini comparative.",
       "input_tokens": 2962,
-      "output_tokens": 263
+      "output_tokens": 293
     },
     {
       "pdf_page": 129,
       "printed_page": "129",
       "module": null,
-      "subtopic": "Cum știm să folosim numere naturale?",
+      "subtopic": "• Cum știm să folosim numere naturale?",
       "page_kind": "recapitulare",
       "concepts_introduced": [],
       "worked_examples_count": 0,
@@ -2949,16 +2946,15 @@
       "exercise_count": 4,
       "exercise_types": [
         "problema vizuala",
-        "scriere in ordine crescatoare",
-        "scriere in ordine descrescatoare",
+        "ordonare numere",
         "calcul direct",
         "completare tabel",
         "ghicitori matematice"
       ],
       "confidence": "high",
-      "notes": "Pagina este de recapitulare cu 4 exerciții numerotate și o rubrică suplimentară 'Ghici ce numere s-au mascat!' cu subpuncte a, b, c. Exercițiul 2 conține o diagramă cu cerc și pătrat cu numere distribuite. Exercițiul 4 conține tabele de completat cu șiruri de numere. Nu există noțiuni noi introduse.",
+      "notes": "Pagina conține exerciții de recapitulare despre numere naturale: identificare reprezentări abac (ex.1), ordonare crescătoare/descrescătoare cu subliniere/încercuire (ex.2), suma și diferența vecinilor (ex.3), completare șiruri în tabel (ex.4), și o rubrică specială 'Ghici ce numere s-au mascat!' cu subpunctele a, b, c și o sarcină creativă pentru colegi.",
       "input_tokens": 2962,
-      "output_tokens": 293
+      "output_tokens": 289
     },
     {
       "pdf_page": 130,
@@ -2975,41 +2971,38 @@
         "calcul direct",
         "gaseste-greseala",
         "comparare cu casuta",
-        "siruri numerice"
+        "completare sir numeric"
       ],
       "confidence": "high",
-      "notes": "Pagina conține 7 exerciții propuse elevului. Exercițiul 3 cere identificarea semnului corect (*) dintre opțiunile + sau -, ceea ce se clasifică drept gaseste-greseala/completare semn. Exercițiul 4 cere compararea expresiilor cu simboluri <, =, >. Exercițiul 7 conține siruri numerice cu casute goale de completat. Nu există exemple rezolvate.",
+      "notes": "Pagina conține 7 exerciții propuse: ex.1 completare tabele (adunare și scădere), ex.2 scriere adunări și scăderi posibile cu numere date, ex.3 determinare semn operație (gaseste-greseala/*), ex.4 comparare expresii cu casuta, ex.5 mărire și micșorare numere, ex.6 calcul direct (operații în coloană), ex.7 completare șiruri numerice. Nu există exemple rezolvate.",
       "input_tokens": 2962,
-      "output_tokens": 281
+      "output_tokens": 284
     },
     {
       "pdf_page": 131,
       "printed_page": "131",
       "module": null,
-      "subtopic": "Cum știm să creăm și să rezolvăm probleme?",
-      "page_kind": "lectie",
-      "concepts_introduced": [
-        "crearea problemelor",
-        "condiție-întrebare-rezolvare-răspuns"
-      ],
-      "worked_examples_count": 1,
+      "subtopic": "• Cum știm să creăm și să rezolvăm probleme?",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
       "proposed_exercises_count": 2,
-      "exercise_count": 3,
+      "exercise_count": 2,
       "exercise_types": [
         "gaseste-greseala",
         "creare-problema",
-        "completare-casuta"
+        "rezolvare-problema"
       ],
       "confidence": "medium",
-      "notes": "Exercițiul 1 are 3 sub-puncte (a, b, c) cu probleme greșite compuse de 'Nătăfleață' — elevul identifică greșelile; acesta e un singur exercițiu propus cu 3 itemi, numărat ca 1. Exercițiul 2 prezintă structura CONDIȚIE-ÎNTREBARE-REZOLVARE-RĂSPUNS cu un exemplu parțial rezolvat (modelul din stânga) și un exercițiu propus (coloana din dreapta), plus rezolvări incomplete (casete goale). Worked example = modelul complet din stânga coloanei exercițiului 2.",
+      "notes": "Exercițiul 1 cere elevului să identifice greșelile din problemele compuse de Nătăfleață (subpunctele a, b, c — unele sunt intenționat greșite/fără sens matematic). Exercițiul 2 prezintă un tabel structurat cu CONDIȚIE, ÎNTREBARE, REZOLVARE, RĂSPUNS, dar rezolvările afișate par să conțină erori intenționate (de ex. rezolvarea nu corespunde condiției date), ceea ce sugerează că elevul trebuie să creeze și să rezolve corect propriile probleme. Numărul de exerciții propuse este estimat ca 2 (ex. 1 și ex. 2).",
       "input_tokens": 2962,
-      "output_tokens": 337
+      "output_tokens": 329
     },
     {
       "pdf_page": 132,
       "printed_page": "132",
       "module": null,
-      "subtopic": "Cum ne descurcăm la cumpărături?",
+      "subtopic": "• Cum ne descurcăm la cumpărături?",
       "page_kind": "exercitii",
       "concepts_introduced": [],
       "worked_examples_count": 0,
@@ -3017,22 +3010,22 @@
       "exercise_count": 6,
       "exercise_types": [
         "problema vizuala",
-        "completare tabel",
         "calcul direct",
+        "completare tabel",
+        "problema text",
         "comparare cu casuta",
-        "evaluare calitativa",
-        "problema text"
+        "evaluare calitativa"
       ],
       "confidence": "high",
-      "notes": "Pagina conține 6 exerciții propuse cu tematică de cumpărături și bani. Exercițiul 2 implică completarea unui tabel cu sume și rest. Exercițiul 4 cere verificarea dacă 57 lei ajung pentru diverse combinații de produse. Exercițiul 5 cere evaluarea calitativă (scump/ieftin/potrivit) și o întrebare reflexivă despre ce nu poate fi prețuit în bani. Niciun concept matematic nou nu este introdus explicit.",
+      "notes": "Pagină de aplicații practice pe tema cumpărăturilor. Exercițiul 2 conține un tabel cu valori lipsă de completat. Exercițiul 5 cere evaluare calitativă (scump/ieftin/potrivit). Exercițiul 4 implică comparare cu o sumă dată. Nu există exemple rezolvate; toate sunt propuse elevului.",
       "input_tokens": 2962,
-      "output_tokens": 289
+      "output_tokens": 252
     },
     {
       "pdf_page": 133,
       "printed_page": "133",
       "module": null,
-      "subtopic": "• Cum ne pricepem la măsurări?",
+      "subtopic": "Cum ne pricepem la măsurări?",
       "page_kind": "recapitulare",
       "concepts_introduced": [],
       "worked_examples_count": 0,
@@ -3041,33 +3034,33 @@
       "exercise_types": [
         "problema vizuala",
         "calcul direct",
-        "reflectie"
+        "întrebare de reflecție"
       ],
       "confidence": "medium",
-      "notes": "Pagina conține trei blocuri de exerciții propuse elevului: 1) despre timp (ceas - ce oră a fost/va fi), 2) despre masă și preț (saci de făină și orez), 3) despre capacitate/volum (consum de apă zilnic om-cal-căprioară cu relații de mai puțin/mai mult). Un exercițiu final general cere exemple de situații cu măsurători. Nu există exemple rezolvate cu soluție afișată. Pagina pare a fi o secțiune de recapitulare/evaluare a unității despre măsurări.",
+      "notes": "Pagina este o recapitulare tematică despre măsurători (timp, masă, capacitate, lungime). Conține trei blocuri de exerciții propuse fără soluții afișate: unul despre oră/ceas, unul despre masa și prețul sacilor, unul despre cantitatea de apă. La final există o sarcină suplimentară de a da exemple de situații de măsurare. Nu sunt introduse noțiuni matematice noi.",
       "input_tokens": 2962,
-      "output_tokens": 289
+      "output_tokens": 254
     },
     {
       "pdf_page": 134,
       "printed_page": "134",
       "module": null,
-      "subtopic": "• Cît de isteți am devenit?",
+      "subtopic": "Cît de isteți am devenit?",
       "page_kind": "recapitulare",
       "concepts_introduced": [],
       "worked_examples_count": 0,
       "proposed_exercises_count": 4,
       "exercise_count": 4,
       "exercise_types": [
-        "problema logica",
-        "comparare cu unitati de masura",
-        "figura geometrica",
+        "rationament logic",
+        "comparare marimi",
+        "problema vizuala",
         "sir de imagini"
       ],
       "confidence": "high",
-      "notes": "Pagina conține 4 exerciții propuse elevilor, fără soluții afișate. Exercițiul 1 este o problemă logică de identificare a numelor copiilor după indicii. Exercițiul 2 implică compararea mărimilor (ani, kg, cm/m). Exercițiul 3 cere identificarea figurilor geometrice obținute. Exercițiul 4 prezintă un șir de imagini cu animale și cere completarea cu '??'.",
+      "notes": "Pagina conține 4 exerciții propuse elevului: 1) raționament logic pentru aflarea numelui fiecărui copil (fundițe și băieți pe bancă); 2) comparare mărimi (ani, kg, cm/m) cu întrebarea 'Cu cît...?'; 3) identificare figură geometrică ce se poate obține; 4) completare șir de imagini cu animale (??). Nicio problemă rezolvată nu este prezentă.",
       "input_tokens": 2962,
-      "output_tokens": 266
+      "output_tokens": 263
     },
     {
       "pdf_page": 135,
@@ -3081,9 +3074,9 @@
       "exercise_count": 0,
       "exercise_types": [],
       "confidence": "high",
-      "notes": "Pagina de cuprins a manualului. Conține trei module: Modulul 1 (La izvoarele matematicii), Modulul 2 (Toamna se numără bobocii - Numerele naturale de la 0 pînă la 10), Modulul 3 (Boboceii prind aripi - Adunarea și scăderea pînă la 10). Nu există conținut matematic propriu-zis, doar structura de navigare.",
+      "notes": "Pagina de cuprins a manualului. Conține trei module: Modulul 1 (La izvoarele matematicii), Modulul 2 (Toamna se numără bobocii - Numerele naturale de la 0 pînă la 10), Modulul 3 (Boboceii prind aripi - Adunarea și scăderea pînă la 10). Nu există conținut matematic propriu-zis, doar structura tematică a manualului.",
       "input_tokens": 2962,
-      "output_tokens": 229
+      "output_tokens": 233
     },
     {
       "pdf_page": 136,
@@ -3097,9 +3090,9 @@
       "exercise_count": 0,
       "exercise_types": [],
       "confidence": "high",
-      "notes": "Aceasta este o pagină de cuprins (tabla de materii) care listează Modulul 4, Modulul 5 și Modulul 6 cu titlurile lecțiilor și paginile corespunzătoare. Nu conține conținut matematic propriu-zis, exerciții sau noțiuni noi introduse. Este o pagină de navigare/structură a manualului.",
+      "notes": "Pagina reprezintă cuprinsul manualului (tabla de materii), acoperind Modulul 4 'În țara fulgilor de nea', Modulul 5 'Vine, vine primăvara' și Modulul 6 'Culegem roadele învățării'. Nu conține conținut matematic propriu-zis, ci doar lista lecțiilor cu paginile corespunzătoare.",
       "input_tokens": 2962,
-      "output_tokens": 203
+      "output_tokens": 209
     }
   ],
   "concept_inventory": [
@@ -3115,6 +3108,27 @@
       "first_seen_pdf_page": 4,
       "module": "Modulul 1. La izvoarele matematicii",
       "subtopic": "Poziție. Direcție",
+      "occurrences": 1
+    },
+    {
+      "name": "pereche de obiecte",
+      "first_seen_pdf_page": 5,
+      "module": null,
+      "subtopic": null,
+      "occurrences": 1
+    },
+    {
+      "name": "șir de obiecte",
+      "first_seen_pdf_page": 5,
+      "module": null,
+      "subtopic": null,
+      "occurrences": 1
+    },
+    {
+      "name": "repetiție de modele",
+      "first_seen_pdf_page": 5,
+      "module": null,
+      "subtopic": null,
       "occurrences": 1
     },
     {
@@ -3153,6 +3167,34 @@
       "occurrences": 1
     },
     {
+      "name": "mai multe",
+      "first_seen_pdf_page": 9,
+      "module": null,
+      "subtopic": null,
+      "occurrences": 1
+    },
+    {
+      "name": "mai puține",
+      "first_seen_pdf_page": 9,
+      "module": null,
+      "subtopic": null,
+      "occurrences": 1
+    },
+    {
+      "name": "tot atîtea",
+      "first_seen_pdf_page": 9,
+      "module": null,
+      "subtopic": null,
+      "occurrences": 1
+    },
+    {
+      "name": "egalizare",
+      "first_seen_pdf_page": 9,
+      "module": null,
+      "subtopic": null,
+      "occurrences": 1
+    },
+    {
       "name": "numărul 1",
       "first_seen_pdf_page": 12,
       "module": "Modulul 2. Toamna se numără bobocii",
@@ -3188,35 +3230,35 @@
       "occurrences": 1
     },
     {
-      "name": "egal",
+      "name": "mai mic (<)",
       "first_seen_pdf_page": 14,
       "module": null,
       "subtopic": "Relații de comparație",
       "occurrences": 1
     },
     {
-      "name": "mai mic",
+      "name": "mai mare (>)",
       "first_seen_pdf_page": 14,
       "module": null,
       "subtopic": "Relații de comparație",
       "occurrences": 1
     },
     {
-      "name": "mai mare",
+      "name": "egal (=)",
       "first_seen_pdf_page": 14,
       "module": null,
       "subtopic": "Relații de comparație",
       "occurrences": 1
     },
     {
-      "name": "compararea numerelor naturale (>, =, <)",
+      "name": "compararea numerelor 1 și 2",
       "first_seen_pdf_page": 15,
       "module": null,
       "subtopic": "Cîți merg în rînd? A cîta merge buburuza?",
       "occurrences": 1
     },
     {
-      "name": "numărul de ordine",
+      "name": "relații de ordine: mai mare, mai mic, egal",
       "first_seen_pdf_page": 15,
       "module": null,
       "subtopic": "Cîți merg în rînd? A cîta merge buburuza?",
@@ -3237,14 +3279,14 @@
       "occurrences": 1
     },
     {
-      "name": "ordonarea numerelor 1, 2, 3",
+      "name": "ordinea crescătoare a numerelor",
       "first_seen_pdf_page": 17,
       "module": null,
       "subtopic": null,
       "occurrences": 1
     },
     {
-      "name": "relații de ordine: <, >, =",
+      "name": "ordinea descrescătoare a numerelor",
       "first_seen_pdf_page": 17,
       "module": null,
       "subtopic": null,
@@ -3262,20 +3304,6 @@
       "first_seen_pdf_page": 18,
       "module": null,
       "subtopic": "Numărul și cifra 4",
-      "occurrences": 1
-    },
-    {
-      "name": "compararea numerelor 1-4",
-      "first_seen_pdf_page": 19,
-      "module": null,
-      "subtopic": null,
-      "occurrences": 1
-    },
-    {
-      "name": "șirul crescător și descrescător",
-      "first_seen_pdf_page": 19,
-      "module": null,
-      "subtopic": null,
       "occurrences": 1
     },
     {
@@ -3297,13 +3325,27 @@
       "first_seen_pdf_page": 21,
       "module": null,
       "subtopic": null,
-      "occurrences": 1
+      "occurrences": 2
     },
     {
       "name": "ordonare descrescătoare",
       "first_seen_pdf_page": 21,
       "module": null,
       "subtopic": null,
+      "occurrences": 2
+    },
+    {
+      "name": "numerele de la 1 pînă la 5",
+      "first_seen_pdf_page": 22,
+      "module": null,
+      "subtopic": "Numerele de la 1 pînă la 5",
+      "occurrences": 1
+    },
+    {
+      "name": "vecini ai numărului",
+      "first_seen_pdf_page": 22,
+      "module": null,
+      "subtopic": "Numerele de la 1 pînă la 5",
       "occurrences": 1
     },
     {
@@ -3402,14 +3444,14 @@
       "first_seen_pdf_page": 36,
       "module": "Modulul 3. Boboceii prind aripi",
       "subtopic": "Operația de adunare",
-      "occurrences": 5
+      "occurrences": 4
     },
     {
       "name": "sumă",
       "first_seen_pdf_page": 36,
       "module": "Modulul 3. Boboceii prind aripi",
       "subtopic": "Operația de adunare",
-      "occurrences": 5
+      "occurrences": 4
     },
     {
       "name": "mărirea unui număr cu 1",
@@ -3419,39 +3461,25 @@
       "occurrences": 1
     },
     {
-      "name": "numere vecine",
-      "first_seen_pdf_page": 37,
-      "module": null,
-      "subtopic": null,
-      "occurrences": 1
-    },
-    {
       "name": "descăzut",
       "first_seen_pdf_page": 38,
       "module": null,
-      "subtopic": "• Operația de scădere",
+      "subtopic": "Operația de scădere",
       "occurrences": 4
     },
     {
       "name": "scăzător",
       "first_seen_pdf_page": 38,
       "module": null,
-      "subtopic": "• Operația de scădere",
+      "subtopic": "Operația de scădere",
       "occurrences": 4
     },
     {
-      "name": "diferență",
+      "name": "diferență (rest)",
       "first_seen_pdf_page": 38,
       "module": null,
-      "subtopic": "• Operația de scădere",
-      "occurrences": 3
-    },
-    {
-      "name": "rest",
-      "first_seen_pdf_page": 38,
-      "module": null,
-      "subtopic": "• Operația de scădere",
-      "occurrences": 1
+      "subtopic": "Operația de scădere",
+      "occurrences": 2
     },
     {
       "name": "micșorează cu 1",
@@ -3496,11 +3524,11 @@
       "occurrences": 1
     },
     {
-      "name": "diferență (rest)",
-      "first_seen_pdf_page": 43,
+      "name": "diferență",
+      "first_seen_pdf_page": 47,
       "module": null,
-      "subtopic": "Scăderea cu 2",
-      "occurrences": 1
+      "subtopic": "Scăderea cu 3",
+      "occurrences": 2
     },
     {
       "name": "adunarea cu 3",
@@ -3545,6 +3573,20 @@
       "occurrences": 1
     },
     {
+      "name": "adunarea cu 5",
+      "first_seen_pdf_page": 54,
+      "module": null,
+      "subtopic": "Adunarea și scăderea cu 5",
+      "occurrences": 1
+    },
+    {
+      "name": "scăderea cu 5",
+      "first_seen_pdf_page": 54,
+      "module": null,
+      "subtopic": "Adunarea și scăderea cu 5",
+      "occurrences": 1
+    },
+    {
       "name": "descăzutul",
       "first_seen_pdf_page": 56,
       "module": null,
@@ -3576,7 +3618,7 @@
       "name": "comutativitatea adunării",
       "first_seen_pdf_page": 62,
       "module": null,
-      "subtopic": "Adunarea cu 6, 7, 8, 9",
+      "subtopic": "• Adunarea cu 6, 7, 8, 9",
       "occurrences": 1
     },
     {
@@ -3584,6 +3626,13 @@
       "first_seen_pdf_page": 64,
       "module": null,
       "subtopic": "Probleme de micșorare a unui număr cu cîteva unități",
+      "occurrences": 1
+    },
+    {
+      "name": "scăderea cu 6, 7, 8, 9",
+      "first_seen_pdf_page": 66,
+      "module": null,
+      "subtopic": "Scăderea cu 6, 7, 8, 9",
       "occurrences": 1
     },
     {
@@ -3601,28 +3650,14 @@
       "occurrences": 1
     },
     {
-      "name": "asocierea termenilor în adunare",
+      "name": "asocierea termenilor la adunare",
       "first_seen_pdf_page": 75,
       "module": null,
       "subtopic": null,
       "occurrences": 1
     },
     {
-      "name": "unsprezece",
-      "first_seen_pdf_page": 76,
-      "module": null,
-      "subtopic": "Numerele naturale de la 11 pînă la 20",
-      "occurrences": 1
-    },
-    {
-      "name": "doisprezece",
-      "first_seen_pdf_page": 76,
-      "module": null,
-      "subtopic": "Numerele naturale de la 11 pînă la 20",
-      "occurrences": 1
-    },
-    {
-      "name": "treisprezece",
+      "name": "numerele naturale de la 11 pînă la 20",
       "first_seen_pdf_page": 76,
       "module": null,
       "subtopic": "Numerele naturale de la 11 pînă la 20",
@@ -3664,7 +3699,7 @@
       "occurrences": 1
     },
     {
-      "name": "problemă de comparare prin scădere",
+      "name": "probleme de comparare prin scădere",
       "first_seen_pdf_page": 82,
       "module": null,
       "subtopic": "Probleme de comparare prin scădere",
@@ -3685,7 +3720,7 @@
       "occurrences": 1
     },
     {
-      "name": "scăderea unui număr de două cifre dintr-un număr de două cifre cu trecere peste zece (ZU – ZU = U)",
+      "name": "scăderea numerelor de două cifre cu trecere peste zece (ZU – ZU = U)",
       "first_seen_pdf_page": 86,
       "module": null,
       "subtopic": "• ZU – ZU = U",
@@ -3724,20 +3759,6 @@
       "first_seen_pdf_page": 90,
       "module": null,
       "subtopic": "Măsurarea masei. Kilogramul",
-      "occurrences": 1
-    },
-    {
-      "name": "adunarea cu trecere peste zece la 20",
-      "first_seen_pdf_page": 92,
-      "module": null,
-      "subtopic": "ZU + U = 20. 20 – U = ZU. 20 – ZU = U",
-      "occurrences": 1
-    },
-    {
-      "name": "scăderea cu trecere peste zece din 20",
-      "first_seen_pdf_page": 92,
-      "module": null,
-      "subtopic": "ZU + U = 20. 20 – U = ZU. 20 – ZU = U",
       "occurrences": 1
     },
     {
@@ -3804,21 +3825,21 @@
       "occurrences": 1
     },
     {
-      "name": "schimbul de bani",
+      "name": "bani (lei și bani)",
       "first_seen_pdf_page": 101,
       "module": null,
       "subtopic": null,
       "occurrences": 1
     },
     {
-      "name": "100 bani = 1 leu",
+      "name": "echivalență monetară (100 bani = 1 leu)",
       "first_seen_pdf_page": 101,
       "module": null,
       "subtopic": null,
       "occurrences": 1
     },
     {
-      "name": "descăzut necunoscut",
+      "name": "aflarea descăzutului necunoscut",
       "first_seen_pdf_page": 102,
       "module": null,
       "subtopic": "Aflarea descăzutului necunoscut",
@@ -3828,7 +3849,7 @@
       "name": "numerele de la 21 pînă la 100",
       "first_seen_pdf_page": 104,
       "module": null,
-      "subtopic": "• Numerele de la 21 pînă la 100",
+      "subtopic": "Numerele de la 21 pînă la 100",
       "occurrences": 1
     },
     {
@@ -3846,52 +3867,38 @@
       "occurrences": 1
     },
     {
-      "name": "adunarea ZU + U",
-      "first_seen_pdf_page": 108,
-      "module": null,
-      "subtopic": "• ZU + U. ZU – U",
-      "occurrences": 1
-    },
-    {
-      "name": "scăderea ZU – U",
-      "first_seen_pdf_page": 108,
-      "module": null,
-      "subtopic": "• ZU + U. ZU – U",
-      "occurrences": 1
-    },
-    {
       "name": "capacitatea vasului",
       "first_seen_pdf_page": 110,
       "module": null,
-      "subtopic": "Măsurarea capacității. Litrul",
+      "subtopic": "• Măsurarea capacității. Litrul",
       "occurrences": 1
     },
     {
       "name": "litrul",
       "first_seen_pdf_page": 110,
       "module": null,
-      "subtopic": "Măsurarea capacității. Litrul",
+      "subtopic": "• Măsurarea capacității. Litrul",
       "occurrences": 1
     },
     {
-      "name": "aflarea scăzătorului necunoscut",
+      "name": "scăzătorul necunoscut",
       "first_seen_pdf_page": 111,
       "module": null,
       "subtopic": "Aflarea scăzătorului necunoscut",
       "occurrences": 1
     },
     {
-      "name": "adunarea unui număr de două cifre cu un număr de o cifră/zeci",
+      "name": "adunarea zecilor între ele",
       "first_seen_pdf_page": 114,
       "module": null,
-      "subtopic": "ZU + Z. ZU – Z",
+      "subtopic": "• ZU + Z. ZU – Z",
       "occurrences": 1
     },
     {
-      "name": "scăderea unui număr de zeci dintr-un număr de două cifre",
+      "name": "scăderea zecilor între ele",
       "first_seen_pdf_page": 114,
       "module": null,
-      "subtopic": "ZU + Z. ZU – Z",
+      "subtopic": "• ZU + Z. ZU – Z",
       "occurrences": 1
     },
     {
@@ -3970,26 +3977,12 @@
       "module": null,
       "subtopic": "Măsurarea timpului. Ceasul",
       "occurrences": 1
-    },
-    {
-      "name": "crearea problemelor",
-      "first_seen_pdf_page": 131,
-      "module": null,
-      "subtopic": "Cum știm să creăm și să rezolvăm probleme?",
-      "occurrences": 1
-    },
-    {
-      "name": "condiție-întrebare-rezolvare-răspuns",
-      "first_seen_pdf_page": 131,
-      "module": null,
-      "subtopic": "Cum știm să creăm și să rezolvăm probleme?",
-      "occurrences": 1
     }
   ],
   "stats": {
     "page_count": 136,
     "pages_processed": 136,
-    "total_exercises": 723,
+    "total_exercises": 706,
     "low_confidence_pages": [],
     "parse_failures": []
   }
