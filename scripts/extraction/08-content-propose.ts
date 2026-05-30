@@ -1,5 +1,8 @@
 /**
- * 08-content-propose.ts — ETAPA 6: PROBĂ extracție CONȚINUT al nodurilor (AI propune)
+ * 08-content-propose.ts — ETAPA 6/6b: PROBĂ extracție CONȚINUT al nodurilor (AI propune)
+ *
+ * 6b: source_pages = paginile TUTUROR componentelor conceptului (name + raw_names + sub_points,
+ *     via concept_dedup_proposals + concept_inventory_raw.first_seen_pdf_page), nu doar prima apariție.
  *
  * Rulează:  npm run extract:content -- --grade 12 --from-page 60 --to-page 66
  *           (sau: tsx --env-file=.env.local scripts/extraction/08-content-propose.ts)
@@ -156,11 +159,47 @@ async function main() {
   if (slice.length === 0) { console.error('❌ Niciun concept în felie.'); process.exit(1); }
   console.log(`   → ${slice.length} concepte: ${slice.map((c) => `${c.name} (p.${c.order_in_grade})`).join(' · ')}`);
 
+  // 1b. Sursare CORECTĂ — paginile din TOATE componentele conceptului (nu doar prima apariție).
+  //   dedupMap: canonical_name → raw_names (variantele de nume ale nodului).
+  const dedupMap = new Map<string, string[]>();
+  for (let from = 0; ; from += 1000) {
+    const { data, error: e } = await supabase.from('concept_dedup_proposals').select('canonical_name, raw_names').eq('grade', grade).range(from, from + 999);
+    if (e) throw new Error(`Citire concept_dedup_proposals: ${e.message}`);
+    if (!data || data.length === 0) break;
+    for (const r of data as { canonical_name: string; raw_names: unknown }[]) dedupMap.set(r.canonical_name, asStrArr(r.raw_names));
+    if (data.length < 1000) break;
+  }
+  //   rawPageMap: nume exact din inventar → min first_seen_pdf_page.
+  const rawPageMap = new Map<string, number>();
+  for (let from = 0; ; from += 1000) {
+    const { data, error: e } = await supabase.from('concept_inventory_raw').select('name, first_seen_pdf_page').eq('grade', grade).range(from, from + 999);
+    if (e) throw new Error(`Citire concept_inventory_raw: ${e.message}`);
+    if (!data || data.length === 0) break;
+    for (const r of data as { name: string; first_seen_pdf_page: number | null }[]) {
+      if (r.first_seen_pdf_page == null) continue;
+      const ex = rawPageMap.get(r.name);
+      if (ex == null || r.first_seen_pdf_page < ex) rawPageMap.set(r.name, r.first_seen_pdf_page);
+    }
+    if (data.length < 1000) break;
+  }
+
   // 2. Deschide PDF-ul (MuPDF, 150 DPI).
   const pdfPath = path.resolve(__dirname, `../../docs/manuale-source/clasa-${String(grade).padStart(2, '0')}.pdf`);
   console.log(`📄 Deschid ${pdfPath} la ${DPI} DPI (MuPDF) …`);
   const doc = await openPdfForRender(pdfPath, DPI);
   const pageCount = doc.length;
+
+  // source_pages = paginile TUTUROR componentelor (name + raw_names + sub_points), fiecare ±1.
+  const sourcePagesFor = (c: SliceConcept): number[] => {
+    const components = new Set<string>([c.name, ...(dedupMap.get(c.name) ?? []), ...c.sub_points]);
+    const pages = new Set<number>();
+    for (const nm of components) {
+      const pg = rawPageMap.get(nm);
+      if (pg != null) for (const d of [-1, 0, 1]) pages.add(pg + d);
+    }
+    if (pages.size === 0) for (const d of [-1, 0, 1]) pages.add(c.order_in_grade + d); // fallback
+    return [...pages].filter((p) => p >= 1 && p <= pageCount).sort((a, b) => a - b);
+  };
 
   // Idempotent: șterge propunerile de conținut existente pentru conceptele feliei.
   await supabase.from('concept_content_proposals').delete().in('concept_id', slice.map((c) => c.id));
@@ -168,7 +207,7 @@ async function main() {
   let totalIn = 0, totalOut = 0;
   const rows: ContentRow[] = [];
   for (const c of slice) {
-    const pages = [...new Set([c.order_in_grade - 1, c.order_in_grade, c.order_in_grade + 1])].filter((p) => p >= 1 && p <= pageCount);
+    const pages = sourcePagesFor(c);
     process.stdout.write(`  📄 „${c.name}" · pagini [${pages.join(', ')}] … `);
     const images = pages.map((p) => doc.getPage(p).toString('base64'));
     const { text, inputTokens, outputTokens } = await callVision(anthropic, images, c.name, c.sub_points);
