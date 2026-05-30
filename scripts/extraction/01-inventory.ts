@@ -43,7 +43,7 @@ const MAX_RETRIES = 6;            // retry pe rețea / rate-limit
 const BASE_BACKOFF_MS = 1500;     // backoff exponențial: 1.5s, 3s, 6s, ...
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const OUTPUT_DIR = path.join(__dirname, 'output');
+export const OUTPUT_DIR = path.join(__dirname, 'output');
 const RAW_DIR = path.join(OUTPUT_DIR, 'raw');
 
 // ── Tipuri ───────────────────────────────────────────────────────────────────
@@ -355,39 +355,50 @@ async function writeFinalOutput(grade: number, pageCount: number, entries: Map<n
 
   const outPath = path.join(OUTPUT_DIR, `clasa-${String(grade).padStart(2, '0')}-inventory.json`);
   await fs.writeFile(outPath, JSON.stringify(out, null, 2), 'utf8');
-  return { outPath, stats, pages };
+  return { outPath, stats, pages, conceptCount: concept_inventory.length };
 }
 
-// ── Main ─────────────────────────────────────────────────────────────────────
-async function main() {
-  const { values } = parseArgs({
-    options: {
-      pdf: { type: 'string' },
-      grade: { type: 'string' },
-      pages: { type: 'string' },
-      dpi: { type: 'string' },
-    },
-  });
+// ── Logica de inventar (reutilizabilă: o cheamă și CLI-ul, și lotul) ───────────
 
-  const pdfPathArg = values.pdf;
-  const gradeArg = values.grade;
-  if (!pdfPathArg || !gradeArg) {
-    console.error('Utilizare: npm run extract:inventory -- --pdf <cale> --grade <1-12> [--pages "4,31,91"|"10-15"] [--dpi 130]');
-    process.exit(1);
-  }
-  const grade = parseInt(gradeArg, 10);
-  if (!Number.isInteger(grade) || grade < 1 || grade > 12) {
-    console.error(`❌ --grade trebuie să fie un întreg 1-12 (primit: "${gradeArg}")`);
-    process.exit(1);
-  }
-  const dpi = values.dpi ? parseInt(values.dpi, 10) : DEFAULT_DPI;
+/** Opțiuni pentru o rulare de inventar pe O carte. */
+export interface RunInventoryOptions {
+  pdf: string;                 // calea către PDF
+  grade: number;               // clasa (1..12)
+  pages?: string;              // spec --pages ("4,31" | "10-15"); gol/undefined = toate
+  dpi?: number;                // implicit DEFAULT_DPI
+  anthropic?: Anthropic;       // client reutilizabil (lotul îl partajează între cărți)
+}
 
-  const anthropicKey = process.env.ANTHROPIC_API_KEY;
-  if (!anthropicKey) {
-    console.error('❌ Lipsește ANTHROPIC_API_KEY (rulează cu --env-file=.env.local).');
-    process.exit(1);
+/** Rezumatul unei rulări pe O carte (folosit de lot pentru _summary.json). */
+export interface RunInventoryResult {
+  grade: number;
+  outPath: string;
+  pageCount: number;
+  pages_processed: number;
+  processed_now: number;
+  total_concepts: number;
+  low_confidence_count: number;
+  parse_failures_count: number;
+  input_tokens: number;
+  output_tokens: number;
+}
+
+/**
+ * Rulează inventarul vision pe O carte (toate paginile sau cele din `pages`).
+ * Aceeași logică folosită de CLI și de runner-ul de lot — NU se duplică.
+ * Resume la nivel de pagină (din progresul JSONL). Aruncă doar pe erori fatale
+ * (PDF inexistent, lipsă API key); erorile per-pagină sunt izolate intern.
+ */
+export async function runInventory(opts: RunInventoryOptions): Promise<RunInventoryResult> {
+  const { pdf: pdfPathArg, grade } = opts;
+  const dpi = opts.dpi ?? DEFAULT_DPI;
+
+  let anthropic = opts.anthropic;
+  if (!anthropic) {
+    const anthropicKey = process.env.ANTHROPIC_API_KEY;
+    if (!anthropicKey) throw new Error('Lipsește ANTHROPIC_API_KEY (rulează cu --env-file=.env.local).');
+    anthropic = new Anthropic({ apiKey: anthropicKey });
   }
-  const anthropic = new Anthropic({ apiKey: anthropicKey });
 
   await fs.mkdir(OUTPUT_DIR, { recursive: true });
   await fs.mkdir(RAW_DIR, { recursive: true });
@@ -399,7 +410,7 @@ async function main() {
   const pageCount = doc.length;
   console.log(`   → ${pageCount} pagini în PDF.`);
 
-  const targetPages = parsePages(values.pages, pageCount);
+  const targetPages = parsePages(opts.pages, pageCount);
   console.log(`🎯 Clasa ${grade} · de procesat: ${targetPages.length} pagini ` +
     `[${targetPages.slice(0, 12).join(', ')}${targetPages.length > 12 ? ', …' : ''}]`);
 
@@ -469,19 +480,69 @@ async function main() {
     const e = done.get(p);
     if (e) inScope.set(p, e);
   }
-  const { outPath, stats } = await writeFinalOutput(grade, pageCount, inScope);
+  const { outPath, stats, conceptCount } = await writeFinalOutput(grade, pageCount, inScope);
 
   console.log('\n──────── REZUMAT ────────');
   console.log(`Pagini procesate acum:   ${processedNow}`);
   console.log(`Pagini în inventar:      ${stats.pages_processed} / ${pageCount}`);
+  console.log(`Concepte (deduplicate):  ${conceptCount}`);
   console.log(`Total exerciții:         ${stats.total_exercises}`);
   console.log(`Pagini low-confidence:   [${stats.low_confidence_pages.join(', ')}]`);
   console.log(`Parse failures:          [${stats.parse_failures.join(', ')}]`);
   console.log(`Tokeni (rularea asta):   in ${totalIn} / out ${totalOut} (total ${totalIn + totalOut})`);
   console.log(`Fișier inventar:         ${outPath}`);
+
+  return {
+    grade,
+    outPath,
+    pageCount,
+    pages_processed: stats.pages_processed,
+    processed_now: processedNow,
+    total_concepts: conceptCount,
+    low_confidence_count: stats.low_confidence_pages.length,
+    parse_failures_count: stats.parse_failures.length,
+    input_tokens: totalIn,
+    output_tokens: totalOut,
+  };
 }
 
-main().catch((err) => {
-  console.error('\n💥 Eroare fatală:', err);
-  process.exit(1);
-});
+// ── CLI (o singură carte) ──────────────────────────────────────────────────────
+async function main() {
+  const { values } = parseArgs({
+    options: {
+      pdf: { type: 'string' },
+      grade: { type: 'string' },
+      pages: { type: 'string' },
+      dpi: { type: 'string' },
+    },
+  });
+
+  const pdfPathArg = values.pdf;
+  const gradeArg = values.grade;
+  if (!pdfPathArg || !gradeArg) {
+    console.error('Utilizare: npm run extract:inventory -- --pdf <cale> --grade <1-12> [--pages "4,31,91"|"10-15"] [--dpi 130]');
+    process.exit(1);
+  }
+  const grade = parseInt(gradeArg, 10);
+  if (!Number.isInteger(grade) || grade < 1 || grade > 12) {
+    console.error(`❌ --grade trebuie să fie un întreg 1-12 (primit: "${gradeArg}")`);
+    process.exit(1);
+  }
+  const dpi = values.dpi ? parseInt(values.dpi, 10) : DEFAULT_DPI;
+
+  try {
+    await runInventory({ pdf: pdfPathArg, grade, pages: values.pages, dpi });
+  } catch (err) {
+    console.error(`❌ ${(err as Error)?.message ?? err}`);
+    process.exit(1);
+  }
+}
+
+// Rulează main() DOAR când fișierul e invocat direct ca script, nu când e importat (lotul).
+const invokedDirectly = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (invokedDirectly) {
+  main().catch((err) => {
+    console.error('\n💥 Eroare fatală:', err);
+    process.exit(1);
+  });
+}

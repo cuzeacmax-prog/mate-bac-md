@@ -24,6 +24,7 @@
     "check:migration": "tsx --env-file=.env.local scripts/seed/check-migration.ts",
     "diagnostic:generate-pool": "tsx --env-file=.env.local scripts/diagnostic/generate-pool.ts",
     "extract:inventory": "tsx --env-file=.env.local scripts/extraction/01-inventory.ts",
+    "extract:all": "tsx --env-file=.env.local scripts/extraction/00-batch-inventory.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
