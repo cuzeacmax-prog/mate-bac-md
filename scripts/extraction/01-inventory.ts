@@ -31,6 +31,7 @@
 
 import Anthropic from '@anthropic-ai/sdk';
 import * as mupdf from 'mupdf';
+import pLimit from 'p-limit';
 import { parseArgs } from 'node:util';
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
@@ -41,9 +42,10 @@ const MODEL = 'claude-sonnet-4-6';
 const DEFAULT_DPI = 130;          // ~130 DPI cerut
 const MUPDF_BASE_DPI = 72;        // MuPDF: matricea scale 1.0 == 72 DPI
 const MAX_TOKENS = 2000;
-const THROTTLE_MS = 1200;         // pauză mică între apeluri
+const DEFAULT_CONCURRENCY = 5;    // pagini procesate în paralel (worker pool, --concurrency)
 const MAX_RETRIES = 6;            // retry pe rețea / rate-limit
 const BASE_BACKOFF_MS = 1500;     // backoff exponențial: 1.5s, 3s, 6s, ...
+// (Throttle-ul fix dintre apeluri a fost eliminat: redundant cu backoff-ul pe 429.)
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const OUTPUT_DIR = path.join(__dirname, 'output');
@@ -404,6 +406,7 @@ export interface RunInventoryOptions {
   grade: number;               // clasa (1..12)
   pages?: string;              // spec --pages ("4,31" | "10-15"); gol/undefined = toate
   dpi?: number;                // implicit DEFAULT_DPI
+  concurrency?: number;        // pagini în paralel (implicit DEFAULT_CONCURRENCY)
   anthropic?: Anthropic;       // client reutilizabil (lotul îl partajează între cărți)
 }
 
@@ -430,6 +433,7 @@ export interface RunInventoryResult {
 export async function runInventory(opts: RunInventoryOptions): Promise<RunInventoryResult> {
   const { pdf: pdfPathArg, grade } = opts;
   const dpi = opts.dpi ?? DEFAULT_DPI;
+  const concurrency = Math.max(1, Math.trunc(opts.concurrency ?? DEFAULT_CONCURRENCY));
 
   let anthropic = opts.anthropic;
   if (!anthropic) {
@@ -437,6 +441,8 @@ export async function runInventory(opts: RunInventoryOptions): Promise<RunInvent
     if (!anthropicKey) throw new Error('Lipsește ANTHROPIC_API_KEY (rulează cu --env-file=.env.local).');
     anthropic = new Anthropic({ apiKey: anthropicKey });
   }
+  // Client stabil (non-null) pentru closure-urile din pool-ul de concurrency.
+  const client: Anthropic = anthropic;
 
   await fs.mkdir(OUTPUT_DIR, { recursive: true });
   await fs.mkdir(RAW_DIR, { recursive: true });
@@ -461,43 +467,51 @@ export async function runInventory(opts: RunInventoryOptions): Promise<RunInvent
   let totalIn = 0;
   let totalOut = 0;
   let processedNow = 0;
+  const tStart = Date.now();
+  const NN = String(grade).padStart(2, '0');
 
-  for (const pdfPage of todo) {
-    process.stdout.write(`  📄 pagina ${pdfPage}/${pageCount} … `);
+  console.log(`⚙️  Concurrency: ${concurrency} pagini în paralel · ` +
+    `throttle fix dezactivat (doar backoff exponențial pe 429/rate-limit).`);
+
+  // Scrieri în progres serializate: append-uri concurente pot interleava linii lungi.
+  // Le lanțuim într-o coadă promisă → fiecare linie JSONL se scrie atomic, în ordinea finalizării.
+  let writeChain: Promise<void> = Promise.resolve();
+  const appendProgressSafe = (entry: PageEntry): Promise<void> => {
+    writeChain = writeChain.then(() => appendProgress(grade, entry));
+    return writeChain;
+  };
+
+  const limit = pLimit(concurrency);
+
+  /** Procesează O pagină end-to-end (randare → vision → parse → progres). Erorile sunt izolate. */
+  async function processPage(pdfPage: number): Promise<void> {
+    let entry: PageEntry;
     try {
-      const png = doc.getPage(pdfPage); // Buffer PNG, 1-based (MuPDF, sincron)
+      const png = doc.getPage(pdfPage); // Buffer PNG, 1-based (MuPDF, sincron — JS e single-thread)
       const b64 = png.toString('base64');
 
-      const { text, inputTokens, outputTokens } = await callVision(anthropic, b64, pdfPage);
+      const { text, inputTokens, outputTokens } = await callVision(client, b64, pdfPage);
       totalIn += inputTokens;
       totalOut += outputTokens;
 
       let record: InventoryRecord;
       const jsonStr = extractJson(text);
       if (!jsonStr) {
-        await fs.writeFile(path.join(RAW_DIR, `clasa-${String(grade).padStart(2, '0')}-page-${pdfPage}.txt`), text, 'utf8');
+        await fs.writeFile(path.join(RAW_DIR, `clasa-${NN}-page-${pdfPage}.txt`), text, 'utf8');
         record = { ...coerceRecord({}), confidence: 'low', notes: 'parse_failed: niciun JSON găsit' };
-        console.log(`⚠️  parse_failed (raw salvat)  [in ${inputTokens} / out ${outputTokens} tok]`);
       } else {
         try {
           record = coerceRecord(JSON.parse(jsonStr));
-          console.log(`✓ ${record.page_kind} · ${record.concepts_introduced.length} concepte · ` +
-            `${record.exercise_count} ex · conf=${record.confidence}  [in ${inputTokens} / out ${outputTokens} tok]`);
         } catch {
-          await fs.writeFile(path.join(RAW_DIR, `clasa-${String(grade).padStart(2, '0')}-page-${pdfPage}.txt`), text, 'utf8');
+          await fs.writeFile(path.join(RAW_DIR, `clasa-${NN}-page-${pdfPage}.txt`), text, 'utf8');
           record = { ...coerceRecord({}), confidence: 'low', notes: 'parse_failed: JSON invalid' };
-          console.log(`⚠️  parse_failed: JSON invalid (raw salvat)  [in ${inputTokens} / out ${outputTokens} tok]`);
         }
       }
 
-      const entry: PageEntry = { pdf_page: pdfPage, ...record, input_tokens: inputTokens, output_tokens: outputTokens };
-      await appendProgress(grade, entry); // salvare după FIECARE pagină
-      done.set(pdfPage, entry);
-      processedNow++;
+      entry = { pdf_page: pdfPage, ...record, input_tokens: inputTokens, output_tokens: outputTokens };
     } catch (err) {
-      // Eroare definitivă (după retry) pe această pagină — NU oprim toată rularea.
-      console.log(`❌ eșec definitiv: ${(err as Error)?.message ?? err}`);
-      const entry: PageEntry = {
+      // Eroare definitivă (după retry) pe această pagină — NU oprim restul paginilor.
+      entry = {
         pdf_page: pdfPage,
         ...coerceRecord({}),
         confidence: 'low',
@@ -505,12 +519,26 @@ export async function runInventory(opts: RunInventoryOptions): Promise<RunInvent
         input_tokens: 0,
         output_tokens: 0,
       };
-      await appendProgress(grade, entry);
-      done.set(pdfPage, entry);
     }
 
-    if (pdfPage !== todo[todo.length - 1]) await sleep(THROTTLE_MS);
+    await appendProgressSafe(entry); // scriere serializată, după FIECARE pagină finalizată
+    done.set(pdfPage, entry);
+    processedNow++;
+
+    // Un singur console.log per pagină (atomic la concurrency) + rata efectivă curentă.
+    const rate = processedNow / Math.max(1e-6, (Date.now() - tStart) / 60000); // pagini/min
+    const tag = entry.notes.includes('parse_failed')
+      ? `⚠️  ${entry.notes}`
+      : `✓ ${entry.page_kind} · ${entry.concepts_introduced.length} concepte · ` +
+        `${entry.exercise_count} ex · conf=${entry.confidence}`;
+    console.log(`  📄 p.${pdfPage}/${pageCount} ${tag}  ` +
+      `[in ${entry.input_tokens} / out ${entry.output_tokens} tok]  ` +
+      `(${processedNow}/${todo.length} · ${rate.toFixed(1)} pag/min)`);
   }
+
+  // Worker pool: cel mult `concurrency` pagini simultan (NU toate deodată).
+  await Promise.all(todo.map((pdfPage) => limit(() => processPage(pdfPage))));
+  await writeChain; // toate append-urile scrise înainte de asamblarea finală
 
   // Asamblare fișier final (include și paginile din rulări anterioare aflate în scope)
   const inScope = new Map<number, PageEntry>();
@@ -520,8 +548,13 @@ export async function runInventory(opts: RunInventoryOptions): Promise<RunInvent
   }
   const { outPath, stats, conceptCount } = await writeFinalOutput(grade, pageCount, inScope);
 
+  const elapsedMin = (Date.now() - tStart) / 60000;
+  const effRate = processedNow / Math.max(1e-6, elapsedMin);
+
   console.log('\n──────── REZUMAT ────────');
-  console.log(`Pagini procesate acum:   ${processedNow}`);
+  console.log(`Concurrency:             ${concurrency} pagini în paralel`);
+  console.log(`Pagini procesate acum:   ${processedNow} în ${elapsedMin.toFixed(1)} min` +
+    (processedNow > 0 ? `  →  ${effRate.toFixed(1)} pag/min` : ''));
   console.log(`Pagini în inventar:      ${stats.pages_processed} / ${pageCount}`);
   console.log(`Concepte (deduplicate):  ${conceptCount}`);
   console.log(`Total exerciții:         ${stats.total_exercises}`);
@@ -552,13 +585,14 @@ async function main() {
       grade: { type: 'string' },
       pages: { type: 'string' },
       dpi: { type: 'string' },
+      concurrency: { type: 'string' },
     },
   });
 
   const pdfPathArg = values.pdf;
   const gradeArg = values.grade;
   if (!pdfPathArg || !gradeArg) {
-    console.error('Utilizare: npm run extract:inventory -- --pdf <cale> --grade <1-12> [--pages "4,31,91"|"10-15"] [--dpi 130]');
+    console.error('Utilizare: npm run extract:inventory -- --pdf <cale> --grade <1-12> [--pages "4,31,91"|"10-15"] [--dpi 130] [--concurrency 5]');
     process.exit(1);
   }
   const grade = parseInt(gradeArg, 10);
@@ -567,9 +601,14 @@ async function main() {
     process.exit(1);
   }
   const dpi = values.dpi ? parseInt(values.dpi, 10) : DEFAULT_DPI;
+  const concurrency = values.concurrency ? parseInt(values.concurrency, 10) : DEFAULT_CONCURRENCY;
+  if (!Number.isInteger(concurrency) || concurrency < 1) {
+    console.error(`❌ --concurrency trebuie să fie un întreg ≥ 1 (primit: "${values.concurrency}")`);
+    process.exit(1);
+  }
 
   try {
-    await runInventory({ pdf: pdfPathArg, grade, pages: values.pages, dpi });
+    await runInventory({ pdf: pdfPathArg, grade, pages: values.pages, dpi, concurrency });
   } catch (err) {
     console.error(`❌ ${(err as Error)?.message ?? err}`);
     process.exit(1);

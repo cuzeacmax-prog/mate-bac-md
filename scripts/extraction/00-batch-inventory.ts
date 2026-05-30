@@ -108,8 +108,13 @@ async function isBookComplete(book: BookFile, dpi: number): Promise<{ complete: 
 }
 
 async function main() {
-  const { values } = parseArgs({ options: { dpi: { type: 'string' } } });
+  const { values } = parseArgs({ options: { dpi: { type: 'string' }, concurrency: { type: 'string' } } });
   const dpi = values.dpi ? parseInt(values.dpi, 10) : DEFAULT_DPI;
+  const concurrency = values.concurrency ? parseInt(values.concurrency, 10) : undefined;
+  if (concurrency !== undefined && (!Number.isInteger(concurrency) || concurrency < 1)) {
+    console.error(`❌ --concurrency trebuie să fie un întreg ≥ 1 (primit: "${values.concurrency}")`);
+    process.exit(1);
+  }
 
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
   if (!anthropicKey) {
@@ -127,8 +132,9 @@ async function main() {
   }
 
   console.log(`📚 LOT INVENTAR — ${books.length} cărți: [${books.map((b) => b.grade).join(', ')}]`);
-  console.log(`   Sursă: ${MANUALE_DIR}`);
-  console.log(`   DPI:   ${dpi}\n`);
+  console.log(`   Sursă:       ${MANUALE_DIR}`);
+  console.log(`   DPI:         ${dpi}`);
+  console.log(`   Concurrency: ${concurrency ?? 'implicit (5)'} pagini/carte în paralel\n`);
 
   const rows: SummaryRow[] = [];
   let lotIn = 0;
@@ -162,6 +168,7 @@ async function main() {
         grade: book.grade,
         anthropic, // client partajat pe tot lotul
         dpi,
+        concurrency, // undefined → runInventory folosește implicitul (5)
       });
 
       lotIn += res.input_tokens;

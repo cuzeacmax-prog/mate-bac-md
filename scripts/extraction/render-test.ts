@@ -15,7 +15,7 @@ import { parseArgs } from 'node:util';
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { openPdfForRender, OUTPUT_DIR } from './01-inventory.ts';
+import { openPdfForRender, OUTPUT_DIR } from './01-inventory';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

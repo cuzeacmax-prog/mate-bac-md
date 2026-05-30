@@ -49,6 +49,7 @@
     "mupdf": "^1.27.0",
     "next": "16.2.6",
     "next-themes": "^0.4.6",
+    "p-limit": "^7.3.0",
     "pdf-to-img": "^6.1.0",
     "posthog-js": "^1.376.2",
     "posthog-node": "^5.35.4",
