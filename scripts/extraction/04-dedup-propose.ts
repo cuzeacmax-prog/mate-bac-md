@@ -1,5 +1,5 @@
 /**
- * 04-dedup-propose.ts — ETAPA 3.2c: DEDUP CONCEPTE prin ID-uri (trasabilitate GARANTATĂ)
+ * 04-dedup-propose.ts — ETAPA 3.2d: DEDUP CONCEPTE prin ID-uri, granularitate la nivel de NOȚIUNE
  *
  * Rulează:  npm run extract:dedup -- --grade 12
  *           (sau: tsx --env-file=.env.local scripts/extraction/04-dedup-propose.ts --grade 12)
@@ -75,10 +75,11 @@ interface ProposalRow {
 // ── Prompt (română, STRICT JSON) ─────────────────────────────────────────────
 const SYSTEM_PROMPT =
   'Ești terminolog de matematică școlară (curriculum BAC Republica Moldova). Primești o listă ' +
-  'NUMEROTATĂ de concepte și le organizezi la GRANULARITATE MEDIE (un nod = o unitate predabilă, ' +
-  'cât o lecție). Te referi la concepte EXCLUSIV prin numărul lor (ID) — NU scrii, NU rescrii, ' +
-  'NU repeta textul conceptelor în răspuns. Răspunzi EXCLUSIV cu obiectul JSON cerut — fără proză, ' +
-  'fără markdown, fără ```.';
+  'NUMEROTATĂ de concepte și le organizezi la nivel de NOȚIUNE: un nod = O SINGURĂ noțiune ' +
+  'predabilă (cât o definiție/subsecțiune, un termen pe care manualul îl definește explicit), ' +
+  'NU un capitol întreg. Te referi la concepte EXCLUSIV prin numărul lor (ID) — NU scrii, NU ' +
+  'rescrii, NU repeta textul conceptelor în răspuns. Răspunzi EXCLUSIV cu obiectul JSON cerut — ' +
+  'fără proză, fără markdown, fără ```.';
 
 function buildUserPrompt(grade: number, raw: RawConcept[]): string {
   const lines = raw
@@ -95,11 +96,13 @@ function buildUserPrompt(grade: number, raw: RawConcept[]): string {
 LISTA:
 ${lines}
 
-SARCINĂ: organizează ID-urile la GRANULARITATE MEDIE — un nod = o unitate predabilă (cât o lecție).
+SARCINĂ: organizează ID-urile la nivel de NOȚIUNE — un nod = O SINGURĂ noțiune predabilă (cât o
+definiție/subsecțiune, un termen pe care manualul îl definește explicit), NU un capitol întreg.
 Două mecanisme, ambele păstrează TOT (niciun ID aruncat):
   (a) Variante de nume → același nod (variant_ids).
-  (b) Consolidare părinte-copil → proprietățile/cazurile/sub-formulele aceluiași concept predabil
-      devin SUB-PUNCTE (subpoint_ids) ale nodului-părinte, nu noduri separate.
+  (b) Sub-puncte → DOAR proprietățile/formulele/cazurile/sub-tipurile ALE ACELEI noțiuni devin
+      subpoint_ids ale ei (ex. sub "asimptotele unei funcții": verticală/orizontală/oblică).
+      sub_points NU sunt lecții întregi și NU adună noțiuni-surori sub un antet.
 
 Întoarce STRICT un singur obiect JSON, exact în forma:
 {
@@ -128,21 +131,37 @@ REGULI OBLIGATORII:
    "metoda X" = "X" = "formula lui X" când denumesc același lucru;
    "primitivă" = "primitivă a unei funcții" = "primitiva unei funcții".
 
-4. Consolidare părinte-copil (subpoint_ids): când mai multe ID-uri sunt proprietăți, cazuri,
-   sub-formule sau instanțe ale ACELUIAȘI concept predabil, pune-le ca subpoint_ids sub un nod:
-   - "proprietatea de aditivitate/liniaritate/monotonie/invarianța semnului a integralei definite"
-     → nod "proprietățile integralei definite", subpoint_ids = acele ID-uri.
-   - "asimptotă verticală/orizontală/oblică"
-     → nod "asimptotele unei funcții", subpoint_ids = acele ID-uri.
-   Dacă nodul-părinte NU există ca ID în listă, inventează-i canonical_name și lasă variant_ids: [].
+4. Sub-puncte (subpoint_ids) — TEST STRICT. Un ID e sub-punct DOAR dacă e un caz/proprietate/
+   parametru/sub-tip ÎNGUST al noțiunii-părinte și NU are sens ca lecție/definiție de sine
+   stătătoare. Exemple corecte de sub-puncte: "verticală/orizontală/oblică" sub „asimptotă";
+   "aria laterală"/"aria totală"/"volumul" sub „con"; "bazele"/"înălțimea"/"muchiile" sub „prismă".
+   DACĂ manualul DEFINEȘTE termenul ca noțiune proprie (are nume de sine stătător: „eșantion",
+   „ortocentru", „monom", „paralelipiped", „cub", „mediană", „histogramă", „variabilă statistică"),
+   atunci e NOD PROPRIU, NU sub-punct — chiar dacă apare în aceeași secțiune.
+   Dacă noțiunea-părinte a sub-punctelor NU există ca ID, inventează-i canonical_name, variant_ids: [].
 
-5. GRANULARITATE: un nod = o unitate cât o lecție, NU o singură proprietate/formulă izolată. DAR nu
-   exagera: NU consolida concepte GENUIN INDEPENDENTE doar fiindcă împart o subtemă — doar relații
-   REALE părinte-copil. Concepte mari de sine stătătoare (ex. "integrală definită" vs "integrală
-   nedefinită") rămân noduri SEPARATE.
+5. GRANULARITATE FINĂ (noțiune, nu capitol):
+   - Un nod e MAI FIN decât o secțiune. O secțiune conține tipic 2-5 noțiuni DISTINCTE — fiecare
+     e nodul ei, NU sub-punct al unui antet comun.
+   - INTERZIS canonical_name de tip antet/secțiune: NU folosi "și"/virgulă care înșiră mai multe
+     noțiuni, NU folosi prefixe-umbrelă ca "Elemente de …", "Noțiuni de …", "… și părțile sale".
+     Exemple GREȘITE (nu face așa), cu spargerea CORECTĂ:
+     ✗ "Elemente de geometrie a triunghiului" → ✓ "ortocentru", "centru de greutate", "mediană",
+        "bisectoarea triunghiului", "mediatoare", "cerc circumscris", "cerc înscris" = noduri.
+     ✗ "Populație statistică și eșantion" → ✓ "populație statistică", "eșantion", "sondaj",
+        "variabilă statistică", "caracteristică statistică" = noduri.
+     ✗ "Polinom" cu 11 sub → ✓ "polinom", "monom", "gradul unui polinom", "rădăcina polinomului" = noduri.
+     ✗ "Integrala definită — noțiune și funcții integrabile" → ✓ "integrală definită", "sumă Riemann",
+        "funcție integrabilă", "diviziune a intervalului" = noduri.
+   - canonical_name = exact O noțiune.
+   - Totuși NU contopi noțiuni mari independente (ex. "integrală definită" ≠ "integrală nedefinită").
 
-6. canonical_name: scurt, corect, terminologia BAC MD, cu diacritice corecte.
-   confidence: "high" = sigur de grupare; "low" = nesigur (atunci nu consolida agresiv, explică în note).
+6. ȚINTĂ pentru această clasă: ~200-350 noduri. Sub 180 = încă prea grosier (ai lăsat noțiuni
+   distincte ca sub-puncte) — SPARGE mai mult în noduri. Peste 500 = prea fin (ai pus variante de
+   nume ca noduri separate). Calibrează în această fereastră.
+
+7. canonical_name: scurt, corect, terminologia BAC MD, cu diacritice corecte.
+   confidence: "high" = sigur; "low" = nesigur (atunci explică în note).
 
 Răspunde DOAR cu obiectul JSON.`;
 }
