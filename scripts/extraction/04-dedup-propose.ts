@@ -1,24 +1,24 @@
 /**
- * 04-dedup-propose.ts — ETAPA 3.2b: DEDUP CONCEPTE, GRANULARITATE MEDIE + TRASABILITATE EXACTĂ
+ * 04-dedup-propose.ts — ETAPA 3.2c: DEDUP CONCEPTE prin ID-uri (trasabilitate GARANTATĂ)
  *
  * Rulează:  npm run extract:dedup -- --grade 12
  *           (sau: tsx --env-file=.env.local scripts/extraction/04-dedup-propose.ts --grade 12)
  *
- * Ce face:
- *   1. Citește conceptele brute ale unei clase din concept_inventory_raw
- *      (name + first_seen_pdf_page + subtopic).
- *   2. Trimite ÎNTREAGA listă numerotată la claude-sonnet-4-6 la GRANULARITATE MEDIE
- *      (un nod = o unitate predabilă). Două mecanisme, ambele păstrează TOT:
- *        (a) variante de nume → un nume canonic;
- *        (b) consolidare părinte-copil → proprietățile/cazurile/sub-formulele aceluiași
- *            concept devin SUB-PUNCTE (sub_points) în nodul-părinte, nu noduri separate.
- *      Modelul întoarce noduri prin INDECȘI (nu re-scrie textul) → compact, fără pierderi.
- *   3. raw_names (de nod ȘI de sub-punct) sunt copiate VERBATIM după indecși — niciun text
- *      rescris/scurtat. "label"-ul sub-punctului e doar afișare, separat de numele original.
- *   4. VERIFICĂ acoperirea 100% ÎNAINTE de încărcare: aplatizează raw_names + sub_points și
- *      compară ca multiset cu lista de intrare. Dacă lipsește/se dublează ceva → OPREȘTE,
- *      raportează, NU încarcă date incomplete. Apoi încarcă în concept_dedup_proposals
- *      (idempotent: șterge propunerile clasei înainte de reinserare).
+ * De ce ID-uri: a cere modelului să copieze 736 de nume verbatim e fragil — le „curăță"
+ * (rescrie/scurtează). Soluție: modelul grupează DOAR prin NUMERE (ID-uri 1..N); numele se
+ * reatașează DETERMINIST din maparea index→nume_exact ținută în script. Modelul nu emite
+ * niciodată textul unui concept brut — doar canonical_name (eticheta nodului) și kind.
+ *
+ * Flux:
+ *   1. Citește conceptele brute DISTINCTE ale clasei din concept_inventory_raw, atribuie
+ *      fiecăruia un ID 1..N (mapare ID→nume_exact + first_seen_pdf_page + subtopic).
+ *   2. Trimite o listă NUMEROTATĂ la claude-sonnet-4-6; modelul întoarce STRICT JSON cu noduri
+ *      la GRANULARITATE MEDIE: { canonical_name, kind, variant_ids[], subpoint_ids[], confidence, note }.
+ *   3. Scriptul reconstruiește raw_names + sub_points din ID-uri (nume EXACT din inventar).
+ *   4. VERIFICARE deterministă: reuniunea variant_ids + subpoint_ids = exact {1..N}, fiecare o dată.
+ *      - ID dublat → EROARE, oprește, raportează (NU încarcă).
+ *      - ID neasignat de model → nod singleton (nume exact, confidence "low", note "neasignat — verifică").
+ *   5. Încarcă în concept_dedup_proposals (idempotent: TRUNCATE pe grade înainte).
  *
  * NU atinge tabela `concepts` reală. Doar propuneri — nimic definitiv până la aprobarea umană.
  *
@@ -31,12 +31,8 @@ import { parseArgs } from 'node:util';
 
 // ── Config ───────────────────────────────────────────────────────────────────
 const MODEL = 'claude-sonnet-4-6';
-const MAX_TOKENS = 16000;          // per secțiune (output compact prin indecși)
+const MAX_TOKENS = 32000;          // output e doar numere + canonical_names → compact
 const DEFAULT_GRADE = 12;
-// Lista întreagă într-un apel poate trunchia output-ul (ex. clasa 12 = 736 concepte).
-// Atunci împărțim pe SECȚIUNI (granițe de subtopic — fără să rupem grupuri legate).
-const MAX_CONCEPTS_PER_CALL = 250; // prag soft; tăiem doar la schimbare de subtopic
-const HARD_CAP_PER_CALL = 450;     // cap dur, ca o secțiune uriașă să nu scape
 const MAX_RETRIES = 4;
 const BASE_BACKOFF_MS = 2000;
 
@@ -54,35 +50,23 @@ interface RawConcept {
   subtopic: string | null;
 }
 
-/** Un sub-punct al unui nod (proprietate / caz / sub-formulă), așa cum îl întoarce modelul. */
-interface ModelSubPoint {
-  label: string;
-  members: number[]; // indecșii bruți care formează acest sub-punct
-}
-
-/** Nod brut, așa cum îl întoarce modelul (membri = indecși în lista trimisă). */
-interface ModelGroup {
+/** Nod întors de model — apartenența e DOAR prin ID-uri (1..N), niciun nume de concept brut. */
+interface ModelNode {
   canonical_name: string;
   kind: string;
-  members: number[];          // indecșii care sunt VARIANTE DE NUME ale nodului-părinte
-  sub_points?: ModelSubPoint[]; // sub-proprietăți/sub-formule consolidate sub acest nod
+  variant_ids: number[];   // ID-uri care sunt VARIANTE DE NUME ale nodului
+  subpoint_ids: number[];  // ID-uri care sunt sub-proprietăți/sub-formule/cazuri
   confidence: string;
   note?: string;
-}
-
-/** Sub-punct salvat (lossless: păstrăm și textul brut). */
-interface SubPoint {
-  label: string;
-  raw_names: string[];
 }
 
 interface ProposalRow {
   grade: number;
   canonical_name: string;
   kind: Kind;
-  raw_names: string[];     // variantele de NUME ale nodului
-  variant_count: number;   // = raw_names.length (variante de nume ale părintelui)
-  sub_points: SubPoint[];  // sub-proprietăți/sub-formule (granularitate medie)
+  raw_names: string[];     // nume EXACTE (verbatim) reconstruite din variant_ids
+  variant_count: number;   // = raw_names.length
+  sub_points: string[];    // nume EXACTE (verbatim) reconstruite din subpoint_ids
   min_pdf_page: number | null;
   confidence: Confidence;
   note: string;
@@ -90,11 +74,10 @@ interface ProposalRow {
 
 // ── Prompt (română, STRICT JSON) ─────────────────────────────────────────────
 const SYSTEM_PROMPT =
-  'Ești terminolog de matematică școlară (curriculum BAC Republica Moldova). Primești o ' +
-  'listă NUMEROTATĂ de concepte extrase brut dintr-un manual și le organizezi la ' +
-  'GRANULARITATE MEDIE: un nod = o unitate predabilă (cât o lecție). Variantele de nume se ' +
-  'contopesc, iar sub-proprietățile/sub-formulele/cazurile aceluiași concept devin SUB-PUNCTE ' +
-  'în nodul-părinte, NU noduri separate. Răspunzi EXCLUSIV cu obiectul JSON cerut — fără proză, ' +
+  'Ești terminolog de matematică școlară (curriculum BAC Republica Moldova). Primești o listă ' +
+  'NUMEROTATĂ de concepte și le organizezi la GRANULARITATE MEDIE (un nod = o unitate predabilă, ' +
+  'cât o lecție). Te referi la concepte EXCLUSIV prin numărul lor (ID) — NU scrii, NU rescrii, ' +
+  'NU repeta textul conceptelor în răspuns. Răspunzi EXCLUSIV cu obiectul JSON cerut — fără proză, ' +
   'fără markdown, fără ```.';
 
 function buildUserPrompt(grade: number, raw: RawConcept[]): string {
@@ -102,72 +85,64 @@ function buildUserPrompt(grade: number, raw: RawConcept[]): string {
     .map((c, i) => {
       const page = c.first_seen_pdf_page ?? '—';
       const sub = c.subtopic ? ` · ${c.subtopic}` : '';
-      return `[${i}] ${c.name}  (p.${page}${sub})`;
+      return `${i + 1}. ${c.name}  (p.${page}${sub})`;
     })
     .join('\n');
+  const N = raw.length;
 
-  return `Clasa ${grade}. Mai jos sunt ${raw.length} concepte brute, fiecare cu un INDEX [i], pagina și (uneori) subtema.
+  return `Clasa ${grade}. Mai jos sunt ${N} concepte brute, NUMEROTATE 1..${N}, fiecare cu pagina și (uneori) subtema.
 
 LISTA:
 ${lines}
 
-SARCINĂ: organizează indicii la GRANULARITATE MEDIE — un nod = o unitate predabilă (cât o lecție).
-Folosește DOUĂ mecanisme, ambele păstrează TOT (niciun concept aruncat):
-  (a) Variante de nume → un singur nume canonic (ca înainte).
+SARCINĂ: organizează ID-urile la GRANULARITATE MEDIE — un nod = o unitate predabilă (cât o lecție).
+Două mecanisme, ambele păstrează TOT (niciun ID aruncat):
+  (a) Variante de nume → același nod (variant_ids).
   (b) Consolidare părinte-copil → proprietățile/cazurile/sub-formulele aceluiași concept predabil
-      devin SUB-PUNCTE în nodul-părinte, nu noduri separate.
+      devin SUB-PUNCTE (subpoint_ids) ale nodului-părinte, nu noduri separate.
 
 Întoarce STRICT un singur obiect JSON, exact în forma:
 {
-  "groups": [
+  "nodes": [
     {
       "canonical_name": "<nume canonic SCURT și corect (terminologie BAC MD)>",
       "kind": "notiune" | "definitie" | "teorema" | "formula" | "procedeu",
-      "members": [<indecșii care sunt VARIANTE DE NUME ale acestui nod; [] dacă nodul e doar părinte>],
-      "sub_points": [
-        { "label": "<etichetă scurtă de afișare>", "members": [<indecșii bruți ai acestui sub-punct>] }
-      ],
+      "variant_ids": [<ID-uri care sunt variante de nume ale acestui nod; [] dacă nodul e doar părinte>],
+      "subpoint_ids": [<ID-uri ale sub-proprietăților/sub-formulelor/cazurilor acestui nod>],
       "confidence": "high" | "medium" | "low",
       "note": "<gol sau o remarcă scurtă>"
     }
   ]
 }
 
-TRASABILITATE (CRUCIAL): te referi la concepte DOAR prin INDEX (numărul [i]) — NU rescrie, NU
-scurta, NU traduce textul conceptelor. Sistemul copiază automat numele EXACT original (verbatim
-din listă) în raw_names, după indecșii pe care îi dai. "label" e doar o etichetă scurtă de
-afișare pentru sub-punct; ea NU înlocuiește textul original (acela e păstrat separat prin index).
-
 REGULI OBLIGATORII:
 
-1. PARTIȚIE COMPLETĂ (constrângere DURĂ): reuniunea TUTUROR indecșilor din toate "members"
-   (de nod ȘI de sub_points) trebuie să fie EXACT mulțimea {0, 1, …, ${raw.length - 1}} —
-   fiecare index apare EXACT O DATĂ. Nimic omis, nimic dublat. Verifică tu însuți înainte de a răspunde.
+1. PARTIȚIE COMPLETĂ (constrângere DURĂ): reuniunea TUTUROR ID-urilor din toate "variant_ids" ȘI
+   "subpoint_ids" trebuie să fie EXACT mulțimea {1, 2, …, ${N}} — fiecare ID apare EXACT O DATĂ în
+   tot răspunsul. Nimic omis, nimic dublat. Verifică tu însuți înainte de a răspunde.
 
-2. Variante de nume (members ale nodului): singular/plural, diacritice sparte/lipsă, ordine de
-   cuvinte; "metoda X" = "X" = "formula lui X" când denumesc același lucru;
+2. Folosește DOAR numere (ID-uri) pentru apartenență. NU scrie numele conceptelor brute nicăieri.
+   Singurele texte libere sunt "canonical_name" (eticheta nodului) și "note".
+
+3. Variante de nume (variant_ids): singular/plural, diacritice sparte/lipsă, ordine de cuvinte;
+   "metoda X" = "X" = "formula lui X" când denumesc același lucru;
    "primitivă" = "primitivă a unei funcții" = "primitiva unei funcții".
 
-3. Consolidare părinte-copil (sub_points) — NOU. Când mai multe concepte sunt proprietăți, cazuri,
-   sub-formule sau instanțe ale ACELUIAȘI concept predabil, pune-le ca sub_points sub un părinte:
+4. Consolidare părinte-copil (subpoint_ids): când mai multe ID-uri sunt proprietăți, cazuri,
+   sub-formule sau instanțe ale ACELUIAȘI concept predabil, pune-le ca subpoint_ids sub un nod:
    - "proprietatea de aditivitate/liniaritate/monotonie/invarianța semnului a integralei definite"
-     → nod-părinte "proprietățile integralei definite", sub_points: aditivitate, liniaritate,
-       monotonie, invarianța semnului.
+     → nod "proprietățile integralei definite", subpoint_ids = acele ID-uri.
    - "asimptotă verticală/orizontală/oblică"
-     → nod-părinte "asimptotele unei funcții", sub_points: verticală, orizontală, oblică.
-   Dacă nodul-părinte NU există ca text brut în listă, inventează-i canonical_name și lasă
-   "members": [] (toate cele brute intră în sub_points).
+     → nod "asimptotele unei funcții", subpoint_ids = acele ID-uri.
+   Dacă nodul-părinte NU există ca ID în listă, inventează-i canonical_name și lasă variant_ids: [].
 
-4. GRANULARITATE: un nod = o unitate cât o lecție, NU o singură proprietate sau formulă izolată.
-   DAR nu exagera: NU consolida concepte GENUIN INDEPENDENTE doar fiindcă împart o subtemă —
-   doar relații REALE părinte-copil / proprietate-a / caz-al. Concepte mari, de sine stătătoare
-   (ex. "integrală definită" vs "integrală nedefinită") rămân noduri SEPARATE, nu sub-puncte unul
-   al altuia.
+5. GRANULARITATE: un nod = o unitate cât o lecție, NU o singură proprietate/formulă izolată. DAR nu
+   exagera: NU consolida concepte GENUIN INDEPENDENTE doar fiindcă împart o subtemă — doar relații
+   REALE părinte-copil. Concepte mari de sine stătătoare (ex. "integrală definită" vs "integrală
+   nedefinită") rămân noduri SEPARATE.
 
-5. canonical_name și label: forma scurtă, corectă, terminologia BAC MD, cu diacritice corecte.
-
-6. confidence pe nod: "high" = sigur de gruparea/consolidarea făcută; "low" = nesigur (atunci NU
-   consolida agresiv — lasă separat și explică în note).
+6. canonical_name: scurt, corect, terminologia BAC MD, cu diacritice corecte.
+   confidence: "high" = sigur de grupare; "low" = nesigur (atunci nu consolida agresiv, explică în note).
 
 Răspunde DOAR cu obiectul JSON.`;
 }
@@ -184,27 +159,6 @@ function extractJson(text: string): string | null {
 
 const asKind = (v: unknown): Kind => (VALID_KINDS.includes(v as Kind) ? (v as Kind) : 'notiune');
 const asConf = (v: unknown): Confidence => (VALID_CONF.includes(v as Confidence) ? (v as Confidence) : 'low');
-
-/**
- * Împarte lista (deja ordonată după pagină) în secțiuni de cel mult ~MAX_CONCEPTS_PER_CALL,
- * tăind DOAR la schimbare de subtopic → nu rupem un subtopic (grup legat) între apeluri.
- * Întoarce array-uri de indecși GLOBALI. O singură secțiune dacă lista e mică.
- */
-function sectionChunks(raw: RawConcept[]): number[][] {
-  if (raw.length <= MAX_CONCEPTS_PER_CALL) return [raw.map((_, i) => i)];
-  const chunks: number[][] = [];
-  let cur: number[] = [];
-  for (let i = 0; i < raw.length; i++) {
-    cur.push(i);
-    const boundary = i + 1 >= raw.length || raw[i + 1].subtopic !== raw[i].subtopic;
-    if ((cur.length >= MAX_CONCEPTS_PER_CALL && boundary) || cur.length >= HARD_CAP_PER_CALL) {
-      chunks.push(cur);
-      cur = [];
-    }
-  }
-  if (cur.length) chunks.push(cur);
-  return chunks;
-}
 
 /** Apel model cu retry/backoff; streaming (output potențial mare). */
 async function callGrouping(anthropic: Anthropic, system: string, user: string) {
@@ -240,6 +194,17 @@ async function callGrouping(anthropic: Anthropic, system: string, user: string) 
   throw lastErr;
 }
 
+/** Normalizează un array de ID-uri întregi din ce a întors modelul. */
+function asIds(v: unknown): number[] {
+  if (!Array.isArray(v)) return [];
+  const out: number[] = [];
+  for (const x of v) {
+    const n = Number(x);
+    if (Number.isInteger(n)) out.push(n);
+  }
+  return out;
+}
+
 // ── Main ─────────────────────────────────────────────────────────────────────
 async function main() {
   const { values } = parseArgs({ options: { grade: { type: 'string' } } });
@@ -258,9 +223,9 @@ async function main() {
   const anthropic = new Anthropic({ apiKey: anthropicKey });
   const supabase = createClient(supabaseUrl, serviceKey);
 
-  // 1. Citește conceptele brute ale clasei (paginat, ca să nu lovim plafonul de 1000).
+  // 1. Citește conceptele brute, DISTINCTE după nume (păstrează min pagină + subtema).
   console.log(`📥 Citesc concept_inventory_raw pentru clasa ${grade} …`);
-  const raw: RawConcept[] = [];
+  const all: RawConcept[] = [];
   const PAGE = 1000;
   for (let from = 0; ; from += PAGE) {
     const { data, error } = await supabase
@@ -272,176 +237,118 @@ async function main() {
       .range(from, from + PAGE - 1);
     if (error) throw new Error(`Citire concept_inventory_raw: ${error.message}`);
     if (!data || data.length === 0) break;
-    raw.push(...(data as RawConcept[]));
+    all.push(...(data as RawConcept[]));
     if (data.length < PAGE) break;
   }
-  if (raw.length === 0) {
+  const byName = new Map<string, RawConcept>();
+  for (const r of all) {
+    const ex = byName.get(r.name);
+    if (!ex) byName.set(r.name, { ...r });
+    else if (r.first_seen_pdf_page != null && (ex.first_seen_pdf_page == null || r.first_seen_pdf_page < ex.first_seen_pdf_page)) {
+      ex.first_seen_pdf_page = r.first_seen_pdf_page;
+      ex.subtopic = r.subtopic;
+    }
+  }
+  const raw = [...byName.values()].sort((a, b) =>
+    (a.first_seen_pdf_page ?? 1e9) - (b.first_seen_pdf_page ?? 1e9) || a.name.localeCompare(b.name, 'ro'));
+  const N = raw.length;
+  if (N === 0) {
     console.error(`❌ Niciun concept în concept_inventory_raw pentru clasa ${grade}.`);
     process.exit(1);
   }
-  console.log(`   → ${raw.length} concepte brute.`);
+  console.log(`   → ${N} concepte brute distincte (ID 1..${N}).`);
 
-  // 2. Grupare — un apel dacă lista încape, altfel pe secțiuni (granițe de subtopic).
-  const N = raw.length;
-  const chunks = sectionChunks(raw);
-  console.log(`🤖 Grupare cu ${MODEL}: ${chunks.length} ${chunks.length === 1 ? 'apel' : 'secțiuni'} ` +
-    `(≤ ${MAX_CONCEPTS_PER_CALL} concepte/secțiune, tăiate la subtopic).`);
+  // 2. Un singur apel — modelul grupează prin ID-uri.
+  console.log(`🤖 Grupare cu ${MODEL} (un apel, apartenență prin ID-uri)…`);
+  const { text, stopReason, inputTokens, outputTokens } = await callGrouping(
+    anthropic, SYSTEM_PROMPT, buildUserPrompt(grade, raw),
+  );
+  if (stopReason === 'max_tokens') {
+    console.warn('  ⚠️  Răspuns TRUNCHIAT (max_tokens). ID-urile neacoperite devin singletons „neasignat".');
+  }
+  const jsonStr = extractJson(text);
+  if (!jsonStr) throw new Error('Modelul nu a întors JSON parsabil.');
+  let modelNodes: ModelNode[];
+  try {
+    const parsed = JSON.parse(jsonStr) as { nodes?: ModelNode[] };
+    modelNodes = Array.isArray(parsed.nodes) ? parsed.nodes : [];
+  } catch (e) {
+    throw new Error(`JSON invalid de la model: ${(e as Error).message}`);
+  }
+  console.log(`   → ${modelNodes.length} noduri propuse  [in ${inputTokens} / out ${outputTokens} tok]`);
 
-  const assigned = new Set<number>(); // indecși GLOBALI deja plasați
-  let duplicateRefs = 0;
-  let invalidRefs = 0;
-  let inputTokens = 0;
-  let outputTokens = 0;
-  type GGroup = {
-    canonical_name: string;
-    kind: string;
-    members: number[];                                   // indecși GLOBALI: variante de nume
-    sub_points: { label: string; members: number[] }[];  // indecși GLOBALI per sub-punct
-    confidence: string;
-    note: string;
-  };
-  const groups: GGroup[] = [];
-
-  for (let c = 0; c < chunks.length; c++) {
-    const globalIdx = chunks[c];                       // local i → globalIdx[i]
-    const sub = globalIdx.map((gi) => raw[gi]);
-    const label = `secțiunea ${c + 1}/${chunks.length} (${sub.length} concepte)`;
-    process.stdout.write(`  • ${label} … `);
-
-    let localGroups: ModelGroup[] = [];
-    try {
-      const { text, stopReason, inputTokens: it, outputTokens: ot } = await callGrouping(
-        anthropic, SYSTEM_PROMPT, buildUserPrompt(grade, sub),
-      );
-      inputTokens += it;
-      outputTokens += ot;
-      if (stopReason === 'max_tokens') {
-        console.log(`⚠️  TRUNCHIAT — concepte negrupate → singletons  [in ${it} / out ${ot}]`);
-      }
-      const jsonStr = extractJson(text);
-      const parsed = jsonStr ? (JSON.parse(jsonStr) as { groups?: ModelGroup[] }) : {};
-      localGroups = Array.isArray(parsed.groups) ? parsed.groups : [];
-      if (stopReason !== 'max_tokens') console.log(`${localGroups.length} noduri  [in ${it} / out ${ot}]`);
-    } catch (e) {
-      // Secțiune eșuată (parse/rețea) → NU oprim tot; conceptele ei devin singletons.
-      console.log(`❌ ${(e as Error)?.message ?? e} → secțiune ca singletons`);
-      localGroups = [];
-    }
-
-    // Mapare local→global cu PARTIȚIE peste members ȘI sub_points (fiecare index o dată).
-    const claim = (li: unknown): number | null => {
-      const n = Number(li);
-      if (!Number.isInteger(n) || n < 0 || n >= sub.length) { invalidRefs++; return null; }
-      const gi = globalIdx[n];
-      if (assigned.has(gi)) { duplicateRefs++; return null; }
-      assigned.add(gi);
-      return gi;
-    };
-
-    for (const g of localGroups) {
-      const members: number[] = [];
-      for (const m of Array.isArray(g.members) ? g.members : []) {
-        const gi = claim(m);
-        if (gi !== null) members.push(gi);
-      }
-      const subPoints: { label: string; members: number[] }[] = [];
-      for (const sp of Array.isArray(g.sub_points) ? g.sub_points : []) {
-        const spMembers: number[] = [];
-        for (const m of Array.isArray(sp?.members) ? sp.members : []) {
-          const gi = claim(m);
-          if (gi !== null) spMembers.push(gi);
-        }
-        if (spMembers.length === 0) continue;
-        const lbl = (sp?.label ?? '').toString().trim();
-        subPoints.push({ label: lbl !== '' ? lbl : raw[spMembers[0]].name, members: spMembers });
-      }
-      if (members.length === 0 && subPoints.length === 0) continue;
-      groups.push({
-        canonical_name: (g.canonical_name ?? '').trim(),
-        kind: g.kind,
-        members,
-        sub_points: subPoints,
-        confidence: g.confidence,
-        note: typeof g.note === 'string' ? g.note : '',
-      });
+  // 3. VERIFICARE deterministă a ID-urilor (înainte de a construi orice rând).
+  const seen = new Map<number, number>(); // id → de câte ori apare
+  let outOfRange = 0;
+  const note = (id: number) => seen.set(id, (seen.get(id) ?? 0) + 1);
+  for (const nd of modelNodes) {
+    for (const id of [...asIds(nd.variant_ids), ...asIds(nd.subpoint_ids)]) {
+      if (id < 1 || id > N) { outOfRange++; continue; }
+      note(id);
     }
   }
-
-  // 3. Acoperire globală: orice concept neplasat (negrupat/secțiune eșuată) → singleton.
-  let recovered = 0;
-  for (let i = 0; i < N; i++) {
-    if (assigned.has(i)) continue;
-    recovered++;
-    groups.push({
-      canonical_name: raw[i].name,
-      kind: 'notiune',
-      members: [i],
-      sub_points: [],
-      confidence: 'low',
-      note: 'not_grouped_by_model',
-    });
-  }
-  if (invalidRefs || duplicateRefs || recovered) {
-    console.log(`   ⚠️  validare: ${invalidRefs} indecși invalizi, ${duplicateRefs} dubli ignorați, ` +
-      `${recovered} concepte negrupate → singletons.`);
-  }
-
-  // 4. Construiește rândurile finale (canonical + sub_points lossless).
-  const rows: ProposalRow[] = groups.map((g) => {
-    const raws = g.members.map((i) => raw[i].name);
-    const subPoints: SubPoint[] = g.sub_points.map((sp) => ({
-      label: sp.label,
-      raw_names: sp.members.map((i) => raw[i].name),
-    }));
-    const allIdx = [...g.members, ...g.sub_points.flatMap((sp) => sp.members)];
-    const pages = allIdx.map((i) => raw[i].first_seen_pdf_page).filter((p): p is number => typeof p === 'number');
-    const canonical = g.canonical_name !== '' ? g.canonical_name : (raws[0] ?? subPoints[0]?.raw_names[0] ?? '(necunoscut)');
-    return {
-      grade,
-      canonical_name: canonical,
-      kind: asKind(g.kind),
-      raw_names: raws,
-      variant_count: raws.length,
-      sub_points: subPoints,
-      min_pdf_page: pages.length ? Math.min(...pages) : null,
-      confidence: asConf(g.confidence),
-      note: g.note,
-    };
-  });
-  rows.sort((a, b) => (a.min_pdf_page ?? 1e9) - (b.min_pdf_page ?? 1e9));
-
-  // 4b. VERIFICARE ACOPERIRE 100% ÎNAINTE de încărcare (principiul „nimic aruncat").
-  // Aplatizez raw_names + sub_points[].raw_names și compar ca MULTISET cu lista de intrare.
-  // Dacă lipsește sau se dublează ceva → OPRESC, NU încarc date incomplete.
-  const inputCounts = new Map<string, number>();
-  for (const c of raw) inputCounts.set(c.name, (inputCounts.get(c.name) ?? 0) + 1);
-  const flatCounts = new Map<string, number>();
-  let flatTotal = 0;
-  for (const r of rows) {
-    for (const n of r.raw_names) { flatCounts.set(n, (flatCounts.get(n) ?? 0) + 1); flatTotal++; }
-    for (const sp of r.sub_points) for (const n of sp.raw_names) { flatCounts.set(n, (flatCounts.get(n) ?? 0) + 1); flatTotal++; }
-  }
-  const missing: string[] = [];
-  for (const [name, cnt] of inputCounts) {
-    const got = flatCounts.get(name) ?? 0;
-    if (got < cnt) missing.push(`"${name}" (×${cnt - got})`);
-  }
-  const duplicated: string[] = [];
-  for (const [name, cnt] of flatCounts) {
-    const exp = inputCounts.get(name) ?? 0;
-    if (cnt > exp) duplicated.push(`"${name}" (+${cnt - exp})`);
-  }
-  if (missing.length || duplicated.length || flatTotal !== raw.length) {
-    console.error(`\n❌ ACOPERIRE INCOMPLETĂ — NU încarc nimic. Aplatizat ${flatTotal} vs input ${raw.length}.`);
-    if (missing.length) console.error(`   LIPSESC (${missing.length}): ${missing.slice(0, 40).join(' | ')}${missing.length > 40 ? ' …' : ''}`);
-    if (duplicated.length) console.error(`   DUBLATE (${duplicated.length}): ${duplicated.slice(0, 40).join(' | ')}${duplicated.length > 40 ? ' …' : ''}`);
-    console.error('   (Date incomplete NU se scriu în staging. Re-rulează.)');
+  const duplicates = [...seen.entries()].filter(([, c]) => c > 1).map(([id, c]) => `${id}×${c} ("${raw[id - 1].name}")`);
+  if (duplicates.length > 0) {
+    console.error(`\n❌ ID-uri DUBLATE de model (${duplicates.length}) — OPRESC, NU încarc nimic:`);
+    console.error('   ' + duplicates.slice(0, 50).join(' | ') + (duplicates.length > 50 ? ' …' : ''));
+    console.error('   (Re-rulează: gruparea e nedeterministă; o reluare evită de obicei dublarea.)');
     process.exit(1);
   }
-  console.log(`✅ Acoperire verificată ÎNAINTE de încărcare: ${flatTotal}/${raw.length} ` +
-    `(toate numele brute, verbatim, fiecare exact o dată).`);
+  if (outOfRange > 0) console.warn(`   ⚠️  ${outOfRange} ID-uri în afara intervalului 1..${N} — ignorate.`);
 
-  // 5. Idempotent: șterge propunerile clasei, apoi inserează.
+  // 4. Construiește rândurile din ID-uri (nume EXACTE din mapare, NU din model).
+  const nameOf = (id: number) => raw[id - 1].name;
+  const pageOf = (id: number) => raw[id - 1].first_seen_pdf_page;
+  const rows: ProposalRow[] = [];
+  for (const nd of modelNodes) {
+    const variantIds = asIds(nd.variant_ids).filter((id) => id >= 1 && id <= N);
+    const subIds = asIds(nd.subpoint_ids).filter((id) => id >= 1 && id <= N);
+    if (variantIds.length === 0 && subIds.length === 0) continue;
+    const raws = variantIds.map(nameOf);
+    const subs = subIds.map(nameOf);
+    const pages = [...variantIds, ...subIds].map(pageOf).filter((p): p is number => typeof p === 'number');
+    const canonical = (nd.canonical_name ?? '').trim() || raws[0] || subs[0] || '(necunoscut)';
+    rows.push({
+      grade,
+      canonical_name: canonical,
+      kind: asKind(nd.kind),
+      raw_names: raws,
+      variant_count: raws.length,
+      sub_points: subs,
+      min_pdf_page: pages.length ? Math.min(...pages) : null,
+      confidence: asConf(nd.confidence),
+      note: typeof nd.note === 'string' ? nd.note : '',
+    });
+  }
+
+  // ID-uri neasignate de model → singleton cu nume exact (coverage 100% + vezi ce-a ratat).
+  let unassigned = 0;
+  for (let id = 1; id <= N; id++) {
+    if (seen.has(id)) continue;
+    unassigned++;
+    rows.push({
+      grade,
+      canonical_name: nameOf(id),
+      kind: 'notiune',
+      raw_names: [nameOf(id)],
+      variant_count: 1,
+      sub_points: [],
+      min_pdf_page: pageOf(id),
+      confidence: 'low',
+      note: 'neasignat — verifică',
+    });
+  }
+  rows.sort((a, b) => (a.min_pdf_page ?? 1e9) - (b.min_pdf_page ?? 1e9));
+
+  // 4b. Coverage determinist: reuniunea raw_names + sub_points = exact {1..N} ca multiset de nume.
+  const covered = rows.reduce((s, r) => s + r.raw_names.length + r.sub_points.length, 0);
+  if (covered !== N) {
+    console.error(`\n❌ COVERAGE ${covered}/${N} ≠ N — NU încarc (bug de partiție).`);
+    process.exit(1);
+  }
+  console.log(`✅ Coverage determinist: ${covered}/${N} (fiecare ID exact o dată; ${unassigned} neasignate → singletons).`);
+
+  // 5. Idempotent: TRUNCATE pe grade (delete), apoi inserează.
   console.log(`🧹 Șterg propunerile existente pentru clasa ${grade} …`);
   const { error: delErr } = await supabase.from('concept_dedup_proposals').delete().eq('grade', grade);
   if (delErr) throw new Error(`Ștergere propuneri vechi: ${delErr.message}`);
@@ -456,30 +363,31 @@ async function main() {
   }
 
   // 6. Raport.
-  const lowCount = rows.filter((r) => r.confidence === 'low').length;
-  const nameMerges = rows.filter((r) => r.variant_count > 1);
   const withSubs = rows.filter((r) => r.sub_points.length > 0);
   const totalSubPoints = rows.reduce((s, r) => s + r.sub_points.length, 0);
-  const rawInSubPoints = rows.reduce((s, r) => s + r.sub_points.reduce((t, sp) => t + sp.raw_names.length, 0), 0);
-  const rawInNames = rows.reduce((s, r) => s + r.raw_names.length, 0);
+  const nameMerges = rows.filter((r) => r.variant_count > 1);
+  const lowCount = rows.filter((r) => r.confidence === 'low').length;
   const cost = ((inputTokens / 1e6) * 3 + (outputTokens / 1e6) * 15);
 
-  console.log('\n──────── RAPORT DEDUP — GRANULARITATE MEDIE (clasa ' + grade + ') ────────');
-  console.log(`Secțiuni (apeluri model):     ${chunks.length}`);
-  console.log(`Concepte brute (input):       ${N}`);
+  console.log('\n──────── RAPORT DEDUP — ID-BASED (clasa ' + grade + ') ────────');
+  console.log(`Concepte brute distincte:     ${N}`);
   console.log(`Noduri canonice (output):     ${rows.length}   →  reducere ${N} → ${rows.length} (-${N - rows.length})`);
-  console.log(`  ├─ noduri cu sub_points:    ${withSubs.length}`);
-  console.log(`  ├─ total sub-puncte:        ${totalSubPoints}`);
-  console.log(`  └─ noduri cu ≥2 variante de nume: ${nameMerges.length}`);
-  console.log(`Acoperire brută (lossless):   ${rawInNames} ca variante de nume + ${rawInSubPoints} în sub-puncte ` +
-    `= ${rawInNames + rawInSubPoints} / ${N}`);
-  console.log(`Confidence "low":             ${lowCount}`);
+  console.log(`  ├─ noduri cu sub_points:    ${withSubs.length}  (${totalSubPoints} sub-puncte)`);
+  console.log(`  ├─ noduri cu ≥2 variante:   ${nameMerges.length}`);
+  console.log(`  └─ singletons „neasignat":  ${unassigned}`);
+  console.log(`Coverage (determinist):       ${covered}/${N}  ·  ID-uri dublate: 0`);
+  console.log(`Confidence "low":             ${lowCount}` + (unassigned ? ` (din care ${unassigned} neasignate)` : ''));
   console.log(`Inserat în staging:           ${inserted} rânduri (concept_dedup_proposals, grade=${grade})`);
   console.log(`Tokeni:                       in ${inputTokens} / out ${outputTokens}  ·  ~$${cost.toFixed(4)}`);
   console.log('\nTop 10 noduri-părinte (cele mai multe sub-puncte):');
   for (const r of [...withSubs].sort((a, b) => b.sub_points.length - a.sub_points.length).slice(0, 10)) {
-    console.log(`  • ${r.canonical_name}  [${r.kind}, ${r.confidence}] · ${r.sub_points.length} sub-puncte: ` +
-      r.sub_points.map((sp) => sp.label).join(', '));
+    console.log(`  • ${r.canonical_name}  [${r.kind}, ${r.confidence}] · ${r.sub_points.length} sub: ${r.sub_points.join(', ')}`);
+  }
+  if (unassigned > 0) {
+    console.log(`\n⚠️  ${unassigned} concepte NEASIGNATE de model (singletons „neasignat — verifică"):`);
+    for (const r of rows.filter((r) => r.note === 'neasignat — verifică').slice(0, 30)) {
+      console.log(`  • ${r.canonical_name}`);
+    }
   }
   console.log('\n✅ Doar PROPUNERI. Tabela `concepts` reală NU a fost atinsă. Aprobă tu înainte de orice contopire definitivă.');
 }
