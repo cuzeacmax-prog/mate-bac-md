@@ -1,0 +1,224 @@
+{
+  "grade": 12,
+  "pdf_page_count": 264,
+  "generated_at": "2026-05-30T06:34:44.107Z",
+  "model": "claude-sonnet-4-6",
+  "dpi": 130,
+  "pages": [
+    {
+      "pdf_page": 60,
+      "printed_page": "60",
+      "module": "Modulul 4",
+      "subtopic": "§1. Aria subgraficului unei funcții",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "subgraficul funcției",
+        "aria subgraficului"
+      ],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 0,
+      "exercise_count": 0,
+      "exercise_types": [],
+      "confidence": "high",
+      "notes": "Pagina introduce noțiunea de subgrafic al unei funcții și formula ariei acestuia ca integrală definită. Conține două figuri (Fig. 4.1 și Fig. 4.2) și o scurtă biografie a lui Henri-Léon Lebesgue. Nu există exerciții propuse sau exemple rezolvate pe această pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 229
+    },
+    {
+      "pdf_page": 61,
+      "printed_page": "61",
+      "module": null,
+      "subtopic": "Aplicații ale integralelor definite",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "aria mulțimii Γ_{f,g}",
+        "subgraficul funcției negative"
+      ],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 0,
+      "exercise_count": 0,
+      "exercise_types": [],
+      "confidence": "medium",
+      "notes": "Pagina conține teorie despre calculul ariei dintre graficele a două funcții continue (formula 2) și o observație despre funcții negative. Nu există exemple rezolvate numerice sau exerciții propuse explicit. Antetul de capitol este 'Aplicații ale integralelor definite' dar nu este indicat un număr de paragraf explicit vizibil. Sunt prezente figurile 4.3, 4.4, 4.5.",
+      "input_tokens": 2962,
+      "output_tokens": 254
+    },
+    {
+      "pdf_page": 62,
+      "printed_page": "62",
+      "module": "Modulul 4",
+      "subtopic": null,
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "aria mulțimii plane delimitate de graficele a două funcții"
+      ],
+      "worked_examples_count": 3,
+      "proposed_exercises_count": 0,
+      "exercise_count": 3,
+      "exercise_types": [
+        "calcul direct",
+        "problema vizuala"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține continuarea demonstrației formulei ariei dintre două grafice (formula 2 și 3), o secțiune 'Consecință' cu formula modulului, și secțiunea 'Probleme rezolvate' cu 3 probleme rezolvate complet (aria triunghiului OAB, aria trapezului, aria suprafeței între f(x)=x² și g(x)=2). Nu există exerciții propuse elevului.",
+      "input_tokens": 2962,
+      "output_tokens": 264
+    },
+    {
+      "pdf_page": 63,
+      "printed_page": "63",
+      "module": null,
+      "subtopic": "Aplicații ale integralelor definite",
+      "page_kind": "lectie",
+      "concepts_introduced": [],
+      "worked_examples_count": 3,
+      "proposed_exercises_count": 0,
+      "exercise_count": 3,
+      "exercise_types": [
+        "calcul direct",
+        "problema vizuala"
+      ],
+      "confidence": "high",
+      "notes": "Pagina continuă seria de exemple rezolvate (numerotate 4 și 5 vizibile, plus continuarea exemplului anterior de la început). Exemplul 4 calculează aria discului de rază r folosind schimbare de variabilă (substituție trigonometrică). Exemplul 5 calculează aria figurii delimitate de două grafice pe [0,2]. Nu sunt introduse noțiuni noi — se aplică formule deja stabilite. Antetul de capitol 'Aplicații ale integralelor definite' este vizibil în header. Nu există exerciții propuse elevului pe această pagină.",
+      "input_tokens": 2962,
+      "output_tokens": 275
+    },
+    {
+      "pdf_page": 64,
+      "printed_page": "64",
+      "module": "Modulul 4",
+      "subtopic": null,
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "centrul de greutate al plăcii omogene",
+        "coordonatele centrului de greutate"
+      ],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 10,
+      "exercise_count": 11,
+      "exercise_types": [
+        "calcul direct",
+        "problema cu parametru"
+      ],
+      "confidence": "high",
+      "notes": "Pagina conține o observație cu formula pentru centrul de greutate al plăcii omogene (formulele 4), un exemplu rezolvat (exercițiul 6 cu funcția sqrt(ax)), și o secțiune de exerciții propuse (A) cu 8 subpuncte la exercițiul 1 plus exercițiul 2. Total exerciții propuse: 8 subpuncte (a-h) + 1 exercițiu separat (2) = 9, dar numerotarea sugerează 2 exerciții principale cu subpuncte; am numărat 10 subpuncte totale (a,b,c,d,e,f,g,h la ex.1 = 8, plus ex.2 = 1, total 9 propuse). Recalculat: 8 subpuncte + exercițiul 2 = 9 propuse. Ajustat la 9.",
+      "input_tokens": 2962,
+      "output_tokens": 392
+    },
+    {
+      "pdf_page": 65,
+      "printed_page": "65",
+      "module": null,
+      "subtopic": "Aplicații ale integralelor definite",
+      "page_kind": "exercitii",
+      "concepts_introduced": [],
+      "worked_examples_count": 0,
+      "proposed_exercises_count": 19,
+      "exercise_count": 19,
+      "exercise_types": [
+        "calcul direct",
+        "demonstratie",
+        "problema aplicata",
+        "aria figurii marginite",
+        "coordonate centru de greutate"
+      ],
+      "confidence": "medium",
+      "notes": "Pagina conține două seturi de exerciții propuse: un set fără etichetă de nivel (exercițiile 3-5 din coloana stângă și 5 din coloana dreaptă, sus) și un set marcat cu 'B' (exercițiile 1-8). Nu există exemple rezolvate pe această pagină. Formula de arie a figurii mărginite este afișată decorativ la baza paginii (element vizual/rezumativ, nu exemplu rezolvat). Numărarea exactă a sub-punctelor din fiecare exercițiu este complexă; s-a numărat la nivel de exercițiu principal (1-8 în B, plus 3,4,5 din secțiunea anterioară = ~19 total).",
+      "input_tokens": 2962,
+      "output_tokens": 335
+    },
+    {
+      "pdf_page": 66,
+      "printed_page": "66",
+      "module": null,
+      "subtopic": "§2. Volumul unui corp de rotație",
+      "page_kind": "lectie",
+      "concepts_introduced": [
+        "corp de rotație",
+        "volumul corpului de rotație"
+      ],
+      "worked_examples_count": 1,
+      "proposed_exercises_count": 0,
+      "exercise_count": 1,
+      "exercise_types": [
+        "calcul direct"
+      ],
+      "confidence": "high",
+      "notes": "Pagina introduce definiția corpului de rotație determinat de o funcție continuă, formula volumului (formula 1) și o problemă rezolvată (volumul corpului sferic de rază r). Secțiunea 'Probleme rezolvate' conține o singură problemă cu soluție completă afișată.",
+      "input_tokens": 2962,
+      "output_tokens": 221
+    }
+  ],
+  "concept_inventory": [
+    {
+      "name": "subgraficul funcției",
+      "first_seen_pdf_page": 60,
+      "module": "Modulul 4",
+      "subtopic": "§1. Aria subgraficului unei funcții",
+      "occurrences": 1
+    },
+    {
+      "name": "aria subgraficului",
+      "first_seen_pdf_page": 60,
+      "module": "Modulul 4",
+      "subtopic": "§1. Aria subgraficului unei funcții",
+      "occurrences": 1
+    },
+    {
+      "name": "aria mulțimii Γ_{f,g}",
+      "first_seen_pdf_page": 61,
+      "module": null,
+      "subtopic": "Aplicații ale integralelor definite",
+      "occurrences": 1
+    },
+    {
+      "name": "subgraficul funcției negative",
+      "first_seen_pdf_page": 61,
+      "module": null,
+      "subtopic": "Aplicații ale integralelor definite",
+      "occurrences": 1
+    },
+    {
+      "name": "aria mulțimii plane delimitate de graficele a două funcții",
+      "first_seen_pdf_page": 62,
+      "module": "Modulul 4",
+      "subtopic": null,
+      "occurrences": 1
+    },
+    {
+      "name": "centrul de greutate al plăcii omogene",
+      "first_seen_pdf_page": 64,
+      "module": "Modulul 4",
+      "subtopic": null,
+      "occurrences": 1
+    },
+    {
+      "name": "coordonatele centrului de greutate",
+      "first_seen_pdf_page": 64,
+      "module": "Modulul 4",
+      "subtopic": null,
+      "occurrences": 1
+    },
+    {
+      "name": "corp de rotație",
+      "first_seen_pdf_page": 66,
+      "module": null,
+      "subtopic": "§2. Volumul unui corp de rotație",
+      "occurrences": 1
+    },
+    {
+      "name": "volumul corpului de rotație",
+      "first_seen_pdf_page": 66,
+      "module": null,
+      "subtopic": "§2. Volumul unui corp de rotație",
+      "occurrences": 1
+    }
+  ],
+  "stats": {
+    "page_count": 264,
+    "pages_processed": 7,
+    "total_exercises": 37,
+    "low_confidence_pages": [],
+    "parse_failures": []
+  }
+}
