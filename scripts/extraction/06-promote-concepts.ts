@@ -98,23 +98,25 @@ function mapKind(k: string): string {
   return k === 'notiune' ? 'concept' : k;
 }
 
-// ── Main ─────────────────────────────────────────────────────────────────────
+// ── Promovare per clasă ──────────────────────────────────────────────────────
 
-async function main() {
-  const { values } = parseArgs({ options: { grade: { type: 'string' } } });
-  const grade = values.grade ? parseInt(values.grade, 10) : DEFAULT_GRADE;
-  if (!Number.isInteger(grade) || grade < 1 || grade > 12) {
-    console.error(`❌ --grade trebuie să fie un întreg 1-12 (primit: "${values.grade}")`);
-    process.exit(1);
-  }
+// Tip concret al clientului (ReturnType<typeof createClient> ar folosi genericii impliciti → `never`).
+function makeClient(url: string, key: string) {
+  return createClient(url, key);
+}
+type Db = ReturnType<typeof makeClient>;
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!supabaseUrl || !serviceKey) {
-    throw new Error('Lipsesc NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY.');
-  }
-  const supabase = createClient(supabaseUrl, serviceKey);
+interface PromoteResult {
+  grade: number;
+  proposals: number;
+  inserted: number;
+  dbCount: number;
+}
+
+/** Promovează O clasă din concept_dedup_proposals în concepts (logica validată pe clasa 12). */
+async function promoteGrade(supabase: Db, grade: number): Promise<PromoteResult> {
   const gradePrefix = `g${grade}-`;
+  console.log(`\n════════════ CLASA ${grade} ════════════`);
 
   // 1. Citește concept_dedup_proposals
   console.log(`📥 Citesc concept_dedup_proposals pentru clasa ${grade} …`);
@@ -133,8 +135,7 @@ async function main() {
     if (data.length < PAGE) break;
   }
   if (proposals.length === 0) {
-    console.error(`❌ Nicio propunere în concept_dedup_proposals pentru clasa ${grade}.`);
-    process.exit(1);
+    throw new Error(`Nicio propunere în concept_dedup_proposals pentru clasa ${grade}.`);
   }
   console.log(`   → ${proposals.length} propuneri.`);
 
@@ -271,32 +272,105 @@ async function main() {
   for (const [k, n] of Object.entries(kindDist).sort((a, b) => b[1] - a[1])) {
     console.log(`  ${k.padEnd(12)} ${n}`);
   }
-  console.log(`\nCu subtopic rezolvat:  ${withSubtopic} / ${inserted}  (${Math.round((withSubtopic / inserted) * 100)}%)`);
-  console.log(`Cu sub_points:         ${withSubPoints} / ${inserted}`);
-  console.log(`Coliziuni slug:        ${slugCollisions}`);
-  console.log(`Status:                'extras' (provizoriu — nu au fost atinse alte clase)`);
+  console.log(`Cu subtopic rezolvat:  ${withSubtopic} / ${inserted}  ·  cu sub_points: ${withSubPoints}  ·  coliziuni slug: ${slugCollisions}`);
 
-  // 7. Verificare DB reală — count din Supabase, nu din variabila locală
-  console.log('\n🔍 Verificare DB …');
+  // 7. Verificare DB reală per clasă — count din Supabase (nu din variabila locală).
   const { count, error: cntErr } = await supabase
     .from('concepts')
     .select('*', { count: 'exact', head: true })
     .eq('grade_level', grade);
-  if (cntErr) {
-    console.error(`❌ Eroare la SELECT COUNT: ${cntErr.message}`);
+  if (cntErr) throw new Error(`SELECT COUNT concepts cls ${grade}: ${cntErr.message}`);
+  const dbCount = count ?? -1;
+  console.log(`🔍 DB: count(concepts WHERE grade_level=${grade}) = ${dbCount} (propuneri: ${proposals.length}, inserat: ${inserted})`);
+  if (dbCount !== inserted || dbCount !== proposals.length) {
+    throw new Error(`DISCREPANȚĂ clasa ${grade}: propuneri=${proposals.length}, inserat=${inserted}, DB=${dbCount}.`);
+  }
+
+  return { grade, proposals: proposals.length, inserted, dbCount };
+}
+
+// ── Parse --grades ("1-11" | "1,2,5" | mixt) ─────────────────────────────────
+function parseGrades(spec: string | undefined, fallback: number): number[] {
+  if (!spec) return [fallback];
+  const set = new Set<number>();
+  for (const tokRaw of spec.split(',')) {
+    const tok = tokRaw.trim();
+    if (!tok) continue;
+    const m = tok.match(/^(\d+)\s*-\s*(\d+)$/);
+    if (m) { let a = +m[1], b = +m[2]; if (a > b) [a, b] = [b, a]; for (let g = a; g <= b; g++) set.add(g); }
+    else if (/^\d+$/.test(tok)) set.add(+tok);
+    else throw new Error(`Token --grades invalid: "${tok}"`);
+  }
+  const grades = [...set].filter((g) => g >= 1 && g <= 12).sort((a, b) => a - b);
+  if (grades.length === 0) throw new Error('--grades nu conține nicio clasă validă (1..12).');
+  return grades;
+}
+
+// ── Verificare finală cross-class din DB reală ───────────────────────────────
+const EXPECTED_TOTAL = 1606; // 1364 (clasele 1-11) + 242 (clasa 12)
+
+async function verifyFinal(supabase: Db): Promise<boolean> {
+  console.log('\n════════════ VERIFICARE FINALĂ (din DB reală) ════════════');
+  let ok = true;
+  let sum = 0;
+  for (let g = 1; g <= 12; g++) {
+    const [{ count: cConcepts }, { count: cProps }] = await Promise.all([
+      supabase.from('concepts').select('*', { count: 'exact', head: true }).eq('grade_level', g),
+      supabase.from('concept_dedup_proposals').select('*', { count: 'exact', head: true }).eq('grade', g),
+    ]);
+    const cc = cConcepts ?? 0;
+    const cp = cProps ?? 0;
+    sum += cc;
+    const match = cc === cp;
+    if (!match) ok = false;
+    console.log(`  ${match ? '✅' : '❌'} Clasa ${String(g).padStart(2)} · concepts=${String(cc).padStart(3)} · proposals=${String(cp).padStart(3)}` +
+      (match ? '' : '  ← NU SE POTRIVEȘTE'));
+  }
+  const { count: total } = await supabase.from('concepts').select('*', { count: 'exact', head: true });
+  const grandTotal = total ?? sum;
+  console.log(`  ── TOTAL concepts = ${grandTotal}  (așteptat ${EXPECTED_TOTAL}) ──`);
+  if (grandTotal !== EXPECTED_TOTAL) {
+    console.error(`  ❌ TOTAL ${grandTotal} ≠ ${EXPECTED_TOTAL} așteptat.`);
+    ok = false;
+  }
+  return ok;
+}
+
+// ── Main ─────────────────────────────────────────────────────────────────────
+async function main() {
+  const { values } = parseArgs({ options: { grade: { type: 'string' }, grades: { type: 'string' } } });
+  const grades = values.grades
+    ? parseGrades(values.grades, DEFAULT_GRADE)
+    : [values.grade ? parseInt(values.grade, 10) : DEFAULT_GRADE];
+  for (const g of grades) {
+    if (!Number.isInteger(g) || g < 1 || g > 12) {
+      console.error(`❌ clasă invalidă: ${g} (trebuie 1-12)`);
+      process.exit(1);
+    }
+  }
+  if (grades.includes(12)) {
+    console.error('❌ Refuz să ating clasa 12 (deja promovată și validată). Rulează doar pe 1-11.');
     process.exit(1);
   }
-  console.log(`   SELECT count(*) FROM concepts WHERE grade_level=${grade}  →  ${count}`);
-  if (count !== inserted) {
-    console.error(`❌ DISCREPANȚĂ: inserat local ${inserted} dar DB returnează ${count}. OPRIT.`);
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !serviceKey) throw new Error('Lipsesc NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY.');
+  const supabase = makeClient(supabaseUrl, serviceKey);
+
+  console.log(`🎯 Promovare concepte pentru clasele: [${grades.join(', ')}]  (clasa 12 NU e atinsă)`);
+  const results: PromoteResult[] = [];
+  for (const g of grades) {
+    results.push(await promoteGrade(supabase, g));
+  }
+
+  const allOk = await verifyFinal(supabase);
+  if (!allOk) {
+    console.error('\n💥 VERIFICARE EȘUATĂ — NU raportez „gata". Investighează discrepanțele de mai sus.');
     process.exit(1);
   }
-  if (count !== 242) {
-    console.warn(`⚠️  Număr diferit de 242 așteptați (DB: ${count}). Verifică propunerile.`);
-  } else {
-    console.log(`✅ DB confirmă ${count} concepte — exact 242 așteptați.`);
-  }
-  console.log('\n✅ concepts.grade_level=' + grade + ' populat. Alte clase: neatinse.');
+  console.log('\n🎉 GATA: clasele 1-11 promovate, per-clasă = propuneri, total = ' + EXPECTED_TOTAL +
+    '. solution_methods / diagnostic_exercises / clasa 12: neatinse.');
 }
 
 main().catch((err: unknown) => {
