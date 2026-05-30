@@ -28,6 +28,7 @@
     "extract:dedup": "tsx --env-file=.env.local scripts/extraction/04-dedup-propose.ts",
     "extract:promote": "tsx --env-file=.env.local scripts/extraction/06-promote-concepts.ts",
     "extract:edges": "tsx --env-file=.env.local scripts/extraction/07-edge-propose.ts",
+    "extract:content": "tsx --env-file=.env.local scripts/extraction/08-content-propose.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
