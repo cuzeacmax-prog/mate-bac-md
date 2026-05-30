@@ -1,21 +1,17 @@
 /**
- * 08-content-propose.ts — ETAPA 6/6b/6c: PROBĂ extracție CONȚINUT al nodurilor (AI propune)
+ * 08-content-propose.ts — ETAPA 6/6b/6c/7: extracție CONȚINUT al nodurilor (AI propune)
  *
- * 6b: source_pages = paginile TUTUROR componentelor conceptului (name + raw_names + sub_points,
- *     via concept_dedup_proposals + concept_inventory_raw.first_seen_pdf_page), nu doar prima apariție.
- * 6c: extracția conduce MEREU cu conceptul NUMIT (definiție + prima formulă sunt ale lui);
- *     sub_points = sub-aspecte secundare, acoperite după conținutul de bază.
+ * Rulează:  npm run extract:content -- --grades 12
+ *           npm run extract:content -- --grades 1-11
+ *           (probă pe o felie: --grades 12 --from-page 60 --to-page 66)
  *
- * Rulează:  npm run extract:content -- --grade 12 --from-page 60 --to-page 66
- *           (sau: tsx --env-file=.env.local scripts/extraction/08-content-propose.ts)
+ * BATCH API (50%): o cerere per concept (custom_id = concept_id), UN batch per clasă
+ *   (chunked sub limita de 256 MB — imaginile sunt mari). claude-sonnet-4-6.
+ * 6b: source_pages = paginile TUTUROR componentelor (name + raw_names + sub_points →
+ *     first_seen_pdf_page din concept_inventory_raw), nu doar prima apariție.
+ * 6c: prompt ancorat pe conceptul NUMIT (definiție + prima formulă sunt ale lui; sub_points secundare).
  *
- * Felie de probă: conceptele clasei --grade cu order_in_grade în [from-page, to-page].
- * Pentru fiecare concept:
- *   1. Randează cu MuPDF paginile sale sursă (order_in_grade ± 1, clamp) la ~150 DPI.
- *   2. Vision (claude-sonnet-4-6): paginile + numele conceptului + sub_points → STRICT JSON cu
- *      definiție / formule LaTeX / condiții / 1 exemplu rezolvat. NU inventează; câmp gol dacă lipsește.
- *   3. Scrie în concept_content_proposals (idempotent pe felie). NU atinge `concepts`.body.
- *
+ * NU atinge `concepts`.body. Doar propuneri în concept_content_proposals.
  * Requires: ANTHROPIC_API_KEY, NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
  */
 
@@ -30,13 +26,14 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // ── Config ───────────────────────────────────────────────────────────────────
 const MODEL = 'claude-sonnet-4-6';
-const DEFAULT_GRADE = 12;
-const DEFAULT_FROM = 60;
-const DEFAULT_TO = 66;
-const DPI = 150;            // mai mare ca inventarul (130) — formulele mici lizibile
+const DPI = 150;
 const MAX_TOKENS = 4000;
-const MAX_RETRIES = 5;
-const BASE_BACKOFF_MS = 1500;
+const MAX_PAGES_PER_CONCEPT = 8;       // plafon pagini/concept (mărimea cererii)
+const BATCH_MAX_BYTES = 150 * 1024 * 1024; // margine sub 256 MB / batch
+const BATCH_MAX_REQUESTS = 1000;       // chunk-uri rezonabile
+const POLL_INTERVAL_MS = 20_000;
+const BATCH_MAX_WAIT_MS = 24 * 60 * 60 * 1000;
+const PRICE_IN = 3, PRICE_OUT = 15, BATCH_DISCOUNT = 0.5;
 
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 const VALID_CONF = ['high', 'medium', 'low'] as const;
@@ -45,33 +42,22 @@ const asConf = (v: unknown): Confidence => (VALID_CONF.includes(v as Confidence)
 const asStr = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
 const asStrArr = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string' && x.trim() !== '').map((x) => x.trim()) : []);
 
-interface SliceConcept {
-  id: string;
-  name: string;
-  order_in_grade: number;
-  sub_points: string[];
-}
-interface ContentRow {
-  concept_id: string;
-  definitie: string;
-  formule_latex: string[];
-  conditii: string;
-  exemplu: string;
-  confidence: Confidence;
-  source_pages: number[];
-}
+interface Concept { id: string; name: string; order_in_grade: number; sub_points: string[] }
+interface ContentRow { concept_id: string; definitie: string; formule_latex: string[]; conditii: string; exemplu: string; confidence: Confidence; source_pages: number[] }
+type BatchRequest = Anthropic.Messages.BatchCreateParams.Request;
 
 function makeClient(url: string, key: string) { return createClient(url, key); }
+type Db = ReturnType<typeof makeClient>;
 
 function extractJson(text: string): string | null {
   const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
   if (fenced) return fenced[1].trim();
-  const start = text.indexOf('{');
-  const end = text.lastIndexOf('}');
+  const start = text.indexOf('{'), end = text.lastIndexOf('}');
   if (start !== -1 && end !== -1 && end > start) return text.slice(start, end + 1);
   return null;
 }
 
+// ── Prompt (ancorat pe conceptul numit — 6c) ─────────────────────────────────
 const SYSTEM_PROMPT =
   'Ești un extractor de conținut din manuale de matematică (BAC Republica Moldova). Primești ' +
   'IMAGINILE paginilor sursă și extragi conținutul unui concept ANUME, în format JSON strict. ' +
@@ -101,92 +87,63 @@ Caută în TOATE imaginile paginilor de mai sus DEFINIȚIA și FORMULA CENTRALĂ
 
 REGULI:
 1. ANCORARE: definitie + PRIMA formulă din formule_latex trebuie să fie ALE CONCEPTULUI NUMIT,
-   NU ale unui sub-aspect. Ex.: pentru „aria mulțimii delimitate de graficele a două funcții",
-   conținutul principal e definiția și formula ariei DINTRE DOUĂ CURBE (A = ∫(g−f)); cazul
-   funcției negative (∫|f|) e DOAR un sub-caz, acoperit după.
-2. Dacă un sub-aspect diverge de numele conceptului, tot îl acoperi pe scurt, dar NU el conduce.
-3. NU inventa conținut care nu e pe pagini. Dacă ceva lipsește, lasă câmpul gol ("" sau []).
-4. Formulele în LaTeX valid (fără $...$, doar corpul). Păstrează notația din manual.
-5. Păstrează terminologia și diacriticele exact ca în manual (română-moldovenească).
-6. confidence: "high" = conținutul conceptului numit e clar pe pagini; "low" = parțial/ambiguu.
+   NU ale unui sub-aspect. Dacă un sub-aspect diverge de nume, tot îl acoperi pe scurt, dar NU el conduce.
+2. NU inventa conținut care nu e pe pagini. Dacă ceva lipsește, lasă câmpul gol ("" sau []).
+3. Formulele în LaTeX valid (fără $...$, doar corpul). Păstrează notația din manual.
+4. Păstrează terminologia și diacriticele exact ca în manual (română-moldovenească).
+5. confidence: "high" = conținutul conceptului numit e clar pe pagini; "low" = parțial/ambiguu.
 
 Răspunde DOAR cu obiectul JSON.`;
 }
 
-async function callVision(anthropic: Anthropic, images: string[], name: string, subPoints: string[]) {
-  let lastErr: unknown;
-  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-    try {
-      const content: Anthropic.Messages.ContentBlockParam[] = images.map((b64) => ({
-        type: 'image', source: { type: 'base64', media_type: 'image/png', data: b64 },
-      }));
-      content.push({ type: 'text', text: buildUserPrompt(name, subPoints) });
-      const msg = await anthropic.messages.create({
-        model: MODEL, max_tokens: MAX_TOKENS, system: SYSTEM_PROMPT,
-        messages: [{ role: 'user', content }],
-      });
-      const text = msg.content.map((b) => (b.type === 'text' ? b.text : '')).join('');
-      return { text, inputTokens: msg.usage.input_tokens, outputTokens: msg.usage.output_tokens };
-    } catch (err: unknown) {
-      lastErr = err;
-      const status = (err as { status?: number })?.status;
-      const retriable = status === undefined || status === 408 || status === 409 || status === 429 || status === 529 || (typeof status === 'number' && status >= 500);
-      if (!retriable || attempt === MAX_RETRIES) break;
-      const backoff = BASE_BACKOFF_MS * 2 ** attempt + Math.floor(Math.random() * 500);
-      console.warn(`    ↻ retry ${attempt + 1}/${MAX_RETRIES} (status=${status ?? 'net'}) după ${backoff}ms`);
-      await sleep(backoff);
-    }
-  }
-  throw lastErr;
+function buildRequest(conceptId: string, images: string[], name: string, subPoints: string[]): BatchRequest {
+  const content: Anthropic.Messages.ContentBlockParam[] = images.map((b64) => ({
+    type: 'image', source: { type: 'base64', media_type: 'image/png', data: b64 },
+  }));
+  content.push({ type: 'text', text: buildUserPrompt(name, subPoints) });
+  return { custom_id: conceptId, params: { model: MODEL, max_tokens: MAX_TOKENS, system: SYSTEM_PROMPT, messages: [{ role: 'user', content }] } };
 }
 
-async function main() {
-  const { values } = parseArgs({ options: { grade: { type: 'string' }, 'from-page': { type: 'string' }, 'to-page': { type: 'string' } } });
-  const grade = values.grade ? parseInt(values.grade, 10) : DEFAULT_GRADE;
-  const fromPage = values['from-page'] ? parseInt(values['from-page'], 10) : DEFAULT_FROM;
-  const toPage = values['to-page'] ? parseInt(values['to-page'], 10) : DEFAULT_TO;
-  if (!Number.isInteger(grade) || grade < 1 || grade > 12) { console.error('❌ --grade 1-12'); process.exit(1); }
+async function pollBatch(anthropic: Anthropic, id: string, label: string): Promise<Anthropic.Messages.MessageBatch> {
+  const start = Date.now();
+  for (;;) {
+    const b = await anthropic.messages.batches.retrieve(id);
+    if (b.processing_status === 'ended') return b;
+    const c = b.request_counts;
+    console.log(`    ⏳ ${label}: ${b.processing_status} · ok=${c.succeeded} err=${c.errored} proc=${c.processing} (${((Date.now() - start) / 60000).toFixed(1)} min)`);
+    if (Date.now() - start > BATCH_MAX_WAIT_MS) throw new Error(`Batch ${id} a depășit 24h.`);
+    await sleep(POLL_INTERVAL_MS);
+  }
+}
 
-  const anthropicKey = process.env.ANTHROPIC_API_KEY;
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!anthropicKey) throw new Error('Lipsește ANTHROPIC_API_KEY (rulează cu --env-file=.env.local).');
-  if (!supabaseUrl || !serviceKey) throw new Error('Lipsesc NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY.');
-  const anthropic = new Anthropic({ apiKey: anthropicKey });
-  const supabase = makeClient(supabaseUrl, serviceKey);
+// ── Procesare per clasă ──────────────────────────────────────────────────────
+interface GradeReport { grade: number; concepts: number; inserted: number; withDef: number; withFormulas: number; withExample: number; failed: number; conf: Record<string, number>; inTok: number; outTok: number }
 
-  // 1. Felia de concepte.
-  console.log(`📥 Felie: clasa ${grade}, order_in_grade ∈ [${fromPage}, ${toPage}] …`);
-  const { data, error } = await supabase
-    .from('concepts')
-    .select('id, name, order_in_grade, sub_points')
-    .eq('grade_level', grade)
-    .gte('order_in_grade', fromPage)
-    .lte('order_in_grade', toPage)
-    .order('order_in_grade', { ascending: true });
-  if (error) throw new Error(`Citire concepts: ${error.message}`);
-  const slice: SliceConcept[] = (data ?? []).map((c) => ({
-    id: c.id as string, name: c.name as string, order_in_grade: (c.order_in_grade as number) ?? 0,
-    sub_points: Array.isArray(c.sub_points) ? (c.sub_points as string[]) : [],
-  }));
-  if (slice.length === 0) { console.error('❌ Niciun concept în felie.'); process.exit(1); }
-  console.log(`   → ${slice.length} concepte: ${slice.map((c) => `${c.name} (p.${c.order_in_grade})`).join(' · ')}`);
+async function processGrade(anthropic: Anthropic, supabase: Db, grade: number, fromPage: number | null, toPage: number | null): Promise<GradeReport> {
+  console.log(`\n════════════ CLASA ${grade} ════════════`);
+  // 1. Concepte (toată clasa, sau felia din [from,to]).
+  let q = supabase.from('concepts').select('id, name, order_in_grade, sub_points').eq('grade_level', grade);
+  if (fromPage != null) q = q.gte('order_in_grade', fromPage);
+  if (toPage != null) q = q.lte('order_in_grade', toPage);
+  const { data: cData, error: cErr } = await q.order('order_in_grade', { ascending: true });
+  if (cErr) throw new Error(`Citire concepts: ${cErr.message}`);
+  const concepts: Concept[] = (cData ?? []).map((c) => ({ id: c.id as string, name: c.name as string, order_in_grade: (c.order_in_grade as number) ?? 0, sub_points: Array.isArray(c.sub_points) ? (c.sub_points as string[]) : [] }));
+  if (concepts.length === 0) { console.log('   (nicio concept) — sar.'); return { grade, concepts: 0, inserted: 0, withDef: 0, withFormulas: 0, withExample: 0, failed: 0, conf: {}, inTok: 0, outTok: 0 }; }
+  console.log(`📥 ${concepts.length} concepte.`);
 
-  // 1b. Sursare CORECTĂ — paginile din TOATE componentele conceptului (nu doar prima apariție).
-  //   dedupMap: canonical_name → raw_names (variantele de nume ale nodului).
+  // dedup + inventory maps (pentru source_pages).
   const dedupMap = new Map<string, string[]>();
-  for (let from = 0; ; from += 1000) {
-    const { data, error: e } = await supabase.from('concept_dedup_proposals').select('canonical_name, raw_names').eq('grade', grade).range(from, from + 999);
-    if (e) throw new Error(`Citire concept_dedup_proposals: ${e.message}`);
+  for (let f = 0; ; f += 1000) {
+    const { data, error } = await supabase.from('concept_dedup_proposals').select('canonical_name, raw_names').eq('grade', grade).range(f, f + 999);
+    if (error) throw new Error(`Citire dedup: ${error.message}`);
     if (!data || data.length === 0) break;
     for (const r of data as { canonical_name: string; raw_names: unknown }[]) dedupMap.set(r.canonical_name, asStrArr(r.raw_names));
     if (data.length < 1000) break;
   }
-  //   rawPageMap: nume exact din inventar → min first_seen_pdf_page.
   const rawPageMap = new Map<string, number>();
-  for (let from = 0; ; from += 1000) {
-    const { data, error: e } = await supabase.from('concept_inventory_raw').select('name, first_seen_pdf_page').eq('grade', grade).range(from, from + 999);
-    if (e) throw new Error(`Citire concept_inventory_raw: ${e.message}`);
+  for (let f = 0; ; f += 1000) {
+    const { data, error } = await supabase.from('concept_inventory_raw').select('name, first_seen_pdf_page').eq('grade', grade).range(f, f + 999);
+    if (error) throw new Error(`Citire inventory: ${error.message}`);
     if (!data || data.length === 0) break;
     for (const r of data as { name: string; first_seen_pdf_page: number | null }[]) {
       if (r.first_seen_pdf_page == null) continue;
@@ -196,82 +153,156 @@ async function main() {
     if (data.length < 1000) break;
   }
 
-  // 2. Deschide PDF-ul (MuPDF, 150 DPI).
+  // 2. PDF + cache pagini.
   const pdfPath = path.resolve(__dirname, `../../docs/manuale-source/clasa-${String(grade).padStart(2, '0')}.pdf`);
-  console.log(`📄 Deschid ${pdfPath} la ${DPI} DPI (MuPDF) …`);
+  console.log(`📄 ${pdfPath} @ ${DPI} DPI (MuPDF) …`);
   const doc = await openPdfForRender(pdfPath, DPI);
   const pageCount = doc.length;
-
-  // source_pages = paginile TUTUROR componentelor (name + raw_names + sub_points), fiecare ±1.
-  const sourcePagesFor = (c: SliceConcept): number[] => {
-    const components = new Set<string>([c.name, ...(dedupMap.get(c.name) ?? []), ...c.sub_points]);
+  const pageCache = new Map<number, string>();
+  const renderPage = (p: number): string => {
+    let b = pageCache.get(p);
+    if (b == null) { b = doc.getPage(p).toString('base64'); pageCache.set(p, b); }
+    return b;
+  };
+  const sourcePagesFor = (c: Concept): number[] => {
+    const comps = new Set<string>([c.name, ...(dedupMap.get(c.name) ?? []), ...c.sub_points]);
     const pages = new Set<number>();
-    for (const nm of components) {
-      const pg = rawPageMap.get(nm);
-      if (pg != null) for (const d of [-1, 0, 1]) pages.add(pg + d);
+    for (const nm of comps) { const pg = rawPageMap.get(nm); if (pg != null) for (const d of [-1, 0, 1]) pages.add(pg + d); }
+    if (pages.size === 0) for (const d of [-1, 0, 1]) pages.add(c.order_in_grade + d);
+    let arr = [...pages].filter((p) => p >= 1 && p <= pageCount).sort((a, b) => a - b);
+    if (arr.length > MAX_PAGES_PER_CONCEPT) {
+      arr = [...arr].sort((a, b) => Math.abs(a - c.order_in_grade) - Math.abs(b - c.order_in_grade)).slice(0, MAX_PAGES_PER_CONCEPT).sort((a, b) => a - b);
     }
-    if (pages.size === 0) for (const d of [-1, 0, 1]) pages.add(c.order_in_grade + d); // fallback
-    return [...pages].filter((p) => p >= 1 && p <= pageCount).sort((a, b) => a - b);
+    return arr;
   };
 
-  // Idempotent: șterge propunerile de conținut existente pentru conceptele feliei.
-  await supabase.from('concept_content_proposals').delete().in('concept_id', slice.map((c) => c.id));
+  // Idempotent: TRUNCATE propunerile clasei.
+  const ids = concepts.map((c) => c.id);
+  for (let i = 0; i < ids.length; i += 100) await supabase.from('concept_content_proposals').delete().in('concept_id', ids.slice(i, i + 100));
 
-  let totalIn = 0, totalOut = 0;
-  const rows: ContentRow[] = [];
-  for (const c of slice) {
+  // 3. Construiește + trimite batch-uri (chunked sub limita de bytes).
+  const sourcePages = new Map<string, number[]>();
+  const batchIds: string[] = [];
+  let curReqs: BatchRequest[] = [];
+  let curBytes = 0;
+  const submit = async () => {
+    if (curReqs.length === 0) return;
+    const created = await anthropic.messages.batches.create({ requests: curReqs });
+    batchIds.push(created.id);
+    console.log(`   ▶ batch ${batchIds.length} trimis: ${created.id} (${curReqs.length} cereri, ~${(curBytes / 1024 / 1024).toFixed(0)} MB)`);
+    curReqs = []; curBytes = 0;
+  };
+  console.log(`🖼️  Randez + construiesc cererile …`);
+  for (const c of concepts) {
     const pages = sourcePagesFor(c);
-    process.stdout.write(`  📄 „${c.name}" · pagini [${pages.join(', ')}] … `);
-    const images = pages.map((p) => doc.getPage(p).toString('base64'));
-    const { text, inputTokens, outputTokens } = await callVision(anthropic, images, c.name, c.sub_points);
-    totalIn += inputTokens; totalOut += outputTokens;
+    sourcePages.set(c.id, pages);
+    const images = pages.map(renderPage);
+    const bytes = images.reduce((s, b) => s + b.length, 0) + 4096;
+    if (curReqs.length > 0 && (curBytes + bytes > BATCH_MAX_BYTES || curReqs.length + 1 > BATCH_MAX_REQUESTS)) await submit();
+    curReqs.push(buildRequest(c.id, images, c.name, c.sub_points));
+    curBytes += bytes;
+  }
+  await submit();
+  console.log(`📦 ${concepts.length} cereri → ${batchIds.length} batch(uri).`);
 
-    const jsonStr = extractJson(text);
-    let row: ContentRow;
-    if (!jsonStr) {
-      row = { concept_id: c.id, definitie: '', formule_latex: [], conditii: '', exemplu: '', confidence: 'low', source_pages: pages };
-      console.log(`⚠️  fără JSON  [in ${inputTokens}/out ${outputTokens}]`);
-    } else {
-      try {
-        const o = JSON.parse(jsonStr) as Record<string, unknown>;
-        row = {
-          concept_id: c.id,
-          definitie: asStr(o.definitie),
-          formule_latex: asStrArr(o.formule_latex),
-          conditii: asStr(o.conditii),
-          exemplu: asStr(o.exemplu),
-          confidence: asConf(o.confidence),
-          source_pages: pages,
-        };
-        console.log(`✓ def ${row.definitie.length}c · ${row.formule_latex.length} formule · ` +
-          `${row.exemplu ? 'exemplu' : 'fără exemplu'} · conf=${row.confidence}  [in ${inputTokens}/out ${outputTokens}]`);
-      } catch {
-        row = { concept_id: c.id, definitie: '', formule_latex: [], conditii: '', exemplu: '', confidence: 'low', source_pages: pages };
-        console.log(`⚠️  JSON invalid  [in ${inputTokens}/out ${outputTokens}]`);
+  // 4. Poll + colectează rezultatele.
+  const rowByConcept = new Map<string, ContentRow>();
+  let inTok = 0, outTok = 0, failed = 0;
+  for (let i = 0; i < batchIds.length; i++) {
+    const id = batchIds[i];
+    const ended = await pollBatch(anthropic, id, `cl.${grade} batch ${i + 1}/${batchIds.length}`);
+    console.log(`   ✓ ${id} ended: ok=${ended.request_counts.succeeded} err=${ended.request_counts.errored}. Descarc …`);
+    for await (const item of await anthropic.messages.batches.results(id)) {
+      const cid = item.custom_id;
+      const pages = sourcePages.get(cid) ?? [];
+      if (item.result.type === 'succeeded') {
+        const msg = item.result.message;
+        inTok += msg.usage.input_tokens; outTok += msg.usage.output_tokens;
+        const text = msg.content.map((b) => (b.type === 'text' ? b.text : '')).join('');
+        const jsonStr = extractJson(text);
+        if (jsonStr) {
+          try {
+            const o = JSON.parse(jsonStr) as Record<string, unknown>;
+            rowByConcept.set(cid, { concept_id: cid, definitie: asStr(o.definitie), formule_latex: asStrArr(o.formule_latex), conditii: asStr(o.conditii), exemplu: asStr(o.exemplu), confidence: asConf(o.confidence), source_pages: pages });
+            continue;
+          } catch { /* cade în failed */ }
+        }
+        failed++;
+        rowByConcept.set(cid, { concept_id: cid, definitie: '', formule_latex: [], conditii: '', exemplu: '', confidence: 'low', source_pages: pages });
+      } else {
+        failed++;
+        rowByConcept.set(cid, { concept_id: cid, definitie: '', formule_latex: [], conditii: '', exemplu: '', confidence: 'low', source_pages: pages });
       }
     }
-    rows.push(row);
+  }
+  // Concepte care nu au apărut în niciun rezultat → failed.
+  for (const c of concepts) if (!rowByConcept.has(c.id)) { failed++; rowByConcept.set(c.id, { concept_id: c.id, definitie: '', formule_latex: [], conditii: '', exemplu: '', confidence: 'low', source_pages: sourcePages.get(c.id) ?? [] }); }
+
+  // 5. Insert.
+  const rows = [...rowByConcept.values()];
+  for (let i = 0; i < rows.length; i += 500) {
+    const { error } = await supabase.from('concept_content_proposals').insert(rows.slice(i, i + 500));
+    if (error) throw new Error(`Insert (grade ${grade}) [${i}]: ${error.message}`);
   }
 
-  // 3. Inserează.
-  const { error: insErr } = await supabase.from('concept_content_proposals').insert(rows);
-  if (insErr) throw new Error(`Insert concept_content_proposals: ${insErr.message}`);
-
-  // 4. Verificare DB + raport.
-  const { count } = await supabase.from('concept_content_proposals').select('*', { count: 'exact', head: true })
-    .in('concept_id', slice.map((c) => c.id));
-  const cost = (totalIn / 1e6) * 3 + (totalOut / 1e6) * 15;
-  console.log('\n──────── RAPORT CONȚINUT (felie clasa ' + grade + ', pg ' + fromPage + '-' + toPage + ') ────────');
-  console.log(`Concepte procesate:    ${slice.length}  (inserate în DB: ${count})`);
-  console.log(`Cu definiție:          ${rows.filter((r) => r.definitie).length}`);
-  console.log(`Cu formule LaTeX:      ${rows.filter((r) => r.formule_latex.length > 0).length}  (total ${rows.reduce((s, r) => s + r.formule_latex.length, 0)} formule)`);
-  console.log(`Cu exemplu:            ${rows.filter((r) => r.exemplu).length}`);
-  console.log(`Confidence:            high ${rows.filter((r) => r.confidence === 'high').length} · medium ${rows.filter((r) => r.confidence === 'medium').length} · low ${rows.filter((r) => r.confidence === 'low').length}`);
-  console.log(`Tokeni:                in ${totalIn} / out ${totalOut}  ·  ~$${cost.toFixed(4)}`);
-  console.log('\n✅ Doar PROPUNERI (concept_content_proposals). `concepts`.body NU a fost atins.');
+  // 6. Verificare DB + raport.
+  const { count } = await supabase.from('concept_content_proposals').select('*', { count: 'exact', head: true }).in('concept_id', ids);
+  const conf: Record<string, number> = { high: 0, medium: 0, low: 0 };
+  for (const r of rows) conf[r.confidence]++;
+  const rep: GradeReport = {
+    grade, concepts: concepts.length, inserted: count ?? 0,
+    withDef: rows.filter((r) => r.definitie).length,
+    withFormulas: rows.filter((r) => r.formule_latex.length > 0).length,
+    withExample: rows.filter((r) => r.exemplu).length,
+    failed, conf, inTok, outTok,
+  };
+  return rep;
 }
 
-main().catch((err: unknown) => {
-  console.error('\n💥 Eroare fatală:', (err as Error)?.message ?? err);
-  process.exit(1);
-});
+// ── Main ─────────────────────────────────────────────────────────────────────
+function parseGrades(spec: string | undefined): number[] {
+  if (!spec) return [12];
+  const set = new Set<number>();
+  for (const tokRaw of spec.split(',')) {
+    const tok = tokRaw.trim(); if (!tok) continue;
+    const m = tok.match(/^(\d+)\s*-\s*(\d+)$/);
+    if (m) { let a = +m[1], b = +m[2]; if (a > b) [a, b] = [b, a]; for (let g = a; g <= b; g++) set.add(g); }
+    else if (/^\d+$/.test(tok)) set.add(+tok);
+    else throw new Error(`Token --grades invalid: "${tok}"`);
+  }
+  return [...set].filter((g) => g >= 1 && g <= 12).sort((a, b) => a - b);
+}
+
+async function main() {
+  const { values } = parseArgs({ options: { grades: { type: 'string' }, 'from-page': { type: 'string' }, 'to-page': { type: 'string' } } });
+  const grades = parseGrades(values.grades);
+  if (grades.length === 0) { console.error('❌ Nicio clasă validă.'); process.exit(1); }
+  const fromPage = values['from-page'] ? parseInt(values['from-page'], 10) : null;
+  const toPage = values['to-page'] ? parseInt(values['to-page'], 10) : null;
+
+  const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!anthropicKey) throw new Error('Lipsește ANTHROPIC_API_KEY (rulează cu --env-file=.env.local).');
+  if (!supabaseUrl || !serviceKey) throw new Error('Lipsesc NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY.');
+  const anthropic = new Anthropic({ apiKey: anthropicKey });
+  const supabase = makeClient(supabaseUrl, serviceKey);
+
+  console.log(`🎯 Extracție conținut (BATCH 50%) pentru clasele: [${grades.join(', ')}]` + (fromPage != null || toPage != null ? ` · felie pagini [${fromPage ?? '*'}, ${toPage ?? '*'}]` : ''));
+  const reports: GradeReport[] = [];
+  for (const g of grades) reports.push(await processGrade(anthropic, supabase, g, fromPage, toPage));
+
+  console.log('\n════════════ VERIFICARE (din DB) ════════════');
+  let totIn = 0, totOut = 0;
+  for (const r of reports) {
+    totIn += r.inTok; totOut += r.outTok;
+    const cost = ((r.inTok / 1e6) * PRICE_IN + (r.outTok / 1e6) * PRICE_OUT) * BATCH_DISCOUNT;
+    console.log(`Clasa ${String(r.grade).padStart(2)} · proposals ${r.inserted}/${r.concepts} · def ${r.withDef} · formule ${r.withFormulas} · exemplu ${r.withExample} · ` +
+      `conf[h${r.conf.high ?? 0}/m${r.conf.medium ?? 0}/l${r.conf.low ?? 0}] · eșuate ${r.failed} · ~$${cost.toFixed(4)}`);
+  }
+  const totalCost = ((totIn / 1e6) * PRICE_IN + (totOut / 1e6) * PRICE_OUT) * BATCH_DISCOUNT;
+  console.log(`\nTokeni: in ${totIn} / out ${totOut}  ·  Cost total (batch 50%): ~$${totalCost.toFixed(4)}`);
+  console.log('✅ Doar PROPUNERI (concept_content_proposals). `concepts`.body NU a fost atins.');
+}
+
+main().catch((err: unknown) => { console.error('\n💥 Eroare fatală:', (err as Error)?.message ?? err); process.exit(1); });
