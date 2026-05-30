@@ -58,7 +58,9 @@ interface InventoryRecord {
   subtopic: string | null;
   page_kind: PageKind;
   concepts_introduced: string[];
-  exercise_count: number;
+  worked_examples_count: number;     // probleme/exemple REZOLVATE în text → material de predare
+  proposed_exercises_count: number;  // exerciții PROPUSE elevului → banca de exerciții
+  exercise_count: number;            // = worked_examples_count + proposed_exercises_count
   exercise_types: string[];
   confidence: Confidence;
   notes: string;
@@ -85,28 +87,59 @@ function buildUserPrompt(pdfPage: number): string {
 {
   "printed_page": "<numărul tipărit pe pagină sau null>",
   "module": "<textul antetului 'Modulul N. ...' sau null>",
-  "subtopic": "<subtema din bulletul '• ...' sau null>",
+  "subtopic": "<titlul secțiunii vizibil pe pagină (ex. '§3. Aria subgraficului') sau subtema din bullet '• ...', sau null>",
   "page_kind": "lectie" | "exercitii" | "recapitulare" | "divider" | "coperta" | "necunoscut",
-  "concepts_introduced": ["<etichete de termeni/noțiuni noi, EXACT cum sunt scrise în română>"],
-  "exercise_count": <număr întreg>,
+  "concepts_introduced": ["<noțiuni matematice GENUIN NOI, în formă canonică scurtă>"],
+  "worked_examples_count": <număr întreg: probleme/exemple REZOLVATE în text>,
+  "proposed_exercises_count": <număr întreg: exerciții PROPUSE elevului>,
+  "exercise_count": <număr întreg = worked_examples_count + proposed_exercises_count>,
   "exercise_types": ["<etichete scurte: calcul direct, completare tabel, gaseste-greseala, problema vizuala, comparare cu casuta, etc>"],
   "confidence": "high" | "medium" | "low",
   "notes": "<orice e ambiguu sau de remarcat>"
 }
 
 REGULI OBLIGATORII:
-1. Listează DOAR ETICHETELE conceptelor/termenilor noi (ex. "Termen", "Sumă", "Descăzut",
-   "Scăzător", "Diferență"), NU conținutul/definiția lor. Aceasta este o HARTĂ, nu o extracție.
-2. NU interpreta enunțurile exercițiilor ca adevăruri matematice. Unele exerciții conțin
+
+1. concepts_introduced — listează DOAR ETICHETELE noțiunilor, NU conținutul/definiția lor.
+   Aceasta este o HARTĂ, nu o extracție. Aplică strict următoarele filtre anti-zgomot:
+   a) Include DOAR noțiuni matematice GENUIN NOI, definite sau introduse pe ACEASTĂ pagină.
+   b) EXCLUDE anteturile structurale ale manualului ca atare: "Consecință", "Observație",
+      "Teoremă", "Definiție", "Exemplu", "Remarcă", "Propoziție" — sunt etichete editoriale,
+      NU concepte. (Dacă o teoremă/definiție introduce o noțiune nouă cu nume propriu,
+      listează NOȚIUNEA în sine, nu cuvântul "Teoremă"/"Definiție".)
+   c) EXCLUDE termeni folosiți în treacăt care sunt prerechizite din clase anterioare
+      (ex. "graficul funcției", "funcție negativă") și fraze generice fără nume propriu
+      (ex. "punct arbitrar", "interval elementar" când sunt doar pași de construcție).
+   d) Folosește forma CANONICĂ scurtă a numelui (ex. "subgrafic", nu "subgraficul funcției f";
+      "corp de rotație", nu "corpul obținut prin rotirea subgraficului..."). NU lista același
+      concept de două ori pe aceeași pagină în formulări diferite.
+
+2. module + subtopic — completează AMBELE când sunt vizibile pe pagină: numărul/antetul
+   modulului ('Modulul N. ...') ȘI titlul secțiunii ('§N ...'). NU lăsa subtopic null dacă
+   pagina arată un titlu de secțiune.
+
+3. worked_examples_count vs proposed_exercises_count — distinge:
+   • worked_examples_count = problemele/exemplele REZOLVATE în text (cu soluție afișată,
+     ex. marcate "Exemplu", "Model", "Problemă rezolvată"). Devin material de predare.
+   • proposed_exercises_count = exercițiile PROPUSE elevului spre rezolvare (fără soluție).
+     Devin banca de exerciții.
+   exercise_count = worked_examples_count + proposed_exercises_count.
+
+4. NU interpreta enunțurile exercițiilor ca adevăruri matematice. Unele exerciții conțin
    afirmații INTENȚIONAT GREȘITE pe care elevul trebuie să le corecteze (ex. "15 ∗ 3 = 12"
    unde elevul pune semnul corect). Acelea sunt EXERCIȚII, nu fapte — marchează la
    exercise_types eticheta "gaseste-greseala". Nu te alarma și nu le "corecta".
-3. Păstrează terminologia română-moldovenească EXACT cum e TIPĂRITĂ pe pagină (cu diacritice;
+
+5. Păstrează terminologia română-moldovenească EXACT cum e TIPĂRITĂ pe pagină (cu diacritice;
    scrie "pînă" dacă așa scrie pe pagină, nu "până"). Nu normaliza, nu traduce, nu moderniza.
-4. O pagină fără conținut matematic (copertă, ilustrație de modul, divider) primește
+
+6. O pagină fără conținut matematic (copertă, ilustrație de modul, divider) primește
    page_kind corespunzător și concepts_introduced [], DAR tot trebuie înregistrată.
-5. exercise_count este un întreg (0 dacă nu sunt exerciții). exercise_types poate fi [].
-6. Dacă o valoare lipsește, folosește null (pentru string-uri) sau [] (pentru liste).
+
+7. worked_examples_count, proposed_exercises_count și exercise_count sunt întregi (0 dacă nu e
+   cazul). exercise_types poate fi [].
+
+8. Dacă o valoare lipsește, folosește null (pentru string-uri) sau [] (pentru liste).
 
 Răspunde DOAR cu obiectul JSON.`;
 }
@@ -170,7 +203,11 @@ function coerceRecord(raw: unknown): InventoryRecord {
 
   const kind = validKinds.includes(o.page_kind as PageKind) ? (o.page_kind as PageKind) : 'necunoscut';
   const conf = validConf.includes(o.confidence as Confidence) ? (o.confidence as Confidence) : 'low';
-  const exCount = Number.isFinite(Number(o.exercise_count)) ? Math.max(0, Math.trunc(Number(o.exercise_count))) : 0;
+  const asCount = (v: unknown): number => (Number.isFinite(Number(v)) ? Math.max(0, Math.trunc(Number(v))) : 0);
+  const worked = asCount(o.worked_examples_count);
+  const proposed = asCount(o.proposed_exercises_count);
+  // exercise_count = suma celor două. Dacă modelul a dat doar totalul (split 0/0), îl păstrăm ca fallback.
+  const exCount = worked + proposed > 0 ? worked + proposed : asCount(o.exercise_count);
 
   return {
     printed_page: asStrOrNull(o.printed_page),
@@ -178,6 +215,8 @@ function coerceRecord(raw: unknown): InventoryRecord {
     subtopic: asStrOrNull(o.subtopic),
     page_kind: kind,
     concepts_introduced: asStrArray(o.concepts_introduced),
+    worked_examples_count: worked,
+    proposed_exercises_count: proposed,
     exercise_count: exCount,
     exercise_types: asStrArray(o.exercise_types),
     confidence: conf,
