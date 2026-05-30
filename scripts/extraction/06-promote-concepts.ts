@@ -275,6 +275,27 @@ async function main() {
   console.log(`Cu sub_points:         ${withSubPoints} / ${inserted}`);
   console.log(`Coliziuni slug:        ${slugCollisions}`);
   console.log(`Status:                'extras' (provizoriu — nu au fost atinse alte clase)`);
+
+  // 7. Verificare DB reală — count din Supabase, nu din variabila locală
+  console.log('\n🔍 Verificare DB …');
+  const { count, error: cntErr } = await supabase
+    .from('concepts')
+    .select('*', { count: 'exact', head: true })
+    .eq('grade_level', grade);
+  if (cntErr) {
+    console.error(`❌ Eroare la SELECT COUNT: ${cntErr.message}`);
+    process.exit(1);
+  }
+  console.log(`   SELECT count(*) FROM concepts WHERE grade_level=${grade}  →  ${count}`);
+  if (count !== inserted) {
+    console.error(`❌ DISCREPANȚĂ: inserat local ${inserted} dar DB returnează ${count}. OPRIT.`);
+    process.exit(1);
+  }
+  if (count !== 242) {
+    console.warn(`⚠️  Număr diferit de 242 așteptați (DB: ${count}). Verifică propunerile.`);
+  } else {
+    console.log(`✅ DB confirmă ${count} concepte — exact 242 așteptați.`);
+  }
   console.log('\n✅ concepts.grade_level=' + grade + ' populat. Alte clase: neatinse.');
 }
 
