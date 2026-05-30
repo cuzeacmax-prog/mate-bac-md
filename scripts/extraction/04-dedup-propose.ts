@@ -1,8 +1,12 @@
 /**
- * 04-dedup-propose.ts — ETAPA 3.2d: DEDUP CONCEPTE prin ID-uri, granularitate la nivel de NOȚIUNE
+ * 04-dedup-propose.ts — ETAPA 3.4: DEDUP CONCEPTE prin ID-uri, granularitate la nivel de NOȚIUNE
  *
  * Rulează:  npm run extract:dedup -- --grade 12
- *           (sau: tsx --env-file=.env.local scripts/extraction/04-dedup-propose.ts --grade 12)
+ *           npm run extract:dedup -- --grades 1-11      (mai multe clase într-o rulare)
+ *           (sau: tsx --env-file=.env.local scripts/extraction/04-dedup-propose.ts --grades 1-11)
+ *
+ * Granularitate independentă de clasă: gardă DURĂ ≤ 9 sub-puncte/nod; retry pe dubluri de ID
+ * sau noduri prea grosiere. VERIFICARE din DB reală după fiecare clasă (coverage + max sub-puncte).
  *
  * De ce ID-uri: a cere modelului să copieze 736 de nume verbatim e fragil — le „curăță"
  * (rescrie/scurtează). Soluție: modelul grupează DOAR prin NUMERE (ID-uri 1..N); numele se
@@ -33,8 +37,10 @@ import { parseArgs } from 'node:util';
 const MODEL = 'claude-sonnet-4-6';
 const MAX_TOKENS = 32000;          // output e doar numere + canonical_names → compact
 const DEFAULT_GRADE = 12;
-const MAX_RETRIES = 4;
+const MAX_RETRIES = 4;             // retry rețea/rate-limit per apel
 const BASE_BACKOFF_MS = 2000;
+const MAX_GROUP_ATTEMPTS = 5;      // reîncercări grupare la dubluri de ID sau granularitate prea grosieră
+const MAX_SUBPOINTS = 9;           // gardă grade-independentă: niciun nod > 9 sub-puncte
 
 const VALID_KINDS = ['notiune', 'definitie', 'teorema', 'formula', 'procedeu'] as const;
 const VALID_CONF = ['high', 'medium', 'low'] as const;
@@ -156,9 +162,12 @@ REGULI OBLIGATORII:
    - canonical_name = exact O noțiune.
    - Totuși NU contopi noțiuni mari independente (ex. "integrală definită" ≠ "integrală nedefinită").
 
-6. ȚINTĂ pentru această clasă: ~200-350 noduri. Sub 180 = încă prea grosier (ai lăsat noțiuni
-   distincte ca sub-puncte) — SPARGE mai mult în noduri. Peste 500 = prea fin (ai pus variante de
-   nume ca noduri separate). Calibrează în această fereastră.
+6. GRANULARITATE (independentă de clasă — NU țintă un număr fix de noduri):
+   - GARDĂ DURĂ: NICIUN nod nu trebuie să aibă peste 9 sub-puncte. Dacă un nod ar ajunge la ≥10,
+     e lump de CAPITOL — sparge-l în noțiuni distincte (fiecare devine nodul ei).
+   - În medie ~1-3 sub-puncte per nod. Multe noțiuni stau singure (0 sub-puncte).
+   - Un "sub-punct" e doar o proprietate/caz/sub-tip ÎNGUST al unei singure noțiuni; dacă termenul
+     e el însuși o noțiune definită de manual, scoate-l ca NOD propriu, nu ca sub-punct.
 
 7. canonical_name: scurt, corect, terminologia BAC MD, cu diacritice corecte.
    confidence: "high" = sigur; "low" = nesigur (atunci explică în note).
@@ -224,26 +233,29 @@ function asIds(v: unknown): number[] {
   return out;
 }
 
-// ── Main ─────────────────────────────────────────────────────────────────────
-async function main() {
-  const { values } = parseArgs({ options: { grade: { type: 'string' } } });
-  const grade = values.grade ? parseInt(values.grade, 10) : DEFAULT_GRADE;
-  if (!Number.isInteger(grade) || grade < 1 || grade > 12) {
-    console.error(`❌ --grade trebuie să fie un întreg 1-12 (primit: "${values.grade}")`);
-    process.exit(1);
-  }
+// ── Per-clasă ────────────────────────────────────────────────────────────────
+interface GradeReport {
+  grade: number;
+  N: number;
+  nodes: number;
+  dbCovered: number;
+  maxSub: number;
+  unassigned: number;
+  cost: number;
+  ok: boolean;
+  problems: string[];
+}
 
-  const anthropicKey = process.env.ANTHROPIC_API_KEY;
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!anthropicKey) throw new Error('Lipsește ANTHROPIC_API_KEY (rulează cu --env-file=.env.local).');
-  if (!supabaseUrl || !serviceKey) throw new Error('Lipsesc NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY.');
+const costOf = (inTok: number, outTok: number) => (inTok / 1e6) * 3 + (outTok / 1e6) * 15;
 
-  const anthropic = new Anthropic({ apiKey: anthropicKey });
-  const supabase = createClient(supabaseUrl, serviceKey);
+// Tip concret al clientului (ReturnType<typeof createClient> ar folosi genericii impliciti → `never`).
+function makeClient(url: string, key: string) {
+  return createClient(url, key);
+}
+type Db = ReturnType<typeof makeClient>;
 
-  // 1. Citește conceptele brute, DISTINCTE după nume (păstrează min pagină + subtema).
-  console.log(`📥 Citesc concept_inventory_raw pentru clasa ${grade} …`);
+/** Citește conceptele brute DISTINCTE ale unei clase (mapare ID 1..N → nume exact). */
+async function readConcepts(supabase: Db, grade: number): Promise<RawConcept[]> {
   const all: RawConcept[] = [];
   const PAGE = 1000;
   for (let from = 0; ; from += PAGE) {
@@ -268,56 +280,75 @@ async function main() {
       ex.subtopic = r.subtopic;
     }
   }
-  const raw = [...byName.values()].sort((a, b) =>
+  return [...byName.values()].sort((a, b) =>
     (a.first_seen_pdf_page ?? 1e9) - (b.first_seen_pdf_page ?? 1e9) || a.name.localeCompare(b.name, 'ro'));
-  const N = raw.length;
-  if (N === 0) {
-    console.error(`❌ Niciun concept în concept_inventory_raw pentru clasa ${grade}.`);
-    process.exit(1);
-  }
-  console.log(`   → ${N} concepte brute distincte (ID 1..${N}).`);
+}
 
-  // 2. Un singur apel — modelul grupează prin ID-uri.
-  console.log(`🤖 Grupare cu ${MODEL} (un apel, apartenență prin ID-uri)…`);
-  const { text, stopReason, inputTokens, outputTokens } = await callGrouping(
-    anthropic, SYSTEM_PROMPT, buildUserPrompt(grade, raw),
-  );
-  if (stopReason === 'max_tokens') {
-    console.warn('  ⚠️  Răspuns TRUNCHIAT (max_tokens). ID-urile neacoperite devin singletons „neasignat".');
-  }
-  const jsonStr = extractJson(text);
-  if (!jsonStr) throw new Error('Modelul nu a întors JSON parsabil.');
-  let modelNodes: ModelNode[];
-  try {
-    const parsed = JSON.parse(jsonStr) as { nodes?: ModelNode[] };
-    modelNodes = Array.isArray(parsed.nodes) ? parsed.nodes : [];
-  } catch (e) {
-    throw new Error(`JSON invalid de la model: ${(e as Error).message}`);
-  }
-  console.log(`   → ${modelNodes.length} noduri propuse  [in ${inputTokens} / out ${outputTokens} tok]`);
-
-  // 3. VERIFICARE deterministă a ID-urilor (înainte de a construi orice rând).
-  const seen = new Map<number, number>(); // id → de câte ori apare
+/** Un apel de grupare validat: fără ID-uri dublate. Întoarce nodurile + harta `seen` + max sub-puncte. */
+interface Attempt { modelNodes: ModelNode[]; seen: Map<number, number>; maxSub: number; }
+function evaluateAttempt(modelNodes: ModelNode[], N: number): { attempt: Attempt; dupCount: number; outOfRange: number } {
+  const seen = new Map<number, number>();
   let outOfRange = 0;
-  const note = (id: number) => seen.set(id, (seen.get(id) ?? 0) + 1);
   for (const nd of modelNodes) {
     for (const id of [...asIds(nd.variant_ids), ...asIds(nd.subpoint_ids)]) {
       if (id < 1 || id > N) { outOfRange++; continue; }
-      note(id);
+      seen.set(id, (seen.get(id) ?? 0) + 1);
     }
   }
-  const duplicates = [...seen.entries()].filter(([, c]) => c > 1).map(([id, c]) => `${id}×${c} ("${raw[id - 1].name}")`);
-  if (duplicates.length > 0) {
-    console.error(`\n❌ ID-uri DUBLATE de model (${duplicates.length}) — OPRESC, NU încarc nimic:`);
-    console.error('   ' + duplicates.slice(0, 50).join(' | ') + (duplicates.length > 50 ? ' …' : ''));
-    console.error('   (Re-rulează: gruparea e nedeterministă; o reluare evită de obicei dublarea.)');
-    process.exit(1);
-  }
-  if (outOfRange > 0) console.warn(`   ⚠️  ${outOfRange} ID-uri în afara intervalului 1..${N} — ignorate.`);
+  const dupCount = [...seen.values()].filter((c) => c > 1).length;
+  let maxSub = 0;
+  for (const nd of modelNodes) maxSub = Math.max(maxSub, asIds(nd.subpoint_ids).filter((id) => id >= 1 && id <= N).length);
+  return { attempt: { modelNodes, seen, maxSub }, dupCount, outOfRange };
+}
 
-  // 4. Construiește rândurile din ID-uri (nume EXACTE din mapare, NU din model).
+/** Rulează dedup-ul pe O clasă: retry la dubluri/granularitate, încărcare, verificare din DB. */
+async function runGrade(anthropic: Anthropic, supabase: Db, grade: number): Promise<GradeReport> {
+  console.log(`\n════════════ CLASA ${grade} ════════════`);
+  const raw = await readConcepts(supabase, grade);
+  const N = raw.length;
+  if (N === 0) {
+    return { grade, N: 0, nodes: 0, dbCovered: 0, maxSub: 0, unassigned: 0, cost: 0, ok: false, problems: ['niciun concept în concept_inventory_raw'] };
+  }
+  console.log(`📥 ${N} concepte brute distincte (ID 1..${N}).`);
+
+  // Retry: reîncearcă la ID-uri dublate SAU la max sub-puncte > MAX_SUBPOINTS. Păstrează cea mai bună.
+  let inTok = 0, outTok = 0;
+  let best: Attempt | null = null;
+  for (let attempt = 1; attempt <= MAX_GROUP_ATTEMPTS; attempt++) {
+    const { text, stopReason, inputTokens, outputTokens } = await callGrouping(anthropic, SYSTEM_PROMPT, buildUserPrompt(grade, raw));
+    inTok += inputTokens; outTok += outputTokens;
+    if (stopReason === 'max_tokens') console.warn('  ⚠️  Răspuns TRUNCHIAT (max_tokens).');
+    const jsonStr = extractJson(text);
+    let modelNodes: ModelNode[] = [];
+    try {
+      const parsed = jsonStr ? (JSON.parse(jsonStr) as { nodes?: ModelNode[] }) : {};
+      modelNodes = Array.isArray(parsed.nodes) ? parsed.nodes : [];
+    } catch (e) {
+      console.warn(`  ↻ încercarea ${attempt}/${MAX_GROUP_ATTEMPTS}: JSON invalid (${(e as Error).message}) — reîncerc`);
+      continue;
+    }
+    const { attempt: att, dupCount, outOfRange } = evaluateAttempt(modelNodes, N);
+    if (dupCount > 0) {
+      console.warn(`  ↻ încercarea ${attempt}/${MAX_GROUP_ATTEMPTS}: ${dupCount} ID-uri dublate — reîncerc  [in ${inputTokens}/out ${outputTokens}]`);
+      continue;
+    }
+    console.log(`  încercarea ${attempt}: ${modelNodes.length} noduri, max_sub=${att.maxSub}` +
+      `${outOfRange ? `, ${outOfRange} ID out-of-range` : ''}  [in ${inputTokens}/out ${outputTokens}]`);
+    if (!best || att.maxSub < best.maxSub) best = att;
+    if (att.maxSub <= MAX_SUBPOINTS) break;
+    console.warn(`  ↻ max_sub ${att.maxSub} > ${MAX_SUBPOINTS} (lump de capitol) — reîncerc pentru granularitate mai fină`);
+  }
+
+  if (!best) {
+    console.error(`  ❌ Clasa ${grade}: toate încercările au eșuat (dubluri/JSON invalid) — NU încarc.`);
+    return { grade, N, nodes: 0, dbCovered: 0, maxSub: 0, unassigned: 0, cost: costOf(inTok, outTok), ok: false, problems: ['toate încercările au eșuat (dubluri/JSON invalid)'] };
+  }
+
+  const { modelNodes, seen } = best;
   const nameOf = (id: number) => raw[id - 1].name;
   const pageOf = (id: number) => raw[id - 1].first_seen_pdf_page;
+
+  // Construiește rândurile din ID-uri (nume EXACTE din mapare).
   const rows: ProposalRow[] = [];
   for (const nd of modelNodes) {
     const variantIds = asIds(nd.variant_ids).filter((id) => id >= 1 && id <= N);
@@ -326,10 +357,9 @@ async function main() {
     const raws = variantIds.map(nameOf);
     const subs = subIds.map(nameOf);
     const pages = [...variantIds, ...subIds].map(pageOf).filter((p): p is number => typeof p === 'number');
-    const canonical = (nd.canonical_name ?? '').trim() || raws[0] || subs[0] || '(necunoscut)';
     rows.push({
       grade,
-      canonical_name: canonical,
+      canonical_name: (nd.canonical_name ?? '').trim() || raws[0] || subs[0] || '(necunoscut)',
       kind: asKind(nd.kind),
       raw_names: raws,
       variant_count: raws.length,
@@ -339,76 +369,130 @@ async function main() {
       note: typeof nd.note === 'string' ? nd.note : '',
     });
   }
-
-  // ID-uri neasignate de model → singleton cu nume exact (coverage 100% + vezi ce-a ratat).
+  // ID-uri neasignate → singleton cu nume exact.
   let unassigned = 0;
   for (let id = 1; id <= N; id++) {
     if (seen.has(id)) continue;
     unassigned++;
     rows.push({
-      grade,
-      canonical_name: nameOf(id),
-      kind: 'notiune',
-      raw_names: [nameOf(id)],
-      variant_count: 1,
-      sub_points: [],
-      min_pdf_page: pageOf(id),
-      confidence: 'low',
-      note: 'neasignat — verifică',
+      grade, canonical_name: nameOf(id), kind: 'notiune', raw_names: [nameOf(id)], variant_count: 1,
+      sub_points: [], min_pdf_page: pageOf(id), confidence: 'low', note: 'neasignat — verifică',
     });
   }
   rows.sort((a, b) => (a.min_pdf_page ?? 1e9) - (b.min_pdf_page ?? 1e9));
 
-  // 4b. Coverage determinist: reuniunea raw_names + sub_points = exact {1..N} ca multiset de nume.
-  const covered = rows.reduce((s, r) => s + r.raw_names.length + r.sub_points.length, 0);
-  if (covered !== N) {
-    console.error(`\n❌ COVERAGE ${covered}/${N} ≠ N — NU încarc (bug de partiție).`);
-    process.exit(1);
+  const coveredLocal = rows.reduce((s, r) => s + r.raw_names.length + r.sub_points.length, 0);
+  if (coveredLocal !== N) {
+    return { grade, N, nodes: rows.length, dbCovered: 0, maxSub: best.maxSub, unassigned, cost: costOf(inTok, outTok), ok: false, problems: [`partiție internă ${coveredLocal}/${N}`] };
   }
-  console.log(`✅ Coverage determinist: ${covered}/${N} (fiecare ID exact o dată; ${unassigned} neasignate → singletons).`);
 
-  // 5. Idempotent: TRUNCATE pe grade (delete), apoi inserează.
-  console.log(`🧹 Șterg propunerile existente pentru clasa ${grade} …`);
+  // Idempotent: TRUNCATE pe grade, apoi insert.
   const { error: delErr } = await supabase.from('concept_dedup_proposals').delete().eq('grade', grade);
-  if (delErr) throw new Error(`Ștergere propuneri vechi: ${delErr.message}`);
-
+  if (delErr) throw new Error(`Ștergere propuneri vechi (grade ${grade}): ${delErr.message}`);
   const BATCH = 500;
-  let inserted = 0;
   for (let i = 0; i < rows.length; i += BATCH) {
-    const batch = rows.slice(i, i + BATCH);
-    const { error } = await supabase.from('concept_dedup_proposals').insert(batch);
-    if (error) throw new Error(`Insert propuneri [${i}..${i + batch.length}]: ${error.message}`);
-    inserted += batch.length;
+    const { error } = await supabase.from('concept_dedup_proposals').insert(rows.slice(i, i + BATCH));
+    if (error) throw new Error(`Insert propuneri (grade ${grade}) [${i}]: ${error.message}`);
   }
 
-  // 6. Raport.
+  // ── VERIFICARE din DB REALĂ (round-trip) ──────────────────────────────────
+  interface DbRow { raw_names: string[]; sub_points: string[] }
+  const dbRows: DbRow[] = [];
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await supabase
+      .from('concept_dedup_proposals')
+      .select('raw_names, sub_points')
+      .eq('grade', grade)
+      .range(from, from + 999);
+    if (error) throw new Error(`Citire verificare (grade ${grade}): ${error.message}`);
+    if (!data || data.length === 0) break;
+    dbRows.push(...(data as DbRow[]));
+    if (data.length < 1000) break;
+  }
+  const dbNodes = dbRows.length;
+  const dbCovered = dbRows.reduce((s, r) => s + (r.raw_names?.length ?? 0) + (r.sub_points?.length ?? 0), 0);
+  const dbMaxSub = dbRows.reduce((m, r) => Math.max(m, r.sub_points?.length ?? 0), 0);
+
+  const problems: string[] = [];
+  if (dbCovered !== N) problems.push(`coverage DB ${dbCovered}/${N} INCOMPLET`);
+  if (dbMaxSub > MAX_SUBPOINTS) problems.push(`max sub-puncte ${dbMaxSub} > ${MAX_SUBPOINTS}`);
+  const ok = problems.length === 0;
+
   const withSubs = rows.filter((r) => r.sub_points.length > 0);
-  const totalSubPoints = rows.reduce((s, r) => s + r.sub_points.length, 0);
-  const nameMerges = rows.filter((r) => r.variant_count > 1);
-  const lowCount = rows.filter((r) => r.confidence === 'low').length;
-  const cost = ((inputTokens / 1e6) * 3 + (outputTokens / 1e6) * 15);
+  console.log(`✅ Inserat ${dbNodes} noduri (reducere ${N} → ${dbNodes}). Neasignate: ${unassigned}. ~$${costOf(inTok, outTok).toFixed(4)}`);
+  console.log(`   🔎 VERIFICARE DB clasa ${grade}: noduri=${dbNodes} · coverage=${dbCovered}/${N} · max_sub=${dbMaxSub} · noduri cu sub=${withSubs.length}` +
+    `  →  ${ok ? '✅ OK' : '❌ PROBLEMĂ: ' + problems.join('; ')}`);
 
-  console.log('\n──────── RAPORT DEDUP — ID-BASED (clasa ' + grade + ') ────────');
-  console.log(`Concepte brute distincte:     ${N}`);
-  console.log(`Noduri canonice (output):     ${rows.length}   →  reducere ${N} → ${rows.length} (-${N - rows.length})`);
-  console.log(`  ├─ noduri cu sub_points:    ${withSubs.length}  (${totalSubPoints} sub-puncte)`);
-  console.log(`  ├─ noduri cu ≥2 variante:   ${nameMerges.length}`);
-  console.log(`  └─ singletons „neasignat":  ${unassigned}`);
-  console.log(`Coverage (determinist):       ${covered}/${N}  ·  ID-uri dublate: 0`);
-  console.log(`Confidence "low":             ${lowCount}` + (unassigned ? ` (din care ${unassigned} neasignate)` : ''));
-  console.log(`Inserat în staging:           ${inserted} rânduri (concept_dedup_proposals, grade=${grade})`);
-  console.log(`Tokeni:                       in ${inputTokens} / out ${outputTokens}  ·  ~$${cost.toFixed(4)}`);
-  console.log('\nTop 10 noduri-părinte (cele mai multe sub-puncte):');
-  for (const r of [...withSubs].sort((a, b) => b.sub_points.length - a.sub_points.length).slice(0, 10)) {
-    console.log(`  • ${r.canonical_name}  [${r.kind}, ${r.confidence}] · ${r.sub_points.length} sub: ${r.sub_points.join(', ')}`);
+  return { grade, N, nodes: dbNodes, dbCovered, maxSub: dbMaxSub, unassigned, cost: costOf(inTok, outTok), ok, problems };
+}
+
+// ── Parse --grades ("1-11" | "1,2,5" | mixt) ─────────────────────────────────
+function parseGrades(spec: string | undefined, fallback: number): number[] {
+  if (!spec) return [fallback];
+  const set = new Set<number>();
+  for (const tokRaw of spec.split(',')) {
+    const tok = tokRaw.trim();
+    if (!tok) continue;
+    const m = tok.match(/^(\d+)\s*-\s*(\d+)$/);
+    if (m) { let a = +m[1], b = +m[2]; if (a > b) [a, b] = [b, a]; for (let g = a; g <= b; g++) set.add(g); }
+    else if (/^\d+$/.test(tok)) set.add(+tok);
+    else throw new Error(`Token --grades invalid: "${tok}"`);
   }
-  if (unassigned > 0) {
-    console.log(`\n⚠️  ${unassigned} concepte NEASIGNATE de model (singletons „neasignat — verifică"):`);
-    for (const r of rows.filter((r) => r.note === 'neasignat — verifică').slice(0, 30)) {
-      console.log(`  • ${r.canonical_name}`);
+  const grades = [...set].filter((g) => g >= 1 && g <= 12).sort((a, b) => a - b);
+  if (grades.length === 0) throw new Error('--grades nu conține nicio clasă validă (1..12).');
+  return grades;
+}
+
+// ── Main ─────────────────────────────────────────────────────────────────────
+async function main() {
+  const { values } = parseArgs({ options: { grade: { type: 'string' }, grades: { type: 'string' } } });
+  const grades = values.grades
+    ? parseGrades(values.grades, DEFAULT_GRADE)
+    : [values.grade ? parseInt(values.grade, 10) : DEFAULT_GRADE];
+  for (const g of grades) {
+    if (!Number.isInteger(g) || g < 1 || g > 12) {
+      console.error(`❌ clasă invalidă: ${g} (trebuie 1-12)`);
+      process.exit(1);
     }
   }
-  console.log('\n✅ Doar PROPUNERI. Tabela `concepts` reală NU a fost atinsă. Aprobă tu înainte de orice contopire definitivă.');
+
+  const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!anthropicKey) throw new Error('Lipsește ANTHROPIC_API_KEY (rulează cu --env-file=.env.local).');
+  if (!supabaseUrl || !serviceKey) throw new Error('Lipsesc NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY.');
+
+  const anthropic = new Anthropic({ apiKey: anthropicKey });
+  const supabase = makeClient(supabaseUrl, serviceKey);
+
+  console.log(`🎯 Dedup pentru clasele: [${grades.join(', ')}]  (max ${MAX_SUBPOINTS} sub-puncte/nod, retry ≤${MAX_GROUP_ATTEMPTS})`);
+  const reports: GradeReport[] = [];
+  for (const g of grades) {
+    try {
+      reports.push(await runGrade(anthropic, supabase, g));
+    } catch (e) {
+      console.error(`💥 Clasa ${g} a eșuat: ${(e as Error)?.message ?? e}`);
+      reports.push({ grade: g, N: 0, nodes: 0, dbCovered: 0, maxSub: 0, unassigned: 0, cost: 0, ok: false, problems: [(e as Error)?.message ?? 'eroare'] });
+    }
+  }
+
+  // ── SUMAR (din DB reală) ──────────────────────────────────────────────────
+  console.log('\n════════════ SUMAR (verificat din DB) ════════════');
+  for (const r of reports) {
+    console.log(`${r.ok ? '✅' : '❌'} Clasa ${String(r.grade).padStart(2)} · ${String(r.nodes).padStart(3)} noduri · ` +
+      `coverage ${r.dbCovered}/${r.N} · max_sub ${r.maxSub} · neasignate ${r.unassigned}` +
+      (r.problems.length ? `  →  ${r.problems.join('; ')}` : ''));
+  }
+  const totalCost = reports.reduce((s, r) => s + r.cost, 0);
+  const failed = reports.filter((r) => !r.ok);
+  console.log(`Cost total: ~$${totalCost.toFixed(4)}`);
+  console.log('\n✅ Doar PROPUNERI (concept_dedup_proposals). `concepts` reală NU a fost atinsă.');
+  if (failed.length > 0) {
+    console.error(`\n⚠️  ${failed.length} clasă/clase cu PROBLEME — NU „gata": [${failed.map((r) => r.grade).join(', ')}]. Re-rulează doar pe ele.`);
+    process.exitCode = 1;
+  } else {
+    console.log(`🎉 Toate ${reports.length} clasele: coverage complet și max sub-puncte ≤ ${MAX_SUBPOINTS}.`);
+  }
 }
 
 main().catch((err) => {
