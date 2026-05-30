@@ -1,5 +1,5 @@
 /**
- * 04-dedup-propose.ts — ETAPA 3.1: DEDUP CONCEPTE (AI propune, omul aprobă)
+ * 04-dedup-propose.ts — ETAPA 3.2: DEDUP CONCEPTE, GRANULARITATE MEDIE (AI propune, omul aprobă)
  *
  * Rulează:  npm run extract:dedup -- --grade 12
  *           (sau: tsx --env-file=.env.local scripts/extraction/04-dedup-propose.ts --grade 12)
@@ -7,12 +7,15 @@
  * Ce face:
  *   1. Citește conceptele brute ale unei clase din concept_inventory_raw
  *      (name + first_seen_pdf_page + subtopic).
- *   2. Trimite ÎNTREAGA listă numerotată la claude-sonnet-4-6 și cere GRUPAREA
- *      variantelor de formulare ale ACELUIAȘI concept (NU contopește concepte distincte).
- *      Modelul întoarce grupuri prin INDECȘI (nu re-scrie textul) → output compact, fără pierderi.
- *   3. Validează acoperirea (fiecare concept apare exact o dată); conceptele negrupate
- *      devin grupuri-singleton (confidence "low", note "not_grouped_by_model").
- *   4. Încarcă propunerile în staging-ul concept_dedup_proposals.
+ *   2. Trimite ÎNTREAGA listă numerotată la claude-sonnet-4-6 la GRANULARITATE MEDIE
+ *      (un nod = o unitate predabilă). Două mecanisme, ambele păstrează TOT:
+ *        (a) variante de nume → un nume canonic;
+ *        (b) consolidare părinte-copil → proprietățile/cazurile/sub-formulele aceluiași
+ *            concept devin SUB-PUNCTE (sub_points) în nodul-părinte, nu noduri separate.
+ *      Modelul întoarce noduri prin INDECȘI (nu re-scrie textul) → compact, fără pierderi.
+ *   3. Validează acoperirea: fiecare concept apare EXACT O DATĂ — ori ca variantă de nume,
+ *      ori ca sub-punct. Negrupatele devin singleton (confidence "low", "not_grouped_by_model").
+ *   4. Încarcă propunerile în staging-ul concept_dedup_proposals (cu sub_points jsonb).
  *      Idempotent: șterge propunerile clasei înainte de reinserare.
  *
  * NU atinge tabela `concepts` reală. Doar propuneri — nimic definitiv până la aprobarea umană.
@@ -49,21 +52,35 @@ interface RawConcept {
   subtopic: string | null;
 }
 
-/** Grup brut, așa cum îl întoarce modelul (membri = indecși în lista trimisă). */
+/** Un sub-punct al unui nod (proprietate / caz / sub-formulă), așa cum îl întoarce modelul. */
+interface ModelSubPoint {
+  label: string;
+  members: number[]; // indecșii bruți care formează acest sub-punct
+}
+
+/** Nod brut, așa cum îl întoarce modelul (membri = indecși în lista trimisă). */
 interface ModelGroup {
   canonical_name: string;
   kind: string;
-  members: number[];
+  members: number[];          // indecșii care sunt VARIANTE DE NUME ale nodului-părinte
+  sub_points?: ModelSubPoint[]; // sub-proprietăți/sub-formule consolidate sub acest nod
   confidence: string;
   note?: string;
+}
+
+/** Sub-punct salvat (lossless: păstrăm și textul brut). */
+interface SubPoint {
+  label: string;
+  raw_names: string[];
 }
 
 interface ProposalRow {
   grade: number;
   canonical_name: string;
   kind: Kind;
-  raw_names: string[];
-  variant_count: number;
+  raw_names: string[];     // variantele de NUME ale nodului
+  variant_count: number;   // = raw_names.length (variante de nume ale părintelui)
+  sub_points: SubPoint[];  // sub-proprietăți/sub-formule (granularitate medie)
   min_pdf_page: number | null;
   confidence: Confidence;
   note: string;
@@ -72,8 +89,10 @@ interface ProposalRow {
 // ── Prompt (română, STRICT JSON) ─────────────────────────────────────────────
 const SYSTEM_PROMPT =
   'Ești terminolog de matematică școlară (curriculum BAC Republica Moldova). Primești o ' +
-  'listă NUMEROTATĂ de concepte extrase brut dintr-un manual și grupezi DOAR variantele de ' +
-  'formulare ale ACELUIAȘI concept. Răspunzi EXCLUSIV cu obiectul JSON cerut — fără proză, ' +
+  'listă NUMEROTATĂ de concepte extrase brut dintr-un manual și le organizezi la ' +
+  'GRANULARITATE MEDIE: un nod = o unitate predabilă (cât o lecție). Variantele de nume se ' +
+  'contopesc, iar sub-proprietățile/sub-formulele/cazurile aceluiași concept devin SUB-PUNCTE ' +
+  'în nodul-părinte, NU noduri separate. Răspunzi EXCLUSIV cu obiectul JSON cerut — fără proză, ' +
   'fără markdown, fără ```.';
 
 function buildUserPrompt(grade: number, raw: RawConcept[]): string {
@@ -90,7 +109,11 @@ function buildUserPrompt(grade: number, raw: RawConcept[]): string {
 LISTA:
 ${lines}
 
-SARCINĂ: grupează indicii care denumesc ACELAȘI concept (doar variante de formulare).
+SARCINĂ: organizează indicii la GRANULARITATE MEDIE — un nod = o unitate predabilă (cât o lecție).
+Folosește DOUĂ mecanisme, ambele păstrează TOT (niciun concept aruncat):
+  (a) Variante de nume → un singur nume canonic (ca înainte).
+  (b) Consolidare părinte-copil → proprietățile/cazurile/sub-formulele aceluiași concept predabil
+      devin SUB-PUNCTE în nodul-părinte, nu noduri separate.
 
 Întoarce STRICT un singur obiect JSON, exact în forma:
 {
@@ -98,7 +121,10 @@ SARCINĂ: grupează indicii care denumesc ACELAȘI concept (doar variante de for
     {
       "canonical_name": "<nume canonic SCURT și corect (terminologie BAC MD)>",
       "kind": "notiune" | "definitie" | "teorema" | "formula" | "procedeu",
-      "members": [<indecșii din listă care intră în acest grup>],
+      "members": [<indecșii care sunt VARIANTE DE NUME ale acestui nod; [] dacă nodul e doar părinte>],
+      "sub_points": [
+        { "label": "<sub-proprietate/caz/sub-formulă scurt>", "members": [<indecșii bruți ai acestui sub-punct>] }
+      ],
       "confidence": "high" | "medium" | "low",
       "note": "<gol sau o remarcă scurtă>"
     }
@@ -107,27 +133,34 @@ SARCINĂ: grupează indicii care denumesc ACELAȘI concept (doar variante de for
 
 REGULI OBLIGATORII:
 
-1. PARTIȚIE COMPLETĂ: fiecare index din 0 până la ${raw.length - 1} trebuie să apară în EXACT UN
-   singur grup. Un concept care stă singur formează un grup cu un singur membru.
+1. PARTIȚIE COMPLETĂ: fiecare index din 0 până la ${raw.length - 1} apare EXACT O DATĂ în tot
+   răspunsul — ORI în "members" al unui nod (ca variantă de nume), ORI în "members" al unui
+   "sub_points" (ca sub-punct). Nimic dublat, nimic omis.
 
-2. Grupează DOAR variante de formulare ale ACELUIAȘI concept:
-   - singular/plural, diacritice sparte sau lipsă, ordine de cuvinte;
-   - "metoda X" = "X" = "formula lui X" CÂND denumesc același lucru;
-   - "primitivă" = "primitivă a unei funcții" = "primitiva unei funcții".
+2. Variante de nume (members ale nodului): singular/plural, diacritice sparte/lipsă, ordine de
+   cuvinte; "metoda X" = "X" = "formula lui X" când denumesc același lucru;
+   "primitivă" = "primitivă a unei funcții" = "primitiva unei funcții".
 
-3. NU contopi concepte GENUIN DISTINCTE chiar dacă numele seamănă. Păstrează SEPARAT (exemple):
-   - "asimptotă verticală la dreapta" ≠ "...la stînga" ≠ "asimptotă orizontală" ≠ "asimptotă oblică";
-   - "arie laterală" ≠ "arie totală";
-   - "integrală definită" ≠ "integrală nedefinită".
-   Diferența de sens (poziție, tip, domeniu) înseamnă concepte diferite, nu variante.
+3. Consolidare părinte-copil (sub_points) — NOU. Când mai multe concepte sunt proprietăți, cazuri,
+   sub-formule sau instanțe ale ACELUIAȘI concept predabil, pune-le ca sub_points sub un părinte:
+   - "proprietatea de aditivitate/liniaritate/monotonie/invarianța semnului a integralei definite"
+     → nod-părinte "proprietățile integralei definite", sub_points: aditivitate, liniaritate,
+       monotonie, invarianța semnului.
+   - "asimptotă verticală/orizontală/oblică"
+     → nod-părinte "asimptotele unei funcții", sub_points: verticală, orizontală, oblică.
+   Dacă nodul-părinte NU există ca text brut în listă, inventează-i canonical_name și lasă
+   "members": [] (toate cele brute intră în sub_points).
 
-4. canonical_name: forma scurtă, corectă, în terminologia tipărită în manualele BAC MD.
-   Păstrează diacriticele corecte (scrie "asimptotă", nu "asimptota").
+4. GRANULARITATE: un nod = o unitate cât o lecție, NU o singură proprietate sau formulă izolată.
+   DAR nu exagera: NU consolida concepte GENUIN INDEPENDENTE doar fiindcă împart o subtemă —
+   doar relații REALE părinte-copil / proprietate-a / caz-al. Concepte mari, de sine stătătoare
+   (ex. "integrală definită" vs "integrală nedefinită") rămân noduri SEPARATE, nu sub-puncte unul
+   al altuia.
 
-5. Dacă NU ești sigur că doi termeni sunt același concept, NU-i contopi: lasă-i în grupuri
-   separate, pune confidence "low" și explică pe scurt în note de ce ai ezitat.
+5. canonical_name și label: forma scurtă, corectă, terminologia BAC MD, cu diacritice corecte.
 
-6. confidence pe grup: "high" = sigur că toate variantele sunt același concept; "low" = nesigur.
+6. confidence pe nod: "high" = sigur de gruparea/consolidarea făcută; "low" = nesigur (atunci NU
+   consolida agresiv — lasă separat și explică în note).
 
 Răspunde DOAR cu obiectul JSON.`;
 }
@@ -252,7 +285,15 @@ async function main() {
   let invalidRefs = 0;
   let inputTokens = 0;
   let outputTokens = 0;
-  const groups: { canonical_name: string; kind: string; members: number[]; confidence: string; note: string }[] = [];
+  type GGroup = {
+    canonical_name: string;
+    kind: string;
+    members: number[];                                   // indecși GLOBALI: variante de nume
+    sub_points: { label: string; members: number[] }[];  // indecși GLOBALI per sub-punct
+    confidence: string;
+    note: string;
+  };
+  const groups: GGroup[] = [];
 
   for (let c = 0; c < chunks.length; c++) {
     const globalIdx = chunks[c];                       // local i → globalIdx[i]
@@ -273,29 +314,46 @@ async function main() {
       const jsonStr = extractJson(text);
       const parsed = jsonStr ? (JSON.parse(jsonStr) as { groups?: ModelGroup[] }) : {};
       localGroups = Array.isArray(parsed.groups) ? parsed.groups : [];
-      if (stopReason !== 'max_tokens') console.log(`${localGroups.length} grupuri  [in ${it} / out ${ot}]`);
+      if (stopReason !== 'max_tokens') console.log(`${localGroups.length} noduri  [in ${it} / out ${ot}]`);
     } catch (e) {
       // Secțiune eșuată (parse/rețea) → NU oprim tot; conceptele ei devin singletons.
       console.log(`❌ ${(e as Error)?.message ?? e} → secțiune ca singletons`);
       localGroups = [];
     }
 
-    // Validare locală + mapare la indecși globali.
+    // Mapare local→global cu PARTIȚIE peste members ȘI sub_points (fiecare index o dată).
+    const claim = (li: unknown): number | null => {
+      const n = Number(li);
+      if (!Number.isInteger(n) || n < 0 || n >= sub.length) { invalidRefs++; return null; }
+      const gi = globalIdx[n];
+      if (assigned.has(gi)) { duplicateRefs++; return null; }
+      assigned.add(gi);
+      return gi;
+    };
+
     for (const g of localGroups) {
       const members: number[] = [];
       for (const m of Array.isArray(g.members) ? g.members : []) {
-        const li = Number(m);
-        if (!Number.isInteger(li) || li < 0 || li >= sub.length) { invalidRefs++; continue; }
-        const gi = globalIdx[li];
-        if (assigned.has(gi)) { duplicateRefs++; continue; }
-        assigned.add(gi);
-        members.push(gi);
+        const gi = claim(m);
+        if (gi !== null) members.push(gi);
       }
-      if (members.length === 0) continue;
+      const subPoints: { label: string; members: number[] }[] = [];
+      for (const sp of Array.isArray(g.sub_points) ? g.sub_points : []) {
+        const spMembers: number[] = [];
+        for (const m of Array.isArray(sp?.members) ? sp.members : []) {
+          const gi = claim(m);
+          if (gi !== null) spMembers.push(gi);
+        }
+        if (spMembers.length === 0) continue;
+        const lbl = (sp?.label ?? '').toString().trim();
+        subPoints.push({ label: lbl !== '' ? lbl : raw[spMembers[0]].name, members: spMembers });
+      }
+      if (members.length === 0 && subPoints.length === 0) continue;
       groups.push({
         canonical_name: (g.canonical_name ?? '').trim(),
         kind: g.kind,
         members,
+        sub_points: subPoints,
         confidence: g.confidence,
         note: typeof g.note === 'string' ? g.note : '',
       });
@@ -311,6 +369,7 @@ async function main() {
       canonical_name: raw[i].name,
       kind: 'notiune',
       members: [i],
+      sub_points: [],
       confidence: 'low',
       note: 'not_grouped_by_model',
     });
@@ -320,17 +379,23 @@ async function main() {
       `${recovered} concepte negrupate → singletons.`);
   }
 
-  // 4. Construiește rândurile finale.
+  // 4. Construiește rândurile finale (canonical + sub_points lossless).
   const rows: ProposalRow[] = groups.map((g) => {
     const raws = g.members.map((i) => raw[i].name);
-    const pages = g.members.map((i) => raw[i].first_seen_pdf_page).filter((p): p is number => typeof p === 'number');
-    const canonical = g.canonical_name !== '' ? g.canonical_name : raws[0];
+    const subPoints: SubPoint[] = g.sub_points.map((sp) => ({
+      label: sp.label,
+      raw_names: sp.members.map((i) => raw[i].name),
+    }));
+    const allIdx = [...g.members, ...g.sub_points.flatMap((sp) => sp.members)];
+    const pages = allIdx.map((i) => raw[i].first_seen_pdf_page).filter((p): p is number => typeof p === 'number');
+    const canonical = g.canonical_name !== '' ? g.canonical_name : (raws[0] ?? subPoints[0]?.raw_names[0] ?? '(necunoscut)');
     return {
       grade,
       canonical_name: canonical,
       kind: asKind(g.kind),
       raw_names: raws,
       variant_count: raws.length,
+      sub_points: subPoints,
       min_pdf_page: pages.length ? Math.min(...pages) : null,
       confidence: asConf(g.confidence),
       note: g.note,
@@ -354,23 +419,29 @@ async function main() {
 
   // 6. Raport.
   const lowCount = rows.filter((r) => r.confidence === 'low').length;
-  const merges = rows.filter((r) => r.variant_count > 1);
-  const variantsInMerges = merges.reduce((s, r) => s + r.variant_count, 0);
+  const nameMerges = rows.filter((r) => r.variant_count > 1);
+  const withSubs = rows.filter((r) => r.sub_points.length > 0);
+  const totalSubPoints = rows.reduce((s, r) => s + r.sub_points.length, 0);
+  const rawInSubPoints = rows.reduce((s, r) => s + r.sub_points.reduce((t, sp) => t + sp.raw_names.length, 0), 0);
+  const rawInNames = rows.reduce((s, r) => s + r.raw_names.length, 0);
   const cost = ((inputTokens / 1e6) * 3 + (outputTokens / 1e6) * 15);
 
-  console.log('\n──────── RAPORT DEDUP (clasa ' + grade + ') ────────');
-  console.log(`Secțiuni (apeluri model):   ${chunks.length}`);
-  console.log(`Concepte brute (input):     ${N}`);
-  console.log(`Concepte canonice (output): ${rows.length}`);
-  console.log(`  ├─ grupuri cu ≥2 variante: ${merges.length} (au absorbit ${variantsInMerges} brute)`);
-  console.log(`  └─ singletons (1 variantă): ${rows.length - merges.length}`);
-  console.log(`Reducere:                   ${N} → ${rows.length}  (-${N - rows.length})`);
-  console.log(`Confidence "low":           ${lowCount}`);
-  console.log(`Inserat în staging:         ${inserted} rânduri (concept_dedup_proposals, grade=${grade})`);
-  console.log(`Tokeni:                     in ${inputTokens} / out ${outputTokens}  ·  ~$${cost.toFixed(4)}`);
-  console.log('\nTop 10 grupări (cele mai multe variante):');
-  for (const r of [...merges].sort((a, b) => b.variant_count - a.variant_count).slice(0, 10)) {
-    console.log(`  • ${r.canonical_name}  [${r.kind}, ${r.confidence}] ← ${r.raw_names.length}: ${r.raw_names.join(' | ')}`);
+  console.log('\n──────── RAPORT DEDUP — GRANULARITATE MEDIE (clasa ' + grade + ') ────────');
+  console.log(`Secțiuni (apeluri model):     ${chunks.length}`);
+  console.log(`Concepte brute (input):       ${N}`);
+  console.log(`Noduri canonice (output):     ${rows.length}   →  reducere ${N} → ${rows.length} (-${N - rows.length})`);
+  console.log(`  ├─ noduri cu sub_points:    ${withSubs.length}`);
+  console.log(`  ├─ total sub-puncte:        ${totalSubPoints}`);
+  console.log(`  └─ noduri cu ≥2 variante de nume: ${nameMerges.length}`);
+  console.log(`Acoperire brută (lossless):   ${rawInNames} ca variante de nume + ${rawInSubPoints} în sub-puncte ` +
+    `= ${rawInNames + rawInSubPoints} / ${N}`);
+  console.log(`Confidence "low":             ${lowCount}`);
+  console.log(`Inserat în staging:           ${inserted} rânduri (concept_dedup_proposals, grade=${grade})`);
+  console.log(`Tokeni:                       in ${inputTokens} / out ${outputTokens}  ·  ~$${cost.toFixed(4)}`);
+  console.log('\nTop 10 noduri-părinte (cele mai multe sub-puncte):');
+  for (const r of [...withSubs].sort((a, b) => b.sub_points.length - a.sub_points.length).slice(0, 10)) {
+    console.log(`  • ${r.canonical_name}  [${r.kind}, ${r.confidence}] · ${r.sub_points.length} sub-puncte: ` +
+      r.sub_points.map((sp) => sp.label).join(', '));
   }
   console.log('\n✅ Doar PROPUNERI. Tabela `concepts` reală NU a fost atinsă. Aprobă tu înainte de orice contopire definitivă.');
 }
