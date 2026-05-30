@@ -47,6 +47,25 @@ const MAX_RETRIES = 6;            // retry pe rețea / rate-limit
 const BASE_BACKOFF_MS = 1500;     // backoff exponențial: 1.5s, 3s, 6s, ...
 // (Throttle-ul fix dintre apeluri a fost eliminat: redundant cu backoff-ul pe 429.)
 
+// ── Batch API (extract:all implicit) ─────────────────────────────────────────
+// Limite curente (docs Anthropic): 100.000 cereri SAU 256 MB / batch, ce vine primul.
+// O carte (~136 pagini × ~340 KB base64 ≈ 46 MB) încape lejer într-un singur batch;
+// chunking-ul de mai jos e doar plasă de siguranță dacă o carte ar depăși pragurile.
+const BATCH_MAX_REQUESTS = 100_000;            // limită API: cereri/batch
+const BATCH_MAX_BYTES = 200 * 1024 * 1024;     // margine sub 256 MB
+const BATCH_POLL_INTERVAL_MS = 15_000;         // poll status la 15s
+const BATCH_MAX_WAIT_MS = 24 * 60 * 60 * 1000; // API expiră batch-ul la 24h
+// Prețuri standard claude-sonnet-4-6 (USD / 1M tokeni); Batch API = 50%.
+const PRICE_INPUT_PER_MTOK = 3;
+const PRICE_OUTPUT_PER_MTOK = 15;
+const BATCH_DISCOUNT = 0.5;
+
+/** Cost USD pentru tokenii dați. `batch=true` aplică reducerea de 50%. */
+export function costUSD(inputTokens: number, outputTokens: number, batch: boolean): number {
+  const full = (inputTokens / 1e6) * PRICE_INPUT_PER_MTOK + (outputTokens / 1e6) * PRICE_OUTPUT_PER_MTOK;
+  return batch ? full * BATCH_DISCOUNT : full;
+}
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const OUTPUT_DIR = path.join(__dirname, 'output');
 const RAW_DIR = path.join(OUTPUT_DIR, 'raw');
@@ -561,6 +580,255 @@ export async function runInventory(opts: RunInventoryOptions): Promise<RunInvent
   console.log(`Pagini low-confidence:   [${stats.low_confidence_pages.join(', ')}]`);
   console.log(`Parse failures:          [${stats.parse_failures.join(', ')}]`);
   console.log(`Tokeni (rularea asta):   in ${totalIn} / out ${totalOut} (total ${totalIn + totalOut})`);
+  console.log(`Cost (sync, preț plin):  $${costUSD(totalIn, totalOut, false).toFixed(4)}`);
+  console.log(`Fișier inventar:         ${outPath}`);
+
+  return {
+    grade,
+    outPath,
+    pageCount,
+    pages_processed: stats.pages_processed,
+    processed_now: processedNow,
+    total_concepts: conceptCount,
+    low_confidence_count: stats.low_confidence_pages.length,
+    parse_failures_count: stats.parse_failures.length,
+    input_tokens: totalIn,
+    output_tokens: totalOut,
+  };
+}
+
+// ── Inventar via Batch API (asincron, 50% reducere) ──────────────────────────
+type BatchRequest = Anthropic.Messages.BatchCreateParams.Request;
+
+/** custom_id stabil pentru maparea rezultat → pagină: "g{grade}_p{pdf_page}". */
+function buildCustomId(grade: number, pdfPage: number): string {
+  return `g${grade}_p${pdfPage}`;
+}
+function parseCustomId(id: string): { grade: number; pdfPage: number } | null {
+  const m = id.match(/^g(\d+)_p(\d+)$/);
+  if (!m) return null;
+  return { grade: parseInt(m[1], 10), pdfPage: parseInt(m[2], 10) };
+}
+
+/** O cerere de batch per pagină: ACELAȘI model/prompt/imagine ca în modul sync. */
+function buildBatchRequest(grade: number, pdfPage: number, pngB64: string): BatchRequest {
+  return {
+    custom_id: buildCustomId(grade, pdfPage),
+    params: {
+      model: MODEL,
+      max_tokens: MAX_TOKENS,
+      system: SYSTEM_PROMPT,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: 'image/png', data: pngB64 } },
+            { type: 'text', text: buildUserPrompt(pdfPage) },
+          ],
+        },
+      ],
+    },
+  };
+}
+
+/** Împarte cererile în sub-batch-uri sub limitele API (cereri + bytes). De regulă: un singur chunk. */
+function chunkRequests<T extends { bytes: number }>(items: T[]): T[][] {
+  const chunks: T[][] = [];
+  let cur: T[] = [];
+  let curBytes = 0;
+  for (const it of items) {
+    if (cur.length > 0 && (cur.length + 1 > BATCH_MAX_REQUESTS || curBytes + it.bytes > BATCH_MAX_BYTES)) {
+      chunks.push(cur);
+      cur = [];
+      curBytes = 0;
+    }
+    cur.push(it);
+    curBytes += it.bytes;
+  }
+  if (cur.length) chunks.push(cur);
+  return chunks;
+}
+
+/** Poll status până la `ended` (sau eroare la 24h). Loghează tally-ul de cereri. */
+async function pollBatchUntilDone(
+  anthropic: Anthropic,
+  batchId: string,
+  label: string,
+): Promise<Anthropic.Messages.MessageBatch> {
+  const start = Date.now();
+  for (;;) {
+    const batch = await anthropic.messages.batches.retrieve(batchId);
+    if (batch.processing_status === 'ended') return batch;
+    const c = batch.request_counts;
+    const mins = ((Date.now() - start) / 60000).toFixed(1);
+    console.log(`    ⏳ ${label}: ${batch.processing_status} · proc=${c.processing} ok=${c.succeeded} ` +
+      `err=${c.errored} exp=${c.expired} (${mins} min)`);
+    if (Date.now() - start > BATCH_MAX_WAIT_MS) {
+      throw new Error(`Batch ${batchId} a depășit 24h fără finalizare.`);
+    }
+    await sleep(BATCH_POLL_INTERVAL_MS);
+  }
+}
+
+/**
+ * Rulează inventarul pe O carte prin Message Batches API (50% reducere).
+ * ACELAȘI prompt/model/imagini ca modul sync; doar transportul diferă.
+ * Resume: re-trimite DOAR paginile lipsă sau marcate parse_failed.
+ * Erori per-cerere izolate (errored/expired/canceled → pagină parse_failed).
+ */
+export async function runInventoryBatch(opts: RunInventoryOptions): Promise<RunInventoryResult> {
+  const { pdf: pdfPathArg, grade } = opts;
+  const dpi = opts.dpi ?? DEFAULT_DPI;
+
+  let anthropic = opts.anthropic;
+  if (!anthropic) {
+    const anthropicKey = process.env.ANTHROPIC_API_KEY;
+    if (!anthropicKey) throw new Error('Lipsește ANTHROPIC_API_KEY (rulează cu --env-file=.env.local).');
+    anthropic = new Anthropic({ apiKey: anthropicKey });
+  }
+  const client: Anthropic = anthropic;
+
+  await fs.mkdir(OUTPUT_DIR, { recursive: true });
+  await fs.mkdir(RAW_DIR, { recursive: true });
+
+  const scale = dpi / MUPDF_BASE_DPI;
+  console.log(`📄 Deschid PDF: ${pdfPathArg}  (scale ${scale.toFixed(3)} ≈ ${dpi} DPI, MuPDF)`);
+  const doc = await openPdfForRender(pdfPathArg, dpi);
+  const pageCount = doc.length;
+  console.log(`   → ${pageCount} pagini în PDF.`);
+
+  const targetPages = parsePages(opts.pages, pageCount);
+
+  // Resume: re-trimite paginile lipsă SAU eșuate (parse_failed) din rulări anterioare.
+  const done = await readProgress(grade);
+  const needsRedo = (e?: PageEntry) => !e || e.notes.includes('parse_failed');
+  const todo = targetPages.filter((p) => needsRedo(done.get(p)));
+  const skipping = targetPages.length - todo.length;
+  console.log(`🎯 Clasa ${grade} (BATCH) · de trimis: ${todo.length} pagini` +
+    (skipping > 0 ? ` · ${skipping} deja OK în progres — le sar.` : ''));
+
+  const NN = String(grade).padStart(2, '0');
+  let totalIn = 0;
+  let totalOut = 0;
+  let processedNow = 0;
+  const tStart = Date.now();
+
+  // Scrieri progres serializate (rezultatele pot veni concurent din stream).
+  let writeChain: Promise<void> = Promise.resolve();
+  const appendProgressSafe = (entry: PageEntry): Promise<void> => {
+    writeChain = writeChain.then(() => appendProgress(grade, entry));
+    return writeChain;
+  };
+
+  if (todo.length > 0) {
+    // 1. Randează toate paginile de trimis și construiește cererile.
+    console.log(`🖼️  Randez ${todo.length} pagini (MuPDF) și construiesc cererile…`);
+    const items = todo.map((p) => {
+      const b64 = doc.getPage(p).toString('base64');
+      const req = buildBatchRequest(grade, p, b64);
+      return { page: p, req, bytes: b64.length + 4096 /* prompt+overhead aprox */ };
+    });
+
+    // 2. UN batch per carte (chunking doar dacă depășește limitele).
+    const chunks = chunkRequests(items);
+    const totalMB = (items.reduce((s, it) => s + it.bytes, 0) / 1024 / 1024).toFixed(1);
+    console.log(`📦 ${items.length} cereri (~${totalMB} MB) → ${chunks.length} batch(uri).`);
+
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+      const label = `cl.${grade} batch ${i + 1}/${chunks.length}`;
+      const created = await client.messages.batches.create({ requests: chunk.map((c) => c.req) });
+      console.log(`   ▶ ${label} trimis: ${created.id} (${chunk.length} cereri).`);
+
+      const ended = await pollBatchUntilDone(client, created.id, label);
+      console.log(`   ✓ ${label} ended: ok=${ended.request_counts.succeeded} ` +
+        `err=${ended.request_counts.errored} exp=${ended.request_counts.expired}. Descarc rezultatele…`);
+
+      // 3+4. Parsează rezultatele (ordine arbitrară → mapez după custom_id).
+      const results = await client.messages.batches.results(created.id);
+      for await (const item of results) {
+        const parsed = parseCustomId(item.custom_id);
+        if (!parsed) {
+          console.warn(`    ⚠️  custom_id necunoscut, îl sar: ${item.custom_id}`);
+          continue;
+        }
+        const pdfPage = parsed.pdfPage;
+        let entry: PageEntry;
+
+        if (item.result.type === 'succeeded') {
+          const msg = item.result.message;
+          totalIn += msg.usage.input_tokens;
+          totalOut += msg.usage.output_tokens;
+          const text = msg.content.map((b) => (b.type === 'text' ? b.text : '')).join('');
+
+          let record: InventoryRecord;
+          const jsonStr = extractJson(text);
+          if (!jsonStr) {
+            await fs.writeFile(path.join(RAW_DIR, `clasa-${NN}-page-${pdfPage}.txt`), text, 'utf8');
+            record = { ...coerceRecord({}), confidence: 'low', notes: 'parse_failed: niciun JSON găsit' };
+          } else {
+            try {
+              record = coerceRecord(JSON.parse(jsonStr));
+            } catch {
+              await fs.writeFile(path.join(RAW_DIR, `clasa-${NN}-page-${pdfPage}.txt`), text, 'utf8');
+              record = { ...coerceRecord({}), confidence: 'low', notes: 'parse_failed: JSON invalid' };
+            }
+          }
+          entry = {
+            pdf_page: pdfPage,
+            ...record,
+            input_tokens: msg.usage.input_tokens,
+            output_tokens: msg.usage.output_tokens,
+          };
+        } else {
+          // errored / expired / canceled → pagină parse_failed, NU oprim cartea.
+          const why =
+            item.result.type === 'errored'
+              ? `errored — ${item.result.error?.error?.message ?? 'eroare necunoscută'}`
+              : item.result.type;
+          entry = {
+            pdf_page: pdfPage,
+            ...coerceRecord({}),
+            confidence: 'low',
+            notes: `parse_failed: batch ${why}`,
+            input_tokens: 0,
+            output_tokens: 0,
+          };
+        }
+
+        await appendProgressSafe(entry);
+        done.set(pdfPage, entry);
+        processedNow++;
+        const tag = entry.notes.includes('parse_failed')
+          ? `⚠️  ${entry.notes}`
+          : `✓ ${entry.page_kind} · ${entry.concepts_introduced.length} concepte · ` +
+            `${entry.exercise_count} ex · conf=${entry.confidence}`;
+        console.log(`    📄 p.${pdfPage}/${pageCount} ${tag}  [in ${entry.input_tokens} / out ${entry.output_tokens} tok]`);
+      }
+    }
+    await writeChain;
+  }
+
+  // Asamblare finală — ACEEAȘI structură (pages / concept_inventory / stats).
+  const inScope = new Map<number, PageEntry>();
+  for (const p of targetPages) {
+    const e = done.get(p);
+    if (e) inScope.set(p, e);
+  }
+  const { outPath, stats, conceptCount } = await writeFinalOutput(grade, pageCount, inScope);
+
+  const elapsedMin = (Date.now() - tStart) / 60000;
+  const cost = costUSD(totalIn, totalOut, true);
+
+  console.log('\n──────── REZUMAT (BATCH) ────────');
+  console.log(`Pagini trimise acum:     ${processedNow} în ${elapsedMin.toFixed(1)} min`);
+  console.log(`Pagini în inventar:      ${stats.pages_processed} / ${pageCount}`);
+  console.log(`Concepte (deduplicate):  ${conceptCount}`);
+  console.log(`Total exerciții:         ${stats.total_exercises}`);
+  console.log(`Pagini low-confidence:   [${stats.low_confidence_pages.join(', ')}]`);
+  console.log(`Parse failures:          [${stats.parse_failures.join(', ')}]`);
+  console.log(`Tokeni (rularea asta):   in ${totalIn} / out ${totalOut} (total ${totalIn + totalOut})`);
+  console.log(`Cost (batch 50%):        $${cost.toFixed(4)}`);
   console.log(`Fișier inventar:         ${outPath}`);
 
   return {
@@ -586,13 +854,14 @@ async function main() {
       pages: { type: 'string' },
       dpi: { type: 'string' },
       concurrency: { type: 'string' },
+      batch: { type: 'boolean' }, // o singură carte prin Batch API (implicit: sync)
     },
   });
 
   const pdfPathArg = values.pdf;
   const gradeArg = values.grade;
   if (!pdfPathArg || !gradeArg) {
-    console.error('Utilizare: npm run extract:inventory -- --pdf <cale> --grade <1-12> [--pages "4,31,91"|"10-15"] [--dpi 130] [--concurrency 5]');
+    console.error('Utilizare: npm run extract:inventory -- --pdf <cale> --grade <1-12> [--pages "4,31,91"|"10-15"] [--dpi 130] [--concurrency 5] [--batch]');
     process.exit(1);
   }
   const grade = parseInt(gradeArg, 10);
@@ -608,7 +877,8 @@ async function main() {
   }
 
   try {
-    await runInventory({ pdf: pdfPathArg, grade, pages: values.pages, dpi, concurrency });
+    const run = values.batch ? runInventoryBatch : runInventory;
+    await run({ pdf: pdfPathArg, grade, pages: values.pages, dpi, concurrency });
   } catch (err) {
     console.error(`❌ ${(err as Error)?.message ?? err}`);
     process.exit(1);

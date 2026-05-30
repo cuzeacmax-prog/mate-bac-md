@@ -26,7 +26,7 @@ import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { runInventory, OUTPUT_DIR, type RunInventoryResult } from './01-inventory';
+import { runInventory, runInventoryBatch, costUSD, OUTPUT_DIR, type RunInventoryResult } from './01-inventory';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // docs/manuale-source/ relativ la rădăcina proiectului (scripts/extraction/.. /..)
@@ -93,28 +93,41 @@ async function isBookComplete(book: BookFile, dpi: number): Promise<{ complete: 
   } catch {
     return { complete: false, pageCount }; // încă niciun progres
   }
-  const seen = new Set<number>();
+  // Last-wins per pagină: o pagină e "gata" doar dacă ULTIMA ei intrare NU e parse_failed.
+  // Astfel o carte cu pagini eșuate NU e considerată completă → runInventoryBatch o reia
+  // și re-trimite doar paginile lipsă/eșuate (resume corect).
+  const finalNotes = new Map<number, string>();
   for (const line of content.split('\n')) {
     const t = line.trim();
     if (!t) continue;
     try {
-      const e = JSON.parse(t) as { pdf_page?: number };
-      if (typeof e.pdf_page === 'number') seen.add(e.pdf_page);
+      const e = JSON.parse(t) as { pdf_page?: number; notes?: string };
+      if (typeof e.pdf_page === 'number') finalNotes.set(e.pdf_page, e.notes ?? '');
     } catch {
       // linie coruptă — ignorăm
     }
   }
-  return { complete: seen.size >= pageCount, pageCount };
+  let okCount = 0;
+  for (const notes of finalNotes.values()) if (!notes.includes('parse_failed')) okCount++;
+  return { complete: okCount >= pageCount, pageCount };
 }
 
 async function main() {
-  const { values } = parseArgs({ options: { dpi: { type: 'string' }, concurrency: { type: 'string' } } });
+  const { values } = parseArgs({
+    options: {
+      dpi: { type: 'string' },
+      concurrency: { type: 'string' },
+      sync: { type: 'boolean' }, // fallback la apeluri sincrone; implicit = Batch API (50%)
+    },
+  });
   const dpi = values.dpi ? parseInt(values.dpi, 10) : DEFAULT_DPI;
   const concurrency = values.concurrency ? parseInt(values.concurrency, 10) : undefined;
   if (concurrency !== undefined && (!Number.isInteger(concurrency) || concurrency < 1)) {
     console.error(`❌ --concurrency trebuie să fie un întreg ≥ 1 (primit: "${values.concurrency}")`);
     process.exit(1);
   }
+  const useBatch = !values.sync; // implicit batch
+  const runBook = useBatch ? runInventoryBatch : runInventory;
 
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
   if (!anthropicKey) {
@@ -134,7 +147,9 @@ async function main() {
   console.log(`📚 LOT INVENTAR — ${books.length} cărți: [${books.map((b) => b.grade).join(', ')}]`);
   console.log(`   Sursă:       ${MANUALE_DIR}`);
   console.log(`   DPI:         ${dpi}`);
-  console.log(`   Concurrency: ${concurrency ?? 'implicit (5)'} pagini/carte în paralel\n`);
+  console.log(`   Mod:         ${useBatch ? 'BATCH API (asincron, 50% reducere)' : 'SYNC (preț plin)'}`);
+  if (!useBatch) console.log(`   Concurrency: ${concurrency ?? 'implicit (5)'} pagini/carte în paralel`);
+  console.log('');
 
   const rows: SummaryRow[] = [];
   let lotIn = 0;
@@ -163,12 +178,12 @@ async function main() {
         continue;
       }
 
-      const res: RunInventoryResult = await runInventory({
+      const res: RunInventoryResult = await runBook({
         pdf: book.fullPath,
         grade: book.grade,
         anthropic, // client partajat pe tot lotul
         dpi,
-        concurrency, // undefined → runInventory folosește implicitul (5)
+        concurrency, // relevant doar în modul sync; undefined → implicitul (5)
       });
 
       lotIn += res.input_tokens;
@@ -214,9 +229,11 @@ async function main() {
     books_ok: rows.filter((r) => r.status === 'ok').length,
     books_skipped: rows.filter((r) => r.status === 'skipped').length,
     books_failed: rows.filter((r) => r.status === 'failed').length,
+    mode: useBatch ? 'batch' : 'sync',
     lot_input_tokens: lotIn,
     lot_output_tokens: lotOut,
     lot_total_tokens: lotIn + lotOut,
+    lot_cost_usd: Number(costUSD(lotIn, lotOut, useBatch).toFixed(4)),
     elapsed_ms: Date.now() - t0,
     books: rows,
   };
@@ -236,6 +253,7 @@ async function main() {
   console.log('─────────────────────────────────────');
   console.log(`Cărți: ${summary.books_ok} ok · ${summary.books_skipped} sărite · ${summary.books_failed} eșuate`);
   console.log(`Tokeni LOT:  in ${lotIn} / out ${lotOut} (total ${lotIn + lotOut})`);
+  console.log(`Cost LOT:    $${summary.lot_cost_usd.toFixed(4)} (${useBatch ? 'batch 50%' : 'sync preț plin'})`);
   console.log(`Durată:      ${(summary.elapsed_ms / 1000).toFixed(1)}s`);
   console.log(`Rezumat:     ${SUMMARY_PATH}`);
 }
