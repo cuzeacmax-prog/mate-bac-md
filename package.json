@@ -35,6 +35,7 @@
     "extract:exercises": "tsx --env-file=.env.local scripts/extraction/12-exercises-extract.ts",
     "extract:answers": "tsx --env-file=.env.local scripts/extraction/13-answers-extract.ts",
     "extract:match": "tsx --env-file=.env.local scripts/extraction/14-match-answers.ts",
+    "extract:verify-integrals": "tsx --env-file=.env.local scripts/extraction/15-integrals-parse.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
