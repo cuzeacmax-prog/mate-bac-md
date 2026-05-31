@@ -31,7 +31,7 @@ const MODEL = 'claude-sonnet-4-6';
 const MAX_TOKENS = 4000;
 const SOURCE = 'culegere_12_2';
 const PRICE_IN = 3, PRICE_OUT = 15;
-const OWN_METHODS = ['verify_primitive', 'definite', 'area_volume'];
+const OWN_METHODS = ['verify_primitive', 'definite', 'area_volume', 'rotation_volume'];
 const VERIFY_DIR = path.resolve(__dirname, '../verify');
 const PY_SCRIPT = path.join(VERIFY_DIR, 'verify_integrals.py');
 
@@ -49,8 +49,12 @@ const SYSTEM_PROMPT =
   'candidat din subpunct) și f (din enunț sau subpunct), plus var. Dacă enunțul dă un f COMUN iar ' +
   'subpunctele sunt variante de F, fiecare subpunct → un item cu acel F și f-ul comun.\n' +
   '- "definite": integrală DEFINITĂ ∫_a^b g dx. Extrage integrand=g, var, lower=a, upper=b.\n' +
-  '- "area_volume": problemă de arie/volum reductibilă la o integrală definită cu integrand+limite ' +
-  'clare în enunț. Extrage integrand, var, lower, upper.\n' +
+  '- "area_volume": problemă de ARIE (subgrafic / între curbe) reductibilă la o integrală definită ' +
+  'cu integrand+limite clare. Extrage integrand (ex. f-g pentru aria dintre curbe), var, lower, upper.\n' +
+  '- "rotation_volume": OBLIGATORIU pentru orice enunț despre VOLUMUL corpului de ROTAȚIE / „rotația ' +
+  'în jurul axei Ox" / „corpul de rotație" (NU folosi area_volume pentru acestea!). Formula este ' +
+  'V=π·∫_a^b f(x)² dx, dar tu extragi DOAR funcția f în câmpul integrand (FĂRĂ pătrat, FĂRĂ π — le ' +
+  'adaugă motorul), plus var, lower, upper.\n' +
   '- "none": orice altceva NEverificabil determinist AICI — în special integralele NEDEFINITE (∫ g dx ' +
   'fără limite), întrebări teoretice, sau date lipsă. (Integralele nedefinite sunt tratate de alt motor.)\n' +
   'Înregistrează TOT prin tool-ul record_tasks.';
@@ -68,7 +72,7 @@ const TOOL: Anthropic.Messages.Tool = {
           type: 'object',
           properties: {
             subpart: { type: 'string', description: 'Litera subpunctului sau "".' },
-            task: { type: 'string', enum: ['primitive', 'definite', 'area_volume', 'none'] },
+            task: { type: 'string', enum: ['primitive', 'definite', 'area_volume', 'rotation_volume', 'none'] },
             F: { type: 'string', description: 'primitive: funcția F (candidat). Altfel gol.' },
             f: { type: 'string', description: 'primitive: funcția f. Altfel gol.' },
             integrand: { type: 'string', description: 'definite/area_volume: integrandul g. Altfel gol.' },
@@ -195,7 +199,9 @@ async function main() {
   // 4. Rânduri DB.
   const rows: VRow[] = work.map((p) => {
     const r = byKey.get(keyOf(p));
-    const detail = p.task === 'primitive' ? `F=${p.F}; f=${p.f}` : `∫_{${p.lower}}^{${p.upper}} ${p.integrand} d${p.var}`;
+    const detail = p.task === 'primitive' ? `F=${p.F}; f=${p.f}`
+      : p.task === 'rotation_volume' ? `V=π·∫_{${p.lower}}^{${p.upper}} (${p.integrand})² d${p.var}`
+      : `∫_{${p.lower}}^{${p.upper}} ${p.integrand} d${p.var}`;
     return {
       exercise_id: p.exercise_id, subpart: p.subpart, method: methodOf(p.task),
       computed_latex: r?.computed_latex ?? null, verified: r?.verified ?? null,
@@ -243,11 +249,14 @@ async function main() {
 }
 
 function methodOf(task: string): string {
-  return task === 'primitive' ? 'verify_primitive' : task === 'definite' ? 'definite' : task === 'area_volume' ? 'area_volume' : 'none';
+  return task === 'primitive' ? 'verify_primitive'
+    : task === 'definite' ? 'definite'
+    : task === 'area_volume' ? 'area_volume'
+    : task === 'rotation_volume' ? 'rotation_volume' : 'none';
 }
 function hasFields(p: Processed): boolean {
   if (p.task === 'primitive') return !!p.F && !!p.f;
-  if (p.task === 'definite' || p.task === 'area_volume') return !!p.integrand && !!p.lower && !!p.upper;
+  if (p.task === 'definite' || p.task === 'area_volume' || p.task === 'rotation_volume') return !!p.integrand && !!p.lower && !!p.upper;
   return false;
 }
 

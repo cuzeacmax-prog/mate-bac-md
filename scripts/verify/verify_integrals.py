@@ -90,20 +90,29 @@ def _verify_one(it):
             return {"computed_latex": sp.latex(F), "verified": bool(verified), "param_used": pu,
                     "note": "" if verified else "d/dx F != f"}
 
-        if task in ("definite", "area_volume"):
-            f = P(it["integrand"]); a = P(it["lower"]); b = P(it["upper"])
+        if task in ("definite", "area_volume", "rotation_volume"):
+            base = P(it["integrand"]); a = P(it["lower"]); b = P(it["upper"])
+            f = sp.pi * base ** 2 if task == "rotation_volume" else base  # V = π·∫ f² dx
             val = sp.integrate(f, (var, a, b))
             if val.has(sp.Integral):
                 return {"computed_latex": None, "verified": False, "param_used": False,
                         "note": "integrala definita ramasa neevaluata simbolic"}
+            # cross-check numeric; dacă rămân parametri liberi (a, m...), substituie valori concrete
+            params = sorted([s for s in (f.free_symbols | a.free_symbols | b.free_symbols) if s != var], key=lambda s: s.name)
+            param_used = False
+            fc, ac, bc, vc = f, a, b, val
+            if params:
+                subs = {p: _PARAM_VALS[i % len(_PARAM_VALS)] for i, p in enumerate(params)}
+                fc, ac, bc, vc = f.subs(subs), a.subs(subs), b.subs(subs), val.subs(subs)
+                param_used = True
             try:
-                sym = complex(sp.N(val, 25))
-                quad = complex(sp.N(sp.Integral(f, (var, a, b)), 25))  # quadratură independentă
+                sym = complex(sp.N(vc, 25))
+                quad = complex(sp.N(sp.Integral(fc, (var, ac, bc)), 25))  # quadratură independentă
             except Exception as e:  # noqa: BLE001
-                return {"computed_latex": sp.latex(val), "verified": False, "param_used": False,
+                return {"computed_latex": sp.latex(val), "verified": False, "param_used": param_used,
                         "note": f"evalf esuat: {type(e).__name__}"}
             agree = abs(sym - quad) <= 1e-6 * (1 + abs(quad))
-            return {"computed_latex": sp.latex(val), "verified": bool(agree), "param_used": False,
+            return {"computed_latex": sp.latex(val), "verified": bool(agree), "param_used": param_used,
                     "note": "" if agree else f"simbolic {sym:.6g} != numeric {quad:.6g}"}
 
         # default: indefinite
