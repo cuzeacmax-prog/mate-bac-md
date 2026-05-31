@@ -38,6 +38,7 @@
     "extract:verify-integrals": "tsx --env-file=.env.local scripts/extraction/15-integrals-parse.ts",
     "extract:verify-ext": "tsx --env-file=.env.local scripts/extraction/16-verify-extended.ts",
     "place:exercises": "tsx --env-file=.env.local scripts/extraction/17-place-exercises.ts",
+    "place:topic": "tsx --env-file=.env.local scripts/extraction/18-place-topic.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
