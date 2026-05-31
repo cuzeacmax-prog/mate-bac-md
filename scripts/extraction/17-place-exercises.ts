@@ -39,8 +39,11 @@ function l2normalize(v: number[]): number[] {
 }
 
 async function main() {
-  const { values } = parseArgs({ options: { resume: { type: 'boolean' }, limit: { type: 'string' } } });
+  const { values } = parseArgs({ options: { resume: { type: 'boolean' }, limit: { type: 'string' }, grade: { type: 'string' } } });
   const limitN = values.limit ? parseInt(values.limit, 10) : undefined;
+  const grade = values.grade ? parseInt(values.grade, 10) : undefined;
+  // Eticheta setului de propuneri: constrâns pe clasă vs. tot graful.
+  const METHOD = grade !== undefined ? `constrained_g${grade}` : 'semantic_all';
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (ACTIVE_PROVIDER === 'openai' && !process.env.OPENAI_API_KEY) throw new Error('Lipsește OPENAI_API_KEY.');
@@ -97,28 +100,29 @@ async function main() {
   console.log(`\n✓ embeddate acum: ${embedded} · tokeni ${totalTokens} · cost ~$${embCost.toFixed(4)} (${ACTIVE_PROVIDER})${quotaHit ? '  ⛔ cotă atinsă — oprire curată' : ''}`);
   fs.writeFileSync(CACHE, JSON.stringify(cache));
 
-  // 4. Match top-3 pentru fiecare exercițiu care ARE embedding.
+  // 4. Match top-3 pentru fiecare exercițiu care ARE embedding (constrâns pe clasă dacă --grade).
+  console.log(`🎚️  set propuneri: '${METHOD}'${grade !== undefined ? ` (DOAR concepte grade_level=${grade})` : ' (tot graful)'}.`);
   const withVec = todo.filter((e) => cache[e.id]);
-  interface LinkRow { exercise_id: string; concept_id: string; similarity: number; rank: number }
+  interface LinkRow { exercise_id: string; concept_id: string; similarity: number; rank: number; method: string }
   const links: LinkRow[] = [];
   const mlimit = pLimit(CONCURRENCY);
   let matched = 0;
   await Promise.all(withVec.map((e) => mlimit(async () => {
-    const { data, error } = await supabase.rpc('match_concepts_for_exercise', {
-      query_embedding: JSON.stringify(cache[e.id]), match_count: TOP_K,
-    });
+    const { data, error } = grade !== undefined
+      ? await supabase.rpc('match_concepts_for_exercise_grade', { query_embedding: JSON.stringify(cache[e.id]), match_count: TOP_K, grade })
+      : await supabase.rpc('match_concepts_for_exercise', { query_embedding: JSON.stringify(cache[e.id]), match_count: TOP_K });
     if (error) { console.error(`  ⚠ match ${e.exercise_number}: ${error.message}`); return; }
     (data as Array<{ concept_id: string; similarity: number }>).forEach((row, i) => {
-      links.push({ exercise_id: e.id, concept_id: row.concept_id, similarity: row.similarity, rank: i + 1 });
+      links.push({ exercise_id: e.id, concept_id: row.concept_id, similarity: row.similarity, rank: i + 1, method: METHOD });
     });
     matched++;
   })));
   console.log(`🔗 potrivite ${matched} exerciții → ${links.length} propuneri (top-${TOP_K}).`);
 
-  // 5. Idempotent: șterge propunerile exercițiilor atinse, apoi insert.
+  // 5. Idempotent: șterge DOAR propunerile acestui set (method) pentru exercițiile atinse, apoi insert.
   const ids = withVec.map((e) => e.id);
   for (let i = 0; i < ids.length; i += 100) {
-    const { error } = await supabase.from('exercise_concept_link').delete().in('exercise_id', ids.slice(i, i + 100));
+    const { error } = await supabase.from('exercise_concept_link').delete().eq('method', METHOD).in('exercise_id', ids.slice(i, i + 100));
     if (error) throw new Error(`Ștergere: ${error.message}`);
   }
   for (let i = 0; i < links.length; i += 500) {
@@ -126,24 +130,33 @@ async function main() {
     if (error) throw new Error(`Insert [${i}]: ${error.message}`);
   }
 
-  // 6. VERIFICARE din DB + eșantion.
-  const { count: linkCount } = await supabase.from('exercise_concept_link').select('*', { count: 'exact', head: true });
-  const { count: exPlaced } = await supabase.from('exercise_concept_link').select('exercise_id', { count: 'exact', head: true }).eq('rank', 1);
+  // 6. VERIFICARE din DB + eșantion (scope: setul curent METHOD).
+  const { count: linkCount } = await supabase.from('exercise_concept_link').select('*', { count: 'exact', head: true }).eq('method', METHOD);
+  const { count: exPlaced } = await supabase.from('exercise_concept_link').select('exercise_id', { count: 'exact', head: true }).eq('method', METHOD).eq('rank', 1);
   console.log('\n──────── VERIFICARE PLASARE (din DB reală) ────────');
-  console.log(`Propuneri în exercise_concept_link: ${linkCount}  ·  exerciții plasate (rank=1): ${exPlaced}`);
+  console.log(`Set '${METHOD}': ${linkCount} propuneri · exerciții plasate (rank=1): ${exPlaced}`);
   console.log(`Embedding-uri exerciții în cache: ${Object.keys(cache).length} / ${exercises.length}`);
 
-  const { data: sample } = await supabase.from('exercise_concept_link')
-    .select('similarity, rank, exercise_raw!inner(exercise_number, statement), concepts!inner(name)')
-    .order('exercise_id').order('rank').limit(15);
-  console.log('\nEșantion (enunț → top-3 concepte propuse):');
-  let lastEx = '';
-  for (const s of (sample ?? []) as unknown as Array<{ similarity: number; rank: number; exercise_raw: { exercise_number: string; statement: string }; concepts: { name: string } }>) {
-    const ex = s.exercise_raw;
-    if (ex.exercise_number !== lastEx) { console.log(`\n  nr.${ex.exercise_number}: ${ex.statement.slice(0, 90)}`); lastEx = ex.exercise_number; }
-    console.log(`    ${s.rank}. ${s.concepts.name.slice(0, 50)}  (sim ${s.similarity.toFixed(3)})`);
+  // sim top-1 (avg/min/max) pentru acest set.
+  const { data: simRows } = await supabase.from('exercise_concept_link').select('similarity').eq('method', METHOD).eq('rank', 1);
+  const sims = (simRows ?? []).map((r) => r.similarity as number);
+  if (sims.length) {
+    const avg = sims.reduce((s, x) => s + x, 0) / sims.length;
+    console.log(`sim top-1 → avg ${avg.toFixed(3)} · min ${Math.min(...sims).toFixed(3)} · max ${Math.max(...sims).toFixed(3)}`);
   }
-  console.log('\n✅ Doar exercise_concept_link + embeddings noi (cache). Restul: neatins.');
+
+  const { data: sample } = await supabase.from('exercise_concept_link')
+    .select('similarity, rank, exercise_raw!inner(exercise_number, module, statement), concepts!inner(name, grade_level)')
+    .eq('method', METHOD).order('exercise_id').order('rank').limit(30);
+  console.log('\nEșantion (enunț → top-3 propuse, cu clasa conceptului):');
+  let lastEx = '';
+  for (const s of (sample ?? []) as unknown as Array<{ similarity: number; rank: number; exercise_raw: { exercise_number: string; module: string | null; statement: string }; concepts: { name: string; grade_level: number } }>) {
+    const ex = s.exercise_raw;
+    const k = `${ex.exercise_number}|${ex.module}`;
+    if (k !== lastEx) { console.log(`\n  [${ex.module}] nr.${ex.exercise_number}: ${ex.statement.slice(0, 80)}`); lastEx = k; }
+    console.log(`    ${s.rank}. (cl.${s.concepts.grade_level}) ${s.concepts.name.slice(0, 48)}  (sim ${s.similarity.toFixed(3)})`);
+  }
+  console.log(`\n✅ Doar exercise_concept_link (set '${METHOD}') + embeddings cache. Restul: neatins.`);
 }
 
 main().catch((err: unknown) => { console.error('\n💥 Eroare fatală:', (err as Error)?.message ?? err); process.exit(1); });
