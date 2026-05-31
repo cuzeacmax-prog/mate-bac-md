@@ -49,3 +49,6 @@ supabase/.temp/
 
 # Render-test PNG artifacts (ETAPA 2.3) — inspecție locală, nu se versionează
 scripts/extraction/output/_render-test/
+
+# ETAPA 14 — caches intermediare verificare CAS
+scripts/verify/_*.json
