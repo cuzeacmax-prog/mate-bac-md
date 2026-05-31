@@ -84,7 +84,8 @@ const TOOL: Anthropic.Messages.Tool = {
 interface ExRow { id: string; exercise_number: string; statement: string; subparts: string[] }
 interface ModelItem { subpart?: string; parsable?: boolean; integrand?: string; var?: string; note?: string }
 interface Processed { exercise_id: string; subpart: string | null; parsable: boolean; integrand: string; var: string; note: string }
-interface PyResult { key: string; computed_latex: string | null; verified: boolean | null; note: string }
+interface PyResult { key: string; computed_latex: string | null; verified: boolean | null; note: string; param_used?: boolean }
+const METHOD_PARAM = 'self_check_param';
 interface VRow { exercise_id: string; subpart: string | null; method: string; computed_latex: string | null; verified: boolean | null; note: string | null }
 
 function buildUserPrompt(ex: ExRow): string {
@@ -161,7 +162,7 @@ async function main() {
   // 3. Scrie input pentru SymPy + rulează Python SEPARAT.
   const keyOf = (p: { exercise_id: string; subpart: string | null }) => `${p.exercise_id}::${p.subpart ?? ''}`;
   fs.mkdirSync(VERIFY_DIR, { recursive: true });
-  fs.writeFileSync(IN_JSON, JSON.stringify(parsable.map((p) => ({ key: keyOf(p), integrand: p.integrand, var: p.var })), null, 2));
+  fs.writeFileSync(IN_JSON, JSON.stringify(parsable.map((p) => ({ key: keyOf(p), task: 'indefinite', integrand: p.integrand, var: p.var })), null, 2));
   console.log(`🐍 Rulez SymPy: python ${path.basename(PY_SCRIPT)} …`);
   const py = spawnSync('python', [PY_SCRIPT, IN_JSON, OUT_JSON], { encoding: 'utf-8' });
   if (py.stderr) process.stderr.write(py.stderr);
@@ -176,18 +177,19 @@ async function main() {
     }
     const r = byKey.get(keyOf(p));
     return {
-      exercise_id: p.exercise_id, subpart: p.subpart, method: METHOD,
+      exercise_id: p.exercise_id, subpart: p.subpart,
+      method: r?.param_used ? METHOD_PARAM : METHOD, // rescuit prin substituție de parametri → self_check_param
       computed_latex: r?.computed_latex ?? null,
       verified: r?.verified ?? null,
       note: `integrand: ${p.integrand}${r?.note ? ` | ${r.note}` : ''}`,
     };
   });
 
-  // 5. Idempotent: șterge rezultatele acestei metode pentru exercițiile modulului, apoi insert.
+  // 5. Idempotent: șterge rezultatele acestor metode pentru exercițiile modulului, apoi insert.
   const exIds = [...new Set(processed.map((p) => p.exercise_id))];
   for (let i = 0; i < exIds.length; i += 100) {
     const { error } = await supabase.from('exercise_verification').delete()
-      .eq('method', METHOD).in('exercise_id', exIds.slice(i, i + 100));
+      .in('method', [METHOD, METHOD_PARAM]).in('exercise_id', exIds.slice(i, i + 100));
     if (error) throw new Error(`Ștergere: ${error.message}`);
   }
   for (let i = 0; i < rows.length; i += 500) {
@@ -195,24 +197,26 @@ async function main() {
     if (error) throw new Error(`Insert [${i}]: ${error.message}`);
   }
 
-  // 6. VERIFICARE din DB.
+  // 6. VERIFICARE din DB (peste ambele metode de integrand indefinit).
   const mod1Ids = exercises.map((e) => e.id);
-  const q = () => supabase.from('exercise_verification').select('*', { count: 'exact', head: true }).eq('method', METHOD).in('exercise_id', mod1Ids);
+  const METHODS = [METHOD, METHOD_PARAM];
+  const q = () => supabase.from('exercise_verification').select('*', { count: 'exact', head: true }).in('method', METHODS).in('exercise_id', mod1Ids);
   const { count: cProcessed } = await q();
   const { count: cParsed } = await q().not('note', 'ilike', 'NEPARSABIL%');
   const { count: cVerified } = await q().is('verified', true);
   const { count: cFalse } = await q().is('verified', false);
+  const { count: cParam } = await supabase.from('exercise_verification').select('*', { count: 'exact', head: true }).eq('method', METHOD_PARAM).in('exercise_id', mod1Ids);
 
   const { data: sample } = await supabase.from('exercise_verification')
     .select('subpart, computed_latex, verified, note, exercise_raw!inner(exercise_number, statement, subparts)')
-    .eq('method', METHOD).in('exercise_id', mod1Ids).is('verified', true).limit(5);
+    .in('method', METHODS).in('exercise_id', mod1Ids).is('verified', true).limit(5);
 
   const cost = (totalIn / 1e6) * PRICE_IN + (totalOut / 1e6) * PRICE_OUT;
   console.log('\n──────── VERIFICARE CAS (din DB reală) ────────');
-  console.log(`${MODULE} · exercise_verification (method='${METHOD}')`);
+  console.log(`${MODULE} · integrand indefinit (method ∈ {${METHODS.join(', ')}})`);
   console.log(`  integrale PROCESATE (subpuncte): ${cProcessed}`);
   console.log(`  PARSATE SymPy:                   ${cParsed}`);
-  console.log(`  self_check = TRUE:               ${cVerified}`);
+  console.log(`  self_check = TRUE:               ${cVerified}  (din care prin substituție param.: ${cParam})`);
   console.log(`  self_check = FALSE:              ${cFalse}`);
   console.log(`  neparsabile:                     ${(cProcessed ?? 0) - (cParsed ?? 0)}`);
   console.log(`Cost Claude (parsare): in ${totalIn} / out ${totalOut} tok · ~$${cost.toFixed(4)}`);
