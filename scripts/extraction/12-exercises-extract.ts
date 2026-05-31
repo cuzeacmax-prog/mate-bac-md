@@ -1,15 +1,14 @@
 /**
- * 12-exercises-extract.ts — ETAPA 11: import BRUT exerciții din culegere (vision, scanat).
+ * 12-exercises-extract.ts — ETAPA 11/11b: import BRUT exerciții din culegere (vision BATCH).
  *
- * Rulează:  npm run extract:exercises -- --pages "40-50"
- *           (sau: tsx --env-file=.env.local scripts/extraction/12-exercises-extract.ts --pages 40-50)
+ * Rulează:  npm run extract:exercises -- --pages "1-142"
+ *           (sau: tsx --env-file=.env.local scripts/extraction/12-exercises-extract.ts --pages 1-142)
  *
- * Culegerea e SCANATĂ (fără strat text) → rasterizăm cu MuPDF la 150 DPI și citim cu vision.
- * Per pagină: claude-sonnet-4-6 cu TOOL USE transcrie FIDEL fiecare exercițiu (enunț + LaTeX),
- * subpărți (a,b,c,d), module/§ din antet, has_figure. NU rezolvă, NU inventează. given_answer=null.
- * Scrie în exercise_raw. Idempotent: șterge rândurile sursei pentru paginile procesate înainte.
+ * Culegerea e SCANATĂ → rasterizăm cu MuPDF la 150 DPI și citim cu vision (BATCH API, 50%).
+ * Per pagină: claude-sonnet-4-6 cu TOOL USE transcrie FIDEL fiecare exercițiu (enunț + LaTeX,
+ * subpărți, module/§, has_figure). NU rezolvă, NU inventează. given_answer=null.
+ * Idempotent: TRUNCATE exercise_raw pentru source înainte. NU atinge concepts / concept_edges.
  *
- * NU atinge concepts / concept_edges.
  * Requires: ANTHROPIC_API_KEY, NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
  */
 
@@ -27,9 +26,11 @@ const DPI = 150;
 const MAX_TOKENS = 8000;
 const SOURCE = 'culegere_12_2';
 const PDF_PATH = path.resolve(__dirname, '../../docs/manuale-source/culegere, 12 (2).pdf');
-const THROTTLE_MS = 800;
-const MAX_RETRIES = 5;
-const BASE_BACKOFF_MS = 1500;
+const POLL_INTERVAL_MS = 20_000;
+const BATCH_MAX_BYTES = 180 * 1024 * 1024;
+const BATCH_MAX_REQUESTS = 1000;
+const BATCH_MAX_WAIT_MS = 24 * 60 * 60 * 1000;
+const PRICE_IN = 3, PRICE_OUT = 15, BATCH_DISCOUNT = 0.5;
 
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 const VALID_CONF = ['high', 'medium', 'low'] as const;
@@ -39,6 +40,7 @@ const asStr = (v: unknown): string => (typeof v === 'string' ? v.trim() : '');
 const asStrArr = (v: unknown): string[] => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string' && x.trim() !== '').map((x) => x.trim()) : []);
 
 function makeClient(url: string, key: string) { return createClient(url, key); }
+type BatchRequest = Anthropic.Messages.BatchCreateParams.Request;
 
 interface ExerciseRow {
   source: string; pdf_page: number; exercise_number: string; module: string | null; section: string | null;
@@ -57,7 +59,6 @@ function parsePages(spec: string): number[] {
   return [...set].sort((a, b) => a - b);
 }
 
-// ── Tool use ─────────────────────────────────────────────────────────────────
 const SYSTEM_PROMPT =
   'Ești un transcriptor de culegeri de matematică (BAC Republica Moldova). Primești IMAGINEA ' +
   'unei pagini SCANATE dintr-o culegere și transcrii FIDEL fiecare exercițiu de pe pagină — ' +
@@ -70,19 +71,19 @@ const EXERCISES_TOOL: Anthropic.Messages.Tool = {
   input_schema: {
     type: 'object',
     properties: {
-      module: { type: 'string', description: 'Antetul de modul vizibil pe pagină (ex. "Modulul 3...") sau gol.' },
+      module: { type: 'string', description: 'Antetul de modul vizibil pe pagină (ex. "Modulul VII") sau gol.' },
       section: { type: 'string', description: 'Antetul de secțiune/§ vizibil pe pagină sau gol.' },
       exercises: {
         type: 'array',
-        description: 'Toate exercițiile numerotate de pe pagină, în ordine.',
+        description: 'Toate exercițiile numerotate de pe pagină, în ordine. [] dacă pagina n-are exerciții.',
         items: {
           type: 'object',
           properties: {
-            exercise_number: { type: 'string', description: 'Numărul exercițiului exact ca pe pagină (ex. "12", "3.4").' },
-            statement: { type: 'string', description: 'Enunțul transcris FIDEL, cu LaTeX pentru matematică. Fără subpuncte aici dacă sunt separate.' },
-            subparts: { type: 'array', items: { type: 'string' }, description: 'Subpunctele a), b), c) ca listă, dacă există; altfel [].' },
+            exercise_number: { type: 'string', description: 'Numărul exercițiului exact ca pe pagină.' },
+            statement: { type: 'string', description: 'Enunțul transcris FIDEL, cu LaTeX pentru matematică.' },
+            subparts: { type: 'array', items: { type: 'string' }, description: 'Subpunctele a/b/c/d ca listă, dacă există; altfel [].' },
             has_figure: { type: 'boolean', description: 'true DOAR dacă exercițiul are o FIGURĂ DESENATĂ pe pagină.' },
-            confidence: { type: 'string', enum: ['high', 'medium', 'low'], description: 'Cât de sigură e transcrierea (scan).' },
+            confidence: { type: 'string', enum: ['high', 'medium', 'low'] },
           },
           required: ['exercise_number', 'statement', 'subparts', 'has_figure', 'confidence'],
         },
@@ -96,41 +97,54 @@ const USER_PROMPT =
   'Transcrie FIDEL toate exercițiile numerotate de pe această pagină scanată. Pentru fiecare: ' +
   'numărul, enunțul exact (LaTeX pentru matematică, păstrează diacriticele), subpunctele a/b/c/d ' +
   'ca listă dacă există, și has_figure=true DOAR dacă are o figură desenată. Identifică module/§ ' +
-  'din antet. NU rezolva, NU inventa, NU completa răspunsuri. Apelează record_exercises.';
+  'din antet. NU rezolva, NU inventa, NU completa răspunsuri. Apelează record_exercises (chiar și ' +
+  'cu exercises:[] dacă pagina n-are exerciții — cuprins, divider).';
 
 interface ModelExercise { exercise_number?: string; statement?: string; subparts?: unknown; has_figure?: boolean; confidence?: string }
 interface ToolInput { module?: string; section?: string; exercises?: ModelExercise[] }
 
-async function callVision(anthropic: Anthropic, b64: string): Promise<{ input: ToolInput; inTok: number; outTok: number }> {
-  let lastErr: unknown;
-  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-    try {
-      const msg = await anthropic.messages.create({
-        model: MODEL, max_tokens: MAX_TOKENS, system: SYSTEM_PROMPT,
-        tools: [EXERCISES_TOOL], tool_choice: { type: 'tool', name: 'record_exercises' },
-        messages: [{ role: 'user', content: [
-          { type: 'image', source: { type: 'base64', media_type: 'image/png', data: b64 } },
-          { type: 'text', text: USER_PROMPT },
-        ] }],
-      });
-      const tu = msg.content.find((b): b is Anthropic.Messages.ToolUseBlock => b.type === 'tool_use');
-      return { input: (tu?.input ?? {}) as ToolInput, inTok: msg.usage.input_tokens, outTok: msg.usage.output_tokens };
-    } catch (err: unknown) {
-      lastErr = err;
-      const status = (err as { status?: number })?.status;
-      const retriable = status === undefined || status === 408 || status === 409 || status === 429 || status === 529 || (typeof status === 'number' && status >= 500);
-      if (!retriable || attempt === MAX_RETRIES) break;
-      const backoff = BASE_BACKOFF_MS * 2 ** attempt + Math.floor(Math.random() * 500);
-      console.warn(`    ↻ retry ${attempt + 1}/${MAX_RETRIES} (status=${status ?? 'net'}) după ${backoff}ms`);
-      await sleep(backoff);
-    }
+function buildRequest(page: number, b64: string): BatchRequest {
+  return {
+    custom_id: `p${page}`,
+    params: {
+      model: MODEL, max_tokens: MAX_TOKENS, system: SYSTEM_PROMPT,
+      tools: [EXERCISES_TOOL], tool_choice: { type: 'tool', name: 'record_exercises' },
+      messages: [{ role: 'user', content: [
+        { type: 'image', source: { type: 'base64', media_type: 'image/png', data: b64 } },
+        { type: 'text', text: USER_PROMPT },
+      ] }],
+    },
+  };
+}
+
+function rowsFromInput(input: ToolInput, page: number): ExerciseRow[] {
+  const mod = asStr(input.module) || null;
+  const sec = asStr(input.section) || null;
+  const out: ExerciseRow[] = [];
+  for (const e of Array.isArray(input.exercises) ? input.exercises : []) {
+    const num = asStr(e.exercise_number);
+    const stmt = asStr(e.statement);
+    if (!num && !stmt) continue;
+    out.push({ source: SOURCE, pdf_page: page, exercise_number: num, module: mod, section: sec, statement: stmt, subparts: asStrArr(e.subparts), has_figure: e.has_figure === true, given_answer: null, confidence: asConf(e.confidence) });
   }
-  throw lastErr;
+  return out;
+}
+
+async function pollBatch(anthropic: Anthropic, id: string, label: string): Promise<Anthropic.Messages.MessageBatch> {
+  const start = Date.now();
+  for (;;) {
+    const b = await anthropic.messages.batches.retrieve(id);
+    if (b.processing_status === 'ended') return b;
+    const c = b.request_counts;
+    console.log(`    ⏳ ${label}: ${b.processing_status} · ok=${c.succeeded} err=${c.errored} proc=${c.processing} (${((Date.now() - start) / 60000).toFixed(1)} min)`);
+    if (Date.now() - start > BATCH_MAX_WAIT_MS) throw new Error(`Batch ${id} a depășit 24h.`);
+    await sleep(POLL_INTERVAL_MS);
+  }
 }
 
 async function main() {
   const { values } = parseArgs({ options: { pages: { type: 'string' } } });
-  if (!values.pages) { console.error('Utilizare: npm run extract:exercises -- --pages "40-50"'); process.exit(1); }
+  if (!values.pages) { console.error('Utilizare: npm run extract:exercises -- --pages "1-142"'); process.exit(1); }
   const pages = parsePages(values.pages);
   if (pages.length === 0) { console.error('❌ Niciun --pages valid.'); process.exit(1); }
 
@@ -145,36 +159,56 @@ async function main() {
   console.log(`📄 Deschid ${PDF_PATH} la ${DPI} DPI (MuPDF, scanat) …`);
   const doc = await openPdfForRender(PDF_PATH, DPI);
   const pageCount = doc.length;
-  console.log(`   → ${pageCount} pagini. De procesat: [${pages.join(', ')}] (${SOURCE}).`);
+  const todo = pages.filter((p) => p >= 1 && p <= pageCount);
+  console.log(`   → ${pageCount} pagini. De procesat: ${todo.length} [${todo[0]}..${todo[todo.length - 1]}] (${SOURCE}, BATCH 50%).`);
 
-  // Idempotent: șterge rândurile sursei pentru aceste pagini.
-  for (let i = 0; i < pages.length; i += 100) {
-    await supabase.from('exercise_raw').delete().eq('source', SOURCE).in('pdf_page', pages.slice(i, i + 100));
-  }
+  // Idempotent: TRUNCATE sursa.
+  console.log(`🧹 Șterg exercise_raw pentru source='${SOURCE}' …`);
+  const { error: delErr } = await supabase.from('exercise_raw').delete().eq('source', SOURCE);
+  if (delErr) throw new Error(`Ștergere: ${delErr.message}`);
 
-  const rows: ExerciseRow[] = [];
-  let totalIn = 0, totalOut = 0;
-  for (const p of pages) {
-    if (p < 1 || p > pageCount) { console.warn(`  ⚠️ pagina ${p} în afara PDF (1..${pageCount}) — sar.`); continue; }
-    process.stdout.write(`  📄 pagina ${p}/${pageCount} … `);
+  // Construiește + trimite batch-uri (chunked pe bytes).
+  console.log('🖼️  Randez + construiesc cererile …');
+  const sourcePage = new Map<string, number>();
+  const batchIds: string[] = [];
+  let curReqs: BatchRequest[] = [];
+  let curBytes = 0;
+  const submit = async () => {
+    if (curReqs.length === 0) return;
+    const created = await anthropic.messages.batches.create({ requests: curReqs });
+    batchIds.push(created.id);
+    console.log(`   ▶ batch ${batchIds.length} trimis: ${created.id} (${curReqs.length} pagini, ~${(curBytes / 1024 / 1024).toFixed(0)} MB)`);
+    curReqs = []; curBytes = 0;
+  };
+  for (const p of todo) {
     const b64 = doc.getPage(p).toString('base64');
-    const { input, inTok, outTok } = await callVision(anthropic, b64);
-    totalIn += inTok; totalOut += outTok;
-    const mod = asStr(input.module) || null;
-    const sec = asStr(input.section) || null;
-    const exs = Array.isArray(input.exercises) ? input.exercises : [];
-    for (const e of exs) {
-      const num = asStr(e.exercise_number);
-      const stmt = asStr(e.statement);
-      if (!num && !stmt) continue;
-      rows.push({
-        source: SOURCE, pdf_page: p, exercise_number: num, module: mod, section: sec,
-        statement: stmt, subparts: asStrArr(e.subparts), has_figure: e.has_figure === true,
-        given_answer: null, confidence: asConf(e.confidence),
-      });
+    sourcePage.set(`p${p}`, p);
+    const bytes = b64.length + 2048;
+    if (curReqs.length > 0 && (curBytes + bytes > BATCH_MAX_BYTES || curReqs.length + 1 > BATCH_MAX_REQUESTS)) await submit();
+    curReqs.push(buildRequest(p, b64));
+    curBytes += bytes;
+  }
+  await submit();
+  console.log(`📦 ${todo.length} pagini → ${batchIds.length} batch(uri).`);
+
+  // Poll + colectează.
+  const rows: ExerciseRow[] = [];
+  let totalIn = 0, totalOut = 0, failed = 0, emptyPages = 0;
+  for (let i = 0; i < batchIds.length; i++) {
+    const id = batchIds[i];
+    const ended = await pollBatch(anthropic, id, `batch ${i + 1}/${batchIds.length}`);
+    console.log(`   ✓ ${id} ended: ok=${ended.request_counts.succeeded} err=${ended.request_counts.errored}. Descarc …`);
+    for await (const item of await anthropic.messages.batches.results(id)) {
+      const page = sourcePage.get(item.custom_id) ?? 0;
+      if (item.result.type === 'succeeded') {
+        const msg = item.result.message;
+        totalIn += msg.usage.input_tokens; totalOut += msg.usage.output_tokens;
+        const tu = msg.content.find((b): b is Anthropic.Messages.ToolUseBlock => b.type === 'tool_use');
+        const r = tu ? rowsFromInput(tu.input as ToolInput, page) : [];
+        if (r.length === 0) emptyPages++;
+        rows.push(...r);
+      } else { failed++; }
     }
-    console.log(`✓ ${exs.length} exerciții  [in ${inTok} / out ${outTok} tok]`);
-    if (p !== pages[pages.length - 1]) await sleep(THROTTLE_MS);
   }
 
   // Insert.
@@ -184,24 +218,23 @@ async function main() {
   }
 
   // VERIFICARE din DB.
-  const { count } = await supabase.from('exercise_raw').select('*', { count: 'exact', head: true }).eq('source', SOURCE).in('pdf_page', pages);
-  const { data: sample } = await supabase.from('exercise_raw')
-    .select('pdf_page, exercise_number, module, section, statement, subparts, has_figure')
-    .eq('source', SOURCE).in('pdf_page', pages).order('pdf_page').order('exercise_number').limit(3);
-  const withSub = rows.filter((r) => r.subparts.length > 0).length;
-  const withFig = rows.filter((r) => r.has_figure).length;
-  const cost = (totalIn / 1e6) * 3 + (totalOut / 1e6) * 15;
-
-  console.log('\n──────── VERIFICARE (din DB reală) ────────');
-  console.log(`Exerciții inserate (${SOURCE}, pg ${values.pages}): ${count}`);
-  console.log(`Cu subparts: ${withSub}  ·  has_figure=true: ${withFig}`);
-  console.log(`Tokeni: in ${totalIn} / out ${totalOut}  ·  ~$${cost.toFixed(4)}`);
-  console.log('\nEșantion (3 enunțuri complete):');
-  for (const s of (sample ?? []) as { pdf_page: number; exercise_number: string; module: string | null; section: string | null; statement: string; subparts: string[]; has_figure: boolean }[]) {
-    console.log(`\n  [p.${s.pdf_page} · nr.${s.exercise_number} · ${s.module ?? '—'} / ${s.section ?? '—'} · fig=${s.has_figure}]`);
-    console.log(`  ${s.statement}`);
-    if (Array.isArray(s.subparts) && s.subparts.length) for (const sp of s.subparts) console.log(`     • ${sp}`);
+  const { count } = await supabase.from('exercise_raw').select('*', { count: 'exact', head: true }).eq('source', SOURCE);
+  const moduleDist: Record<string, number> = {};
+  for (let f = 0; ; f += 1000) {
+    const { data, error } = await supabase.from('exercise_raw').select('module').eq('source', SOURCE).range(f, f + 999);
+    if (error) throw new Error(`module dist: ${error.message}`);
+    if (!data || data.length === 0) break;
+    for (const r of data) { const m = (r.module as string | null) ?? '(null)'; moduleDist[m] = (moduleDist[m] ?? 0) + 1; }
+    if (data.length < 1000) break;
   }
+  const cost = ((totalIn / 1e6) * PRICE_IN + (totalOut / 1e6) * PRICE_OUT) * BATCH_DISCOUNT;
+
+  console.log('\n──────── VERIFICARE EXERCIȚII (din DB reală) ────────');
+  console.log(`Total exerciții (${SOURCE}): ${count}  ·  pagini fără exerciții: ${emptyPages}  ·  cereri eșuate: ${failed}`);
+  console.log(`Cu subparts: ${rows.filter((r) => r.subparts.length > 0).length}  ·  has_figure=true: ${rows.filter((r) => r.has_figure).length}`);
+  console.log('Distribuție pe module:');
+  for (const [m, n] of Object.entries(moduleDist).sort((a, b) => b[1] - a[1])) console.log(`  ${m}: ${n}`);
+  console.log(`Tokeni: in ${totalIn} / out ${totalOut}  ·  Cost (batch 50%): ~$${cost.toFixed(4)}`);
   console.log('\n✅ Doar exercise_raw. concepts / concept_edges: neatinse.');
 }
 

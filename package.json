@@ -33,6 +33,7 @@
     "extract:promote-content": "tsx --env-file=.env.local scripts/extraction/10-promote-content.ts",
     "extract:embed": "tsx --env-file=.env.local scripts/extraction/11-embed-concepts.ts",
     "extract:exercises": "tsx --env-file=.env.local scripts/extraction/12-exercises-extract.ts",
+    "extract:answers": "tsx --env-file=.env.local scripts/extraction/13-answers-extract.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
