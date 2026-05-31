@@ -32,6 +32,7 @@
     "extract:katex-report": "tsx --env-file=.env.local scripts/extraction/09-katex-report.ts",
     "extract:promote-content": "tsx --env-file=.env.local scripts/extraction/10-promote-content.ts",
     "extract:embed": "tsx --env-file=.env.local scripts/extraction/11-embed-concepts.ts",
+    "extract:exercises": "tsx --env-file=.env.local scripts/extraction/12-exercises-extract.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
