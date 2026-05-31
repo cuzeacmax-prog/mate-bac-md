@@ -26,9 +26,18 @@ const centerStyle = (color: string, name?: string) => ({
   label: { offset: [7, -4], fontSize: 16, strokeColor: color, anchorX: "left" as const },
 });
 
+// Paletă „de manual" pentru relațiile noi.
+const COL = {
+  ink: "#0f172a", median: "#16a34a", bisector: "#9333ea", altitude: "#ea580c",
+  perpbis: "#0d9488", angle: "#d97706", tangent: "#2563eb", aux: "#475569",
+};
+const lineOpts = (color: string) => ({ strokeColor: color, strokeWidth: 2, highlight: false, fixed: true });
+const hidden = { visible: false, withLabel: false };
+
 /** Construiește geometria din spec folosind tipuri NATIVE JSXGraph (calcul exact). */
 function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D) {
   const pts: AnyMap = {};
+  const els: AnyMap = {}; // elemente cu id (ex. cercuri), pentru referire
   for (const p of spec.points) {
     pts[p.id] = board.create("point", [p.x, p.y], { ...POINT_STYLE, name: p.label ?? p.id });
   }
@@ -39,55 +48,131 @@ function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D) {
     const ids = poly?.points ?? spec.points.map((p) => p.id);
     return [ids[0], ids[1], ids[2]];
   };
+  const opposite = (of: string[], from: string): [string, string] => {
+    const o = of.filter((id) => id !== from);
+    return [o[0], o[1]];
+  };
+  const labeledPoint = (obj: any, color: string, label?: string) => {
+    obj.setAttribute({ visible: true, size: 2, fillColor: color, strokeColor: color, name: label ?? "", withLabel: !!label,
+      label: { offset: [7, -4], fontSize: 15, strokeColor: color, anchorX: "left" } });
+    return obj;
+  };
 
   for (const e of spec.elements) {
     switch (e.kind) {
       case "polygon":
-        board.create(
-          "polygon",
-          e.points.map((id) => pts[id]),
-          {
-            borders: { strokeColor: "#0f172a", strokeWidth: 2, highlight: false },
-            fillColor: "#3b82f6",
-            fillOpacity: 0.04,
-            vertices: { visible: false },
-            hasInnerPoints: false,
-            highlight: false,
-          },
-        );
+        board.create("polygon", e.points.map((id) => pts[id]), {
+          borders: { strokeColor: COL.ink, strokeWidth: 2, highlight: false },
+          fillColor: "#3b82f6", fillOpacity: 0.04, vertices: { visible: false }, hasInnerPoints: false, highlight: false,
+        });
         break;
       case "circumcircle":
-        board.create(
-          "circumcircle",
-          e.of.map((id) => pts[id]),
-          {
-            strokeColor: e.color ?? "#2563eb",
-            strokeWidth: 2,
-            fillOpacity: 0,
-            highlight: false,
-            center: centerStyle(e.color ?? "#2563eb", e.centerLabel ?? "O"),
-          },
-        );
+        board.create("circumcircle", e.of.map((id) => pts[id]), {
+          strokeColor: e.color ?? "#2563eb", strokeWidth: 2, fillOpacity: 0, highlight: false,
+          center: centerStyle(e.color ?? "#2563eb", e.centerLabel ?? "O"),
+        });
         break;
       case "incircle":
-        board.create(
-          "incircle",
-          e.of.map((id) => pts[id]),
-          {
-            strokeColor: e.color ?? "#dc2626",
-            strokeWidth: 2,
-            fillOpacity: 0,
-            highlight: false,
-            center: centerStyle(e.color ?? "#dc2626", e.centerLabel ?? "I"),
-          },
-        );
+        board.create("incircle", e.of.map((id) => pts[id]), {
+          strokeColor: e.color ?? "#dc2626", strokeWidth: 2, fillOpacity: 0, highlight: false,
+          center: centerStyle(e.color ?? "#dc2626", e.centerLabel ?? "I"),
+        });
         break;
       case "point": {
         const tri = (e.of ?? firstTriangle()).map((id) => pts[id]);
-        const type = e.from === "incenter" ? "incenter" : "circumcenter";
-        board.create(type, tri, centerStyle("#0f172a", e.label ?? ""));
+        if (e.from === "incenter" || e.from === "circumcenter") {
+          board.create(e.from, tri, centerStyle(e.color ?? COL.ink, e.label ?? ""));
+        } else if (e.from === "centroid") {
+          const [A, B, C] = tri;
+          board.create("point", [() => (A.X() + B.X() + C.X()) / 3, () => (A.Y() + B.Y() + C.Y()) / 3],
+            { ...centerStyle(e.color ?? COL.ink, e.label ?? ""), fixed: true });
+        } else { // orthocenter = intersecția a două înălțimi
+          const [A, B, C] = tri;
+          const altA = board.create("perpendicular", [board.create("line", [B, C], hidden), A], hidden);
+          const altB = board.create("perpendicular", [board.create("line", [A, C], hidden), B], hidden);
+          labeledPoint(board.create("intersection", [altA, altB, 0], hidden), e.color ?? COL.ink, e.label ?? "");
+        }
         break;
       }
+      case "median": {
+        const [o1, o2] = opposite(e.of, e.from);
+        const mid = board.create("midpoint", [pts[o1], pts[o2]], hidden);
+        board.create("segment", [pts[e.from], mid], lineOpts(e.color ?? COL.median));
+        break;
+      }
+      case "bisector": {
+        const [o1, o2] = opposite(e.of, e.from);
+        const bl = board.create("bisector", [pts[o1], pts[e.from], pts[o2]], hidden);
+        const foot = board.create("intersection", [bl, board.create("line", [pts[o1], pts[o2]], hidden), 0], hidden);
+        board.create("segment", [pts[e.from], foot], lineOpts(e.color ?? COL.bisector));
+        break;
+      }
+      case "altitude": {
+        const [o1, o2] = opposite(e.of, e.from);
+        const opp = board.create("line", [pts[o1], pts[o2]], hidden);
+        const foot = board.create("perpendicularpoint", [opp, pts[e.from]], hidden);
+        board.create("segment", [pts[e.from], foot], lineOpts(e.color ?? COL.altitude));
+        if (e.markRightAngle) board.create("angle", [pts[o1], foot, pts[e.from]],
+          { radius: 0.45, type: "square", fillColor: e.color ?? COL.altitude, strokeColor: e.color ?? COL.altitude, fillOpacity: 0.3, withLabel: false, highlight: false });
+        break;
+      }
+      case "perpBisector": {
+        const [o1, o2] = opposite(e.of, e.from);
+        const opp = board.create("line", [pts[o1], pts[o2]], hidden);
+        const mid = board.create("midpoint", [pts[o1], pts[o2]], hidden);
+        board.create("perpendicular", [opp, mid], lineOpts(e.color ?? COL.perpbis));
+        break;
+      }
+      case "angle":
+        board.create("angle", [pts[e.from[0]], pts[e.at], pts[e.from[1]]], {
+          radius: 0.7, name: e.label ?? "", withLabel: !!e.label, type: "sector",
+          fillColor: e.color ?? COL.angle, strokeColor: e.color ?? COL.angle, fillOpacity: 0.25, highlight: false,
+          label: { fontSize: 15, strokeColor: e.color ?? COL.angle },
+        });
+        break;
+      case "circle": {
+        const arg = e.through ? [pts[e.center], pts[e.through]] : [pts[e.center], e.radius ?? 1];
+        const c = board.create("circle", arg, {
+          strokeColor: e.color ?? COL.tangent, strokeWidth: 2, fillOpacity: 0, highlight: false,
+          center: e.centerLabel ? centerStyle(e.color ?? COL.tangent, e.centerLabel) : { visible: false },
+        });
+        if (e.id) els[e.id] = c;
+        break;
+      }
+      case "tangentLines": {
+        const c = els[e.to];
+        const P = pts[e.from];
+        if (!c) break;
+        const polar = board.create("polarline", [c, P], hidden);
+        const T1 = board.create("intersection", [c, polar, 0], hidden);
+        const T2 = board.create("intersection", [c, polar, 1], hidden);
+        board.create("line", [P, T1], { ...lineOpts(e.color ?? COL.tangent), straightFirst: false, straightLast: false });
+        board.create("line", [P, T2], { ...lineOpts(e.color ?? COL.tangent), straightFirst: false, straightLast: false });
+        if (e.markPoints !== false) {
+          labeledPoint(T1, e.color ?? COL.tangent, e.pointLabels?.[0] ?? "");
+          labeledPoint(T2, e.color ?? COL.tangent, e.pointLabels?.[1] ?? "");
+        }
+        break;
+      }
+      case "midpoint":
+        labeledPoint(board.create("midpoint", [pts[e.of[0]], pts[e.of[1]]], hidden), e.color ?? COL.aux, e.label ?? "");
+        break;
+      case "perpendicular": {
+        const ln = board.create("line", [pts[e.toSegment[0]], pts[e.toSegment[1]]], hidden);
+        board.create("perpendicular", [ln, pts[e.through]], lineOpts(e.color ?? COL.aux));
+        break;
+      }
+      case "parallel": {
+        const ln = board.create("line", [pts[e.toSegment[0]], pts[e.toSegment[1]]], hidden);
+        board.create("parallel", [ln, pts[e.through]], lineOpts(e.color ?? COL.aux));
+        break;
+      }
+      case "segment":
+        board.create("segment", [pts[e.between[0]], pts[e.between[1]]], {
+          ...lineOpts(e.color ?? COL.ink), name: e.label ?? "", withLabel: !!e.label,
+          label: { fontSize: 15, strokeColor: e.color ?? COL.ink, offset: [0, 10] },
+        });
+        break;
     }
   }
 }
