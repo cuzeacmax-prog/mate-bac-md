@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
+import { segmentMath } from "@/lib/content-math";
 
 export interface ReviewItem {
   id: string;
@@ -32,9 +33,9 @@ const kindStyle = (k: string) => KIND_STYLE[k] ?? { bg: "#f1f5f9", text: "#33415
 const APPROVED_KEY = "continut-approved-v1";
 
 // ── KaTeX ────────────────────────────────────────────────────────────────────
-function isValidKatex(tex: string): boolean {
-  try { katex.renderToString(tex, { throwOnError: true, strict: false }); return true; }
-  catch { return false; }
+function katexError(tex: string): string | null {
+  try { katex.renderToString(tex, { throwOnError: true, strict: false }); return null; }
+  catch (e) { return e instanceof Error ? e.message.replace(/^KaTeX parse error:\s*/, "") : "eroare KaTeX"; }
 }
 
 function Tex({ tex, display }: { tex: string; display?: boolean }) {
@@ -56,20 +57,15 @@ function Tex({ tex, display }: { tex: string; display?: boolean }) {
   return <span dangerouslySetInnerHTML={{ __html: html ?? "" }} />;
 }
 
-/** Text cu math delimitat ($...$, $$...$$) randat prin KaTeX; restul ca text (newline păstrat). */
+/** Proză cu math inline (LaTeX delimitat sau comenzi \cmd evidente) randat prin KaTeX; restul text. */
 function RichText({ text }: { text: string }) {
   if (!text) return <span className="text-gray-400 italic">—</span>;
-  const parts: React.ReactNode[] = [];
-  const re = /\$\$([\s\S]+?)\$\$|\$([^$\n]+?)\$/g;
-  let last = 0; let m: RegExpExecArray | null; let i = 0;
-  while ((m = re.exec(text)) !== null) {
-    if (m.index > last) parts.push(<span key={i++}>{text.slice(last, m.index)}</span>);
-    const display = m[1] != null;
-    parts.push(<Tex key={i++} tex={(m[1] ?? m[2] ?? "").trim()} display={display} />);
-    last = m.index + m[0].length;
-  }
-  if (last < text.length) parts.push(<span key={i++}>{text.slice(last)}</span>);
-  return <span className="whitespace-pre-wrap">{parts}</span>;
+  const segs = segmentMath(text);
+  return (
+    <span className="whitespace-pre-wrap">
+      {segs.map((s, i) => (s.type === "text" ? <span key={i}>{s.value}</span> : <Tex key={i} tex={s.value} display={s.display} />))}
+    </span>
+  );
 }
 
 // ── Componenta principală ────────────────────────────────────────────────────
@@ -90,12 +86,19 @@ export default function ContentReview({ items, grade }: { items: ReviewItem[]; g
   const toggleApproved = (id: string) =>
     setApproved((prev) => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); persist(n); return n; });
 
-  // Concepte cu formule KaTeX invalide (calcul o singură dată).
-  const errorIds = useMemo(() => {
-    const s = new Set<string>();
-    for (const it of items) if (it.formule_latex.some((f) => !isValidKatex(f))) s.add(it.id);
-    return s;
+  // Toate erorile KaTeX reale (din formule_latex[] ȘI din proză), calculate o singură dată.
+  const errors = useMemo(() => {
+    const list: { conceptId: string; conceptName: string; source: string; raw: string; message: string }[] = [];
+    for (const it of items) {
+      it.formule_latex.forEach((f) => { const e = katexError(f); if (e) list.push({ conceptId: it.id, conceptName: it.name, source: "formule_latex", raw: f, message: e }); });
+      ([["definitie", it.definitie], ["conditii", it.conditii], ["exemplu", it.exemplu]] as const).forEach(([field, txt]) => {
+        for (const seg of segmentMath(txt)) if (seg.type === "math") { const e = katexError(seg.value); if (e) list.push({ conceptId: it.id, conceptName: it.name, source: field, raw: seg.value, message: e }); }
+      });
+    }
+    return list;
   }, [items]);
+  const errorIds = useMemo(() => new Set(errors.map((e) => e.conceptId)), [errors]);
+  const [showReport, setShowReport] = useState(false);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -145,11 +148,52 @@ export default function ContentReview({ items, grade }: { items: ReviewItem[]; g
           <input type="checkbox" checked={onlyUnreviewed} onChange={(e) => setOnlyUnreviewed(e.target.checked)} />
           nerevizuite
         </label>
+        <button
+          onClick={() => setShowReport((v) => !v)}
+          className={`text-xs px-2.5 py-1.5 border rounded ${showReport ? "bg-red-600 text-white border-red-600" : "bg-white text-red-700 border-red-300 hover:bg-red-50"}`}
+        >
+          {showReport ? "← Înapoi la revizuire" : `Raport erori KaTeX (${errors.length})`}
+        </button>
         <span className="text-xs text-gray-500 ml-auto">
           Revizuite (local): <span className="font-semibold text-gray-800">{approvedInGrade}/{items.length}</span> în clasa {grade}
         </span>
       </div>
 
+      {showReport ? (
+        <div className="bg-white border border-gray-200 rounded-lg p-4 h-[76vh] overflow-y-auto">
+          <h2 className="text-base font-semibold text-gray-900 mb-1">Erori KaTeX reale — clasa {grade} ({errors.length})</h2>
+          <p className="text-xs text-gray-500 mb-3">
+            Formule din formule_latex[] ȘI din proză care nu se randează (comenzi inventate/typo). Cele de reparat.
+            Lista completă din DB: <code className="bg-gray-100 px-1 rounded">select * from katex_error_report order by grade_level, concept_name;</code>
+          </p>
+          {errors.length === 0 ? (
+            <div className="text-center text-green-700 py-12 text-sm">✓ Nicio eroare KaTeX în clasa {grade}.</div>
+          ) : (
+            <table className="w-full text-xs border-collapse">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200 text-left text-gray-600">
+                  <th className="px-2 py-2">Concept</th>
+                  <th className="px-2 py-2">Sursă</th>
+                  <th className="px-2 py-2">Formula brută</th>
+                  <th className="px-2 py-2">Eroare</th>
+                </tr>
+              </thead>
+              <tbody>
+                {errors.map((e, i) => (
+                  <tr key={i} className="border-b border-gray-100 align-top hover:bg-red-50">
+                    <td className="px-2 py-1.5">
+                      <button onClick={() => { setShowReport(false); setSelectedId(e.conceptId); }} className="text-blue-700 hover:underline text-left">{e.conceptName}</button>
+                    </td>
+                    <td className="px-2 py-1.5 text-gray-500">{e.source}</td>
+                    <td className="px-2 py-1.5"><code className="bg-red-50 text-red-900 px-1 rounded break-all">{e.raw}</code></td>
+                    <td className="px-2 py-1.5 text-red-700">{e.message}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      ) : (
       <div className="flex gap-3">
         {/* Listă navigare */}
         <div className="w-96 shrink-0 h-[76vh] overflow-y-auto bg-white border border-gray-200 rounded-lg">
@@ -247,6 +291,7 @@ export default function ContentReview({ items, grade }: { items: ReviewItem[]; g
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }

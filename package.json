@@ -29,6 +29,7 @@
     "extract:promote": "tsx --env-file=.env.local scripts/extraction/06-promote-concepts.ts",
     "extract:edges": "tsx --env-file=.env.local scripts/extraction/07-edge-propose.ts",
     "extract:content": "tsx --env-file=.env.local scripts/extraction/08-content-propose.ts",
+    "extract:katex-report": "tsx --env-file=.env.local scripts/extraction/09-katex-report.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
