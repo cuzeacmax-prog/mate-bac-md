@@ -20,15 +20,16 @@ import { parseArgs } from 'node:util';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { generateEmbeddingForQuery, EMBEDDING_DIMENSIONS } from '../../src/lib/embeddings/gemini';
+import { embedQuery, EMBEDDING_DIMENSIONS, ACTIVE_PROVIDER } from '../../src/lib/embeddings';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CACHE = path.join(__dirname, '_ex_embeddings.json');
 const MAX_CHARS = 6000;
-const CONCURRENCY = 5;
+const CONCURRENCY = 8;
 const MAX_RETRIES = 5;
-const BASE_BACKOFF_MS = 4000;
+const BASE_BACKOFF_MS = 2000;
 const TOP_K = 3;
+const PRICE_PER_MTOK = 0.02; // text-embedding-3-small
 
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 const isQuota = (m: string) => /429|RESOURCE_EXHAUSTED|quota/i.test(m);
@@ -42,9 +43,11 @@ async function main() {
   const limitN = values.limit ? parseInt(values.limit, 10) : undefined;
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) throw new Error('Lipsește GOOGLE_GENERATIVE_AI_API_KEY.');
+  if (ACTIVE_PROVIDER === 'openai' && !process.env.OPENAI_API_KEY) throw new Error('Lipsește OPENAI_API_KEY.');
+  if (ACTIVE_PROVIDER === 'gemini' && !process.env.GOOGLE_GENERATIVE_AI_API_KEY) throw new Error('Lipsește GOOGLE_GENERATIVE_AI_API_KEY.');
   if (!url || !key) throw new Error('Lipsesc NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY.');
   const supabase = createClient(url, key);
+  console.log(`🧠 Provider embeddings ACTIV: ${ACTIVE_PROVIDER} (${EMBEDDING_DIMENSIONS} dims).`);
 
   // 1. Exercițiile.
   interface Ex { id: string; exercise_number: string; module: string | null; statement: string }
@@ -67,29 +70,31 @@ async function main() {
   const toEmbed = todo.filter((e) => !cache[e.id]);
   console.log(`📦 cache: ${haveCache} embedding-uri · de embeddat acum: ${toEmbed.length} (RETRIEVAL_QUERY).`);
 
-  // 3. Embed până la cotă.
+  // 3. Embed până la cotă/eroare dură.
   const limit = pLimit(CONCURRENCY);
-  let embedded = 0, quotaHit = false;
+  let embedded = 0, totalTokens = 0, quotaHit = false;
   await Promise.all(toEmbed.map((e) => limit(async () => {
     if (quotaHit) return;
     const text = `${e.module ? e.module + '. ' : ''}${e.statement}`.slice(0, MAX_CHARS);
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
       if (quotaHit) return;
       try {
-        const raw = await generateEmbeddingForQuery(text);
-        if (raw.length !== EMBEDDING_DIMENSIONS) throw new Error(`dim ${raw.length}`);
-        cache[e.id] = l2normalize(raw);
-        if (++embedded % 100 === 0) process.stdout.write(`\r  embeddate ${embedded}/${toEmbed.length} `);
+        const { embedding, tokens } = await embedQuery(text);
+        if (embedding.length !== EMBEDDING_DIMENSIONS) throw new Error(`dim ${embedding.length}`);
+        cache[e.id] = l2normalize(embedding);
+        totalTokens += tokens;
+        if (++embedded % 100 === 0) { process.stdout.write(`\r  embeddate ${embedded}/${toEmbed.length} `); fs.writeFileSync(CACHE, JSON.stringify(cache)); }
         return;
       } catch (err) {
         const msg = (err as Error)?.message ?? String(err);
-        if (isQuota(msg)) { quotaHit = true; return; } // cap zilnic atins → oprire curată
+        if (isQuota(msg)) { quotaHit = true; return; } // cotă atinsă → oprire curată
         if (attempt === MAX_RETRIES) return;
         await sleep(BASE_BACKOFF_MS * 2 ** attempt + Math.floor(Math.random() * 1000));
       }
     }
   })));
-  console.log(`\n✓ embeddate acum: ${embedded}${quotaHit ? '  ⛔ cotă Gemini atinsă — oprire curată' : ''}`);
+  const embCost = (totalTokens / 1e6) * PRICE_PER_MTOK;
+  console.log(`\n✓ embeddate acum: ${embedded} · tokeni ${totalTokens} · cost ~$${embCost.toFixed(4)} (${ACTIVE_PROVIDER})${quotaHit ? '  ⛔ cotă atinsă — oprire curată' : ''}`);
   fs.writeFileSync(CACHE, JSON.stringify(cache));
 
   // 4. Match top-3 pentru fiecare exercițiu care ARE embedding.
