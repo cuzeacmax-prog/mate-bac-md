@@ -15,6 +15,9 @@ interface LiveResult {
   error?: string | null;
   message?: string;
   unsupported?: boolean;
+  repaired?: number;
+  diagnostic?: string | null;
+  unsupportedRelation?: string | null;
 }
 
 const EXAMPLES = [
@@ -82,11 +85,16 @@ export default function FigureLivePlayground() {
 
       {res && (
         <div className="mt-5 rounded-lg border border-gray-200 bg-white p-4">
-          <div className="flex items-center gap-2 text-xs text-gray-500">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
             {v && <span className={`rounded px-1.5 py-0.5 font-medium ${v.cls}`}>{v.label}</span>}
             {res.dim === "2d" && (res.valid ? <span className="text-green-700">spec valid</span> : <span className="text-red-700">spec INVALID</span>)}
+            {!!res.repaired && <span className="rounded bg-amber-100 px-1.5 py-0.5 text-amber-800">🔧 reparat ×{res.repaired}</span>}
             {res.reason && <span className="truncate">· {res.reason}</span>}
           </div>
+
+          {res.unsupportedRelation && (
+            <div className="mt-2 rounded bg-amber-50 p-2 text-xs text-amber-800">relație neacoperită: {res.unsupportedRelation} (s-a desenat ce s-a putut)</div>
+          )}
 
           <div className="mt-3 flex flex-wrap items-start gap-6">
             <div>
@@ -94,7 +102,7 @@ export default function FigureLivePlayground() {
               {canRender3d && <Figure3DRenderer spec={res.spec as FigureSpec3D} size={440} />}
               {!canRender2d && !canRender3d && (
                 <div className="flex h-[200px] w-[400px] items-center justify-center rounded border border-dashed border-gray-300 p-4 text-center text-sm text-gray-500">
-                  {res.message ?? (res.dim === "2d" && !res.valid ? "spec invalid — vezi eroarea de mai jos" : "—")}
+                  {res.diagnostic ?? res.message ?? (res.dim === "2d" && !res.valid ? "spec invalid — vezi eroarea de mai jos" : "—")}
                 </div>
               )}
             </div>
