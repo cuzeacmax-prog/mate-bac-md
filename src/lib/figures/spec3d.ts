@@ -128,11 +128,32 @@ export function validateScene(scene: Scene3D): { errors: string[] } {
         });
       } else if (e.kind === "segment3d") { (e.of ?? []).forEach((v) => { if (!ids.has(v)) errors.push(`segment3d: „${v}” nu există.`); }); }
       else if (e.kind === "sphere3d") { if (!(e.radius > 0)) errors.push("sphere3d: radius pozitiv."); if (typeof e.center === "string" && !ids.has(e.center)) errors.push(`sphere3d: centrul „${e.center}” nu există.`); }
-      else if (e.kind === "cone3d" || e.kind === "cylinder3d") { if (!(e.radius > 0) || !(e.height > 0)) errors.push(`${e.kind}: radius și height pozitive.`); }
-      else if (e.kind === "inscribedSphere") { if (!(e.inCone?.radius > 0) || !(e.inCone?.height > 0)) errors.push("inscribedSphere: inCone.radius/height pozitive."); }
+      else if (e.kind === "cone3d" || e.kind === "cylinder3d") { if (!(e.radius > 0) || !(e.height > 0)) errors.push(`${e.kind}: radius și height pozitive.`); if (typeof e.baseCenter === "string" && !ids.has(e.baseCenter)) errors.push(`${e.kind}: baseCenter „${e.baseCenter}” nu există.`); }
+      else if (e.kind === "inscribedSphere") { if (!(e.inCone?.radius > 0) || !(e.inCone?.height > 0)) errors.push("inscribedSphere: inCone.radius/height pozitive."); if (typeof e.baseCenter === "string" && !ids.has(e.baseCenter)) errors.push(`inscribedSphere: baseCenter „${e.baseCenter}” nu există.`); }
+      else if (e.kind === "label3d") { if (typeof e.at === "string" && !ids.has(e.at)) errors.push(`label3d: „${e.at}” nu există.`); }
     } catch { errors.push(`${(e as { kind?: string }).kind ?? "element"}: structură invalidă.`); }
   }
   return { errors };
+}
+
+/**
+ * Normalizează o scenă: elimină referințele de PLASARE danglinge (baseCenter/center/at = id inexistent)
+ * → implicit originea. Greșeli benigne de compoziție NU mai blochează randarea (corpul stă la origine).
+ */
+export function normalizeScene(scene: Scene3D): Scene3D {
+  const ids = new Set<string>();
+  for (const p of scene.points ?? []) {
+    if (p && "gen" in p && p.gen === "regularPolygon3d") (p.ids ?? []).forEach((i) => ids.add(i));
+    else if (p && (p as { id?: string }).id) ids.add((p as { id: string }).id);
+  }
+  const elements = (scene.elements ?? []).map((el) => {
+    const e = { ...el } as Record<string, unknown>;
+    for (const key of ["baseCenter", "center", "at"]) {
+      if (typeof e[key] === "string" && !ids.has(e[key] as string)) delete e[key];
+    }
+    return e as unknown as SceneElement;
+  });
+  return { points: scene.points ?? [], elements };
 }
 
 export interface Solved3D {

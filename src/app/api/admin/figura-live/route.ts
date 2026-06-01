@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@/lib/supabase/server';
 import { validateSpec, type FigureSpec2D } from '@/lib/figures/spec';
-import { solvePyramid, solvePerpFromVertex, solvePolyhedron, validateScene, type Body3D, type RegularPyramidSpec, type PerpFromVertexSpec, type PolyhedronBody, type Scene3D } from '@/lib/figures/spec3d';
+import { solvePyramid, solvePerpFromVertex, solvePolyhedron, validateScene, normalizeScene, type Body3D, type RegularPyramidSpec, type PerpFromVertexSpec, type PolyhedronBody, type Scene3D } from '@/lib/figures/spec3d';
 
 const SUPPORTED_3D = ['regularPyramid', 'perpFromVertex', 'cube', 'box', 'prism', 'tetrahedron', 'frustum', 'cone', 'cylinder', 'sphere'];
 const POLY_KINDS = ['cube', 'box', 'prism', 'tetrahedron', 'frustum'];
@@ -173,11 +173,12 @@ export async function POST(req: NextRequest) {
         if (!err) return NextResponse.json({ dim: '3d', verdict, reason, spec: { body: b }, valid: true, error: null });
         return NextResponse.json({ dim: '3d', verdict, reason, valid: false, error: err, diagnostic: `parametri 3D invalizi: ${err}` });
       }
-      // 2) corp ne-standard/compus → scenă din primitive generale
+      // 2) corp ne-standard/compus → scenă din primitive generale (normalizată: refs de plasare danglinge → origine)
       if (out.scene && typeof out.scene === 'object') {
-        const v = validateScene(out.scene);
-        if (v.errors.length === 0) return NextResponse.json({ dim: '3d', verdict, reason, spec: { scene: out.scene }, valid: true, error: null, composed: true });
-        return NextResponse.json({ dim: '3d', verdict, reason, spec: { scene: out.scene }, valid: false, error: v.errors.join(' · '), diagnostic: `scenă invalidă: ${v.errors.join(' · ')}` });
+        const scene = normalizeScene(out.scene as Scene3D);
+        const v = validateScene(scene);
+        if (v.errors.length === 0) return NextResponse.json({ dim: '3d', verdict, reason, spec: { scene }, valid: true, error: null, composed: true });
+        return NextResponse.json({ dim: '3d', verdict, reason, spec: { scene }, valid: false, error: v.errors.join(' · '), diagnostic: `scenă invalidă: ${v.errors.join(' · ')}` });
       }
       // 3) genuin nereprezentabil
       const name = out.body3d_name || 'necunoscut';

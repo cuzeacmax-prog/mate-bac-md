@@ -132,12 +132,21 @@ function buildScene(view: any, scene: Scene3D): string {
   const { pt, seg } = helpers(view);
   const vp: Record<string, any> = {};
   for (const [id, xyz] of Object.entries(pts)) vp[id] = pt(xyz, id);
-  const coord = (ref: string | Vec3): Vec3 => (typeof ref === "string" ? pts[ref] : ref);
+  // Referință de PLASARE: Vec3 → ea; id existent → punctul; lipsă/nerezolvat → ORIGINEA (niciodată undefined).
+  const coord = (ref?: string | Vec3): Vec3 => {
+    if (Array.isArray(ref)) return ref;
+    if (typeof ref === "string" && pts[ref]) return pts[ref];
+    return [0, 0, 0];
+  };
+  // Referință STRUCTURALĂ (vârf de poliedru/segment): trebuie să existe.
+  const needPt = (id: string): any => { const p = vp[id]; if (!p) throw new Error(`punctul „${id}” e nedefinit în scenă.`); return p; };
   const circle = (c: Vec3, r: number, fill: number) => view.create("circle3d", [c, [0, 0, 1], r], { strokeColor: INK, strokeWidth: 1.4, fillColor: "#cbd5e1", fillOpacity: fill });
   const notes: string[] = [];
 
   for (const e of scene.elements) {
     if (e.kind === "polyhedron") {
+      const missing = e.vertices.filter((v) => !pts[v]);
+      if (missing.length) throw new Error(`poliedru: vârf(uri) nedefinit(e): ${missing.join(", ")}`);
       const idx = new Map(e.vertices.map((v, i) => [v, i]));
       view.create("polyhedron3d", [e.vertices.map((v) => pts[v]), e.faces.map((f) => f.map((v) => idx.get(v)!))],
         { fillColor: "#cbd5e1", fillOpacity: e.fillOpacity ?? 0.26, strokeColor: INK, strokeWidth: 1.4, layer: 10 });
@@ -162,7 +171,7 @@ function buildScene(view: any, scene: Scene3D): string {
       view.create("text3d", [[c[0], c[1], c[2] + rho], `ρ = ${rho.toFixed(2)}`], { fontSize: 13, strokeColor: "#dc2626" });
       notes.push(`sferă înscrisă ρ=${rho.toFixed(2)}`);
     } else if (e.kind === "segment3d") {
-      seg(vp[e.of[0]], vp[e.of[1]], e.color ?? INK, e.dash ? 2 : 0);
+      seg(needPt(e.of[0]), needPt(e.of[1]), e.color ?? INK, e.dash ? 2 : 0);
     } else if (e.kind === "label3d") {
       view.create("text3d", [coord(e.at), e.text], { fontSize: 13, strokeColor: INK });
     }
