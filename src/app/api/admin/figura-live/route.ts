@@ -41,10 +41,13 @@ export const SYSTEM_PROMPT =
   'cilindru, cilindru în con, con în sferă etc.): figura standard de BAC e SECȚIUNEA AXIALĂ 2D (cum se și rezolvă), ' +
   'NU pictograma 3D. Emite verdict=figurabil_2d cu secțiunea: con(R,H) → triunghi isoscel cu baza=2R și laturile=√(R²+H²); ' +
   'sferă înscrisă → cercul ÎNSCRIS al triunghiului (incircle); cilindru înscris → dreptunghi înscris; con în sferă → triunghi în cerc. ' +
-  'Ex. „sferă înscrisă într-un con R=6 H=8” → {"points":[],"elements":[' +
-  '{"kind":"triangleFromSides","ids":["A","B","C"],"sides":{"AB":10,"BC":12,"CA":10}},' +
-  '{"kind":"polygon","points":["A","B","C"]},{"kind":"incircle","of":["A","B","C"],"centerLabel":"O"}]} ' +
-  '(BC=2R=12 baza, AB=CA=√(6²+8²)=10 laturile; cercul înscris r=R·H/(R+√(R²+H²))=3 = secțiunea sferei).\n' +
+  'ORIENTARE: apexul (vârful celor 2 laturi egale, „V”) SUS, baza (2R) ORIZONTALĂ JOS, SIMETRIC — pune ' +
+  'framing.baseEdge = capetele BAZEI (latura neegală 2R). Opțional: axa apex→mijlocul bazei.\n' +
+  'Ex. „sferă înscrisă într-un con R=6 H=8” → {"points":[],"framing":{"baseEdge":["B","C"]},"elements":[' +
+  '{"kind":"triangleFromSides","ids":["V","B","C"],"sides":{"AB":10,"BC":12,"CA":10}},' +
+  '{"kind":"polygon","points":["V","B","C"]},{"kind":"incircle","of":["V","B","C"],"centerLabel":"O"},' +
+  '{"kind":"pointOnSegment","on":["B","C"],"ratio":0.5,"id":"M"},{"kind":"segment","between":["V","M"]}]} ' +
+  '(ids=[V,B,C]: VB=CA=√(6²+8²)=10 laturile, BC=2R=12 baza; framing.baseEdge=[B,C] → bază jos, V sus; cerc înscris r=3 = secțiunea sferei).\n' +
   "- '3d' = STEREOMETRIE (un SINGUR corp simplu: pictogramă 3D). Șabloane disponibile (emite body3d cu kind potrivit; calculează parametrii din date):\n" +
   '    • {kind:"regularPyramid", baseSides, baseEdge, height, labels?} — piramidă regulată\n' +
   '    • {kind:"cube", edge, labels?} — cub\n' +
