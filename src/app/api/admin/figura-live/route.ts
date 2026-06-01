@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { validateSpec, type FigureSpec2D } from '@/lib/figures/spec';
 import { solvePyramid, solvePerpFromVertex, solvePolyhedron, validateScene, normalizeScene, type Body3D, type RegularPyramidSpec, type PerpFromVertexSpec, type PolyhedronBody, type Scene3D, type FigureSpec3D } from '@/lib/figures/spec3d';
 import { verifyFigure2D, verifyFigure3D, type VerifyResult } from '@/lib/figures/verify';
+import { axialSection, dihedralSection } from '@/lib/figures/axial';
 
 const failedInvariants = (v: VerifyResult): string => v.checks.filter((c) => !c.pass).map((c) => `${c.name} (${c.detail})`).join(' · ');
 
@@ -37,28 +38,16 @@ export const SYSTEM_PROMPT =
   'figurabil_2d și emite ce poți. Folosește fara_figura DOAR pentru probleme pur algebrice/numerice fără desen.\n\n' +
   'CLASIFICARE:\n' +
   "- 'figurabil_2d' = geometrie PLANĂ (triunghi/patrulater/trapez/romb/pătrat/cerc în plan). Emite spec2d.\n" +
-  'REGULĂ SPECIALĂ (PRIORITARĂ) — CORPURI DE ROTAȚIE ÎNSCRISE/TANGENTE unul în altul (sferă în con, sferă în ' +
-  'cilindru, cilindru în con, con în sferă etc.): figura standard de BAC e SECȚIUNEA AXIALĂ 2D (cum se și rezolvă), ' +
-  'NU pictograma 3D. Emite verdict=figurabil_2d cu secțiunea: con(R,H) → triunghi isoscel cu baza=2R și laturile=√(R²+H²); ' +
-  'sferă înscrisă → cercul ÎNSCRIS al triunghiului (incircle); cilindru înscris → dreptunghi înscris; con în sferă → triunghi în cerc. ' +
-  'ORIENTARE: apexul (vârful celor 2 laturi egale, „V”) SUS, baza (2R) ORIZONTALĂ JOS, SIMETRIC — pune ' +
-  'framing.baseEdge = capetele BAZEI (latura neegală 2R). Opțional: axa apex→mijlocul bazei.\n' +
-  'Ex. „sferă înscrisă într-un con R=6 H=8” → {"points":[],"framing":{"baseEdge":["B","C"]},"elements":[' +
-  '{"kind":"triangleFromSides","ids":["V","B","C"],"sides":{"AB":10,"BC":12,"CA":10}},' +
-  '{"kind":"polygon","points":["V","B","C"]},{"kind":"incircle","of":["V","B","C"],"centerLabel":"O"},' +
-  '{"kind":"pointOnSegment","on":["B","C"],"ratio":0.5,"id":"M"},{"kind":"segment","between":["V","M"]}]} ' +
-  '(ids=[V,B,C]: VB=CA=√(6²+8²)=10 laturile, BC=2R=12 baza; framing.baseEdge=[B,C] → bază jos, V sus; cerc înscris r=3 = secțiunea sferei).\n' +
-  'REGULĂ SPECIALĂ (PRIORITARĂ) — UNGHI DIEDRU la baza piramidei / apotemă / înălțime via diedru: figura = ' +
-  'SECȚIUNEA în planul perpendicular pe muchie prin vârf = TRIUNGHI DREPTUNGHIC VOM (verdict=figurabil_2d), NU solidul gol. ' +
-  'O=centrul bazei (unghi DREPT), M=mijlocul unei muchii de bază, V=vârful. Catetă OM = apotema bazei = raza înscrisă r ' +
-  '(o calculezi din bază: trapez circumscriptibil cu bazele a,b → laturi (a+b)/2, înălțime h=√(latură²−((b−a)/2)²), r=h/2); ' +
-  'catetă OV = H (înălțimea, necunoscuta); ipotenuza VM = apotema feței; unghiul DIEDRU la M între MO și MV. ' +
-  'Coordonate explicite: O(0,0), M(r,0), V(0, r·tan(diedru)); framing.baseEdge=[O,M] (OM orizontal). Etichetează r, H, diedrul; rightAngle la O.\n' +
-  'Ex. „piramidă cu baza trapez isoscel circumscriptibil (baze 4 și 16), diedru la bază 60°” → r=4 (latură=10, h_trapez=8, r=8/2=4), H=4·tan60°=6.93: ' +
-  '{"points":[{"id":"O","x":0,"y":0},{"id":"M","x":4,"y":0},{"id":"V","x":0,"y":6.93}],"framing":{"baseEdge":["O","M"]},"elements":[' +
-  '{"kind":"segment","between":["O","M"],"label":"r=4"},{"kind":"segment","between":["O","V"],"label":"H"},{"kind":"segment","between":["M","V"]},' +
-  '{"kind":"rightAngle","at":"O","from":["M","V"]},{"kind":"angle","at":"M","from":["O","V"],"label":"60°"}]}\n' +
-  'PRINCIPIU: figura de stereometrie arată MĂRIMEA cerută (diedru, apotemă, înălțime) = secțiunea/construcția auxiliară din rezolvare, NU solidul gol.\n' +
+  'PRINCIPIU: figura de stereometrie arată MĂRIMEA cerută (diedru, apotemă, înălțime, tangență) = SECȚIUNEA/construcția ' +
+  'auxiliară din rezolvare, NU solidul gol. NU desena tu secțiunea cu coordonate — exprimi COMPOZIȚIA, motorul o realizează prin OPERATORI:\n' +
+  '• OPERATOR „secțiune axială” — corpuri de ROTAȚIE înscrise/tangente/secționate (sferă-con, cilindru-con, sferă-cilindru, con-sferă, ' +
+  'sau un singur corp de rotație despre care se cere o secțiune): emite `scene`={elements:[…]} cu cone3d{id,radius,height}, ' +
+  'sphere3d{radius}, cylinder3d{id,radius,height}, inscribedSphere{in:idCorp}, segment3d (axă/apotemă auxiliară) ȘI render3d:"axial". ' +
+  'Motorul secționează fiecare corp (con→triunghi isoscel, sferă înscrisă→cercul înscris tangent, cilindru→dreptunghi) și compune figura 2D. NU pune coordonate.\n' +
+  '• OPERATOR „secțiune diedru la bază” — unghi diedru la baza piramidei / apotemă / înălțime via diedru: emite ' +
+  'section={kind:"dihedralBase", apothem:r, angle:diedru_grade}, unde r = apotema bazei (o CALCULEZI din bază: trapez ' +
+  'circumscriptibil baze a,b → laturi (a+b)/2, înălțime h=√(latură²−((b−a)/2)²), r=h/2; pătrat latură a → r=a/2; etc.). ' +
+  'Motorul desenează triunghiul dreptunghic VOM (OM=r, OV=H=r·tan(diedru), ∠M=diedru, unghi drept la O).\n' +
   "- '3d' = STEREOMETRIE (un SINGUR corp simplu: pictogramă 3D). Șabloane disponibile (emite body3d cu kind potrivit; calculează parametrii din date):\n" +
   '    • {kind:"regularPyramid", baseSides, baseEdge, height, labels?} — piramidă regulată\n' +
   '    • {kind:"cube", edge, labels?} — cub\n' +
@@ -132,13 +121,23 @@ export const TOOL: Anthropic.Messages.Tool = {
       },
       body3d_name: { type: 'string', description: 'Tipul corpului 3D doar dacă e GENUIN nereprezentabil (nici body3d, nici scene).' },
       scene: { type: ['object', 'null'], description: 'Scenă 3D compusă din primitive (pt. corpuri ne-standard/compuse).', properties: { points: { type: 'array' }, elements: { type: 'array' } } },
+      render3d: { type: 'string', enum: ['axial', 'pictogram'], description: 'axial = motorul face SECȚIUNEA AXIALĂ 2D a scenei (corpuri de rotație înscrise/tangente).' },
+      section: { type: ['object', 'null'], description: 'Operator de secțiune. dihedralBase: {kind:"dihedralBase", apothem, angle}.', properties: { kind: { type: 'string' }, apothem: { type: 'number' }, angle: { type: 'number' } } },
       unsupported_relation: { type: 'string', description: 'Relație 2D care nu se poate exprima cu kind-urile date.' },
     },
     required: ['verdict', 'reason'],
   },
 };
 
-interface ModelOut { verdict?: string; reason?: string; spec2d?: unknown; body3d?: (Body3D & { kind?: string }) | null; scene?: Scene3D | null; body3d_name?: string; unsupported_relation?: string }
+interface ModelOut { verdict?: string; reason?: string; spec2d?: unknown; body3d?: (Body3D & { kind?: string }) | null; scene?: Scene3D | null; body3d_name?: string; unsupported_relation?: string; render3d?: string; section?: { kind?: string; apothem?: number; angle?: number } }
+
+/** Verifică o figură 2D (structură + invariante) → {valid, error}. */
+function check2D(spec: FigureSpec2D): { valid: boolean; error: string | null } {
+  const v = validateSpec(spec);
+  if (v.errors.length) return { valid: false, error: v.errors.join(' · ') };
+  const ver = verifyFigure2D(spec);
+  return ver.ok ? { valid: true, error: null } : { valid: false, error: failedInvariants(ver) };
+}
 
 async function callTool(anthropic: Anthropic, userContent: string): Promise<ModelOut> {
   const msg = await anthropic.messages.create({
@@ -175,6 +174,21 @@ export async function POST(req: NextRequest) {
     const verdict = out.verdict ?? 'fara_figura';
     const reason = out.reason ?? '';
     const unsupportedRelation = out.unsupported_relation || null;
+
+    // ── OPERATORI GENERALI (compun figura 2D din concepte — fără ramuri per-problemă) ──
+    if (out.section?.kind === 'dihedralBase' && typeof out.section.apothem === 'number' && typeof out.section.angle === 'number') {
+      const spec = dihedralSection(out.section.apothem, out.section.angle);
+      const { valid, error } = check2D(spec);
+      return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, spec, valid, error, composed: true, operator: 'dihedralBase' });
+    }
+    if (out.render3d === 'axial' && out.scene && typeof out.scene === 'object') {
+      const scene = normalizeScene(out.scene as Scene3D);
+      const sv = validateScene(scene);
+      if (sv.errors.length) return NextResponse.json({ dim: '2d', verdict, reason, valid: false, error: sv.errors.join(' · '), diagnostic: `scenă invalidă: ${sv.errors.join(' · ')}` });
+      const spec = axialSection(scene);
+      const { valid, error } = check2D(spec);
+      return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, spec, valid, error, composed: true, operator: 'axialSection' });
+    }
 
     if (verdict === 'figurabil_2d' && out.spec2d && typeof out.spec2d === 'object') {
       let spec = out.spec2d;
