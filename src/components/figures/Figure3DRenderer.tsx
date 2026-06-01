@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { solvePyramid, solvePerpFromVertex, solvePolyhedron, bodyExtent, solveScenePoints, sceneExtent, type FigureSpec3D, type RegularPyramidSpec, type PerpFromVertexSpec, type PolyhedronBody, type ConeSpec, type CylinderSpec, type SphereSpec, type Scene3D, type Vec3 } from "@/lib/figures/spec3d";
+import { solvePyramid, solvePerpFromVertex, solvePolyhedron, bodyExtent, solveScenePoints, sceneBoundsCube, inscribedSphereInCone, type FigureSpec3D, type RegularPyramidSpec, type PerpFromVertexSpec, type PolyhedronBody, type ConeSpec, type CylinderSpec, type SphereSpec, type Scene3D, type Vec3 } from "@/lib/figures/spec3d";
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- punte către JSXGraph view3d (lib fără tipuri ESM stricte) */
 
@@ -174,10 +174,11 @@ function buildScene(view: any, scene: Scene3D): string {
       if (cone) { R = cone.radius; H = cone.height; c = coord(cone.baseCenter); }
       else if (e.inCone) { R = e.inCone.radius; H = e.inCone.height; c = coord(e.baseCenter); if (!scene.elements.some((x) => x.kind === "cone3d")) drawCone(c, R, H); }
       else throw new Error("inscribedSphere: lipsește `in` (cone3d) sau `inCone`.");
-      const L = Math.hypot(R, H); const rho = (R * H) / (R + L);
-      view.create("sphere3d", [[c[0], c[1], c[2] + rho], rho], { strokeColor: "#dc2626", strokeWidth: 1, fillColor: "#fecaca", fillOpacity: 0.3 });
-      view.create("text3d", [[c[0], c[1], c[2] + rho], `ρ = ${rho.toFixed(2)}`], { fontSize: 13, strokeColor: "#dc2626" });
-      notes.push(`sferă înscrisă ρ=${rho.toFixed(2)}`);
+      // centru + rază CALCULATE și AUTO-VERIFICATE (tangență la bază + la generatoare); aruncă dacă greșit.
+      const { center, radius, checks } = inscribedSphereInCone(R, H, c);
+      view.create("sphere3d", [center, radius], { strokeColor: "#dc2626", strokeWidth: 1, fillColor: "#fecaca", fillOpacity: 0.3 });
+      view.create("text3d", [center, `ρ = ${radius.toFixed(2)}`], { fontSize: 13, strokeColor: "#dc2626" });
+      notes.push(`sferă înscrisă ρ=${radius.toFixed(2)} (tangențe ${checks.dBase.toFixed(2)}/${checks.dGen.toFixed(2)})`);
     } else if (e.kind === "segment3d") {
       seg(needPt(e.of[0]), needPt(e.of[1]), e.color ?? INK, e.dash ? 2 : 0);
     } else if (e.kind === "label3d") {
@@ -208,12 +209,15 @@ export default function Figure3DRenderer({ spec, size = 460, className }: Figure
         if (cancelled || !containerRef.current) return;
         containerRef.current.innerHTML = "";
 
-        const E = spec.scene ? sceneExtent(spec.scene) : bodyExtent(spec.body!);
+        // Ranges 3D: scenă → cub centrat pe conținut (figura nu mai e descentrată); corp standard → simetric.
+        let ranges: number[][];
+        if (spec.scene) { const { center, half } = sceneBoundsCube(spec.scene); ranges = [[center[0] - half, center[0] + half], [center[1] - half, center[1] + half], [center[2] - half, center[2] + half]]; }
+        else { const E = bodyExtent(spec.body!); ranges = [[-E, E], [-E, E], [-E, E]]; }
         board = JXG.JSXGraph.initBoard(containerRef.current, {
           boundingbox: [-9, 9, 9, -9], keepaspectratio: true, axis: false, grid: false,
           showCopyright: false, showNavigation: false, pan: { enabled: false }, zoom: { enabled: false },
         });
-        const view = board.create("view3d", [[-6.5, -5], [13, 13], [[-E, E], [-E, E], [-E, E]]], {
+        const view = board.create("view3d", [[-6.5, -5], [13, 13], ranges], {
           projection: "parallel",
           trackball: { enabled: false },
           az: { slider: { visible: true, start: 1.0 } },

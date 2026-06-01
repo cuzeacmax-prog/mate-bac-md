@@ -108,6 +108,55 @@ export function sceneExtent(scene: Scene3D): number {
   return m * 1.4;
 }
 
+/**
+ * Sfera ÎNSCRISĂ într-un con (vârf sus la baseZ+H, bază jos la baseZ, rază R).
+ * ρ = R·H/(R+√(R²+H²)); centrul PE AXĂ la baseZ+ρ (jos, tangent la bază ȘI la generatoare).
+ * AUTO-VERIFICARE numerică: ambele tangențe = ρ, altfel ARUNCĂ (corectitudine fără randare).
+ */
+export function inscribedSphereInCone(R: number, H: number, baseCenter: Vec3): { center: Vec3; radius: number; checks: { rho: number; dBase: number; dGen: number } } {
+  if (!(R > 0) || !(H > 0)) throw new Error(`con invalid (R=${R}, H=${H}).`);
+  const l = Math.sqrt(R * R + H * H);
+  const rho = (R * H) / (R + l);
+  const center: Vec3 = [baseCenter[0], baseCenter[1], baseCenter[2] + rho];
+  // (a) distanța de la centru la planul bazei (z = baseCenter.z)
+  const dBase = center[2] - baseCenter[2];
+  // (b) distanța de la centru la dreapta-generatoare P1=(R,0,baseZ) → P2=(0,0,baseZ+H)
+  const P1: Vec3 = [baseCenter[0] + R, baseCenter[1], baseCenter[2]];
+  const P2: Vec3 = [baseCenter[0], baseCenter[1], baseCenter[2] + H];
+  const u: Vec3 = [center[0] - P1[0], center[1] - P1[1], center[2] - P1[2]];
+  const v: Vec3 = [P2[0] - P1[0], P2[1] - P1[1], P2[2] - P1[2]];
+  const cr: Vec3 = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]];
+  const dGen = Math.hypot(cr[0], cr[1], cr[2]) / (Math.hypot(v[0], v[1], v[2]) || 1);
+  if (Math.abs(dBase - rho) > 1e-9 || Math.abs(dGen - rho) > 1e-9) {
+    throw new Error(`sferă neînscrisă: ρ=${rho}, dist-bază=${dBase}, dist-generatoare=${dGen} (ar trebui egale).`);
+  }
+  return { center, radius: rho, checks: { rho, dBase, dGen } };
+}
+
+/** Cub de încadrare al unei scene (centrat pe conținut, aspect păstrat) → figura nu mai e descentrată. */
+export function sceneBoundsCube(scene: Scene3D): { center: Vec3; half: number } {
+  const lo: Vec3 = [Infinity, Infinity, Infinity], hi: Vec3 = [-Infinity, -Infinity, -Infinity];
+  const acc = (p: Vec3) => { for (let i = 0; i < 3; i++) { lo[i] = Math.min(lo[i], p[i]); hi[i] = Math.max(hi[i], p[i]); } };
+  let pts: Record<string, Vec3> = {};
+  try { pts = solveScenePoints(scene); } catch { /* validarea prinde */ }
+  for (const v of Object.values(pts)) acc(v);
+  const base = (ref?: string | Vec3): Vec3 => (Array.isArray(ref) ? ref : (typeof ref === "string" && pts[ref]) ? pts[ref] : [0, 0, 0]);
+  for (const e of scene.elements) {
+    if (e.kind === "cone3d" || e.kind === "cylinder3d") { const c = base(e.baseCenter); acc([c[0] - e.radius, c[1] - e.radius, c[2]]); acc([c[0] + e.radius, c[1] + e.radius, c[2] + e.height]); }
+    else if (e.kind === "sphere3d") { const c = base(e.center); acc([c[0] - e.radius, c[1] - e.radius, c[2] - e.radius]); acc([c[0] + e.radius, c[1] + e.radius, c[2] + e.radius]); }
+    else if (e.kind === "inscribedSphere") {
+      const cone = e.in ? (scene.elements.find((x) => x.kind === "cone3d" && (x as ElCone).id === e.in) as ElCone | undefined) : undefined;
+      const R = cone?.radius ?? e.inCone?.radius ?? 0, H = cone?.height ?? e.inCone?.height ?? 0;
+      const c = base(cone?.baseCenter ?? e.baseCenter);
+      acc([c[0] - R, c[1] - R, c[2]]); acc([c[0] + R, c[1] + R, c[2] + H]);
+    }
+  }
+  if (!Number.isFinite(lo[0])) return { center: [0, 0, 0], half: 5 };
+  const center: Vec3 = [(lo[0] + hi[0]) / 2, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2];
+  const half = (Math.max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2], 1) / 2) * 1.25;
+  return { center, half };
+}
+
 /** Validează o scenă: fețe → vârfuri existente, poliedru consistent. Greșeala AI = poliedru curat-dar-greșit, prins. */
 export function validateScene(scene: Scene3D): { errors: string[] } {
   const errors: string[] = [];
