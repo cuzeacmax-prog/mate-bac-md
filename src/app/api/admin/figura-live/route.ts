@@ -5,6 +5,7 @@ import { validateSpec, type FigureSpec2D } from '@/lib/figures/spec';
 import { solvePyramid, solvePerpFromVertex, solvePolyhedron, validateScene, normalizeScene, type Body3D, type RegularPyramidSpec, type PerpFromVertexSpec, type PolyhedronBody, type Scene3D, type FigureSpec3D } from '@/lib/figures/spec3d';
 import { verifyFigure2D, verifyFigure3D, type VerifyResult } from '@/lib/figures/verify';
 import { axialSection, dihedralSection } from '@/lib/figures/axial';
+import { solveAndVerify, type GeoProblem } from '@/lib/figures/cas';
 
 const failedInvariants = (v: VerifyResult): string => v.checks.filter((c) => !c.pass).map((c) => `${c.name} (${c.detail})`).join(' · ');
 
@@ -38,6 +39,25 @@ export const SYSTEM_PROMPT =
   'figurabil_2d și emite ce poți. Folosește fara_figura DOAR pentru probleme pur algebrice/numerice fără desen.\n\n' +
   'CLASIFICARE:\n' +
   "- 'figurabil_2d' = geometrie PLANĂ (triunghi/patrulater/trapez/romb/pătrat/cerc în plan). Emite spec2d.\n" +
+  '⭐ OPERATOR PREFERAT „geo” (GEOMETRY CAS) — pentru ORICE figură PLANĂ cu NUMERE DATE (lungimi, unghiuri, arii, ' +
+  'rapoarte, tangențe). NU plasezi NICIODATĂ coordonate. Emiți DOAR: entități + relații (construcție) + numerele DATE ' +
+  '(constrângeri). Motorul calculează toate punctele prin FORMULE și RESPINGE automat dacă figura nu reproduce numerele.\n' +
+  '  geo = { build:[pași constructivi, în ordine], givens:[numerele din enunț de reprodus] }\n' +
+  '  build (seed-uri de cadru — motorul alege coordonatele): {op:"triangleSSS", ids:[A,B,C], ab, bc, ca} (laturile A-B,B-C,C-A) · ' +
+  '{op:"isoFromBaseHeight", apex, left, right, base, height} (triunghi isoscel simetric; ex. SECȚIUNE AXIALĂ con: base=2R, height=H) · ' +
+  '{op:"rightTriangle", right, legEnd, vert, leg, angleAtLegEnd} (triunghi dreptunghic; ex. DIEDRU la bază: leg=apotema r, angleAtLegEnd=diedru) · ' +
+  '{op:"parallelogram", ids:[A,B,C,D], angleAt, angle, sideRatio:[r1,r2], scaleBy:{diagonal:"AC"|"BD"|"AB"|"AD", length}} · ' +
+  '{op:"baseSegment", a, b, length}\n' +
+  '  build (primitive generale riglă&compas): {op:"circle", id, center, radius?|through?} · {op:"line", id, through:[P,Q]} · ' +
+  '{op:"perpLine"|"parallelLine", id, through, to:[P,Q]|idDreaptă} · {op:"intersect", id, of:[ref,ref], pick?:"upper"|"lower"|"left"|"right"|"first"|"second"|{near|far:P}} ' +
+  '(ref=idDreaptă|idCerc|[P,Q]) · {op:"midpoint", id, of:[P,Q]} · {op:"foot", id, from:P, to:[Q,R]} · ' +
+  '{op:"onSegment", id, seg:[P,Q], ratio?|dist?} · {op:"center", id, kind:"incenter"|"circumcenter"|"centroid"|"orthocenter", tri:[A,B,C]} · ' +
+  '{op:"bisectorFoot", id, tri:[A,B,C], from} (piciorul bisectoarei pe latura opusă). radius/lungime poate fi {dist:[P,Q]}.\n' +
+  '  givens (FIECARE număr din enunț): {kind:"length", of:[P,Q], value} · {kind:"angle", at, rays:[P,Q], value} · ' +
+  '{kind:"rightAngle", at, rays:[P,Q]} · {kind:"area", of:[ids], value} · {kind:"incircleRadius", tri:[A,B,C], value} · ' +
+  '{kind:"ratio", of:[[P,Q],[R,S]], value} · {kind:"tangent", circle:id, line:[P,Q]} · {kind:"collinear", points:[ids]}.\n' +
+  '  Pune ÎN givens TOATE numerele din enunț (chiar consecințe verificabile: ex. în isoscel bisectoarea ⟂ baza). ' +
+  'Pentru valori iraționale dă numărul exact (ex. 4√3 → 6.928203230275509). Motorul ACCEPTĂ doar dacă toate se potrivesc.\n' +
   'PRINCIPIU: figura de stereometrie arată MĂRIMEA cerută (diedru, apotemă, înălțime, tangență) = SECȚIUNEA/construcția ' +
   'auxiliară din rezolvare, NU solidul gol. NU desena tu secțiunea cu coordonate — exprimi COMPOZIȚIA, motorul o realizează prin OPERATORI:\n' +
   '• OPERATOR „secțiune axială” — corpuri de ROTAȚIE înscrise/tangente/secționate (sferă-con, cilindru-con, sferă-cilindru, con-sferă, ' +
@@ -107,6 +127,7 @@ export const TOOL: Anthropic.Messages.Tool = {
     properties: {
       verdict: { type: 'string', enum: ['figurabil_2d', '3d', 'fara_figura'] },
       reason: { type: 'string' },
+      geo: { type: ['object', 'null'], description: 'GEOMETRY CAS: build (constrângeri, ZERO coordonate) + givens (numerele din enunț). Preferat pentru figuri plane cu numere.', properties: { build: { type: 'array' }, givens: { type: 'array' } } },
       spec2d: { type: ['object', 'null'], properties: { points: { type: 'array' }, elements: { type: 'array' }, intersections: {} } },
       body3d: {
         type: ['object', 'null'],
@@ -129,7 +150,7 @@ export const TOOL: Anthropic.Messages.Tool = {
   },
 };
 
-interface ModelOut { verdict?: string; reason?: string; spec2d?: unknown; body3d?: (Body3D & { kind?: string }) | null; scene?: Scene3D | null; body3d_name?: string; unsupported_relation?: string; render3d?: string; section?: { kind?: string; apothem?: number; angle?: number } }
+interface ModelOut { verdict?: string; reason?: string; geo?: GeoProblem | null; spec2d?: unknown; body3d?: (Body3D & { kind?: string }) | null; scene?: Scene3D | null; body3d_name?: string; unsupported_relation?: string; render3d?: string; section?: { kind?: string; apothem?: number; angle?: number } }
 
 /** Verifică o figură 2D (structură + invariante) → {valid, error}. */
 function check2D(spec: FigureSpec2D): { valid: boolean; error: string | null } {
@@ -174,6 +195,16 @@ export async function POST(req: NextRequest) {
     const verdict = out.verdict ?? 'fara_figura';
     const reason = out.reason ?? '';
     const unsupportedRelation = out.unsupported_relation || null;
+
+    // ── GEOMETRY CAS (ETAPA 41): constrângeri → solver → auto-verificare. Se AUTO-RESPINGE dacă nu reproduce numerele. ──
+    if (out.geo && typeof out.geo === 'object' && Array.isArray(out.geo.build) && out.geo.build.length) {
+      const res = solveAndVerify(out.geo as GeoProblem);
+      if (!res.accepted) {
+        const diagnostic = `CAS a RESPINS (figura nu reproduce numerele date): ${res.reason ?? 'inconsistență'}`;
+        return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, valid: false, error: res.reason, diagnostic, cas: true, checks: res.checks });
+      }
+      return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, spec: res.spec, valid: true, error: null, cas: true, checks: res.checks });
+    }
 
     // ── OPERATORI GENERALI (compun figura 2D din concepte — fără ramuri per-problemă) ──
     if (out.section?.kind === 'dihedralBase' && typeof out.section.apothem === 'number' && typeof out.section.angle === 'number') {

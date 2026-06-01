@@ -42,6 +42,7 @@
     "extract:figures": "tsx --env-file=.env.local scripts/extraction/19-figure-extract.ts",
     "verify:figures": "tsx scripts/figures/verify-figures.ts",
     "verify:figures-gen": "tsx scripts/verify/figures-generalization.ts",
+    "verify:geo-cas": "tsx scripts/verify/geometry-cas.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
