@@ -49,12 +49,53 @@ export type FigureElement =
   | { kind: "parallel"; through: string; toSegment: [string, string]; label?: string; color?: string; id?: string }
   /** Dreaptă PARALELĂ la un segment, la `distance` perpendiculară, pe partea lui `offsetFrom`. */
   | { kind: "parallelAtDistance"; id?: string; parallelTo: [string, string]; offsetFrom: string; distance: number; color?: string; visible?: boolean }
-  | { kind: "segment"; between: [string, string]; label?: string; color?: string; id?: string; showLength?: boolean };
+  | { kind: "segment"; between: [string, string]; label?: string; color?: string; id?: string; showLength?: boolean }
+  /** Semn de EGALITATE (liniuțe perpendiculare) la mijlocul segmentului. */
+  | { kind: "equalMark"; on: [string, string]; count?: number; color?: string }
+  /** Semn de PARALELISM (chevron) la mijlocul segmentului. */
+  | { kind: "parallelMark"; on: [string, string]; count?: number; color?: string };
 
 export interface FigureSpec2D {
   points: FigurePoint[];
   elements: FigureElement[];
   boundingBox?: [number, number, number, number];
+  /** Încadrare canonică (override). baseEdge = latura așezată orizontal ca bază. */
+  framing?: { baseEdge?: [string, string]; anchor?: "bottom-left" };
+}
+
+/**
+ * Încadrare canonică: similaritate (rotație + reflexie) aplicată DUPĂ rezolvare. Geometria
+ * (unghiuri, rapoarte, lungimi) rămâne EXACTĂ. Așază baza orizontal, A în stânga-jos, figura deasupra.
+ */
+export function frameSolved(
+  solved: Record<string, SolvedPoint>,
+  framing?: FigureSpec2D["framing"],
+): Record<string, SolvedPoint> {
+  const ids = Object.keys(solved);
+  if (ids.length < 2) return solved;
+  const aId = framing?.baseEdge?.[0] ?? (solved["A"] ? "A" : ids[0]);
+  const A = solved[aId];
+  let bId = framing?.baseEdge?.[1];
+  if (!bId) { // latura cea mai lungă pornind din A
+    let best = -1; bId = ids.find((i) => i !== aId) ?? aId;
+    for (const i of ids) {
+      if (i === aId) continue;
+      const d = Math.hypot(solved[i].x - A.x, solved[i].y - A.y);
+      if (d > best) { best = d; bId = i; }
+    }
+  }
+  const B = solved[bId];
+  const theta = Math.atan2(B.y - A.y, B.x - A.x);
+  const c = Math.cos(-theta), s = Math.sin(-theta);
+  const out: Record<string, SolvedPoint> = {};
+  for (const i of ids) {
+    const dx = solved[i].x - A.x, dy = solved[i].y - A.y;
+    out[i] = { x: dx * c - dy * s, y: dx * s + dy * c, label: solved[i].label };
+  }
+  // figura deasupra bazei: dacă media e sub axă, reflectă pe verticală (reflexie = similaritate)
+  const ys = Object.values(out).map((p) => p.y);
+  if (ys.reduce((a, b) => a + b, 0) / ys.length < 0) for (const i of ids) out[i].y = -out[i].y;
+  return out;
 }
 
 export interface SolvedPoint { x: number; y: number; label?: string }
