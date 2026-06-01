@@ -5,7 +5,7 @@
  * Vrem: ACCEPTĂ figurile corecte, RESPINGE automat orice inconsistență — fără ochi umani.
  * Include un CONTROL NEGATIV (numere imposibile) care TREBUIE respins.   Rulează:  npm run verify:geo-cas
  */
-import { solveAndVerify, type GeoProblem } from "../../src/lib/figures/cas";
+import { solveAndVerify, solveAndVerify3D, type GeoProblem, type GeoProblem3D } from "../../src/lib/figures/cas";
 
 interface Probe { titlu: string; enunt: string; prob: GeoProblem; trebuieAcceptat: boolean }
 
@@ -95,6 +95,58 @@ const probes: Probe[] = [
   },
 ];
 
+// ── Probe 3D (ETAPA 42): solid din constrângeri → proiecție + construcție auxiliară ──
+const H_4SQRT3 = 4 * Math.tan(Math.PI / 3); // r·tan60 cu r=4 → 4√3
+
+interface Probe3D { titlu: string; enunt: string; prob: GeoProblem3D; trebuieAcceptat: boolean }
+const probes3d: Probe3D[] = [
+  {
+    titlu: "Piramidă cu bază trapez tangențial (baze 4/16) + diedru 60° la baza lungă",
+    enunt: "Piramidă cu baza un trapez isoscel circumscriptibil (baze 4 și 16); unghiul diedru la baza mare este 60°. Înălțimea cade în incentru.",
+    prob: {
+      build: [
+        { op: "isoTrapezoidTangential", ids: ["B", "C", "D", "A"], center: "O", bottomBase: 16, topBase: 4 },
+        { op: "footOnEdge", id: "M", from: "O", edge: ["B", "C"] }, // M = piciorul apotemei pe baza lungă
+        { op: "apexOverPoint", apex: "V", over: "O", height: { mulTan: [{ dist3: ["O", "M"] }, 60] } }, // H = r·tan60
+      ],
+      solid: { base: ["B", "C", "D", "A"], apex: "V" },
+      draw: {
+        segments: [
+          { of: ["V", "O"], dashed: true, label: "H" }, // înălțimea (interioară → punctată)
+          { of: ["O", "M"], label: "r" },               // apotema bazei
+          { of: ["V", "M"], label: "a" },               // înclinata (apotema feței)
+        ],
+        dihedral: { at: "M", rays: ["O", "V"], label: "60°" },
+      },
+      givens: [
+        { kind: "length3", of: ["B", "C"], value: 16 },               // baza lungă
+        { kind: "length3", of: ["A", "D"], value: 4 },                // baza scurtă
+        { kind: "length3", of: ["C", "D"], value: 10 },               // latura = (4+16)/2
+        { kind: "sumEqual", left: [["B", "C"], ["A", "D"]], right: [["C", "D"], ["A", "B"]], name: "tangențial: Σbaze = Σlaturi" },
+        { kind: "length3", of: ["O", "M"], value: 4 },                // apotema = r = h_trapez/2
+        { kind: "angle3", at: "M", rays: ["O", "V"], value: 60 },     // diedrul la bază
+        { kind: "length3", of: ["V", "O"], value: H_4SQRT3 },         // înălțimea = r·tan60 = 4√3
+        { kind: "length3", of: ["V", "M"], value: 8 },                // înclinata = √(r²+H²) = 8
+      ],
+    },
+    trebuieAcceptat: true,
+  },
+  {
+    titlu: "CONTROL NEGATIV 3D: aceeași piramidă dar se pretinde diedru 45°",
+    enunt: "Aceeași construcție (diedru real 60°), dar enunțul pretinde 45° — figura NU îl poate reproduce.",
+    prob: {
+      build: [
+        { op: "isoTrapezoidTangential", ids: ["B", "C", "D", "A"], center: "O", bottomBase: 16, topBase: 4 },
+        { op: "footOnEdge", id: "M", from: "O", edge: ["B", "C"] },
+        { op: "apexOverPoint", apex: "V", over: "O", height: { mulTan: [{ dist3: ["O", "M"] }, 60] } },
+      ],
+      solid: { base: ["B", "C", "D", "A"], apex: "V" },
+      givens: [{ kind: "angle3", at: "M", rays: ["O", "V"], value: 45 }],
+    },
+    trebuieAcceptat: false,
+  },
+];
+
 let allOk = true;
 console.log("\n════════ GEOMETRY CAS — constrângeri → solver → auto-verificare ════════\n");
 for (const pr of probes) {
@@ -110,7 +162,28 @@ for (const pr of probes) {
   if (res.reason) console.log(`      ↳ ${res.reason}`);
   console.log(`    → ${verdict} ${meta}\n`);
 }
+console.log("──────── 3D: solid din constrângeri → proiecție + construcție auxiliară ────────\n");
+for (const pr of probes3d) {
+  const res = solveAndVerify3D(pr.prob);
+  const correct = res.accepted === pr.trebuieAcceptat;
+  if (!correct) allOk = false;
+  const verdict = res.accepted ? "ACCEPTATĂ ✅" : "RESPINSĂ ⛔";
+  const meta = correct ? "(corect)" : "(GREȘIT — poarta nu funcționează)";
+  console.log(`${correct ? "✓" : "✗"} ${pr.titlu}`);
+  console.log(`    enunț: ${pr.enunt}`);
+  console.log(`    constrângeri: ${pr.prob.build.map((b) => b.op).join(" → ")}`);
+  if (res.checks.length) for (const c of res.checks) console.log(`      ${c.pass ? "·" : "✗"} ${c.name}: ${c.detail}`);
+  if (res.reason) console.log(`      ↳ ${res.reason}`);
+  if (res.accepted && res.spec?.scene) {
+    const el = res.spec.scene.elements;
+    const poly = el.find((e) => e.kind === "polyhedron") as { faces?: unknown[] } | undefined;
+    const segs = el.filter((e) => e.kind === "segment3d").length;
+    const hasDih = el.some((e) => e.kind === "angle3d");
+    console.log(`      → scenă: poliedru (${poly?.faces?.length ?? 0} fețe) + ${segs} segmente auxiliare${hasDih ? " + diedru marcat" : ""}`);
+  }
+  console.log(`    → ${verdict} ${meta}\n`);
+}
 console.log(allOk
-  ? "✅ TOATE corecte: figurile valide ACCEPTATE, inconsistențele RESPINSE — fără ochi umani."
+  ? "✅ TOATE corecte (2D + 3D): figurile valide ACCEPTATE, inconsistențele RESPINSE — fără ochi umani."
   : "❌ Poarta CAS nu se comportă corect pe unele cazuri.");
 process.exit(allOk ? 0 : 1);

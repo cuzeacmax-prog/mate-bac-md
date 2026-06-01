@@ -15,6 +15,7 @@
  * intră direct în renderer-ul existent (care NU reîncadrează figuri cu coordonate explicite).
  */
 import type { FigureSpec2D, FigureElement, FigurePoint } from "./spec";
+import type { Vec3, Scene3D, Point3DSpec, SceneElement, FigureSpec3D } from "./spec3d";
 
 export type Vec2 = [number, number];
 
@@ -408,4 +409,143 @@ export function solveAndVerify(prob: GeoProblem, tol = 1e-9): CASResult {
     return { ok: false, accepted: false, checks, points: st.pts, reason: `numere nereproduse: ${failed}` };
   }
   return { ok: true, accepted: true, checks, points: st.pts, spec: casToFigureSpec(prob, st) };
+}
+
+// ═══════════════════════════ ETAPA 42 — GEOMETRY CAS 3D ═══════════════════════════
+/**
+ * Aceeași disciplină, în 3D: AI-ul emite entități + relații + numere DATE; motorul rezolvă SOLIDUL prin
+ * formule (baza din constrângeri — NU plasată de mână), se auto-verifică pe numere, apoi PROIECȚIA
+ * (ETAPA 35) desenează solidul + construcția auxiliară (înălțime, apotemă, înclinată, diedru marcat).
+ */
+const sub3 = (a: Vec3, b: Vec3): Vec3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+const dot3 = (a: Vec3, b: Vec3) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+const d3 = (a: Vec3, b: Vec3) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+const deg = (rad: number) => (rad * 180) / Math.PI;
+
+/** Lungime 3D: literal, distanță măsurată, scalare, SAU `mulTan` = lungime·tan(grade) (ex. H = r·tan diedru). */
+export type LenExpr3 = number | { dist3: [string, string] } | { scale3: [LenExpr3, number] } | { mulTan: [LenExpr3, number] };
+
+export type BuildStep3D =
+  /** Trapez isoscel CIRCUMSCRIPTIBIL (tangențial) în z=0: laturi=(a+b)/2, h=√(latură²−((b−a)/2)²), r=h/2.
+   *  ids=[colț-jos-stânga, jos-dreapta, sus-dreapta, sus-stânga]; `center`=incentrul pe axa de simetrie (origine). */
+  | { op: "isoTrapezoidTangential"; ids: [string, string, string, string]; center: string; bottomBase: number; topBase: number }
+  /** Piciorul perpendicularei din `from` pe muchia (dreapta) prin `edge` — în spațiu. */
+  | { op: "footOnEdge"; id: string; from: string; edge: [string, string] }
+  /** Apex deasupra unui punct (pe verticala z) la înălțimea `height` (poate fi `mulTan` din apotemă). */
+  | { op: "apexOverPoint"; apex: string; over: string; height: LenExpr3 }
+  /** Mijloc 3D. */
+  | { op: "midpoint3"; id: string; of: [string, string] };
+
+export type Given3D =
+  | { kind: "length3"; of: [string, string]; value: number }
+  | { kind: "angle3"; at: string; rays: [string, string]; value: number }
+  /** Egalitate de sume de lungimi (ex. trapez tangențial: Σ baze = Σ laturi). */
+  | { kind: "sumEqual"; left: Array<[string, string]>; right: Array<[string, string]>; name?: string };
+
+export interface GeoProblem3D {
+  build: BuildStep3D[];
+  /** Piramidă: baza (în ordine) + apex → poliedru (fața bazei + fețe laterale). */
+  solid?: { base: string[]; apex: string };
+  /** Construcția auxiliară de desenat (toate prin id-uri de puncte, ZERO coordonate). */
+  draw?: { segments?: Array<{ of: [string, string]; dashed?: boolean; label?: string }>; dihedral?: { at: string; rays: [string, string]; label?: string } };
+  givens: Given3D[];
+}
+
+interface Store3D { pts: Record<string, Vec3> }
+
+function need3(st: Store3D, id: string): Vec3 { const p = st.pts[id]; if (!p) throw new Error(`punctul 3D „${id}” nu e construit încă`); return p; }
+function evalLen3(e: LenExpr3, st: Store3D): number {
+  if (typeof e === "number") return e;
+  if ("dist3" in e) return d3(need3(st, e.dist3[0]), need3(st, e.dist3[1]));
+  if ("scale3" in e) return evalLen3(e.scale3[0], st) * e.scale3[1];
+  if ("mulTan" in e) return evalLen3(e.mulTan[0], st) * Math.tan((e.mulTan[1] * Math.PI) / 180);
+  throw new Error("LenExpr3 invalid");
+}
+
+/** Construiește deterministic toate coordonatele 3D din pași (formule închise). */
+export function solveConstraints3D(prob: GeoProblem3D): Store3D {
+  const st: Store3D = { pts: {} };
+  for (const s of prob.build) {
+    if (s.op === "isoTrapezoidTangential") {
+      const b = s.bottomBase, a = s.topBase;
+      if (!(a > 0) || !(b > 0)) throw new Error("isoTrapezoidTangential: baze pozitive necesare");
+      const leg = (a + b) / 2;
+      const h2 = leg * leg - ((b - a) / 2) ** 2;
+      if (h2 <= 0) throw new Error("isoTrapezoidTangential: înălțime trapez nereală");
+      const h = Math.sqrt(h2), r = h / 2;
+      const [BL, BR, TR, TL] = s.ids;
+      st.pts[BL] = [-b / 2, -r, 0]; st.pts[BR] = [b / 2, -r, 0];
+      st.pts[TR] = [a / 2, r, 0]; st.pts[TL] = [-a / 2, r, 0];
+      st.pts[s.center] = [0, 0, 0];
+    } else if (s.op === "footOnEdge") {
+      const P = need3(st, s.from), Q = need3(st, s.edge[0]), R = need3(st, s.edge[1]);
+      const qr = sub3(R, Q), t = dot3(sub3(P, Q), qr) / (dot3(qr, qr) || 1);
+      st.pts[s.id] = [Q[0] + t * qr[0], Q[1] + t * qr[1], Q[2] + t * qr[2]];
+    } else if (s.op === "apexOverPoint") {
+      const o = need3(st, s.over); const H = evalLen3(s.height, st);
+      if (!(H > 0)) throw new Error("apexOverPoint: înălțime trebuie pozitivă");
+      st.pts[s.apex] = [o[0], o[1], o[2] + H];
+    } else if (s.op === "midpoint3") {
+      const a = need3(st, s.of[0]), b = need3(st, s.of[1]);
+      st.pts[s.id] = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2];
+    }
+  }
+  return st;
+}
+
+const ang3 = (at: Vec3, p: Vec3, q: Vec3): number => {
+  const u = sub3(p, at), w = sub3(q, at);
+  const c = dot3(u, w) / (Math.hypot(...u) * Math.hypot(...w));
+  return deg(Math.acos(Math.max(-1, Math.min(1, c))));
+};
+
+export function verifyGivens3D(st: Store3D, givens: Given3D[], tol = 1e-9): Check[] {
+  const checks: Check[] = [];
+  for (const g of givens) {
+    try {
+      if (g.kind === "length3") {
+        const m = d3(need3(st, g.of[0]), need3(st, g.of[1]));
+        checks.push({ name: `|${g.of.join("")}| = ${g.value}`, pass: relEq(m, g.value, tol), detail: `măsurat ${m.toFixed(6)}` });
+      } else if (g.kind === "angle3") {
+        const m = ang3(need3(st, g.at), need3(st, g.rays[0]), need3(st, g.rays[1]));
+        checks.push({ name: `∠${g.rays[0]}${g.at}${g.rays[1]} = ${g.value}°`, pass: relEq(m, g.value, tol), detail: `măsurat ${m.toFixed(6)}°` });
+      } else if (g.kind === "sumEqual") {
+        const sum = (ps: Array<[string, string]>) => ps.reduce((s, [a, b]) => s + d3(need3(st, a), need3(st, b)), 0);
+        const L = sum(g.left), R = sum(g.right);
+        checks.push({ name: g.name ?? `Σstânga = Σdreapta`, pass: relEq(L, R, tol), detail: `${L.toFixed(6)} = ${R.toFixed(6)}` });
+      }
+    } catch (e) { checks.push({ name: JSON.stringify(g), pass: false, detail: (e as Error).message }); }
+  }
+  return checks;
+}
+
+/** Solid rezolvat → Scene3D (puncte explicite + poliedru + construcția auxiliară) pentru PROIECȚIE. */
+export function cas3DToScene(prob: GeoProblem3D, st: Store3D): Scene3D {
+  const points: Point3DSpec[] = Object.entries(st.pts).map(([id, [x, y, z]]) => ({ id, x, y, z }));
+  const elements: SceneElement[] = [];
+  if (prob.solid) {
+    const base = prob.solid.base, apex = prob.solid.apex, n = base.length;
+    const faces: string[][] = [[...base]];
+    for (let i = 0; i < n; i++) faces.push([apex, base[i], base[(i + 1) % n]]);
+    elements.push({ kind: "polyhedron", vertices: [...base, apex], faces });
+  }
+  for (const s of prob.draw?.segments ?? []) elements.push({ kind: "segment3d", of: s.of, dash: s.dashed, label: s.label });
+  if (prob.draw?.dihedral) elements.push({ kind: "angle3d", at: prob.draw.dihedral.at, rays: prob.draw.dihedral.rays, label: prob.draw.dihedral.label });
+  return { points, elements };
+}
+
+export interface CAS3DResult { ok: boolean; accepted: boolean; checks: Check[]; points?: Record<string, Vec3>; spec?: FigureSpec3D; reason?: string }
+
+/** Pipeline 3D complet: solve → verify → accept/reject → Scene3D pentru proiecție. */
+export function solveAndVerify3D(prob: GeoProblem3D, tol = 1e-9): CAS3DResult {
+  let st: Store3D;
+  try { st = solveConstraints3D(prob); }
+  catch (e) { return { ok: false, accepted: false, checks: [], reason: `construcție 3D imposibilă: ${(e as Error).message}` }; }
+  const checks = verifyGivens3D(st, prob.givens, tol);
+  const ok = checks.length > 0 ? checks.every((c) => c.pass) : true;
+  if (!ok) {
+    const failed = checks.filter((c) => !c.pass).map((c) => `${c.name} (${c.detail})`).join(" · ");
+    return { ok: false, accepted: false, checks, points: st.pts, reason: `numere nereproduse: ${failed}` };
+  }
+  return { ok: true, accepted: true, checks, points: st.pts, spec: { scene: cas3DToScene(prob, st) } };
 }

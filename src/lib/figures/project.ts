@@ -22,8 +22,10 @@ export interface Round { type: "cone" | "cylinder" | "sphere"; center: V3; R: nu
 export interface Geom3D {
   pts: Array<{ id: string; p: V3; label: string }>;
   faces: string[][];                 // pt. poliedre: fețe ca id-uri (→ muchii + back-face)
-  segments: Array<{ a: V3; b: V3 }>; // segmente libere (mereu pline)
+  segments: Array<{ a: V3; b: V3; dashed?: boolean; label?: string }>; // segmente libere (auxiliare)
   rounds: Round[];
+  arcs?: Array<{ pts: V3[] }>;        // marcaje de unghi (arce mici, pline)
+  freeLabels?: Array<{ at: V3; text: string }>; // etichete libere (lungimi, unghiuri)
 }
 
 function pyramidGeom(): Pick<Geom3D, never> { return {}; }
@@ -63,6 +65,7 @@ export function sceneToGeom(scene: Scene3D): Geom3D {
   const pmap = solveScenePoints(scene);
   const pts = Object.entries(pmap).map(([id, p]) => ({ id, p, label: id }));
   const faces: string[][] = []; const segments: Geom3D["segments"] = []; const rounds: Round[] = [];
+  const arcs: NonNullable<Geom3D["arcs"]> = []; const freeLabels: NonNullable<Geom3D["freeLabels"]> = [];
   const base = (ref?: string | V3): V3 => (Array.isArray(ref) ? ref : (typeof ref === "string" && pmap[ref]) ? pmap[ref] : [0, 0, 0]);
   for (const e of scene.elements) {
     if (e.kind === "polyhedron") faces.push(...e.faces);
@@ -75,9 +78,26 @@ export function sceneToGeom(scene: Scene3D): Geom3D {
       const c = base(cone?.baseCenter ?? e.baseCenter);
       const { center, radius } = inscribedSphereInCone(R, H, c);
       rounds.push({ type: "sphere", center, R: radius, H: 0 });
-    } else if (e.kind === "segment3d") segments.push({ a: base(e.of[0]), b: base(e.of[1]) });
+    } else if (e.kind === "segment3d") {
+      const a = base(e.of[0]), b = base(e.of[1]);
+      segments.push({ a, b, dashed: e.dash, label: e.label });
+      if (e.label) freeLabels.push({ at: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2], text: e.label });
+    } else if (e.kind === "label3d") freeLabels.push({ at: base(e.at), text: e.text });
+    else if (e.kind === "angle3d") {
+      const at = base(e.at), r0 = base(e.rays[0]), r1 = base(e.rays[1]);
+      const u0 = sub(r0, at), u1 = sub(r1, at);
+      const rad = 0.32 * Math.min(nrm(u0), nrm(u1));
+      const d0 = unit(u0), d1 = unit(u1);
+      const n = 16;
+      const arc: V3[] = Array.from({ length: n + 1 }, (_, i) => {
+        const t = i / n; const m = unit([d0[0] * (1 - t) + d1[0] * t, d0[1] * (1 - t) + d1[1] * t, d0[2] * (1 - t) + d1[2] * t]);
+        return [at[0] + rad * m[0], at[1] + rad * m[1], at[2] + rad * m[2]] as V3;
+      });
+      arcs.push({ pts: arc });
+      if (e.label) { const m = unit([d0[0] + d1[0], d0[1] + d1[1], d0[2] + d1[2]]); freeLabels.push({ at: [at[0] + 1.7 * rad * m[0], at[1] + 1.7 * rad * m[1], at[2] + 1.7 * rad * m[2]], text: e.label }); }
+    }
   }
-  return { pts, faces, segments, rounds };
+  return { pts, faces, segments, rounds, arcs, freeLabels };
 }
 
 export function specToGeom(spec: FigureSpec3D): Geom3D {
@@ -158,8 +178,10 @@ export function projectFigure(spec: FigureSpec3D, azDeg: number, elDeg: number):
     const hidden = fronts.length > 0 && fronts.every((x) => !x);
     line(proj(pa), proj(pc), hidden);
   }
-  // segmente libere (mereu pline)
-  for (const s of g.segments) line(proj(s.a), proj(s.b), false);
+  // segmente libere (auxiliare): înălțime punctată, apotemă/înclinată pline
+  for (const s of g.segments) line(proj(s.a), proj(s.b), !!s.dashed);
+  // arce de unghi (marcaje diedru) — mereu pline
+  for (const ar of g.arcs ?? []) { const p2 = ar.pts.map(proj); p2.forEach((p) => acc(...p)); polylines.push({ pts: p2, dashed: false }); }
 
   // corpuri rotunde
   const sample = (center: V3, R: number, z: number, n = 72): V3[] => Array.from({ length: n }, (_, i) => { const t = (2 * Math.PI * i) / n; return [center[0] + R * Math.cos(t), center[1] + R * Math.sin(t), z] as V3; });
@@ -215,5 +237,7 @@ export function projectFigure(spec: FigureSpec3D, azDeg: number, elDeg: number):
   const placed = placeVertexLabels(anchors, cx2, cy2, off);
   labels.push(...placed);
   for (const l of placed) acc(l.x, l.y); // bbox include etichetele → nu se taie din cadru
+  // etichete libere (lungimi/unghiuri auxiliare): poziție 3D proiectată, fără re-poziționare
+  for (const fl of g.freeLabels ?? []) { const [x, y] = proj(fl.at); labels.push({ x, y, text: fl.text }); acc(x, y); }
   return { polylines, labels, bbox: { minX, minY, maxX, maxY } };
 }

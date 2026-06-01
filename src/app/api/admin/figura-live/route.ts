@@ -5,7 +5,7 @@ import { validateSpec, type FigureSpec2D } from '@/lib/figures/spec';
 import { solvePyramid, solvePerpFromVertex, solvePolyhedron, validateScene, normalizeScene, type Body3D, type RegularPyramidSpec, type PerpFromVertexSpec, type PolyhedronBody, type Scene3D, type FigureSpec3D } from '@/lib/figures/spec3d';
 import { verifyFigure2D, verifyFigure3D, type VerifyResult } from '@/lib/figures/verify';
 import { axialSection, dihedralSection } from '@/lib/figures/axial';
-import { solveAndVerify, type GeoProblem } from '@/lib/figures/cas';
+import { solveAndVerify, solveAndVerify3D, type GeoProblem, type GeoProblem3D } from '@/lib/figures/cas';
 
 const failedInvariants = (v: VerifyResult): string => v.checks.filter((c) => !c.pass).map((c) => `${c.name} (${c.detail})`).join(' · ');
 
@@ -58,6 +58,21 @@ export const SYSTEM_PROMPT =
   '{kind:"ratio", of:[[P,Q],[R,S]], value} · {kind:"tangent", circle:id, line:[P,Q]} · {kind:"collinear", points:[ids]}.\n' +
   '  Pune ÎN givens TOATE numerele din enunț (chiar consecințe verificabile: ex. în isoscel bisectoarea ⟂ baza). ' +
   'Pentru valori iraționale dă numărul exact (ex. 4√3 → 6.928203230275509). Motorul ACCEPTĂ doar dacă toate se potrivesc.\n' +
+  '⭐ OPERATOR „geo3d” (GEOMETRY CAS 3D) — pentru SOLIDE cu NUMERE DATE (piramidă cu diedru la bază, apotemă, ' +
+  'înălțime). Desenează SOLIDUL + construcția auxiliară (înălțime, apotemă, înclinată, diedru marcat) — NU un triunghi ' +
+  'gol. NU plasezi coordonate; emiți construcția + numerele, motorul rezolvă prin formule și RESPINGE dacă nu se reproduc.\n' +
+  '  geo3d = { build:[…], solid:{base:[ids în ordine], apex}, draw:{segments:[{of:[P,Q], dashed?, label?}], dihedral:{at, rays:[P,Q], label}}, givens:[…] }\n' +
+  '  build (formule, ZERO coordonate): {op:"isoTrapezoidTangential", ids:[josStg,josDr,susDr,susStg], center, bottomBase, topBase} ' +
+  '(trapez isoscel CIRCUMSCRIPTIBIL în baza piramidei; laturi=(a+b)/2, înălțime=√(latură²−((b−a)/2)²), incentru=center pe axă) · ' +
+  '{op:"footOnEdge", id, from:center, edge:[P,Q]} (piciorul apotemei M pe muchia bazei) · ' +
+  '{op:"apexOverPoint", apex, over:center, height:{mulTan:[{dist3:[center,M]}, diedru_grade]}} (V deasupra incentrului la H=r·tan(diedru)) · ' +
+  '{op:"midpoint3", id, of:[P,Q]}. height poate fi număr, {dist3:[P,Q]}, {scale3:[expr,k]} sau {mulTan:[expr,grade]}.\n' +
+  '  givens (FIECARE număr): {kind:"length3", of:[P,Q], value} · {kind:"angle3", at, rays:[P,Q], value} (diedrul = angle3 la M între center și apex) · ' +
+  '{kind:"sumEqual", left:[[P,Q]…], right:[[R,S]…], name?} (tangențial: Σbaze=Σlaturi). Valori iraționale exacte (4√3→6.928203230275509).\n' +
+  '  draw: înălțimea center→apex (dashed:true), apotema center→M, înclinata apex→M, dihedral la M cu eticheta „60°".\n' +
+  '  Ex. „piramidă cu baza trapez circumscriptibil baze 4 și 16, diedru la baza mare 60°”: isoTrapezoidTangential(16,4) → ' +
+  'footOnEdge(M pe baza lungă) → apexOverPoint(H=r·tan60); solid={base:[cele 4 colțuri], apex:V}; givens cu bazele, latura 10, ' +
+  'sumEqual tangențial, OM=4, ∠OMV=60, VO=4√3, VM=8.\n' +
   'PRINCIPIU: figura de stereometrie arată MĂRIMEA cerută (diedru, apotemă, înălțime, tangență) = SECȚIUNEA/construcția ' +
   'auxiliară din rezolvare, NU solidul gol. NU desena tu secțiunea cu coordonate — exprimi COMPOZIȚIA, motorul o realizează prin OPERATORI:\n' +
   '• OPERATOR „secțiune axială” — corpuri de ROTAȚIE înscrise/tangente/secționate (sferă-con, cilindru-con, sferă-cilindru, con-sferă, ' +
@@ -127,7 +142,8 @@ export const TOOL: Anthropic.Messages.Tool = {
     properties: {
       verdict: { type: 'string', enum: ['figurabil_2d', '3d', 'fara_figura'] },
       reason: { type: 'string' },
-      geo: { type: ['object', 'null'], description: 'GEOMETRY CAS: build (constrângeri, ZERO coordonate) + givens (numerele din enunț). Preferat pentru figuri plane cu numere.', properties: { build: { type: 'array' }, givens: { type: 'array' } } },
+      geo: { type: ['object', 'null'], description: 'GEOMETRY CAS 2D: build (constrângeri, ZERO coordonate) + givens (numerele din enunț). Preferat pentru figuri plane cu numere.', properties: { build: { type: 'array' }, givens: { type: 'array' } } },
+      geo3d: { type: ['object', 'null'], description: 'GEOMETRY CAS 3D: solid din constrângeri (build) + solid{base,apex} + draw{segments,dihedral} + givens. Pentru piramide/corpuri cu numere date (diedru, apotemă, înălțime). ZERO coordonate.', properties: { build: { type: 'array' }, solid: { type: 'object' }, draw: { type: 'object' }, givens: { type: 'array' } } },
       spec2d: { type: ['object', 'null'], properties: { points: { type: 'array' }, elements: { type: 'array' }, intersections: {} } },
       body3d: {
         type: ['object', 'null'],
@@ -150,7 +166,7 @@ export const TOOL: Anthropic.Messages.Tool = {
   },
 };
 
-interface ModelOut { verdict?: string; reason?: string; geo?: GeoProblem | null; spec2d?: unknown; body3d?: (Body3D & { kind?: string }) | null; scene?: Scene3D | null; body3d_name?: string; unsupported_relation?: string; render3d?: string; section?: { kind?: string; apothem?: number; angle?: number } }
+interface ModelOut { verdict?: string; reason?: string; geo?: GeoProblem | null; geo3d?: GeoProblem3D | null; spec2d?: unknown; body3d?: (Body3D & { kind?: string }) | null; scene?: Scene3D | null; body3d_name?: string; unsupported_relation?: string; render3d?: string; section?: { kind?: string; apothem?: number; angle?: number } }
 
 /** Verifică o figură 2D (structură + invariante) → {valid, error}. */
 function check2D(spec: FigureSpec2D): { valid: boolean; error: string | null } {
@@ -204,6 +220,19 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, valid: false, error: res.reason, diagnostic, cas: true, checks: res.checks });
       }
       return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, spec: res.spec, valid: true, error: null, cas: true, checks: res.checks });
+    }
+
+    // ── GEOMETRY CAS 3D (ETAPA 42): solid din constrângeri → proiecție + construcție auxiliară. Auto-respinge. ──
+    if (out.geo3d && typeof out.geo3d === 'object' && Array.isArray(out.geo3d.build) && out.geo3d.build.length) {
+      const res = solveAndVerify3D(out.geo3d as GeoProblem3D);
+      if (!res.accepted) {
+        const diagnostic = `CAS 3D a RESPINS (solidul nu reproduce numerele date): ${res.reason ?? 'inconsistență'}`;
+        return NextResponse.json({ dim: '3d', verdict: '3d', reason, valid: false, error: res.reason, diagnostic, cas: true, checks: res.checks });
+      }
+      // re-validează scena prin invariantele 3D (poartă comună cu randorul)
+      const ver = verifyFigure3D(res.spec as FigureSpec3D);
+      if (!ver.ok) return NextResponse.json({ dim: '3d', verdict: '3d', reason, spec: res.spec, valid: false, error: failedInvariants(ver), diagnostic: `invariante 3D picate: ${failedInvariants(ver)}`, cas: true });
+      return NextResponse.json({ dim: '3d', verdict: '3d', reason, spec: res.spec, valid: true, error: null, cas: true, composed: true, checks: res.checks });
     }
 
     // ── OPERATORI GENERALI (compun figura 2D din concepte — fără ramuri per-problemă) ──
