@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { solvePyramid, solvePerpFromVertex, solvePolyhedron, bodyExtent, solveScenePoints, sceneBoundsCube, inscribedSphereInCone, type FigureSpec3D, type RegularPyramidSpec, type PerpFromVertexSpec, type PolyhedronBody, type ConeSpec, type CylinderSpec, type SphereSpec, type Scene3D, type Vec3 } from "@/lib/figures/spec3d";
+import { verifyFigure3D } from "@/lib/figures/verify";
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- punte către JSXGraph view3d (lib fără tipuri ESM stricte) */
 
@@ -208,6 +209,10 @@ export default function Figure3DRenderer({ spec, size = 460, className }: Figure
         JXGref = JXG;
         if (cancelled || !containerRef.current) return;
         containerRef.current.innerHTML = "";
+
+        // AUTO-VERIFICARE invariante înainte de randare — eroare clară, nu figură greșită.
+        const ver = verifyFigure3D(spec);
+        if (!ver.ok) throw new Error(`invariante picate: ${ver.checks.filter((c) => !c.pass).map((c) => `${c.name} (${c.detail})`).join(" · ")}`);
 
         // Ranges 3D: scenă → cub centrat pe conținut (figura nu mai e descentrată); corp standard → simetric.
         let ranges: number[][];

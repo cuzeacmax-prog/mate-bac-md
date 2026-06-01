@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { autoBoundingBox, solveBasePoints, frameSolved, validateSpec, type FigureSpec2D, type LineRef, type SolvedPoint } from "@/lib/figures/spec";
+import { verifyFigure2D } from "@/lib/figures/verify";
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- punte către JSXGraph (lib fără tipuri ESM stricte) */
 
@@ -430,6 +431,9 @@ export default function FigureRenderer({ spec, size = 420, style = "bac", classN
         const { errors, warnings } = validateSpec(spec);
         warnings.forEach((w) => console.warn("[figura]", w));
         if (errors.length) throw new Error(`Spec invalid: ${errors.join(" · ")}`);
+        // INVARIANTE numerice (triangleFromSides/quad/midpoint) — eroare clară, nu figură greșită.
+        const ver = verifyFigure2D(spec);
+        if (!ver.ok) throw new Error(`invariante picate: ${ver.checks.filter((c) => !c.pass).map((c) => `${c.name} (${c.detail})`).join(" · ")}`);
 
         // Rezolvă + (pt. bac) încadrează canonic. Box din coordonatele finale.
         const base = solveBasePoints(spec);

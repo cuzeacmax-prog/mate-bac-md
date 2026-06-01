@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@/lib/supabase/server';
 import { validateSpec, type FigureSpec2D } from '@/lib/figures/spec';
-import { solvePyramid, solvePerpFromVertex, solvePolyhedron, validateScene, normalizeScene, type Body3D, type RegularPyramidSpec, type PerpFromVertexSpec, type PolyhedronBody, type Scene3D } from '@/lib/figures/spec3d';
+import { solvePyramid, solvePerpFromVertex, solvePolyhedron, validateScene, normalizeScene, type Body3D, type RegularPyramidSpec, type PerpFromVertexSpec, type PolyhedronBody, type Scene3D, type FigureSpec3D } from '@/lib/figures/spec3d';
+import { verifyFigure2D, verifyFigure3D, type VerifyResult } from '@/lib/figures/verify';
+
+const failedInvariants = (v: VerifyResult): string => v.checks.filter((c) => !c.pass).map((c) => `${c.name} (${c.detail})`).join(' · ');
 
 const SUPPORTED_3D = ['regularPyramid', 'perpFromVertex', 'cube', 'box', 'prism', 'tetrahedron', 'frustum', 'cone', 'cylinder', 'sphere'];
 const POLY_KINDS = ['cube', 'box', 'prism', 'tetrahedron', 'frustum'];
@@ -164,6 +167,8 @@ export async function POST(req: NextRequest) {
         if (fix.spec2d && typeof fix.spec2d === 'object') { spec = fix.spec2d; ({ valid, error } = check(spec)); }
         else break;
       }
+      // INVARIANTE numerice (peste validarea structurală)
+      if (valid) { const ver = verifyFigure2D(spec as FigureSpec2D); if (!ver.ok) { valid = false; error = `invariante picate: ${failedInvariants(ver)}`; } }
       const diagnostic = valid ? null : `validare eșuată după reparare (${repaired} runde): ${error}`;
       return NextResponse.json({ dim: '2d', verdict, reason, spec, valid, error, repaired, unsupportedRelation, diagnostic });
     }
@@ -173,15 +178,19 @@ export async function POST(req: NextRequest) {
       // 1) corp standard (șablon)
       if (b && b.kind && SUPPORTED_3D.includes(b.kind)) {
         const err = validateBody(b as Body3D);
-        if (!err) return NextResponse.json({ dim: '3d', verdict, reason, spec: { body: b }, valid: true, error: null });
-        return NextResponse.json({ dim: '3d', verdict, reason, valid: false, error: err, diagnostic: `parametri 3D invalizi: ${err}` });
+        if (err) return NextResponse.json({ dim: '3d', verdict, reason, valid: false, error: err, diagnostic: `parametri 3D invalizi: ${err}` });
+        const ver = verifyFigure3D({ body: b } as FigureSpec3D);
+        if (!ver.ok) return NextResponse.json({ dim: '3d', verdict, reason, spec: { body: b }, valid: false, error: failedInvariants(ver), diagnostic: `invariante picate: ${failedInvariants(ver)}` });
+        return NextResponse.json({ dim: '3d', verdict, reason, spec: { body: b }, valid: true, error: null });
       }
       // 2) corp ne-standard/compus → scenă din primitive generale (normalizată: refs de plasare danglinge → origine)
       if (out.scene && typeof out.scene === 'object') {
         const scene = normalizeScene(out.scene as Scene3D);
         const v = validateScene(scene);
-        if (v.errors.length === 0) return NextResponse.json({ dim: '3d', verdict, reason, spec: { scene }, valid: true, error: null, composed: true });
-        return NextResponse.json({ dim: '3d', verdict, reason, spec: { scene }, valid: false, error: v.errors.join(' · '), diagnostic: `scenă invalidă: ${v.errors.join(' · ')}` });
+        if (v.errors.length) return NextResponse.json({ dim: '3d', verdict, reason, spec: { scene }, valid: false, error: v.errors.join(' · '), diagnostic: `scenă invalidă: ${v.errors.join(' · ')}` });
+        const ver = verifyFigure3D({ scene } as FigureSpec3D);
+        if (!ver.ok) return NextResponse.json({ dim: '3d', verdict, reason, spec: { scene }, valid: false, error: failedInvariants(ver), diagnostic: `invariante picate: ${failedInvariants(ver)}`, composed: true });
+        return NextResponse.json({ dim: '3d', verdict, reason, spec: { scene }, valid: true, error: null, composed: true });
       }
       // 3) genuin nereprezentabil
       const name = out.body3d_name || 'necunoscut';

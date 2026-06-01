@@ -40,6 +40,7 @@
     "place:exercises": "tsx --env-file=.env.local scripts/extraction/17-place-exercises.ts",
     "place:topic": "tsx --env-file=.env.local scripts/extraction/18-place-topic.ts",
     "extract:figures": "tsx --env-file=.env.local scripts/extraction/19-figure-extract.ts",
+    "verify:figures": "tsx scripts/figures/verify-figures.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
