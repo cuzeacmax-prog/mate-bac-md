@@ -2,7 +2,23 @@ import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@/lib/supabase/server';
 import { validateSpec, type FigureSpec2D } from '@/lib/figures/spec';
-import { solvePyramid, solvePerpFromVertex, type RegularPyramidSpec, type PerpFromVertexSpec } from '@/lib/figures/spec3d';
+import { solvePyramid, solvePerpFromVertex, solvePolyhedron, type Body3D, type RegularPyramidSpec, type PerpFromVertexSpec, type PolyhedronBody } from '@/lib/figures/spec3d';
+
+const SUPPORTED_3D = ['regularPyramid', 'perpFromVertex', 'cube', 'box', 'prism', 'tetrahedron', 'frustum', 'cone', 'cylinder', 'sphere'];
+const POLY_KINDS = ['cube', 'box', 'prism', 'tetrahedron', 'frustum'];
+
+/** Validează parametrii unui corp 3D rulând solverul potrivit. */
+function validateBody(b: Body3D): string | null {
+  try {
+    if (b.kind === 'regularPyramid') solvePyramid(b as RegularPyramidSpec);
+    else if (b.kind === 'perpFromVertex') solvePerpFromVertex(b as PerpFromVertexSpec);
+    else if (POLY_KINDS.includes(b.kind)) solvePolyhedron(b as PolyhedronBody);
+    else if (b.kind === 'cone' || b.kind === 'cylinder') { if (!(b.radius > 0) || !(b.height > 0)) return 'radius și height trebuie pozitive.'; }
+    else if (b.kind === 'sphere') { if (!(b.radius > 0)) return 'radius trebuie pozitiv.'; }
+    else return 'kind necunoscut';
+    return null;
+  } catch (e) { return (e as Error).message; }
+}
 
 /**
  * ETAPA 27/28 — playground live enunț → figură. Admin-gated. FĂRĂ persistare, FĂRĂ căutare în DB:
@@ -18,13 +34,18 @@ export const SYSTEM_PROMPT =
   'figurabil_2d și emite ce poți. Folosește fara_figura DOAR pentru probleme pur algebrice/numerice fără desen.\n\n' +
   'CLASIFICARE:\n' +
   "- 'figurabil_2d' = geometrie PLANĂ (triunghi/patrulater/trapez/romb/pătrat/cerc în plan). Emite spec2d.\n" +
-  "- '3d' = STEREOMETRIE. Șabloane disponibile (emite body3d):\n" +
-  '    • PIRAMIDĂ REGULATĂ → {kind:"regularPyramid", baseSides, baseEdge, height, labels?}\n' +
-  '    • TRIUNGHI în plan + segment PERPENDICULAR pe plan dintr-un vârf (ex. „din A se ridică AM⊥plan”; ' +
-  'teorema celor 3 perpendiculare; distanța de la un punct la o dreaptă/latură) → ' +
-  '{kind:"perpFromVertex", triangle:{sides:{AB,BC,CA}}, apexFrom, apexHeight, apexLabel?, labels?}. ' +
-  'Calculează laturile din date (triunghi echilateral cu aria S → latura = sqrt(4·S/√3); ex. arie 4√3 → latura 4).\n' +
-  '    Pentru ORICE alt corp (con/sferă/prismă/cub/piramidă neregulată…) NU emite body3d — pune body3d_name = tipul corpului.\n' +
+  "- '3d' = STEREOMETRIE. Șabloane disponibile (emite body3d cu kind potrivit; calculează parametrii din date):\n" +
+  '    • {kind:"regularPyramid", baseSides, baseEdge, height, labels?} — piramidă regulată\n' +
+  '    • {kind:"cube", edge, labels?} — cub\n' +
+  '    • {kind:"box", length, width, height, labels?} — paralelipiped dreptunghic\n' +
+  '    • {kind:"prism", baseSides, baseEdge, height, labels?} — prismă regulată\n' +
+  '    • {kind:"tetrahedron", edge, labels?} — tetraedru regulat\n' +
+  '    • {kind:"frustum", baseSides, baseEdge, topEdge, height, labels?} — trunchi de piramidă regulată\n' +
+  '    • {kind:"cone", radius, height} — con · {kind:"cylinder", radius, height} — cilindru · {kind:"sphere", radius} — sferă\n' +
+  '    • {kind:"perpFromVertex", triangle:{sides:{AB,BC,CA}}, apexFrom, apexHeight, apexLabel?, labels?} — triunghi în plan + ' +
+  'segment perpendicular pe plan dintr-un vârf (teorema celor 3 perpendiculare; distanța de la un punct la o dreaptă). ' +
+  'Echilateral cu aria S → latura = sqrt(4·S/√3) (arie 4√3 → latura 4).\n' +
+  '    DOAR dacă niciun șablon nu se potrivește (corp neregulat/compus) → NU emite body3d, pune body3d_name = tipul corpului.\n' +
   "- 'fara_figura' = fără desen (algebră, ecuații, combinatorică, probabilitate, „pătrat perfect” = număr).\n\n" +
   'SCHEMA spec2d (DOAR aceste kind-uri, constrângeri NU coordonate inventate):\n' +
   '{ points:[{id,x,y,label?}], elements:[…], intersections?:"detect"|"label-all"|[{of:[ref,ref],label?}] }\n' +
@@ -63,8 +84,9 @@ export const TOOL: Anthropic.Messages.Tool = {
       body3d: {
         type: ['object', 'null'],
         properties: {
-          kind: { type: 'string', enum: ['regularPyramid', 'perpFromVertex'] },
-          baseSides: { type: 'integer' }, baseEdge: { type: 'number' }, height: { type: 'number' },
+          kind: { type: 'string', enum: ['regularPyramid', 'cube', 'box', 'prism', 'tetrahedron', 'frustum', 'cone', 'cylinder', 'sphere', 'perpFromVertex'] },
+          baseSides: { type: 'integer' }, baseEdge: { type: 'number' }, topEdge: { type: 'number' }, height: { type: 'number' },
+          edge: { type: 'number' }, length: { type: 'number' }, width: { type: 'number' }, radius: { type: 'number' },
           labels: { type: 'array', items: { type: 'string' } },
           triangle: { type: 'object', properties: { sides: { type: 'object', properties: { AB: { type: 'number' }, BC: { type: 'number' }, CA: { type: 'number' } } } } },
           apexFrom: { type: 'string' }, apexHeight: { type: 'number' }, apexLabel: { type: 'string' },
@@ -77,8 +99,7 @@ export const TOOL: Anthropic.Messages.Tool = {
   },
 };
 
-type Body3DOut = (RegularPyramidSpec | PerpFromVertexSpec) & { kind?: string };
-interface ModelOut { verdict?: string; reason?: string; spec2d?: unknown; body3d?: Body3DOut | null; body3d_name?: string; unsupported_relation?: string }
+interface ModelOut { verdict?: string; reason?: string; spec2d?: unknown; body3d?: (Body3D & { kind?: string }) | null; body3d_name?: string; unsupported_relation?: string }
 
 async function callTool(anthropic: Anthropic, userContent: string): Promise<ModelOut> {
   const msg = await anthropic.messages.create({
@@ -135,16 +156,13 @@ export async function POST(req: NextRequest) {
 
     if (verdict === '3d') {
       const b = out.body3d;
-      if (b && b.kind === 'regularPyramid') {
-        try { solvePyramid(b as RegularPyramidSpec); return NextResponse.json({ dim: '3d', verdict, reason, spec: { body: b }, valid: true, error: null }); }
-        catch (e) { return NextResponse.json({ dim: '3d', verdict, reason, valid: false, error: (e as Error).message, diagnostic: `parametri 3D invalizi: ${(e as Error).message}` }); }
+      if (b && b.kind && SUPPORTED_3D.includes(b.kind)) {
+        const err = validateBody(b as Body3D);
+        if (!err) return NextResponse.json({ dim: '3d', verdict, reason, spec: { body: b }, valid: true, error: null });
+        return NextResponse.json({ dim: '3d', verdict, reason, valid: false, error: err, diagnostic: `parametri 3D invalizi: ${err}` });
       }
-      if (b && b.kind === 'perpFromVertex') {
-        try { solvePerpFromVertex(b as PerpFromVertexSpec); return NextResponse.json({ dim: '3d', verdict, reason, spec: { body: b }, valid: true, error: null }); }
-        catch (e) { return NextResponse.json({ dim: '3d', verdict, reason, valid: false, error: (e as Error).message, diagnostic: `parametri 3D invalizi: ${(e as Error).message}` }); }
-      }
-      const name = out.body3d_name || 'necunoscut';
-      return NextResponse.json({ dim: '3d', verdict, reason, unsupported: true, message: `3D detectat — corpul „${name}” nu are șablon (avem doar piramida regulată).`, diagnostic: `3D detectat — corpul „${name}” nu are șablon` });
+      const name = out.body3d_name || (b?.kind ?? 'necunoscut');
+      return NextResponse.json({ dim: '3d', verdict, reason, unsupported: true, message: `3D detectat — corpul „${name}” nu are șablon încă.`, diagnostic: `3D detectat — corpul „${name}” nu are șablon` });
     }
 
     if (unsupportedRelation) {

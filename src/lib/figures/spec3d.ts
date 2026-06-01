@@ -31,7 +31,18 @@ export interface PerpFromVertexSpec {
   labels?: [string, string, string]; // etichetele triunghiului de bază
 }
 
-export type Body3D = RegularPyramidSpec | PerpFromVertexSpec;
+export interface CubeSpec { kind: "cube"; edge: number; labels?: string[] }
+export interface BoxSpec { kind: "box"; length: number; width: number; height: number; labels?: string[] }
+export interface PrismSpec { kind: "prism"; baseSides: number; baseEdge: number; height: number; labels?: string[] }
+export interface TetrahedronSpec { kind: "tetrahedron"; edge: number; labels?: string[] }
+export interface FrustumSpec { kind: "frustum"; baseSides: number; baseEdge: number; topEdge: number; height: number; labels?: string[] }
+export interface ConeSpec { kind: "cone"; radius: number; height: number }
+export interface CylinderSpec { kind: "cylinder"; radius: number; height: number }
+export interface SphereSpec { kind: "sphere"; radius: number }
+
+export type PolyhedronBody = CubeSpec | BoxSpec | PrismSpec | TetrahedronSpec | FrustumSpec;
+export type RoundBody = ConeSpec | CylinderSpec | SphereSpec;
+export type Body3D = RegularPyramidSpec | PerpFromVertexSpec | PolyhedronBody | RoundBody;
 
 export interface FigureSpec3D {
   body: Body3D;
@@ -148,4 +159,68 @@ export function solvePerpFromVertex(spec: PerpFromVertexSpec): SolvedPerp {
   ];
   const extent = Math.max(AB, ca, BC, spec.apexHeight) * 1.25;
   return { verts, baseIds: [LA, LB, LC], apexId: apexLabel, apexBaseId: apexFrom, footId, oppositeEdge: others, distanceMD, apexHeight: spec.apexHeight, extent };
+}
+
+// ───────────────────────── Corpuri POLIEDRALE (cub, paralelipiped, prismă, tetraedru, trunchi) ──
+export interface SolvedPoly { verts: Array<{ id: string; xyz: Vec3 }>; faces: number[][]; extent: number; info: string }
+const BASE_LABELS = ["A", "B", "C", "D", "E", "F", "G", "H"];
+
+function regBase(n: number, edge: number, z: number): Vec3[] {
+  const R = edge / (2 * Math.sin(Math.PI / n));
+  const t0 = Math.PI / n - Math.PI / 2;
+  return Array.from({ length: n }, (_, i) => { const t = t0 + (2 * Math.PI * i) / n; return [R * Math.cos(t), R * Math.sin(t), z] as Vec3; });
+}
+function centerVerts(v: Vec3[]): Vec3[] {
+  const c = [0, 0, 0]; v.forEach((p) => { c[0] += p[0]; c[1] += p[1]; c[2] += p[2]; }); const n = v.length || 1;
+  return v.map((p) => [p[0] - c[0] / n, p[1] - c[1] / n, p[2] - c[2] / n] as Vec3);
+}
+function extentOfVerts(v: Vec3[]): number { let m = 1; v.forEach((p) => p.forEach((x) => { m = Math.max(m, Math.abs(x)); })); return m * 1.3; }
+
+/** Rezolvă un corp poliedral → vârfuri + fețe (centrate la origine). PUR. */
+export function solvePolyhedron(body: PolyhedronBody): SolvedPoly {
+  let raw: Vec3[] = []; let faces: number[][] = []; let ids: string[] = []; let info = "";
+
+  if (body.kind === "cube" || body.kind === "box") {
+    const l = body.kind === "cube" ? body.edge : body.length;
+    const w = body.kind === "cube" ? body.edge : body.width;
+    const h = body.kind === "cube" ? body.edge : body.height;
+    if (!(l > 0) || !(w > 0) || !(h > 0)) throw new Error("dimensiuni pozitive necesare.");
+    raw = [[0, 0, 0], [l, 0, 0], [l, w, 0], [0, w, 0], [0, 0, h], [l, 0, h], [l, w, h], [0, w, h]];
+    faces = [[0, 1, 2, 3], [4, 5, 6, 7], [0, 1, 5, 4], [1, 2, 6, 5], [2, 3, 7, 6], [3, 0, 4, 7]];
+    const base = ["A", "B", "C", "D"]; ids = [...base, ...base.map((s) => s + "'")];
+    info = body.kind === "cube" ? `cub, muchie ${body.edge}, diagonală ${(body.edge * Math.sqrt(3)).toFixed(2)}` : `paralelipiped ${l}×${w}×${h}, diagonală ${Math.hypot(l, w, h).toFixed(2)}`;
+  } else if (body.kind === "prism" || body.kind === "frustum") {
+    const n = Math.floor(body.baseSides);
+    if (n < 3) throw new Error("baseSides trebuie ≥ 3.");
+    const h = body.height; if (!(h > 0) || !(body.baseEdge > 0)) throw new Error("dimensiuni pozitive necesare.");
+    const topEdge = body.kind === "frustum" ? body.topEdge : body.baseEdge;
+    if (body.kind === "frustum" && !(topEdge > 0)) throw new Error("topEdge pozitiv necesar.");
+    const b = regBase(n, body.baseEdge, 0), t = regBase(n, topEdge, h);
+    raw = [...b, ...t];
+    faces = [Array.from({ length: n }, (_, i) => i), Array.from({ length: n }, (_, i) => n + i)];
+    for (let i = 0; i < n; i++) faces.push([i, (i + 1) % n, n + ((i + 1) % n), n + i]);
+    const base = BASE_LABELS.slice(0, n); ids = [...base, ...base.map((s) => s + "'")];
+    info = body.kind === "frustum" ? `trunchi de piramidă (${n} laturi), baze ${body.baseEdge}/${topEdge}, h=${h}` : `prismă regulată (${n} laturi), muchie ${body.baseEdge}, h=${h}`;
+  } else { // tetrahedron
+    const e = body.edge; if (!(e > 0)) throw new Error("muchie pozitivă necesară.");
+    const A: Vec3 = [0, 0, 0], B: Vec3 = [e, 0, 0], C: Vec3 = [e / 2, (e * Math.sqrt(3)) / 2, 0];
+    const D: Vec3 = [(A[0] + B[0] + C[0]) / 3, (A[1] + B[1] + C[1]) / 3, e * Math.sqrt(2 / 3)];
+    raw = [A, B, C, D]; faces = [[0, 1, 2], [0, 1, 3], [1, 2, 3], [2, 0, 3]]; ids = ["A", "B", "C", "D"];
+    info = `tetraedru regulat, muchie ${e}`;
+  }
+
+  const labels = body.labels && body.labels.length >= ids.length ? body.labels : ids;
+  const cv = centerVerts(raw);
+  return { verts: cv.map((xyz, i) => ({ id: labels[i] ?? ids[i], xyz })), faces, extent: extentOfVerts(cv), info };
+}
+
+/** Semi-dimensiunea cadrului 3D pentru orice corp. */
+export function bodyExtent(body: Body3D): number {
+  switch (body.kind) {
+    case "regularPyramid": return solvePyramid(body).extent;
+    case "perpFromVertex": return solvePerpFromVertex(body).extent;
+    case "cone": case "cylinder": return Math.max(body.radius, body.height) * 1.4;
+    case "sphere": return body.radius * 1.6;
+    default: return solvePolyhedron(body).extent;
+  }
 }
