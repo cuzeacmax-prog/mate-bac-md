@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { solvePyramid, solvePerpFromVertex, solvePolyhedron, bodyExtent, type FigureSpec3D, type RegularPyramidSpec, type PerpFromVertexSpec, type PolyhedronBody, type ConeSpec, type CylinderSpec, type SphereSpec } from "@/lib/figures/spec3d";
+import { solvePyramid, solvePerpFromVertex, solvePolyhedron, bodyExtent, solveScenePoints, sceneExtent, type FigureSpec3D, type RegularPyramidSpec, type PerpFromVertexSpec, type PolyhedronBody, type ConeSpec, type CylinderSpec, type SphereSpec, type Scene3D, type Vec3 } from "@/lib/figures/spec3d";
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- punte către JSXGraph view3d (lib fără tipuri ESM stricte) */
 
@@ -126,6 +126,50 @@ function buildSphere(view: any, body: SphereSpec): string {
   return `sferă: rază ${r}, aria ${(4 * Math.PI * r * r).toFixed(2)}, volum ${((4 / 3) * Math.PI * r ** 3).toFixed(2)}`;
 }
 
+/** Scenă GENERALĂ: puncte din constrângeri + poliedru(vârfuri,fețe) + suprafețe + relații. */
+function buildScene(view: any, scene: Scene3D): string {
+  const pts = solveScenePoints(scene);
+  const { pt, seg } = helpers(view);
+  const vp: Record<string, any> = {};
+  for (const [id, xyz] of Object.entries(pts)) vp[id] = pt(xyz, id);
+  const coord = (ref: string | Vec3): Vec3 => (typeof ref === "string" ? pts[ref] : ref);
+  const circle = (c: Vec3, r: number, fill: number) => view.create("circle3d", [c, [0, 0, 1], r], { strokeColor: INK, strokeWidth: 1.4, fillColor: "#cbd5e1", fillOpacity: fill });
+  const notes: string[] = [];
+
+  for (const e of scene.elements) {
+    if (e.kind === "polyhedron") {
+      const idx = new Map(e.vertices.map((v, i) => [v, i]));
+      view.create("polyhedron3d", [e.vertices.map((v) => pts[v]), e.faces.map((f) => f.map((v) => idx.get(v)!))],
+        { fillColor: "#cbd5e1", fillOpacity: e.fillOpacity ?? 0.26, strokeColor: INK, strokeWidth: 1.4, layer: 10 });
+    } else if (e.kind === "sphere3d") {
+      view.create("sphere3d", [coord(e.center ?? [0, 0, 0]), e.radius], { strokeColor: INK, strokeWidth: 1, fillColor: "#cbd5e1", fillOpacity: 0.2 });
+    } else if (e.kind === "cone3d") {
+      const c = coord(e.baseCenter ?? [0, 0, 0]);
+      circle(c, e.radius, 0.22);
+      const V = pt([c[0], c[1], c[2] + e.height], "V"); const A = pt([c[0] + e.radius, c[1], c[2]], "A"); const B = pt([c[0] - e.radius, c[1], c[2]], "B");
+      seg(V, A, INK, 0); seg(V, B, INK, 0); seg(V, pt(c, "O"), INK, 2);
+      notes.push(`con r=${e.radius} h=${e.height}`);
+    } else if (e.kind === "cylinder3d") {
+      const c = coord(e.baseCenter ?? [0, 0, 0]);
+      circle(c, e.radius, 0.18); circle([c[0], c[1], c[2] + e.height], e.radius, 0.18);
+      seg(pt([c[0] + e.radius, c[1], c[2]], "A"), pt([c[0] + e.radius, c[1], c[2] + e.height], "A'"), INK, 0);
+      seg(pt([c[0] - e.radius, c[1], c[2]], "B"), pt([c[0] - e.radius, c[1], c[2] + e.height], "B'"), INK, 0);
+      notes.push(`cilindru r=${e.radius} h=${e.height}`);
+    } else if (e.kind === "inscribedSphere") {
+      const { radius: R, height: H } = e.inCone; const L = Math.hypot(R, H); const rho = (R * H) / (R + L);
+      const c = coord(e.baseCenter ?? [0, 0, 0]);
+      view.create("sphere3d", [[c[0], c[1], c[2] + rho], rho], { strokeColor: "#dc2626", strokeWidth: 1, fillColor: "#fecaca", fillOpacity: 0.3 });
+      view.create("text3d", [[c[0], c[1], c[2] + rho], `ρ = ${rho.toFixed(2)}`], { fontSize: 13, strokeColor: "#dc2626" });
+      notes.push(`sferă înscrisă ρ=${rho.toFixed(2)}`);
+    } else if (e.kind === "segment3d") {
+      seg(vp[e.of[0]], vp[e.of[1]], e.color ?? INK, e.dash ? 2 : 0);
+    } else if (e.kind === "label3d") {
+      view.create("text3d", [coord(e.at), e.text], { fontSize: 13, strokeColor: INK });
+    }
+  }
+  return notes.length ? `scenă compusă · ${notes.join(" · ")}` : "scenă 3D compusă din primitive";
+}
+
 export interface Figure3DRendererProps { spec: FigureSpec3D; size?: number; className?: string }
 
 /** Randează o FigureSpec3D cu JSXGraph view3d (NATIV), client-side, rotație prin barele az/el. */
@@ -147,8 +191,7 @@ export default function Figure3DRenderer({ spec, size = 460, className }: Figure
         if (cancelled || !containerRef.current) return;
         containerRef.current.innerHTML = "";
 
-        const body = spec.body;
-        const E = bodyExtent(body);
+        const E = spec.scene ? sceneExtent(spec.scene) : bodyExtent(spec.body!);
         board = JXG.JSXGraph.initBoard(containerRef.current, {
           boundingbox: [-9, 9, 9, -9], keepaspectratio: true, axis: false, grid: false,
           showCopyright: false, showNavigation: false, pan: { enabled: false }, zoom: { enabled: false },
@@ -164,13 +207,18 @@ export default function Figure3DRenderer({ spec, size = 460, className }: Figure
         });
 
         let n: string;
-        switch (body.kind) {
-          case "regularPyramid": n = buildPyramid(view, body, spec.show ?? {}); break;
-          case "perpFromVertex": n = buildPerp(view, body); break;
-          case "cone": n = buildCone(view, body); break;
-          case "cylinder": n = buildCylinder(view, body); break;
-          case "sphere": n = buildSphere(view, body); break;
-          default: n = buildPolyhedron(view, body); break; // cube/box/prism/tetrahedron/frustum
+        if (spec.scene) {
+          n = buildScene(view, spec.scene);
+        } else {
+          const body = spec.body!;
+          switch (body.kind) {
+            case "regularPyramid": n = buildPyramid(view, body, spec.show ?? {}); break;
+            case "perpFromVertex": n = buildPerp(view, body); break;
+            case "cone": n = buildCone(view, body); break;
+            case "cylinder": n = buildCylinder(view, body); break;
+            case "sphere": n = buildSphere(view, body); break;
+            default: n = buildPolyhedron(view, body); break; // cube/box/prism/tetrahedron/frustum
+          }
         }
         board.update();
         if (!cancelled) setNote(n);

@@ -45,9 +45,94 @@ export type RoundBody = ConeSpec | CylinderSpec | SphereSpec;
 export type Body3D = RegularPyramidSpec | PerpFromVertexSpec | PolyhedronBody | RoundBody;
 
 export interface FigureSpec3D {
-  body: Body3D;
+  /** Corp standard (șablon) SAU scenă compusă din primitive generale. Exact unul. */
+  body?: Body3D;
+  scene?: Scene3D;
   /** Ce să marcheze (implicit: înălțimea + unghiul diedru pt. piramidă). */
   show?: { height?: boolean; dihedral?: boolean };
+}
+
+// ───────────────────────── STRAT GENERAL: scenă 3D compozabilă din primitive ────────────────────
+/** Punct 3D: explicit SAU generat prin constrângere. */
+export interface P3Explicit { id: string; x: number; y: number; z: number }
+export interface P3RegPoly { gen: "regularPolygon3d"; ids: string[]; sides: number; edge?: number; circumradius?: number; z?: number; center?: [number, number] }
+export interface P3OnAxis { gen: "pointOnAxis"; id: string; height: number; over?: [number, number]; overCentroidOf?: string[] }
+export interface P3Mid { gen: "midpoint3d"; id: string; of: [string, string] }
+export interface P3Centroid { gen: "centroid3d"; id: string; of: string[] }
+export type Point3DSpec = P3Explicit | P3RegPoly | P3OnAxis | P3Mid | P3Centroid;
+
+/** Elemente de scenă (poliedru GENERAL prin vârfuri+fețe, suprafețe parametrice, relații). */
+export interface ElPolyhedron { kind: "polyhedron"; vertices: string[]; faces: string[][]; fillOpacity?: number }
+export interface ElSphere { kind: "sphere3d"; center?: string | Vec3; radius: number }
+export interface ElCone { kind: "cone3d"; radius: number; height: number; baseCenter?: string | Vec3 }
+export interface ElCylinder { kind: "cylinder3d"; radius: number; height: number; baseCenter?: string | Vec3 }
+export interface ElSegment { kind: "segment3d"; of: [string, string]; dash?: boolean; color?: string; label?: string }
+export interface ElInscribedSphere { kind: "inscribedSphere"; inCone: { radius: number; height: number }; baseCenter?: string | Vec3 }
+export interface ElLabel { kind: "label3d"; at: string | Vec3; text: string }
+export type SceneElement = ElPolyhedron | ElSphere | ElCone | ElCylinder | ElSegment | ElInscribedSphere | ElLabel;
+
+export interface Scene3D { points: Point3DSpec[]; elements: SceneElement[] }
+
+/** Rezolvă punctele unei scene (explicite + generate). PUR. Aruncă la referințe lipsă. */
+export function solveScenePoints(scene: Scene3D): Record<string, Vec3> {
+  const out: Record<string, Vec3> = {};
+  const need = (id: string): Vec3 => { const p = out[id]; if (!p) throw new Error(`punctul „${id}” e folosit înainte să fie definit.`); return p; };
+  for (const p of scene.points) {
+    if (!("gen" in p)) { out[p.id] = [p.x, p.y, p.z]; continue; }
+    if (p.gen === "regularPolygon3d") {
+      const n = Math.floor(p.sides);
+      if (n < 3 || !Array.isArray(p.ids) || p.ids.length < n) throw new Error("regularPolygon3d: sides ≥ 3 și ids suficiente.");
+      const R = p.circumradius ?? (p.edge != null ? p.edge / (2 * Math.sin(Math.PI / n)) : 1);
+      const z = p.z ?? 0; const [cx, cy] = p.center ?? [0, 0]; const t0 = Math.PI / n - Math.PI / 2;
+      p.ids.slice(0, n).forEach((id, i) => { const t = t0 + (2 * Math.PI * i) / n; out[id] = [cx + R * Math.cos(t), cy + R * Math.sin(t), z]; });
+    } else if (p.gen === "pointOnAxis") {
+      let xy: [number, number] = p.over ?? [0, 0];
+      if (p.overCentroidOf?.length) { let sx = 0, sy = 0; for (const id of p.overCentroidOf) { const q = need(id); sx += q[0]; sy += q[1]; } const k = p.overCentroidOf.length; xy = [sx / k, sy / k]; }
+      out[p.id] = [xy[0], xy[1], p.height];
+    } else if (p.gen === "midpoint3d") { const a = need(p.of[0]), b = need(p.of[1]); out[p.id] = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2]; }
+    else if (p.gen === "centroid3d") { let s: Vec3 = [0, 0, 0]; for (const id of p.of) { const q = need(id); s = [s[0] + q[0], s[1] + q[1], s[2] + q[2]]; } const k = p.of.length || 1; out[p.id] = [s[0] / k, s[1] / k, s[2] / k]; }
+  }
+  return out;
+}
+
+/** Semi-dimensiunea cadrului pentru o scenă. */
+export function sceneExtent(scene: Scene3D): number {
+  let m = 1;
+  try { for (const v of Object.values(solveScenePoints(scene))) v.forEach((x) => { m = Math.max(m, Math.abs(x)); }); } catch { /* validarea prinde */ }
+  for (const e of scene.elements) {
+    if (e.kind === "sphere3d") m = Math.max(m, e.radius);
+    if (e.kind === "cone3d" || e.kind === "cylinder3d") m = Math.max(m, e.radius, e.height);
+    if (e.kind === "inscribedSphere") m = Math.max(m, e.inCone.radius, e.inCone.height);
+  }
+  return m * 1.4;
+}
+
+/** Validează o scenă: fețe → vârfuri existente, poliedru consistent. Greșeala AI = poliedru curat-dar-greșit, prins. */
+export function validateScene(scene: Scene3D): { errors: string[] } {
+  const errors: string[] = [];
+  if (!scene || !Array.isArray(scene.points) || !Array.isArray(scene.elements)) return { errors: ["scene invalidă (points/elements lipsă)."] };
+  const ids = new Set<string>();
+  for (const p of scene.points) {
+    if (p && "gen" in p && p.gen === "regularPolygon3d") (p.ids ?? []).forEach((i) => ids.add(i));
+    else if (p && (p as { id?: string }).id) ids.add((p as { id: string }).id);
+  }
+  for (const e of scene.elements) {
+    try {
+      if (e.kind === "polyhedron") {
+        if (!Array.isArray(e.vertices) || e.vertices.length < 4) errors.push("polyhedron: minim 4 vârfuri.");
+        (e.vertices ?? []).forEach((v) => { if (!ids.has(v)) errors.push(`polyhedron: vârful „${v}” nu există.`); });
+        if (!Array.isArray(e.faces) || e.faces.length < 3) errors.push("polyhedron: minim 3 fețe.");
+        (e.faces ?? []).forEach((f, i) => {
+          if (!Array.isArray(f) || f.length < 3) errors.push(`fața ${i}: minim 3 vârfuri.`);
+          else f.forEach((v) => { if (!(e.vertices ?? []).includes(v)) errors.push(`fața ${i}: vârful „${v}” nu e în vertices.`); });
+        });
+      } else if (e.kind === "segment3d") { (e.of ?? []).forEach((v) => { if (!ids.has(v)) errors.push(`segment3d: „${v}” nu există.`); }); }
+      else if (e.kind === "sphere3d") { if (!(e.radius > 0)) errors.push("sphere3d: radius pozitiv."); if (typeof e.center === "string" && !ids.has(e.center)) errors.push(`sphere3d: centrul „${e.center}” nu există.`); }
+      else if (e.kind === "cone3d" || e.kind === "cylinder3d") { if (!(e.radius > 0) || !(e.height > 0)) errors.push(`${e.kind}: radius și height pozitive.`); }
+      else if (e.kind === "inscribedSphere") { if (!(e.inCone?.radius > 0) || !(e.inCone?.height > 0)) errors.push("inscribedSphere: inCone.radius/height pozitive."); }
+    } catch { errors.push(`${(e as { kind?: string }).kind ?? "element"}: structură invalidă.`); }
+  }
+  return { errors };
 }
 
 export interface Solved3D {

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@/lib/supabase/server';
 import { validateSpec, type FigureSpec2D } from '@/lib/figures/spec';
-import { solvePyramid, solvePerpFromVertex, solvePolyhedron, type Body3D, type RegularPyramidSpec, type PerpFromVertexSpec, type PolyhedronBody } from '@/lib/figures/spec3d';
+import { solvePyramid, solvePerpFromVertex, solvePolyhedron, validateScene, type Body3D, type RegularPyramidSpec, type PerpFromVertexSpec, type PolyhedronBody, type Scene3D } from '@/lib/figures/spec3d';
 
 const SUPPORTED_3D = ['regularPyramid', 'perpFromVertex', 'cube', 'box', 'prism', 'tetrahedron', 'frustum', 'cone', 'cylinder', 'sphere'];
 const POLY_KINDS = ['cube', 'box', 'prism', 'tetrahedron', 'frustum'];
@@ -45,7 +45,17 @@ export const SYSTEM_PROMPT =
   '    • {kind:"perpFromVertex", triangle:{sides:{AB,BC,CA}}, apexFrom, apexHeight, apexLabel?, labels?} — triunghi în plan + ' +
   'segment perpendicular pe plan dintr-un vârf (teorema celor 3 perpendiculare; distanța de la un punct la o dreaptă). ' +
   'Echilateral cu aria S → latura = sqrt(4·S/√3) (arie 4√3 → latura 4).\n' +
-  '    DOAR dacă niciun șablon nu se potrivește (corp neregulat/compus) → NU emite body3d, pune body3d_name = tipul corpului.\n' +
+  '  Dacă NICIUN șablon de mai sus nu se potrivește (corp NEREGULAT/COMPUS: piramidă cu bază oarecare, ' +
+  'combinație de corpuri, corp înscris în alt corp), COMPUNE o `scene` din primitive GENERALE — NU refuza:\n' +
+  '  scene = { points:[…], elements:[…] }\n' +
+  '  points: {id,x,y,z} explicit · {gen:"regularPolygon3d", ids:[…], sides, edge|circumradius, z?, center?} · ' +
+  '{gen:"pointOnAxis", id, height, overCentroidOf?:[ids]|over?:[x,y]} (vârf pe axă) · {gen:"midpoint3d", id, of:[p,q]} · {gen:"centroid3d", id, of:[ids]}\n' +
+  '  elements: {kind:"polyhedron", vertices:[ids], faces:[[ids]…]} (ORICE poliedru) · {kind:"sphere3d", center?, radius} · ' +
+  '{kind:"cone3d", radius, height, baseCenter?} · {kind:"cylinder3d", radius, height, baseCenter?} · ' +
+  '{kind:"inscribedSphere", inCone:{radius,height}, baseCenter?} (tangența rezolvată) · {kind:"segment3d", of:[p,q], dash?} · {kind:"label3d", at, text}\n' +
+  '  Ex. piramidă cu bază dreptunghi: points = 4 colțuri explicite + {gen:"pointOnAxis", id:"V", height, overCentroidOf:[colțuri]}; ' +
+  'elements = polyhedron cu fețele bazei + 4 fețe laterale către V.\n' +
+  '  REFUZĂ (fără body3d/scene, doar body3d_name) DOAR ce e genuin nereprezentabil (suprafețe curbe complexe, loc geometric continuu).\n' +
   "- 'fara_figura' = fără desen (algebră, ecuații, combinatorică, probabilitate, „pătrat perfect” = număr).\n\n" +
   'SCHEMA spec2d (DOAR aceste kind-uri, constrângeri NU coordonate inventate):\n' +
   '{ points:[{id,x,y,label?}], elements:[…], intersections?:"detect"|"label-all"|[{of:[ref,ref],label?}] }\n' +
@@ -92,14 +102,15 @@ export const TOOL: Anthropic.Messages.Tool = {
           apexFrom: { type: 'string' }, apexHeight: { type: 'number' }, apexLabel: { type: 'string' },
         },
       },
-      body3d_name: { type: 'string', description: 'Tipul corpului 3D când NU e piramidă regulată.' },
+      body3d_name: { type: 'string', description: 'Tipul corpului 3D doar dacă e GENUIN nereprezentabil (nici body3d, nici scene).' },
+      scene: { type: ['object', 'null'], description: 'Scenă 3D compusă din primitive (pt. corpuri ne-standard/compuse).', properties: { points: { type: 'array' }, elements: { type: 'array' } } },
       unsupported_relation: { type: 'string', description: 'Relație 2D care nu se poate exprima cu kind-urile date.' },
     },
     required: ['verdict', 'reason'],
   },
 };
 
-interface ModelOut { verdict?: string; reason?: string; spec2d?: unknown; body3d?: (Body3D & { kind?: string }) | null; body3d_name?: string; unsupported_relation?: string }
+interface ModelOut { verdict?: string; reason?: string; spec2d?: unknown; body3d?: (Body3D & { kind?: string }) | null; scene?: Scene3D | null; body3d_name?: string; unsupported_relation?: string }
 
 async function callTool(anthropic: Anthropic, userContent: string): Promise<ModelOut> {
   const msg = await anthropic.messages.create({
@@ -156,13 +167,21 @@ export async function POST(req: NextRequest) {
 
     if (verdict === '3d') {
       const b = out.body3d;
+      // 1) corp standard (șablon)
       if (b && b.kind && SUPPORTED_3D.includes(b.kind)) {
         const err = validateBody(b as Body3D);
         if (!err) return NextResponse.json({ dim: '3d', verdict, reason, spec: { body: b }, valid: true, error: null });
         return NextResponse.json({ dim: '3d', verdict, reason, valid: false, error: err, diagnostic: `parametri 3D invalizi: ${err}` });
       }
-      const name = out.body3d_name || (b?.kind ?? 'necunoscut');
-      return NextResponse.json({ dim: '3d', verdict, reason, unsupported: true, message: `3D detectat — corpul „${name}” nu are șablon încă.`, diagnostic: `3D detectat — corpul „${name}” nu are șablon` });
+      // 2) corp ne-standard/compus → scenă din primitive generale
+      if (out.scene && typeof out.scene === 'object') {
+        const v = validateScene(out.scene);
+        if (v.errors.length === 0) return NextResponse.json({ dim: '3d', verdict, reason, spec: { scene: out.scene }, valid: true, error: null, composed: true });
+        return NextResponse.json({ dim: '3d', verdict, reason, spec: { scene: out.scene }, valid: false, error: v.errors.join(' · '), diagnostic: `scenă invalidă: ${v.errors.join(' · ')}` });
+      }
+      // 3) genuin nereprezentabil
+      const name = out.body3d_name || 'necunoscut';
+      return NextResponse.json({ dim: '3d', verdict, reason, unsupported: true, message: `3D nereprezentabil deocamdată: „${name}”.`, diagnostic: `3D nereprezentabil: „${name}”` });
     }
 
     if (unsupportedRelation) {
