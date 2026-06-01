@@ -86,7 +86,30 @@ export function specToGeom(spec: FigureSpec3D): Geom3D {
 
 // ── Proiecție ──
 export interface Polyline { pts: Array<[number, number]>; dashed: boolean }
-export interface Drawing2D { polylines: Polyline[]; labels: Array<{ x: number; y: number; text: string }>; bbox: { minX: number; minY: number; maxX: number; maxY: number } }
+export interface LabelPos { x: number; y: number; text: string }
+export interface Drawing2D { polylines: Polyline[]; labels: LabelPos[]; bbox: { minX: number; minY: number; maxX: number; maxY: number } }
+
+/**
+ * Plasare GENERALĂ a etichetelor de vârf (folosită de randorul 3D-proiectat; 2D folosește autoPosition).
+ * Eticheta = poziția 2D a vârfului + offset MIC spre AFARĂ (dinspre centroid), apoi rezolvă coliziunile.
+ * `off` e proporțional cu mărimea figurii (nu px fix) → adiacent vârfului la orice scară.
+ */
+export function placeVertexLabels(anchors: LabelPos[], cx: number, cy: number, off: number): LabelPos[] {
+  const labs = anchors.map((a) => {
+    const dx = a.x - cx, dy = a.y - cy, L = Math.hypot(dx, dy) || 1;
+    return { x: a.x + (dx / L) * off, y: a.y + (dy / L) * off, text: a.text };
+  });
+  const minD = off * 1.25;
+  for (let it = 0; it < 24; it++) {
+    let moved = false;
+    for (let i = 0; i < labs.length; i++) for (let j = i + 1; j < labs.length; j++) {
+      const dx = labs[j].x - labs[i].x, dy = labs[j].y - labs[i].y, d = Math.hypot(dx, dy);
+      if (d < minD) { const push = (minD - d) / 2 + 1e-6; const ux = d > 1e-9 ? dx / d : 1, uy = d > 1e-9 ? dy / d : 0; labs[i].x -= ux * push; labs[i].y -= uy * push; labs[j].x += ux * push; labs[j].y += uy * push; moved = true; }
+    }
+    if (!moved) break;
+  }
+  return labs;
+}
 
 function basis(azDeg: number, elDeg: number) {
   const az = (azDeg * Math.PI) / 180, el = (elDeg * Math.PI) / 180;
@@ -184,14 +207,13 @@ export function projectFigure(spec: FigureSpec3D, azDeg: number, elDeg: number):
     }
   }
 
-  // etichete: deplasate „în afară" față de centrul figurii 2D
-  const cx2 = (minX + maxX) / 2, cy2 = (minY + maxY) / 2;
-  for (const q of g.pts) {
-    if (!q.label) continue;
-    const [x, y] = proj(q.p);
-    const dx = x - cx2, dy = y - cy2; const L = Math.hypot(dx, dy) || 1;
-    labels.push({ x: x + (dx / L) * 12, y: y + (dy / L) * 12, text: q.label });
-  }
+  // etichete: lângă vârful PROIECTAT, offset mic spre afară (proporțional cu figura), fără coliziuni
   if (!Number.isFinite(minX)) { minX = -1; minY = -1; maxX = 1; maxY = 1; }
+  const cx2 = (minX + maxX) / 2, cy2 = (minY + maxY) / 2;
+  const off = Math.max(maxX - minX, maxY - minY, 1) * 0.06;
+  const anchors: LabelPos[] = g.pts.filter((q) => q.label).map((q) => { const [x, y] = proj(q.p); return { x, y, text: q.label }; });
+  const placed = placeVertexLabels(anchors, cx2, cy2, off);
+  labels.push(...placed);
+  for (const l of placed) acc(l.x, l.y); // bbox include etichetele → nu se taie din cadru
   return { polylines, labels, bbox: { minX, minY, maxX, maxY } };
 }
