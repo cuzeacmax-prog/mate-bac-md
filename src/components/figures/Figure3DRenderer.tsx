@@ -141,6 +141,12 @@ function buildScene(view: any, scene: Scene3D): string {
   // Referință STRUCTURALĂ (vârf de poliedru/segment): trebuie să existe.
   const needPt = (id: string): any => { const p = vp[id]; if (!p) throw new Error(`punctul „${id}” e nedefinit în scenă.`); return p; };
   const circle = (c: Vec3, r: number, fill: number) => view.create("circle3d", [c, [0, 0, 1], r], { strokeColor: INK, strokeWidth: 1.4, fillColor: "#cbd5e1", fillOpacity: fill });
+  // con din circle3d (bază) + apex pe axă + generatoare — aceeași cale ca la corpul standard "con".
+  const drawCone = (c: Vec3, r: number, h: number) => {
+    circle(c, r, 0.22);
+    const V = pt([c[0], c[1], c[2] + h], "V"); const A = pt([c[0] + r, c[1], c[2]], "A"); const B = pt([c[0] - r, c[1], c[2]], "B");
+    seg(V, A, INK, 0); seg(V, B, INK, 0); seg(V, pt(c, "O"), INK, 2);
+  };
   const notes: string[] = [];
 
   for (const e of scene.elements) {
@@ -153,10 +159,7 @@ function buildScene(view: any, scene: Scene3D): string {
     } else if (e.kind === "sphere3d") {
       view.create("sphere3d", [coord(e.center ?? [0, 0, 0]), e.radius], { strokeColor: INK, strokeWidth: 1, fillColor: "#cbd5e1", fillOpacity: 0.2 });
     } else if (e.kind === "cone3d") {
-      const c = coord(e.baseCenter ?? [0, 0, 0]);
-      circle(c, e.radius, 0.22);
-      const V = pt([c[0], c[1], c[2] + e.height], "V"); const A = pt([c[0] + e.radius, c[1], c[2]], "A"); const B = pt([c[0] - e.radius, c[1], c[2]], "B");
-      seg(V, A, INK, 0); seg(V, B, INK, 0); seg(V, pt(c, "O"), INK, 2);
+      drawCone(coord(e.baseCenter), e.radius, e.height);
       notes.push(`con r=${e.radius} h=${e.height}`);
     } else if (e.kind === "cylinder3d") {
       const c = coord(e.baseCenter ?? [0, 0, 0]);
@@ -165,8 +168,13 @@ function buildScene(view: any, scene: Scene3D): string {
       seg(pt([c[0] - e.radius, c[1], c[2]], "B"), pt([c[0] - e.radius, c[1], c[2] + e.height], "B'"), INK, 0);
       notes.push(`cilindru r=${e.radius} h=${e.height}`);
     } else if (e.kind === "inscribedSphere") {
-      const { radius: R, height: H } = e.inCone; const L = Math.hypot(R, H); const rho = (R * H) / (R + L);
-      const c = coord(e.baseCenter ?? [0, 0, 0]);
+      // R,H din conul referit (`in`); fallback `inCone` (și desenează conul dacă nu există unul separat).
+      let R: number, H: number, c: Vec3;
+      const cone = e.in ? (scene.elements.find((x) => x.kind === "cone3d" && (x as { id?: string }).id === e.in) as { radius: number; height: number; baseCenter?: string | Vec3 } | undefined) : undefined;
+      if (cone) { R = cone.radius; H = cone.height; c = coord(cone.baseCenter); }
+      else if (e.inCone) { R = e.inCone.radius; H = e.inCone.height; c = coord(e.baseCenter); if (!scene.elements.some((x) => x.kind === "cone3d")) drawCone(c, R, H); }
+      else throw new Error("inscribedSphere: lipsește `in` (cone3d) sau `inCone`.");
+      const L = Math.hypot(R, H); const rho = (R * H) / (R + L);
       view.create("sphere3d", [[c[0], c[1], c[2] + rho], rho], { strokeColor: "#dc2626", strokeWidth: 1, fillColor: "#fecaca", fillOpacity: 0.3 });
       view.create("text3d", [[c[0], c[1], c[2] + rho], `ρ = ${rho.toFixed(2)}`], { fontSize: 13, strokeColor: "#dc2626" });
       notes.push(`sferă înscrisă ρ=${rho.toFixed(2)}`);

@@ -51,8 +51,11 @@ export const SYSTEM_PROMPT =
   '  points: {id,x,y,z} explicit · {gen:"regularPolygon3d", ids:[…], sides, edge|circumradius, z?, center?} · ' +
   '{gen:"pointOnAxis", id, height, overCentroidOf?:[ids]|over?:[x,y]} (vârf pe axă) · {gen:"midpoint3d", id, of:[p,q]} · {gen:"centroid3d", id, of:[ids]}\n' +
   '  elements: {kind:"polyhedron", vertices:[ids], faces:[[ids]…]} (ORICE poliedru) · {kind:"sphere3d", center?, radius} · ' +
-  '{kind:"cone3d", radius, height, baseCenter?} · {kind:"cylinder3d", radius, height, baseCenter?} · ' +
-  '{kind:"inscribedSphere", inCone:{radius,height}, baseCenter?} (tangența rezolvată) · {kind:"segment3d", of:[p,q], dash?} · {kind:"label3d", at, text}\n' +
+  '{kind:"cone3d", id?, radius, height, baseCenter?} · {kind:"cylinder3d", id?, radius, height, baseCenter?} · ' +
+  '{kind:"inscribedSphere", in:idCon} (REFERĂ un cone3d existent prin id; ia R,H din el; tangența ρ rezolvată) · ' +
+  '{kind:"segment3d", of:[p,q], dash?} · {kind:"label3d", at, text}\n' +
+  '  Ex. „sferă înscrisă într-un con r=6 h=8”: DOUĂ elemente — {kind:"cone3d", id:"con", radius:6, height:8} ȘI ' +
+  '{kind:"inscribedSphere", in:"con"}. NU pune referințe la puncte inexistente (baseCenter implicit = originea).\n' +
   '  Ex. piramidă cu bază dreptunghi: points = 4 colțuri explicite + {gen:"pointOnAxis", id:"V", height, overCentroidOf:[colțuri]}; ' +
   'elements = polyhedron cu fețele bazei + 4 fețe laterale către V.\n' +
   '  REFUZĂ (fără body3d/scene, doar body3d_name) DOAR ce e genuin nereprezentabil (suprafețe curbe complexe, loc geometric continuu).\n' +

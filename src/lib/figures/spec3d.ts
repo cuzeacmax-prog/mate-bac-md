@@ -64,10 +64,11 @@ export type Point3DSpec = P3Explicit | P3RegPoly | P3OnAxis | P3Mid | P3Centroid
 /** Elemente de scenă (poliedru GENERAL prin vârfuri+fețe, suprafețe parametrice, relații). */
 export interface ElPolyhedron { kind: "polyhedron"; vertices: string[]; faces: string[][]; fillOpacity?: number }
 export interface ElSphere { kind: "sphere3d"; center?: string | Vec3; radius: number }
-export interface ElCone { kind: "cone3d"; radius: number; height: number; baseCenter?: string | Vec3 }
-export interface ElCylinder { kind: "cylinder3d"; radius: number; height: number; baseCenter?: string | Vec3 }
+export interface ElCone { kind: "cone3d"; id?: string; radius: number; height: number; baseCenter?: string | Vec3 }
+export interface ElCylinder { kind: "cylinder3d"; id?: string; radius: number; height: number; baseCenter?: string | Vec3 }
 export interface ElSegment { kind: "segment3d"; of: [string, string]; dash?: boolean; color?: string; label?: string }
-export interface ElInscribedSphere { kind: "inscribedSphere"; inCone: { radius: number; height: number }; baseCenter?: string | Vec3 }
+/** Sferă înscrisă: referă un cone3d existent prin `in` (ia R,H,baseCenter din el). `inCone` = fallback. */
+export interface ElInscribedSphere { kind: "inscribedSphere"; in?: string; inCone?: { radius: number; height: number }; baseCenter?: string | Vec3 }
 export interface ElLabel { kind: "label3d"; at: string | Vec3; text: string }
 export type SceneElement = ElPolyhedron | ElSphere | ElCone | ElCylinder | ElSegment | ElInscribedSphere | ElLabel;
 
@@ -102,7 +103,7 @@ export function sceneExtent(scene: Scene3D): number {
   for (const e of scene.elements) {
     if (e.kind === "sphere3d") m = Math.max(m, e.radius);
     if (e.kind === "cone3d" || e.kind === "cylinder3d") m = Math.max(m, e.radius, e.height);
-    if (e.kind === "inscribedSphere") m = Math.max(m, e.inCone.radius, e.inCone.height);
+    if (e.kind === "inscribedSphere" && e.inCone) m = Math.max(m, e.inCone.radius, e.inCone.height);
   }
   return m * 1.4;
 }
@@ -129,7 +130,12 @@ export function validateScene(scene: Scene3D): { errors: string[] } {
       } else if (e.kind === "segment3d") { (e.of ?? []).forEach((v) => { if (!ids.has(v)) errors.push(`segment3d: „${v}” nu există.`); }); }
       else if (e.kind === "sphere3d") { if (!(e.radius > 0)) errors.push("sphere3d: radius pozitiv."); if (typeof e.center === "string" && !ids.has(e.center)) errors.push(`sphere3d: centrul „${e.center}” nu există.`); }
       else if (e.kind === "cone3d" || e.kind === "cylinder3d") { if (!(e.radius > 0) || !(e.height > 0)) errors.push(`${e.kind}: radius și height pozitive.`); if (typeof e.baseCenter === "string" && !ids.has(e.baseCenter)) errors.push(`${e.kind}: baseCenter „${e.baseCenter}” nu există.`); }
-      else if (e.kind === "inscribedSphere") { if (!(e.inCone?.radius > 0) || !(e.inCone?.height > 0)) errors.push("inscribedSphere: inCone.radius/height pozitive."); if (typeof e.baseCenter === "string" && !ids.has(e.baseCenter)) errors.push(`inscribedSphere: baseCenter „${e.baseCenter}” nu există.`); }
+      else if (e.kind === "inscribedSphere") {
+        if (e.in) { const cone = scene.elements.find((x) => x.kind === "cone3d" && (x as ElCone).id === e.in); if (!cone) errors.push(`inscribedSphere: conul „${e.in}” nu există în scenă.`); }
+        else if (e.inCone) { if (!(e.inCone.radius > 0) || !(e.inCone.height > 0)) errors.push("inscribedSphere.inCone: radius/height pozitive."); }
+        else errors.push("inscribedSphere: lipsește `in` (id de cone3d) sau `inCone`.");
+        if (typeof e.baseCenter === "string" && !ids.has(e.baseCenter)) errors.push(`inscribedSphere: baseCenter „${e.baseCenter}” nu există.`);
+      }
       else if (e.kind === "label3d") { if (typeof e.at === "string" && !ids.has(e.at)) errors.push(`label3d: „${e.at}” nu există.`); }
     } catch { errors.push(`${(e as { kind?: string }).kind ?? "element"}: structură invalidă.`); }
   }
