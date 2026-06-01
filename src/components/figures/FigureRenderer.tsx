@@ -437,7 +437,11 @@ export default function FigureRenderer({ spec, size = 420, style = "bac", classN
 
         // Rezolvă + (pt. bac) încadrează canonic. Box din coordonatele finale.
         const base = solveBasePoints(spec);
-        const solved = style === "bac" ? frameSolved(base, spec.framing) : base;
+        // Reîncadrăm DOAR figurile generate (triangleFromSides/quad) sau cu framing explicit; figurile cu
+        // COORDONATE EXPLICITE (ex. secțiunea triunghi dreptunghic) se respectă ca atare (nu le rotim).
+        const hasGenerator = spec.elements.some((e) => e.kind === "triangleFromSides" || e.kind === "quadFromConstraints");
+        const reframe = style === "bac" && (!!spec.framing || hasGenerator);
+        const solved = reframe ? frameSolved(base, spec.framing) : base;
         const box = style === "bac" ? boxOf(Object.values(solved), spec.boundingBox) : autoBoundingBox(spec);
 
         board = JXG.JSXGraph.initBoard(containerRef.current, {

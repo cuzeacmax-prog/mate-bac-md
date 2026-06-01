@@ -48,6 +48,17 @@ export const SYSTEM_PROMPT =
   '{"kind":"polygon","points":["V","B","C"]},{"kind":"incircle","of":["V","B","C"],"centerLabel":"O"},' +
   '{"kind":"pointOnSegment","on":["B","C"],"ratio":0.5,"id":"M"},{"kind":"segment","between":["V","M"]}]} ' +
   '(ids=[V,B,C]: VB=CA=√(6²+8²)=10 laturile, BC=2R=12 baza; framing.baseEdge=[B,C] → bază jos, V sus; cerc înscris r=3 = secțiunea sferei).\n' +
+  'REGULĂ SPECIALĂ (PRIORITARĂ) — UNGHI DIEDRU la baza piramidei / apotemă / înălțime via diedru: figura = ' +
+  'SECȚIUNEA în planul perpendicular pe muchie prin vârf = TRIUNGHI DREPTUNGHIC VOM (verdict=figurabil_2d), NU solidul gol. ' +
+  'O=centrul bazei (unghi DREPT), M=mijlocul unei muchii de bază, V=vârful. Catetă OM = apotema bazei = raza înscrisă r ' +
+  '(o calculezi din bază: trapez circumscriptibil cu bazele a,b → laturi (a+b)/2, înălțime h=√(latură²−((b−a)/2)²), r=h/2); ' +
+  'catetă OV = H (înălțimea, necunoscuta); ipotenuza VM = apotema feței; unghiul DIEDRU la M între MO și MV. ' +
+  'Coordonate explicite: O(0,0), M(r,0), V(0, r·tan(diedru)); framing.baseEdge=[O,M] (OM orizontal). Etichetează r, H, diedrul; rightAngle la O.\n' +
+  'Ex. „piramidă cu baza trapez isoscel circumscriptibil (baze 4 și 16), diedru la bază 60°” → r=4 (latură=10, h_trapez=8, r=8/2=4), H=4·tan60°=6.93: ' +
+  '{"points":[{"id":"O","x":0,"y":0},{"id":"M","x":4,"y":0},{"id":"V","x":0,"y":6.93}],"framing":{"baseEdge":["O","M"]},"elements":[' +
+  '{"kind":"segment","between":["O","M"],"label":"r=4"},{"kind":"segment","between":["O","V"],"label":"H"},{"kind":"segment","between":["M","V"]},' +
+  '{"kind":"rightAngle","at":"O","from":["M","V"]},{"kind":"angle","at":"M","from":["O","V"],"label":"60°"}]}\n' +
+  'PRINCIPIU: figura de stereometrie arată MĂRIMEA cerută (diedru, apotemă, înălțime) = secțiunea/construcția auxiliară din rezolvare, NU solidul gol.\n' +
   "- '3d' = STEREOMETRIE (un SINGUR corp simplu: pictogramă 3D). Șabloane disponibile (emite body3d cu kind potrivit; calculează parametrii din date):\n" +
   '    • {kind:"regularPyramid", baseSides, baseEdge, height, labels?} — piramidă regulată\n' +
   '    • {kind:"cube", edge, labels?} — cub\n' +
