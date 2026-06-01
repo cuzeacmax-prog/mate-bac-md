@@ -31,7 +31,7 @@ export type FigureElement =
       scaleBy: { diagonal: "AC" | "BD" | "AB" | "AD"; length: number };
     }
   // ── DESENE ──
-  | { kind: "polygon"; points: string[]; label?: string; shade?: boolean; color?: string; fillOpacity?: number }
+  | { kind: "polygon"; points: string[]; label?: string; shade?: boolean; hatch?: boolean; color?: string; fillOpacity?: number }
   | { kind: "circumcircle"; of: Tri; centerLabel?: string; color?: string }
   | { kind: "incircle"; of: Tri; centerLabel?: string; color?: string }
   | { kind: "point"; from: "incenter" | "circumcenter" | "centroid" | "orthocenter"; of?: Tri; label?: string; color?: string; id?: string }
@@ -41,7 +41,15 @@ export type FigureElement =
   | { kind: "bisector"; of: Tri; from: string; label?: string; color?: string; id?: string }
   | { kind: "altitude"; of: Tri; from: string; label?: string; color?: string; markRightAngle?: boolean; id?: string }
   | { kind: "perpBisector"; of: Tri; from: string; label?: string; color?: string; id?: string }
-  | { kind: "angle"; at: string; from: [string, string]; label?: string; color?: string }
+  /** Unghi: vârf `at` + 2 raze `from` (puncte), SAU `between` = 2 segmente (vârf = intersecția lor).
+   *  `value:true` → eticheta e unghiul MĂSURAT (grade) de motor. `reflex:true` alege unghiul reflex. */
+  | { kind: "angle"; at?: string; from?: [string, string]; between?: [[string, string], [string, string]]; label?: string; value?: boolean; reflex?: boolean; color?: string }
+  /** Punct PE segment, la `ratio` (∈[0,1]) sau `distanceFromA`. Poziția o calculează motorul. */
+  | { kind: "pointOnSegment"; on: [string, string]; ratio?: number; distanceFromA?: number; label?: string; color?: string; id?: string }
+  /** Unghi DREPT marcat (pătrățel) la `at`, între razele către from[0], from[1]. Reutilizabil. */
+  | { kind: "rightAngle"; at: string; from: [string, string]; color?: string }
+  /** Unghiuri EGALE: `count` arce concentrice la `at`. */
+  | { kind: "equalAngle"; at: string; from: [string, string]; count?: number; color?: string }
   | { kind: "circle"; id?: string; center: string; through?: string; radius?: number; centerLabel?: string; color?: string }
   | { kind: "tangentLines"; from: string; to: string; markPoints?: boolean; pointLabels?: [string, string]; color?: string }
   | { kind: "midpoint"; of: [string, string]; label?: string; color?: string; id?: string }
@@ -61,6 +69,11 @@ export interface FigureSpec2D {
   boundingBox?: [number, number, number, number];
   /** Încadrare canonică (override). baseEdge = latura așezată orizontal ca bază. */
   framing?: { baseEdge?: [string, string]; anchor?: "bottom-left" };
+  /**
+   * Auto-intersecții (după construcție): "detect" = marchează toate intersecțiile interne;
+   * "label-all" = marchează + etichetează (X₁, X₂…); array = doar perechile cerute, etichetabile.
+   */
+  intersections?: "detect" | "label-all" | Array<{ of: [LineRef, LineRef]; label?: string; index?: number }>;
 }
 
 /**
@@ -121,27 +134,121 @@ export function solveBasePoints(spec: FigureSpec2D): Record<string, SolvedPoint>
       out[b] = { x: AB, y: 0, label: e.labels?.[1] ?? b };
       out[c] = { x, y, label: e.labels?.[2] ?? c };
     } else if (e.kind === "quadFromConstraints") {
-      const [A, B, C, D] = e.ids;
+      // Paralelogram ciclic [v0,v1,v2,v3]. Unghiul `angle` la vârful `angleAt` (FIX: nu mai e mereu ids[0]).
+      const ids4 = e.ids;
+      const k = Math.max(0, ids4.indexOf(e.angleAt)); // dacă angleAt lipsește → 0
+      const vk = ids4[k], vNext = ids4[(k + 1) % 4], vPrev = ids4[(k + 3) % 4], vOpp = ids4[(k + 2) % 4];
       const th = (e.angle * Math.PI) / 180;
-      const ab = e.sideRatio[0], ad = e.sideRatio[1]; // scară unitară
-      const Bx = ab, By = 0;
-      const Dx = ad * Math.cos(th), Dy = ad * Math.sin(th);
-      const Cx = Bx + Dx, Cy = By + Dy;
-      const diag = (n: string) =>
-        n === "AC" ? Math.hypot(Cx, Cy) :
-        n === "AB" ? ab :
-        n === "AD" ? ad :
-        Math.hypot(Dx - Bx, Dy - By); // BD
-      const L0 = diag(e.scaleBy.diagonal);
+      const r0 = e.sideRatio[0], r1 = e.sideRatio[1]; // laturile la `angleAt`: vk→vNext, vk→vPrev
+      const co: Record<string, { x: number; y: number }> = {};
+      co[vk] = { x: 0, y: 0 };
+      co[vNext] = { x: r0, y: 0 };
+      co[vPrev] = { x: r1 * Math.cos(th), y: r1 * Math.sin(th) };
+      co[vOpp] = { x: co[vNext].x + co[vPrev].x, y: co[vNext].y + co[vPrev].y };
+      const idx: Record<string, number> = { A: 0, B: 1, C: 2, D: 3 };
+      const byPos = (letter: string) => co[ids4[idx[letter] ?? 0]];
+      const L0 = Math.hypot(byPos(e.scaleBy.diagonal[1]).x - byPos(e.scaleBy.diagonal[0]).x, byPos(e.scaleBy.diagonal[1]).y - byPos(e.scaleBy.diagonal[0]).y);
       if (L0 === 0) throw new Error(`Diagonala ${e.scaleBy.diagonal} e nulă în constrângeri.`);
       const f = e.scaleBy.length / L0;
-      out[A] = { x: 0, y: 0, label: A };
-      out[B] = { x: Bx * f, y: By * f, label: B };
-      out[C] = { x: Cx * f, y: Cy * f, label: C };
-      out[D] = { x: Dx * f, y: Dy * f, label: D };
+      for (const id of ids4) out[id] = { x: co[id].x * f, y: co[id].y * f, label: id };
     }
   }
   return out;
+}
+
+/**
+ * Validează specul ÎNAINTE de randare: id-uri referite existente, poligoane valide, constrângeri
+ * rezolvabile, etichete duplicate. Întoarce erori (blochează randarea) + avertismente (informativ).
+ */
+export function validateSpec(spec: FigureSpec2D): { errors: string[]; warnings: string[] } {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  const points = new Set<string>();
+  const elementIds = new Set<string>();
+
+  // 1. Colectează id-urile PRODUSE (puncte + elemente referabile).
+  for (const p of spec.points) points.add(p.id);
+  for (const e of spec.elements) {
+    switch (e.kind) {
+      case "triangleFromSides": e.ids.forEach((i) => points.add(i)); break;
+      case "quadFromConstraints": e.ids.forEach((i) => points.add(i)); break;
+      case "point": if (e.id) points.add(e.id); else if (e.from === "intersection" && e.label) points.add(e.label); break;
+      case "midpoint": if (e.id) points.add(e.id); break;
+      case "pointOnSegment": if (e.id) points.add(e.id); break;
+    }
+    const anyEl = e as { id?: string };
+    if ("id" in e && anyEl.id && ["segment", "circle", "median", "bisector", "altitude", "perpBisector", "perpendicular", "parallel", "parallelAtDistance"].includes(e.kind)) {
+      elementIds.add(anyEl.id);
+    }
+  }
+
+  const needPoint = (id: string, where: string) => { if (!points.has(id)) errors.push(`${where}: punctul „${id}” nu există.`); };
+  const needRef = (ref: LineRef, where: string) => {
+    if (typeof ref === "string") { if (!elementIds.has(ref)) errors.push(`${where}: elementul „${ref}” nu există (sau n-are id).`); }
+    else { needPoint(ref[0], where); needPoint(ref[1], where); }
+  };
+
+  // 2. Verifică referințele fiecărui element.
+  for (const e of spec.elements) {
+    switch (e.kind) {
+      case "polygon":
+        if (e.points.length < 3) errors.push(`polygon: are nevoie de ≥3 puncte (are ${e.points.length}).`);
+        e.points.forEach((id) => needPoint(id, "polygon"));
+        break;
+      case "circumcircle": case "incircle": e.of.forEach((id) => needPoint(id, e.kind)); break;
+      case "point":
+        if (e.from === "intersection") { needRef(e.of[0], "point:intersection"); needRef(e.of[1], "point:intersection"); }
+        else if (e.of) { e.of.forEach((id) => needPoint(id, `point:${e.from}`)); }
+        break;
+      case "median": case "bisector": case "altitude": case "perpBisector":
+        e.of.forEach((id) => needPoint(id, e.kind));
+        if (!e.of.includes(e.from)) errors.push(`${e.kind}: vârful „${e.from}” nu e în triunghiul {${e.of.join(",")}}.`);
+        break;
+      case "angle":
+        if (e.at) needPoint(e.at, "angle.at");
+        if (e.from) e.from.forEach((id) => needPoint(id, "angle.from"));
+        if (e.between) e.between.forEach((s) => s.forEach((id) => needPoint(id, "angle.between")));
+        if (!e.at && !e.between) errors.push("angle: lipsește `at`+`from` sau `between`.");
+        break;
+      case "rightAngle": case "equalAngle": needPoint(e.at, e.kind); e.from.forEach((id) => needPoint(id, e.kind)); break;
+      case "circle": needPoint(e.center, "circle"); if (e.through) needPoint(e.through, "circle.through"); break;
+      case "tangentLines": needPoint(e.from, "tangentLines"); if (!elementIds.has(e.to)) errors.push(`tangentLines: cercul „${e.to}” nu există.`); break;
+      case "midpoint": e.of.forEach((id) => needPoint(id, "midpoint")); break;
+      case "perpendicular": case "parallel": needPoint(e.through, e.kind); e.toSegment.forEach((id) => needPoint(id, e.kind)); break;
+      case "parallelAtDistance": e.parallelTo.forEach((id) => needPoint(id, "parallelAtDistance")); needPoint(e.offsetFrom, "parallelAtDistance.offsetFrom"); break;
+      case "segment": e.between.forEach((id) => needPoint(id, "segment")); break;
+      case "equalMark": case "parallelMark": e.on.forEach((id) => needPoint(id, e.kind)); break;
+      case "pointOnSegment":
+        e.on.forEach((id) => needPoint(id, "pointOnSegment"));
+        if (e.ratio == null && e.distanceFromA == null) warnings.push("pointOnSegment: fără `ratio`/`distanceFromA` → se folosește mijlocul (0.5).");
+        break;
+      case "quadFromConstraints":
+        if (!e.ids.includes(e.angleAt)) errors.push(`quadFromConstraints: angleAt „${e.angleAt}” nu e în ids {${e.ids.join(",")}}.`);
+        if (e.sideRatio[0] <= 0 || e.sideRatio[1] <= 0) errors.push("quadFromConstraints: sideRatio trebuie pozitiv.");
+        if (e.scaleBy.length <= 0) errors.push("quadFromConstraints: scaleBy.length trebuie pozitiv.");
+        break;
+      case "triangleFromSides": {
+        const { AB, BC, CA } = e.sides;
+        if (AB <= 0 || BC <= 0 || CA <= 0) errors.push("triangleFromSides: laturile trebuie pozitive.");
+        else if (AB + BC <= CA || AB + CA <= BC || BC + CA <= AB) errors.push(`triangleFromSides: inegalitatea triunghiului cade (${AB}, ${BC}, ${CA}).`);
+        break;
+      }
+    }
+  }
+  if (Array.isArray(spec.intersections)) {
+    for (const it of spec.intersections) { needRef(it.of[0], "intersections"); needRef(it.of[1], "intersections"); }
+  }
+
+  // 3. Avertismente: etichete duplicate.
+  const labels = new Map<string, number>();
+  for (const p of spec.points) if (p.label) labels.set(p.label, (labels.get(p.label) ?? 0) + 1);
+  for (const e of spec.elements) {
+    const lbl = (e as { label?: string }).label;
+    if (lbl && (e.kind === "point" || e.kind === "midpoint" || e.kind === "pointOnSegment")) labels.set(lbl, (labels.get(lbl) ?? 0) + 1);
+  }
+  for (const [lbl, n] of labels) if (n > 1) warnings.push(`Etichetă duplicată „${lbl}” (×${n}).`);
+
+  return { errors, warnings };
 }
 
 /** Cadru auto din punctele rezolvate, cu loc pentru cercuri + etichete. */

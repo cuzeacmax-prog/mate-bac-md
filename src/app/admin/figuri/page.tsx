@@ -1,57 +1,64 @@
 import FigureRenderer from "@/components/figures/FigureRenderer";
 import type { FigureSpec2D } from "@/lib/figures/spec";
 
-export const metadata = { title: "Figuri — BAC vs GeoGebra" };
+export const metadata = { title: "Figuri — îmbogățire 2D" };
 
-/** (1) Triunghi isoscel ABC (26,26,20) + MN∥AC la dist. 18 + trapez AMNC + semne BAC. */
-const FIG_TRAPEZ: FigureSpec2D = {
-  points: [],
-  elements: [
-    { kind: "triangleFromSides", ids: ["A", "B", "C"], sides: { AB: 26, BC: 26, CA: 20 } },
-    { kind: "polygon", points: ["A", "B", "C"] },
-    { kind: "parallelAtDistance", id: "MN", parallelTo: ["A", "C"], offsetFrom: "B", distance: 18, visible: false },
-    { kind: "point", from: "intersection", of: ["MN", ["A", "B"]], id: "M", label: "M", color: "#9333ea" },
-    { kind: "point", from: "intersection", of: ["MN", ["B", "C"]], id: "N", label: "N", color: "#9333ea" },
-    { kind: "polygon", points: ["A", "M", "N", "C"], shade: true, color: "#16a34a" },
-    { kind: "segment", between: ["A", "B"], label: "26", color: "#475569" },
-    { kind: "segment", between: ["B", "C"], label: "26", color: "#475569" },
-    { kind: "segment", between: ["A", "C"], label: "20", color: "#475569" },
-    { kind: "equalMark", on: ["A", "B"], count: 1 },
-    { kind: "equalMark", on: ["B", "C"], count: 1 },
-    { kind: "parallelMark", on: ["A", "C"], count: 1 },
-    { kind: "parallelMark", on: ["M", "N"], count: 1 },
+/** (a) Patrulater cu diagonale + cevianǎ → toate intersecțiile marcate (detect) + P etichetat. */
+const FIG_INTERSECT: FigureSpec2D = {
+  points: [
+    { id: "A", x: 0, y: 0 }, { id: "B", x: 6, y: 0 }, { id: "C", x: 7, y: 5 }, { id: "D", x: 1, y: 4 },
   ],
-};
-
-/** (2) Paralelogram ABCD (∠A=60°, AB:AD=1:2, BD=3) + bisectoarea din A → K. AB ca bază. */
-const FIG_PARA: FigureSpec2D = {
-  points: [],
-  framing: { baseEdge: ["A", "B"] },
+  intersections: "detect",
   elements: [
-    { kind: "quadFromConstraints", ids: ["A", "B", "C", "D"], angleAt: "A", angle: 60, sideRatio: [1, 2], scaleBy: { diagonal: "BD", length: 3 } },
     { kind: "polygon", points: ["A", "B", "C", "D"] },
-    { kind: "segment", between: ["B", "D"], id: "BD", label: "BD = 3", color: "#2563eb" },
-    { kind: "bisector", of: ["A", "B", "D"], from: "A", id: "bisA", color: "#9333ea" },
-    { kind: "point", from: "intersection", of: ["bisA", "BD"], id: "K", label: "K", color: "#dc2626" },
-    { kind: "angle", at: "A", from: ["B", "D"], label: "60°", color: "#d97706" },
+    { kind: "segment", between: ["A", "C"], id: "ac" },
+    { kind: "segment", between: ["B", "D"], id: "bd" },
+    { kind: "pointOnSegment", on: ["C", "D"], ratio: 0.5, id: "E", label: "E" },
+    { kind: "segment", between: ["A", "E"], id: "ae" },
+    { kind: "point", from: "intersection", of: ["ac", "bd"], id: "P", label: "P", color: "#dc2626" },
   ],
 };
 
-function CompareRow({ title, spec, note }: { title: string; spec: FigureSpec2D; note: string }) {
+/** (b) Triunghi: ∠A măsurat de motor + 2 mediane care se intersectează în X, cu unghiul la X măsurat. */
+const FIG_ANGLES: FigureSpec2D = {
+  points: [
+    { id: "A", x: 0, y: 0 }, { id: "B", x: 7, y: 0 }, { id: "C", x: 2, y: 5 },
+  ],
+  elements: [
+    { kind: "polygon", points: ["A", "B", "C"] },
+    { kind: "angle", at: "A", from: ["B", "C"], value: true, color: "#d97706" },
+    { kind: "pointOnSegment", on: ["A", "C"], ratio: 0.5, id: "E", label: "E" },
+    { kind: "pointOnSegment", on: ["A", "B"], ratio: 0.5, id: "F", label: "F" },
+    { kind: "segment", between: ["B", "E"], id: "be" },
+    { kind: "segment", between: ["C", "F"], id: "cf" },
+    { kind: "point", from: "intersection", of: ["be", "cf"], id: "X", label: "X", color: "#dc2626" },
+    { kind: "angle", at: "X", from: ["B", "C"], value: true, color: "#2563eb" },
+  ],
+};
+
+/** (c) Trapez HAȘURAT (problemă de arie) + semne de paralelism + dimensiuni. */
+const FIG_HATCH: FigureSpec2D = {
+  points: [
+    { id: "A", x: 0, y: 0 }, { id: "B", x: 8, y: 0 }, { id: "C", x: 6, y: 4 }, { id: "D", x: 2, y: 4 },
+  ],
+  elements: [
+    { kind: "polygon", points: ["A", "B", "C", "D"], hatch: true },
+    { kind: "parallelMark", on: ["A", "B"], count: 1 },
+    { kind: "parallelMark", on: ["D", "C"], count: 1 },
+    { kind: "segment", between: ["A", "B"], label: "8" },
+    { kind: "segment", between: ["D", "C"], label: "4" },
+    { kind: "altitude", of: ["D", "A", "B"], from: "D", markRightAngle: true, color: "#1a1a1a" },
+  ],
+};
+
+function FigureCard({ title, spec, note }: { title: string; spec: FigureSpec2D; note: string }) {
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4">
       <h2 className="font-medium text-gray-900">{title}</h2>
       <p className="mt-0.5 text-xs text-gray-500">{note}</p>
       <div className="mt-3 flex flex-wrap items-start gap-8">
-        <div>
-          <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-400">GeoGebra (vechi)</div>
-          <FigureRenderer spec={spec} style="geogebra" size={360} />
-        </div>
-        <div>
-          <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-700">BAC (nou)</div>
-          <FigureRenderer spec={spec} style="bac" size={380} />
-        </div>
-        <pre className="max-w-sm overflow-auto rounded bg-gray-900 p-3 text-[11px] leading-relaxed text-gray-100">
+        <FigureRenderer spec={spec} style="bac" size={420} />
+        <pre className="max-w-md overflow-auto rounded bg-gray-900 p-3 text-[11px] leading-relaxed text-gray-100">
 {JSON.stringify(spec, null, 1)}
         </pre>
       </div>
@@ -62,24 +69,27 @@ function CompareRow({ title, spec, note }: { title: string; spec: FigureSpec2D; 
 export default function FiguriPage() {
   return (
     <div>
-      <h1 className="text-xl font-semibold text-gray-900">Figuri: temă „BAC” + încadrare canonică</h1>
+      <h1 className="text-xl font-semibold text-gray-900">Figuri 2D — îmbogățire (ETAPA 24)</h1>
       <p className="mt-1 max-w-2xl text-sm text-gray-600">
-        Aceeași spec, două prezentări. <strong>GeoGebra</strong> = stilul colorat original;{" "}
-        <strong>BAC</strong> = linii negre uniforme, fără umbriri, etichete serif italic, bază orizontală,
-        A în stânga-jos. Geometria (unghiuri, rapoarte) e <em>identică</em> — diferă doar similaritatea de
-        încadrare și stilul.
+        Auto-intersecții (calculate de motor, filtrate pe segment), unghiuri măsurate, puncte pe segment,
+        marcaje reutilizabile și hașură. Totul validat înainte de randare (id-uri, constrângeri). Stil BAC.
       </p>
 
       <div className="mt-6 space-y-6">
-        <CompareRow
-          title="(1) Triunghi isoscel + MN∥AC + trapez AMNC"
-          note="BAC: bază AB orizontală, fără umbrire, semne de egalitate (laturi 26) și paralelism (AC, MN)."
-          spec={FIG_TRAPEZ}
+        <FigureCard
+          title="(a) Diagonale + cevianǎ → auto-intersecții"
+          note="intersections:'detect' marchează AE∩BD; P = AC∩BD etichetat explicit. Toate calculate, niciuna plasată."
+          spec={FIG_INTERSECT}
         />
-        <CompareRow
-          title="(2) Paralelogram din constrângeri + bisectoarea din A → K"
-          note="BAC: framing override baseEdge=[A,B] (convenția pune AB ca bază, deși AD e mai lung)."
-          spec={FIG_PARA}
+        <FigureCard
+          title="(b) Unghi măsurat de motor + unghi la o intersecție"
+          note="∠A cu value:true (grade reale); medianele BE, CF se taie în X; ∠ la X măsurat. pointOnSegment pt. E, F."
+          spec={FIG_ANGLES}
+        />
+        <FigureCard
+          title="(c) Regiune hașurată (problemă de arie)"
+          note="polygon hatch:true (linii diagonale clipate), semne de paralelism pe AB‖DC, înălțime cu unghi drept."
+          spec={FIG_HATCH}
         />
       </div>
     </div>

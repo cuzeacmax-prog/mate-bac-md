@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { autoBoundingBox, solveBasePoints, frameSolved, type FigureSpec2D, type LineRef, type SolvedPoint } from "@/lib/figures/spec";
+import { autoBoundingBox, solveBasePoints, frameSolved, validateSpec, type FigureSpec2D, type LineRef, type SolvedPoint } from "@/lib/figures/spec";
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- punte către JSXGraph (lib fără tipuri ESM stricte) */
 
@@ -25,14 +25,47 @@ const ptStyle = (th: Theme, color: string, label?: string) => ({
   name: label ?? "", withLabel: !!label, label: labelStyle(th, color),
 });
 const hidden = { visible: false, withLabel: false };
+const SUB = "₀₁₂₃₄₅₆₇₈₉";
+const subscript = (n: number) => String(n).split("").map((d) => SUB[+d]).join("");
+
+/** Hașură cu linii diagonale (45°) clipate la poligon — stil BAC pentru regiuni de arie. */
+function hatchPolygon(board: any, V: Array<{ x: number; y: number }>, color: string, lw: number) {
+  const n = V.length;
+  if (n < 3) return;
+  const xs = V.map((p) => p.x), ys = V.map((p) => p.y);
+  const diag = Math.hypot(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) || 1;
+  const spacing = diag * 0.07;
+  const a = Math.PI / 4, dx = Math.cos(a), dy = Math.sin(a), nx = -dy, ny = dx; // direcție + normală
+  const proj = V.map((p) => p.x * nx + p.y * ny);
+  const cmin = Math.min(...proj), cmax = Math.max(...proj);
+  for (let c = cmin + spacing / 2; c < cmax; c += spacing) {
+    const hits: Array<{ X: number; Y: number; t: number }> = [];
+    for (let i = 0; i < n; i++) {
+      const P = V[i], Q = V[(i + 1) % n];
+      const dP = P.x * nx + P.y * ny - c, dQ = Q.x * nx + Q.y * ny - c;
+      if ((dP <= 0 && dQ > 0) || (dP > 0 && dQ <= 0)) {
+        const u = dP / (dP - dQ);
+        const X = P.x + u * (Q.x - P.x), Y = P.y + u * (Q.y - P.y);
+        hits.push({ X, Y, t: X * dx + Y * dy });
+      }
+    }
+    hits.sort((p, q) => p.t - q.t);
+    for (let j = 0; j + 1 < hits.length; j += 2) {
+      board.create("segment", [[hits[j].X, hits[j].Y], [hits[j + 1].X, hits[j + 1].Y]], { strokeColor: color, strokeWidth: lw * 0.65, highlight: false, fixed: true });
+    }
+  }
+}
 
 /** Construiește geometria din spec folosind tipuri NATIVE JSXGraph (calcul exact), cu tema `th`. */
 function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D, solved: Record<string, SolvedPoint>, th: Theme) {
   const pts: AnyMap = {};
   const els: AnyMap = {};
+  const reg: { segs: Array<{ a: any; b: any; line: any }>; lines: any[]; circles: any[] } = { segs: [], lines: [], circles: [] };
   for (const [id, p] of Object.entries(solved)) {
     pts[id] = board.create("point", [p.x, p.y], ptStyle(th, th.ink, p.label ?? id));
   }
+  const mkLine = (a: any, b: any) => board.create("line", [a, b], hidden);
+  const addSeg = (a: any, b: any) => reg.segs.push({ a, b, line: mkLine(a, b) });
   const resolveLine = (ref: LineRef): any =>
     typeof ref === "string" ? els[ref] : board.create("line", [pts[ref[0]], pts[ref[1]]], hidden);
   const firstTriangle = (): [string, string, string] => {
@@ -49,8 +82,8 @@ function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D, solved: Record<
     return obj;
   };
   const centerStyle = (color: string, name?: string) => ({ ...ptStyle(th, color, name), visible: true });
-  // Punct cu coordonate-funcție (pt. semnele mici, calculate de motor).
   const fpt = (fn: () => number[]) => board.create("point", [() => fn()[0], () => fn()[1]], hidden);
+  const dist = (p: any, q: any) => Math.hypot(p.X() - q.X(), p.Y() - q.Y());
 
   for (const e of spec.elements) {
     switch (e.kind) {
@@ -58,25 +91,27 @@ function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D, solved: Record<
       case "quadFromConstraints":
         break;
       case "polygon": {
-        const fill = th.bac ? 0 : e.shade ? (e.fillOpacity ?? 0.18) : (e.fillOpacity ?? th.fill);
+        const fill = th.bac || e.hatch ? 0 : e.shade ? (e.fillOpacity ?? 0.18) : (e.fillOpacity ?? th.fill);
         board.create("polygon", e.points.map((id) => pts[id]), {
           borders: { strokeColor: col(th, e.color, th.ink), strokeWidth: th.lw, highlight: false },
           fillColor: col(th, e.color, "#3b82f6"), fillOpacity: fill,
           vertices: { visible: false }, hasInnerPoints: false, highlight: false,
         });
+        for (let i = 0; i < e.points.length; i++) addSeg(pts[e.points[i]], pts[e.points[(i + 1) % e.points.length]]);
+        if (e.hatch) hatchPolygon(board, e.points.map((id) => ({ x: pts[id].X(), y: pts[id].Y() })), col(th, e.color, th.ink), th.lw);
         break;
       }
       case "circumcircle":
-        board.create("circumcircle", e.of.map((id) => pts[id]), {
+        reg.circles.push(board.create("circumcircle", e.of.map((id) => pts[id]), {
           strokeColor: col(th, e.color, "#2563eb"), strokeWidth: th.lw, fillOpacity: 0, highlight: false,
           center: centerStyle(col(th, e.color, "#2563eb"), e.centerLabel ?? "O"),
-        });
+        }));
         break;
       case "incircle":
-        board.create("incircle", e.of.map((id) => pts[id]), {
+        reg.circles.push(board.create("incircle", e.of.map((id) => pts[id]), {
           strokeColor: col(th, e.color, "#dc2626"), strokeWidth: th.lw, fillOpacity: 0, highlight: false,
           center: centerStyle(col(th, e.color, "#dc2626"), e.centerLabel ?? "I"),
-        });
+        }));
         break;
       case "point": {
         if (e.from === "intersection") {
@@ -105,6 +140,7 @@ function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D, solved: Record<
         const mid = board.create("midpoint", [pts[o1], pts[o2]], hidden);
         const seg = board.create("segment", [pts[e.from], mid], lineOpts(th, col(th, e.color, "#16a34a")));
         if (e.id) els[e.id] = seg;
+        addSeg(pts[e.from], mid);
         break;
       }
       case "bisector": {
@@ -113,6 +149,7 @@ function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D, solved: Record<
         const foot = board.create("intersection", [bl, board.create("line", [pts[o1], pts[o2]], hidden), 0], hidden);
         board.create("segment", [pts[e.from], foot], lineOpts(th, col(th, e.color, "#9333ea")));
         if (e.id) els[e.id] = bl;
+        addSeg(pts[e.from], foot);
         break;
       }
       case "altitude": {
@@ -121,6 +158,7 @@ function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D, solved: Record<
         const foot = board.create("perpendicularpoint", [opp, pts[e.from]], hidden);
         const seg = board.create("segment", [pts[e.from], foot], lineOpts(th, col(th, e.color, "#ea580c")));
         if (e.id) els[e.id] = seg;
+        addSeg(pts[e.from], foot);
         if (e.markRightAngle) board.create("angle", [pts[o1], foot, pts[e.from]], {
           radius: 0.45, type: "square", fillColor: th.ink, strokeColor: th.ink, fillOpacity: th.bac ? 0 : 0.3, withLabel: false, highlight: false,
         });
@@ -132,15 +170,49 @@ function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D, solved: Record<
         const mid = board.create("midpoint", [pts[o1], pts[o2]], hidden);
         const pb = board.create("perpendicular", [opp, mid], lineOpts(th, col(th, e.color, "#0d9488")));
         if (e.id) els[e.id] = pb;
+        reg.lines.push(pb);
         break;
       }
       case "angle": {
         const c = col(th, e.color, "#d97706");
-        board.create("angle", [pts[e.from[0]], pts[e.at], pts[e.from[1]]], {
-          radius: 0.7, name: e.label ?? "", withLabel: !!e.label, type: "sector",
+        // vârf + 2 raze: din `at`+`from`, SAU din `between` (2 segmente → vârf = intersecția lor)
+        let V: any, r1: any, r2: any;
+        if (e.between) {
+          const [[a1, a2], [b1, b2]] = e.between;
+          V = board.create("intersection", [mkLine(pts[a1], pts[a2]), mkLine(pts[b1], pts[b2]), 0], hidden);
+          r1 = dist(V, pts[a1]) >= dist(V, pts[a2]) ? pts[a1] : pts[a2];
+          r2 = dist(V, pts[b1]) >= dist(V, pts[b2]) ? pts[b1] : pts[b2];
+        } else if (e.at && e.from) {
+          V = pts[e.at]; r1 = pts[e.from[0]]; r2 = pts[e.from[1]];
+        } else break;
+        const ang = board.create(e.reflex ? "reflexangle" : "angle", [r1, V, r2], {
+          radius: 0.7, name: e.label ?? "", withLabel: !!(e.label || e.value), type: "sector",
           fillColor: c, strokeColor: c, fillOpacity: th.angleFill, strokeWidth: th.lw, highlight: false,
           label: { fontSize: 14, strokeColor: c },
         });
+        if (e.value) ang.setAttribute({ name: () => `${Math.round((ang.Value() * 180) / Math.PI)}°`, withLabel: true });
+        break;
+      }
+      case "pointOnSegment": {
+        const A = pts[e.on[0]], B = pts[e.on[1]];
+        const t = () => (e.ratio != null ? e.ratio : e.distanceFromA != null ? e.distanceFromA / (Math.hypot(B.X() - A.X(), B.Y() - A.Y()) || 1) : 0.5);
+        const P = board.create("point", [() => A.X() + t() * (B.X() - A.X()), () => A.Y() + t() * (B.Y() - A.Y())], ptStyle(th, col(th, e.color, th.ink), e.label ?? ""));
+        if (e.id) pts[e.id] = P; else if (e.label) pts[e.label] = P;
+        break;
+      }
+      case "rightAngle":
+        board.create("angle", [pts[e.from[0]], pts[e.at], pts[e.from[1]]], {
+          radius: 0.45, type: "square", fillColor: col(th, e.color, th.ink), strokeColor: col(th, e.color, th.ink), fillOpacity: th.bac ? 0 : 0.3, withLabel: false, highlight: false,
+        });
+        break;
+      case "equalAngle": {
+        const c = col(th, e.color, "#d97706");
+        const n = e.count ?? 1;
+        for (let i = 0; i < n; i++) {
+          board.create("angle", [pts[e.from[0]], pts[e.at], pts[e.from[1]]], {
+            radius: 0.5 + i * 0.13, type: "sector", fillOpacity: 0, strokeColor: c, strokeWidth: th.lw, withLabel: false, highlight: false,
+          });
+        }
         break;
       }
       case "circle": {
@@ -151,6 +223,7 @@ function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D, solved: Record<
           center: e.centerLabel ? centerStyle(c, e.centerLabel) : { visible: false },
         });
         if (e.id) els[e.id] = circ;
+        reg.circles.push(circ);
         break;
       }
       case "tangentLines": {
@@ -178,12 +251,14 @@ function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D, solved: Record<
         const ln = board.create("line", [pts[e.toSegment[0]], pts[e.toSegment[1]]], hidden);
         const pp = board.create("perpendicular", [ln, pts[e.through]], lineOpts(th, col(th, e.color, "#475569")));
         if (e.id) els[e.id] = pp;
+        reg.lines.push(pp);
         break;
       }
       case "parallel": {
         const ln = board.create("line", [pts[e.toSegment[0]], pts[e.toSegment[1]]], hidden);
         const pl = board.create("parallel", [ln, pts[e.through]], lineOpts(th, col(th, e.color, "#475569")));
         if (e.id) els[e.id] = pl;
+        reg.lines.push(pl);
         break;
       }
       case "parallelAtDistance": {
@@ -198,6 +273,7 @@ function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D, solved: Record<
         const base = board.create("line", [P1, P2], hidden);
         const par = board.create("parallel", [base, Q], e.visible === false ? hidden : { ...lineOpts(th, col(th, e.color, "#0d9488")), dash: 2 });
         if (e.id) els[e.id] = par;
+        reg.lines.push(par);
         break;
       }
       case "segment": {
@@ -209,6 +285,7 @@ function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D, solved: Record<
           label: { fontSize: 14, strokeColor: th.ink, offset: [0, 12] },
         });
         if (e.id) els[e.id] = seg;
+        addSeg(A, B);
         break;
       }
       case "equalMark": {
@@ -245,6 +322,52 @@ function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D, solved: Record<
         }
         break;
       }
+    }
+  }
+
+  // ── AUTO-INTERSECȚII (pas DUPĂ construcția elementelor) ──
+  const mode = spec.intersections;
+  if (mode) {
+    const vs = Object.values(solved);
+    const span = Math.max(Math.max(...vs.map((p) => p.x)) - Math.min(...vs.map((p) => p.x)), Math.max(...vs.map((p) => p.y)) - Math.min(...vs.map((p) => p.y)), 1);
+    const tol = span * 0.005;
+    const taken: Array<[number, number]> = Object.values(pts).map((p: any) => [p.X(), p.Y()]);
+    const finite = (P: any) => Number.isFinite(P.X()) && Number.isFinite(P.Y()) && Math.abs(P.X()) < 1e6 && Math.abs(P.Y()) < 1e6;
+    const onSeg = (P: any, S: { a: any; b: any }) => {
+      const ax = S.a.X(), ay = S.a.Y(), bx = S.b.X(), by = S.b.Y();
+      const L2 = (bx - ax) ** 2 + (by - ay) ** 2 || 1;
+      const t = ((P.X() - ax) * (bx - ax) + (P.Y() - ay) * (by - ay)) / L2;
+      return t >= -0.001 && t <= 1.001;
+    };
+    let counter = 0;
+    const place = (P: any, label?: string, force?: boolean) => {
+      if (!finite(P)) return;
+      if (!force && taken.some(([tx, ty]) => Math.hypot(tx - P.X(), ty - P.Y()) < tol)) return; // dedupe
+      taken.push([P.X(), P.Y()]);
+      counter++;
+      const lab = label ?? (mode === "label-all" ? `X${subscript(counter)}` : "");
+      labeledPoint(P, th.bac ? th.ink : "#dc2626", lab);
+    };
+
+    if (mode === "detect" || mode === "label-all") {
+      const { segs: S, lines: L, circles: C } = reg;
+      for (let i = 0; i < S.length; i++) for (let j = i + 1; j < S.length; j++) {
+        const P = board.create("intersection", [S[i].line, S[j].line, 0], hidden);
+        if (finite(P) && onSeg(P, S[i]) && onSeg(P, S[j])) place(P);
+      }
+      for (const s of S) for (const ln of L) {
+        const P = board.create("intersection", [s.line, ln, 0], hidden);
+        if (finite(P) && onSeg(P, s)) place(P);
+      }
+      for (const s of S) for (const ci of C) for (const k of [0, 1]) {
+        const P = board.create("intersection", [ci, s.line, k], hidden);
+        if (finite(P) && onSeg(P, s)) place(P);
+      }
+      for (let i = 0; i < L.length; i++) for (let j = i + 1; j < L.length; j++) place(board.create("intersection", [L[i], L[j], 0], hidden));
+      for (const ln of L) for (const ci of C) for (const k of [0, 1]) place(board.create("intersection", [ci, ln, k], hidden));
+      for (let i = 0; i < C.length; i++) for (let j = i + 1; j < C.length; j++) for (const k of [0, 1]) place(board.create("intersection", [C[i], C[j], k], hidden));
+    } else if (Array.isArray(mode)) {
+      for (const it of mode) place(board.create("intersection", [resolveLine(it.of[0]), resolveLine(it.of[1]), it.index ?? 0], hidden), it.label, true);
     }
   }
 }
@@ -288,6 +411,11 @@ export default function FigureRenderer({ spec, size = 420, style = "bac", classN
         JXGref = JXG;
         if (cancelled || !containerRef.current) return;
         containerRef.current.innerHTML = "";
+
+        // VALIDARE înainte de randare — eroare clară, nu crash.
+        const { errors, warnings } = validateSpec(spec);
+        warnings.forEach((w) => console.warn("[figura]", w));
+        if (errors.length) throw new Error(`Spec invalid: ${errors.join(" · ")}`);
 
         // Rezolvă + (pt. bac) încadrează canonic. Box din coordonatele finale.
         const base = solveBasePoints(spec);
