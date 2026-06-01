@@ -20,8 +20,10 @@ const SYSTEM_PROMPT =
   'labels?}. ALTFEL (con/sferă/prismă/piramidă neregulată…) NU emite body3d — pune doar body3d_name = tipul corpului.\n' +
   "- 'fara_figura' = fără desen (algebră, ecuații, combinatorică, probabilitate, „pătrat perfect” = număr).\n\n" +
   'SCHEMA spec2d (DOAR aceste kind-uri, constrângeri NU coordonate inventate):\n' +
-  '{ points:[{id,x,y,label?}] (gol dacă nu sunt coordonate explicite), elements:[…], intersections?:"detect"|"label-all"|[{of:[ref,ref],label?}] }\n' +
-  '- triangleFromSides {ids:[A,B,C], sides:{AB,BC,CA}} · quadFromConstraints {ids:[A,B,C,D], angleAt, angle, sideRatio:[r1,r2], scaleBy:{diagonal:"AC"|"BD"|"AB"|"AD", length}}\n' +
+  '{ points:[{id,x,y,label?}], elements:[…], intersections?:"detect"|"label-all"|[{of:[ref,ref],label?}] }\n' +
+  'REGULĂ: `points` e GOL ([]) când nu există coordonate explicite în enunț — NU pune nume de vârf ca string acolo; ' +
+  'vârfurile vin din `ids`/`labels` ale generatorilor.\n' +
+  '- triangleFromSides {ids:[A,B,C], sides:{AB,BC,CA}}  (cheile EXACT AB, BC, CA — laturile A-B, B-C, C-A; NU folosi „AC”) · quadFromConstraints {ids:[A,B,C,D], angleAt, angle, sideRatio:[r1,r2], scaleBy:{diagonal:"AC"|"BD"|"AB"|"AD", length}}\n' +
   '- polygon {points:[ids], shade?, hatch?} · segment {between:[a,b], label?, showLength?, id?} · midpoint {of:[a,b], label?, id?}\n' +
   '- pointOnSegment {on:[a,b], ratio?|distanceFromA?, label?, id?} · median|bisector|altitude|perpBisector {of:[A,B,C], from, label?, id?}\n' +
   '- circle {center, through?|radius?, centerLabel?, id?} · incircle|circumcircle {of:[A,B,C], centerLabel?}\n' +

@@ -116,18 +116,28 @@ export interface SolvedPoint { x: number; y: number; label?: string }
 /** Rezolvă coordonatele punctelor de BAZĂ (explicite + generate prin constrângeri). PUR. */
 export function solveBasePoints(spec: FigureSpec2D): Record<string, SolvedPoint> {
   const out: Record<string, SolvedPoint> = {};
-  for (const p of spec.points) out[p.id] = { x: p.x, y: p.y, label: p.label };
+  // Tolerează puncte ca string-uri (doar nume) sau obiecte fără coordonate — le ignorăm aici.
+  for (const p of Array.isArray(spec.points) ? spec.points : []) {
+    if (p && typeof p === "object" && typeof (p as FigurePoint).id === "string" && typeof (p as FigurePoint).x === "number") {
+      out[(p as FigurePoint).id] = { x: (p as FigurePoint).x, y: (p as FigurePoint).y, label: (p as FigurePoint).label };
+    }
+  }
 
   for (const e of spec.elements) {
     if (e.kind === "triangleFromSides") {
-      const { AB, BC, CA } = e.sides;
-      if (AB + BC <= CA || AB + CA <= BC || BC + CA <= AB) {
+      const AB = e.sides.AB, BC = e.sides.BC;
+      const CA = e.sides.CA ?? (e.sides as { CA?: number; AC?: number }).AC; // acceptă CA sau AC
+      if (!(AB > 0) || !(BC > 0) || !(CA! > 0)) {
+        throw new Error(`triangleFromSides: laturile trebuie numere pozitive (AB=${AB}, BC=${BC}, CA=${CA}).`);
+      }
+      if (AB + BC <= CA! || AB + CA! <= BC || BC + CA! <= AB) {
         throw new Error(`Inegalitatea triunghiului cade pentru laturile (${AB}, ${BC}, ${CA}).`);
       }
       // A=(0,0), B=(AB,0); C din legea cosinusului.
-      const x = (AB * AB + CA * CA - BC * BC) / (2 * AB);
-      const y2 = CA * CA - x * x;
-      if (y2 <= 0) throw new Error(`Triunghi degenerat pentru (${AB}, ${BC}, ${CA}).`);
+      const ca = CA as number;
+      const x = (AB * AB + ca * ca - BC * BC) / (2 * AB);
+      const y2 = ca * ca - x * x;
+      if (y2 <= 0) throw new Error(`Triunghi degenerat pentru (${AB}, ${BC}, ${ca}).`);
       const y = Math.sqrt(y2);
       const [a, b, c] = e.ids;
       out[a] = { x: 0, y: 0, label: e.labels?.[0] ?? a };
@@ -236,9 +246,9 @@ export function validateSpec(spec: FigureSpec2D): { errors: string[]; warnings: 
         if (e.scaleBy.length <= 0) errors.push("quadFromConstraints: scaleBy.length trebuie pozitiv.");
         break;
       case "triangleFromSides": {
-        const { AB, BC, CA } = e.sides;
-        if (AB <= 0 || BC <= 0 || CA <= 0) errors.push("triangleFromSides: laturile trebuie pozitive.");
-        else if (AB + BC <= CA || AB + CA <= BC || BC + CA <= AB) errors.push(`triangleFromSides: inegalitatea triunghiului cade (${AB}, ${BC}, ${CA}).`);
+        const AB = e.sides?.AB, BC = e.sides?.BC, CA = e.sides?.CA ?? (e.sides as { CA?: number; AC?: number })?.AC;
+        if (![AB, BC, CA].every((x) => typeof x === "number" && x > 0)) errors.push("triangleFromSides: lipsește o latură sau nu e număr pozitiv (cheile trebuie AB, BC, CA).");
+        else if (AB! + BC! <= CA! || AB! + CA! <= BC! || BC! + CA! <= AB!) errors.push(`triangleFromSides: inegalitatea triunghiului cade (${AB}, ${BC}, ${CA}).`);
         break;
       }
     }
