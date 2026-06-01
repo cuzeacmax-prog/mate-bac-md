@@ -31,13 +31,21 @@ function buildPyramid(view: any, spec: FigureSpec3D) {
   if (show.height) {
     const O = pt(s.center as number[], "O", INK);
     seg(vp[s.apexId], O, INK, 2);
-    // Unghiul diedru: M = mijlocul unei laturi de bază; OM (apotemă) + VM (apotema feței).
+    // Unghiul diedru: M = mijlocul unei laturi de bază; OM (apotemă bazei) + VM (apotema feței).
     if (show.dihedral) {
       const M = pt(s.apothemFoot as number[], "M", "#dc2626");
-      seg(O, M, "#dc2626", 2);            // apotema bazei
-      seg(vp[s.apexId], M, "#dc2626", 0); // apotema feței (înălțimea feței)
-      const lift: number[] = [s.apothemFoot[0] * 1.15, s.apothemFoot[1] * 1.15, s.apothem * 0.18];
-      view.create("text3d", [lift, `φ ≈ ${s.dihedralDeg.toFixed(0)}°`], { fontSize: 14, strokeColor: "#dc2626" });
+      seg(O, M, "#dc2626", 2);
+      seg(vp[s.apexId], M, "#dc2626", 0);
+      // Eticheta diedrului ADIACENT vârfului M, pe bisectoarea unghiului VMO (nu departe).
+      const Mc = s.apothemFoot, Oc = s.center, Vc = s.verts[0].xyz;
+      const unit = (a: number[], b: number[]) => { const d = [b[0] - a[0], b[1] - a[1], b[2] - a[2]]; const L = Math.hypot(d[0], d[1], d[2]) || 1; return d.map((x) => x / L); };
+      const u1 = unit(Mc, Oc), u2 = unit(Mc, Vc);
+      let bis = [u1[0] + u2[0], u1[1] + u2[1], u1[2] + u2[2]];
+      const Lb = Math.hypot(bis[0], bis[1], bis[2]) || 1;
+      bis = bis.map((x) => x / Lb);
+      const r = s.apothem * 0.42;
+      const pos = [Mc[0] + bis[0] * r, Mc[1] + bis[1] * r, Mc[2] + bis[2] * r];
+      view.create("text3d", [pos, `φ ≈ ${s.dihedralDeg.toFixed(0)}°`], { fontSize: 14, strokeColor: "#dc2626" });
     }
   }
   return s;
@@ -69,14 +77,17 @@ export default function Figure3DRenderer({ spec, size = 460, className }: Figure
 
         const s0 = solvePyramid(spec.body);
         const E = s0.extent;
+        // Cadru cu loc pentru barele de rotație (az jos-orizontal, el stânga-vertical).
         board = JXG.JSXGraph.initBoard(containerRef.current, {
-          boundingbox: [-8, 8, 8, -8], keepaspectratio: true, axis: false, grid: false,
+          boundingbox: [-9, 9, 9, -9], keepaspectratio: true, axis: false, grid: false,
           showCopyright: false, showNavigation: false, pan: { enabled: false }, zoom: { enabled: false },
         });
-        const view = board.create("view3d", [[-7, -6.5], [14, 14], [[-E, E], [-E, E], [-E, E]]], {
+        const view = board.create("view3d", [[-6.5, -5], [13, 13], [[-E, E], [-E, E], [-E, E]]], {
           projection: "parallel",
-          trackball: { enabled: true },        // rotație interactivă prin drag
-          depthOrder: { enabled: true },        // ordonare fețe → ocluzie corectă
+          trackball: { enabled: false },                          // NU drag liber — folosim barele
+          az: { slider: { visible: true, start: 1.0 } },          // azimut (orizontal, stânga-dreapta)
+          el: { slider: { visible: true, start: 0.3 } },          // elevație (vertical, sus-jos)
+          depthOrder: { enabled: true },                          // ordonare fețe → ocluzie corectă
           xPlaneRear: { visible: false }, yPlaneRear: { visible: false }, zPlaneRear: { visible: false },
           xPlaneFront: { visible: false }, yPlaneFront: { visible: false }, zPlaneFront: { visible: false },
         });
@@ -108,7 +119,7 @@ export default function Figure3DRenderer({ spec, size = 460, className }: Figure
       <div ref={containerRef} style={{ width: size, height: size, background: "transparent", touchAction: "none" }} className="rounded border border-gray-200" />
       {info && (
         <div className="mt-1 text-xs text-gray-500">
-          trage cu mouse-ul pentru rotație · unghi diedru calculat <strong>{info.dihedral.toFixed(1)}°</strong> · apotemă {info.apothem.toFixed(1)} · rază bază {info.circumR.toFixed(1)}
+barele az/el rotesc figura · unghi diedru calculat <strong>{info.dihedral.toFixed(1)}°</strong> · apotemă {info.apothem.toFixed(1)} · rază bază {info.circumR.toFixed(1)}
         </div>
       )}
     </div>

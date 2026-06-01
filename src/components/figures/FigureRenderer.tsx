@@ -84,6 +84,16 @@ function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D, solved: Record<
   const centerStyle = (color: string, name?: string) => ({ ...ptStyle(th, color, name), visible: true });
   const fpt = (fn: () => number[]) => board.create("point", [() => fn()[0], () => fn()[1]], hidden);
   const dist = (p: any, q: any) => Math.hypot(p.X() - q.X(), p.Y() - q.Y());
+  // Eticheta unui unghi ADIACENT arcului, pe bisectoare (offset mic), nu la poziție îndepărtată.
+  const placeAngleLabel = (V: any, P1: any, P2: any, radius: number, text: string, color: string, reflex: boolean) => {
+    const u1x = P1.X() - V.X(), u1y = P1.Y() - V.Y(), L1 = Math.hypot(u1x, u1y) || 1;
+    const u2x = P2.X() - V.X(), u2y = P2.Y() - V.Y(), L2 = Math.hypot(u2x, u2y) || 1;
+    let bx = u1x / L1 + u2x / L2, by = u1y / L1 + u2y / L2;
+    let Lb = Math.hypot(bx, by);
+    if (Lb < 1e-6) { bx = -u1y / L1; by = u1x / L1; Lb = 1; } // unghi întins → perpendiculară
+    bx /= Lb; by /= Lb; if (reflex) { bx = -bx; by = -by; }
+    board.create("text", [V.X() + bx * (radius + 0.28), V.Y() + by * (radius + 0.28), text], { fontSize: 14, strokeColor: color, anchorX: "middle", anchorY: "middle", highlight: false, fixed: true });
+  };
 
   for (const e of spec.elements) {
     switch (e.kind) {
@@ -185,12 +195,16 @@ function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D, solved: Record<
         } else if (e.at && e.from) {
           V = pts[e.at]; r1 = pts[e.from[0]]; r2 = pts[e.from[1]];
         } else break;
+        const radius = 0.7;
         const ang = board.create(e.reflex ? "reflexangle" : "angle", [r1, V, r2], {
-          radius: 0.7, name: e.label ?? "", withLabel: !!(e.label || e.value), type: "sector",
+          radius, withLabel: false, type: "sector",
           fillColor: c, strokeColor: c, fillOpacity: th.angleFill, strokeWidth: th.lw, highlight: false,
-          label: { fontSize: 14, strokeColor: c },
         });
-        if (e.value) ang.setAttribute({ name: () => `${Math.round((ang.Value() * 180) / Math.PI)}°`, withLabel: true });
+        // eticheta lângă arc, pe bisectoare (valoare măsurată sau text)
+        if (e.value || e.label) {
+          const txt = e.value ? `${Math.round((ang.Value() * 180) / Math.PI)}°` : (e.label ?? "");
+          placeAngleLabel(V, r1, r2, radius, txt, c, !!e.reflex);
+        }
         break;
       }
       case "pointOnSegment": {
