@@ -166,12 +166,18 @@ export function validateSpec(spec: FigureSpec2D): { errors: string[]; warnings: 
   const points = new Set<string>();
   const elementIds = new Set<string>();
 
+  // 0. Structură de bază.
+  if (!spec || typeof spec !== "object") return { errors: ["spec lipsește sau nu e obiect."], warnings };
+  if (!Array.isArray(spec.points)) return { errors: ["spec.points trebuie să fie un array."], warnings };
+  if (!Array.isArray(spec.elements)) return { errors: ["spec.elements trebuie să fie un array."], warnings };
+
   // 1. Colectează id-urile PRODUSE (puncte + elemente referabile).
-  for (const p of spec.points) points.add(p.id);
+  for (const p of spec.points) if (p && p.id) points.add(p.id);
   for (const e of spec.elements) {
+    if (!e || typeof e !== "object" || !("kind" in e)) { errors.push("element fără `kind`."); continue; }
     switch (e.kind) {
-      case "triangleFromSides": e.ids.forEach((i) => points.add(i)); break;
-      case "quadFromConstraints": e.ids.forEach((i) => points.add(i)); break;
+      case "triangleFromSides": if (Array.isArray(e.ids)) e.ids.forEach((i) => points.add(i)); break;
+      case "quadFromConstraints": if (Array.isArray(e.ids)) e.ids.forEach((i) => points.add(i)); break;
       case "point": if (e.id) points.add(e.id); else if (e.from === "intersection" && e.label) points.add(e.label); break;
       case "midpoint": if (e.id) points.add(e.id); break;
       case "pointOnSegment": if (e.id) points.add(e.id); break;
@@ -188,12 +194,14 @@ export function validateSpec(spec: FigureSpec2D): { errors: string[]; warnings: 
     else { needPoint(ref[0], where); needPoint(ref[1], where); }
   };
 
-  // 2. Verifică referințele fiecărui element.
+  // 2. Verifică referințele fiecărui element. Orice câmp lipsă → eroare clară, nu crash.
   for (const e of spec.elements) {
+    if (!e || typeof e !== "object" || !("kind" in e)) continue;
+    try {
     switch (e.kind) {
       case "polygon":
-        if (e.points.length < 3) errors.push(`polygon: are nevoie de ≥3 puncte (are ${e.points.length}).`);
-        e.points.forEach((id) => needPoint(id, "polygon"));
+        if (!Array.isArray(e.points) || e.points.length < 3) errors.push(`polygon: are nevoie de ≥3 puncte.`);
+        else e.points.forEach((id) => needPoint(id, "polygon"));
         break;
       case "circumcircle": case "incircle": e.of.forEach((id) => needPoint(id, e.kind)); break;
       case "point":
@@ -233,6 +241,9 @@ export function validateSpec(spec: FigureSpec2D): { errors: string[]; warnings: 
         else if (AB + BC <= CA || AB + CA <= BC || BC + CA <= AB) errors.push(`triangleFromSides: inegalitatea triunghiului cade (${AB}, ${BC}, ${CA}).`);
         break;
       }
+    }
+    } catch {
+      errors.push(`${(e as { kind?: string }).kind ?? "element"}: structură invalidă (câmpuri obligatorii lipsă).`);
     }
   }
   if (Array.isArray(spec.intersections)) {

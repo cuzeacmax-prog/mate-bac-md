@@ -62,6 +62,9 @@ export default async function AdminLayout({
         <Link href="/admin/verificare" className="text-sm text-gray-600 hover:text-gray-900">
           Verificare
         </Link>
+        <Link href="/admin/figuri-revizie" className="text-sm text-gray-600 hover:text-gray-900">
+          Figuri-revizie
+        </Link>
         <Link href="/app" className="text-sm text-gray-600 hover:text-gray-900 ml-auto">
           ← App
         </Link>
