@@ -37,7 +37,15 @@ export const SYSTEM_PROMPT =
   'figurabil_2d și emite ce poți. Folosește fara_figura DOAR pentru probleme pur algebrice/numerice fără desen.\n\n' +
   'CLASIFICARE:\n' +
   "- 'figurabil_2d' = geometrie PLANĂ (triunghi/patrulater/trapez/romb/pătrat/cerc în plan). Emite spec2d.\n" +
-  "- '3d' = STEREOMETRIE. Șabloane disponibile (emite body3d cu kind potrivit; calculează parametrii din date):\n" +
+  'REGULĂ SPECIALĂ (PRIORITARĂ) — CORPURI DE ROTAȚIE ÎNSCRISE/TANGENTE unul în altul (sferă în con, sferă în ' +
+  'cilindru, cilindru în con, con în sferă etc.): figura standard de BAC e SECȚIUNEA AXIALĂ 2D (cum se și rezolvă), ' +
+  'NU pictograma 3D. Emite verdict=figurabil_2d cu secțiunea: con(R,H) → triunghi isoscel cu baza=2R și laturile=√(R²+H²); ' +
+  'sferă înscrisă → cercul ÎNSCRIS al triunghiului (incircle); cilindru înscris → dreptunghi înscris; con în sferă → triunghi în cerc. ' +
+  'Ex. „sferă înscrisă într-un con R=6 H=8” → {"points":[],"elements":[' +
+  '{"kind":"triangleFromSides","ids":["A","B","C"],"sides":{"AB":10,"BC":12,"CA":10}},' +
+  '{"kind":"polygon","points":["A","B","C"]},{"kind":"incircle","of":["A","B","C"],"centerLabel":"O"}]} ' +
+  '(BC=2R=12 baza, AB=CA=√(6²+8²)=10 laturile; cercul înscris r=R·H/(R+√(R²+H²))=3 = secțiunea sferei).\n' +
+  "- '3d' = STEREOMETRIE (un SINGUR corp simplu: pictogramă 3D). Șabloane disponibile (emite body3d cu kind potrivit; calculează parametrii din date):\n" +
   '    • {kind:"regularPyramid", baseSides, baseEdge, height, labels?} — piramidă regulată\n' +
   '    • {kind:"cube", edge, labels?} — cub\n' +
   '    • {kind:"box", length, width, height, labels?} — paralelipiped dreptunghic\n' +

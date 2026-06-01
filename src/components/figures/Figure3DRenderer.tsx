@@ -63,12 +63,13 @@ export default function Figure3DRenderer({ spec, size = 460, className }: Figure
       </svg>
 
       <div className="mt-2 flex flex-col gap-1 text-xs text-gray-500" style={{ width: size }}>
+        {/* interval limitat la unghiuri citibile de manual — fără vederi degenerate (top-down / edge-on) */}
         <label className="flex items-center gap-2">azimut
-          <input type="range" min={-180} max={180} value={az} onChange={(e) => setAz(+e.target.value)} className="flex-1" />
+          <input type="range" min={-75} max={75} value={az} onChange={(e) => setAz(+e.target.value)} className="flex-1" />
           <span className="w-10 text-right tabular-nums">{az}°</span>
         </label>
         <label className="flex items-center gap-2">elevație
-          <input type="range" min={-80} max={80} value={el} onChange={(e) => setEl(+e.target.value)} className="flex-1" />
+          <input type="range" min={10} max={45} value={el} onChange={(e) => setEl(+e.target.value)} className="flex-1" />
           <span className="w-10 text-right tabular-nums">{el}°</span>
         </label>
         <button type="button" onClick={downloadSvg} className="self-start text-gray-500 hover:text-gray-900">↓ Export SVG</button>
