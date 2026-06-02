@@ -163,6 +163,26 @@ export function coneSectionScene(R: number, H: number, cut: ConeCut): Scene3D | 
   return { points, elements };
 }
 
+/**
+ * PICTOGRAMĂ SCHEMATICĂ piramidă pe trapez isoscel (bază mare AB în față, bază mică DC în spate, vârf V sus).
+ * NU e la scară (proporțiile bazelor se păstrează; adâncimea + înălțimea sunt de afișare) — convenția de manual
+ * pentru un corp cu bază aproape plană. Numerele reale se verifică separat (CAS), figura doar ilustrează.
+ */
+export function pyramidTrapezoidScene(smallBase: number, bigBase: number): Scene3D {
+  const halfBig = 4, halfSmall = 4 * (smallBase / bigBase); // lățime de afișare ∝ raport baze
+  const depth = 3.4, height = 8; // valori de afișare (pictogramă)
+  const points: Point3DSpec[] = [
+    { id: "A", x: -halfBig, y: 0, z: 0 }, { id: "B", x: halfBig, y: 0, z: 0 },   // baza MARE, în față
+    { id: "C", x: halfSmall, y: depth, z: 0 }, { id: "D", x: -halfSmall, y: depth, z: 0 }, // baza mică, în spate
+    { id: "O", x: 0, y: depth / 2, z: 0 }, { id: "V", x: 0, y: depth / 2, z: height },
+  ];
+  const elements: SceneElement[] = [
+    { kind: "polyhedron", vertices: ["A", "B", "C", "D", "V"], faces: [["A", "B", "C", "D"], ["V", "A", "B"], ["V", "B", "C"], ["V", "C", "D"], ["V", "D", "A"]] },
+    { kind: "segment3d", of: ["V", "O"], dash: true, label: "H" },
+  ];
+  return { points, elements };
+}
+
 /** Plasă de siguranță (ETAPA 41): recompune secțiunea din coordonate și verifică numerele DATE. */
 export function verifyConeSection(R: number, H: number, cut: ConeCut, expect: { axial?: number; radius?: number; area?: number }, tol = 1e-9): { ok: boolean; checks: Array<{ name: string; pass: boolean; detail: string }> } {
   const sec = coneSection(R, H, cut);

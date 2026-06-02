@@ -7,6 +7,7 @@
  */
 import type { PipelineInput, DesiredDescriptor } from "../../src/lib/figures/authoring";
 import { axialSection, dihedralSection } from "../../src/lib/figures/axial";
+import { pyramidTrapezoidScene } from "../../src/lib/figures/relations";
 import type { Scene3D } from "../../src/lib/figures/spec3d";
 import type { FigureSpec2D } from "../../src/lib/figures/spec";
 import type { GeoProblem } from "../../src/lib/figures/cas";
@@ -54,6 +55,24 @@ export function resolveInput(condition: string): Resolved | null {
     if (R && H) {
       const spec = axialSection({ points: [], elements: [{ kind: "cone3d", id: "con", radius: R, height: H }, { kind: "inscribedSphere", in: "con" }] } as unknown as Scene3D);
       return { input: { kind: "spec2d", spec }, desired: { dim: "2D", orientation: "apex-sus", mustLabels: ["V", "B", "C"], minPolylines: 2 } };
+    }
+  }
+
+  // ── piramidă pe trapez isoscel (baza mică, latura, unghi la baza mare) + muchii laterale EGALE → apex peste circumcentru ──
+  if (c.includes("piramid") && c.includes("trapez") && c.includes("isoscel") && c.includes("muchi") && c.includes("lateral")) {
+    const small = num(new RegExp(`baz[aă]\\s*mic[aă][\\s\\S]{0,20}?${NUM}`));
+    const legM = c.match(/√\s*(\d+(?:[.,]\d+)?)/); const leg = legM ? Math.sqrt(f(legM[1])) : num(new RegExp(`congruente[\\s\\S]{0,20}?${NUM}`));
+    const angle = num(new RegExp(`${NUM}\\s*°`)) ?? num(new RegExp(`unghiur[\\s\\S]{0,40}?${NUM}`));
+    const edge = num(new RegExp(`muchi[\\s\\S]{0,30}?lateral[\\s\\S]{0,45}?${NUM}`)) ?? num(new RegExp(`lateral[\\s\\S]{0,45}?${NUM}`));
+    if (small && leg && angle && edge) {
+      const horiz = leg * Math.cos((angle * Math.PI) / 180), big = small + 2 * horiz;
+      // Baza reală e aproape plană (proporții extreme) ⇒ proiecția fidelă arată ca un ac. Desenăm pictograma
+      // SCHEMATICĂ de manual (bază mare AB în față, bază mică DC în spate, vârf sus) — ca în desenul DORIT.
+      // Numărul real (înălțimea) se rezolvă cu CAS-ul metric; figura doar ilustrează.
+      return {
+        input: { kind: "scene", scene: pyramidTrapezoidScene(small, big) },
+        desired: { dim: "3D", orientation: "apex-sus", mustLabels: ["V", "A", "B"], minPolylines: 6 },
+      };
     }
   }
 

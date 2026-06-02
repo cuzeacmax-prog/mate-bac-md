@@ -439,6 +439,16 @@ const sub3 = (a: Vec3, b: Vec3): Vec3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]]
 const dot3 = (a: Vec3, b: Vec3) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 const d3 = (a: Vec3, b: Vec3) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 const deg = (rad: number) => (rad * 180) / Math.PI;
+/** Circumcentrul (x,y) a 3 puncte din planul z=0. */
+function circumcenterXY(A: Vec3, B: Vec3, C: Vec3): [number, number] {
+  const d = 2 * (A[0] * (B[1] - C[1]) + B[0] * (C[1] - A[1]) + C[0] * (A[1] - B[1]));
+  if (Math.abs(d) < 1e-12) throw new Error("circumcentru nedefinit (puncte coliniare)");
+  const a2 = A[0] ** 2 + A[1] ** 2, b2 = B[0] ** 2 + B[1] ** 2, c2 = C[0] ** 2 + C[1] ** 2;
+  return [
+    (a2 * (B[1] - C[1]) + b2 * (C[1] - A[1]) + c2 * (A[1] - B[1])) / d,
+    (a2 * (C[0] - B[0]) + b2 * (A[0] - C[0]) + c2 * (B[0] - A[0])) / d,
+  ];
+}
 
 /** Lungime 3D: literal, distanță măsurată, scalare, SAU `mulTan` = lungime·tan(grade) (ex. H = r·tan diedru). */
 export type LenExpr3 = number | { dist3: [string, string] } | { scale3: [LenExpr3, number] } | { mulTan: [LenExpr3, number] };
@@ -451,6 +461,10 @@ export type BuildStep3D =
   | { op: "footOnEdge"; id: string; from: string; edge: [string, string] }
   /** Apex deasupra unui punct (pe verticala z) la înălțimea `height` (poate fi `mulTan` din apotemă). */
   | { op: "apexOverPoint"; apex: string; over: string; height: LenExpr3 }
+  /** Trapez isoscel din baza mică + latura + unghiul la baza mare (z=0). ids=[A(jos-stg),B(sus-stg),C(sus-dr),D(jos-dr)]. */
+  | { op: "isoTrapezoidFromAngle"; ids: [string, string, string, string]; smallBase: number; leg: number; baseAngleDeg: number }
+  /** Apex peste CIRCUMCENTRUL bazei (⇒ toate muchiile laterale EGALE) la muchia laterală dată; `foot`=circumcentru. */
+  | { op: "apexOverCircumcenter"; apex: string; foot: string; base: string[]; lateralEdge: number }
   /** Mijloc 3D. */
   | { op: "midpoint3"; id: string; of: [string, string] };
 
@@ -503,6 +517,22 @@ export function solveConstraints3D(prob: GeoProblem3D): Store3D {
       const o = need3(st, s.over); const H = evalLen3(s.height, st);
       if (!(H > 0)) throw new Error("apexOverPoint: înălțime trebuie pozitivă");
       st.pts[s.apex] = [o[0], o[1], o[2] + H];
+    } else if (s.op === "isoTrapezoidFromAngle") {
+      const a = s.smallBase, leg = s.leg, th = (s.baseAngleDeg * Math.PI) / 180;
+      if (!(a > 0) || !(leg > 0)) throw new Error("isoTrapezoidFromAngle: baza mică și latura pozitive");
+      const h = leg * Math.sin(th), horiz = leg * Math.cos(th), big = a + 2 * horiz;
+      const [A, B, C, D] = s.ids;
+      st.pts[A] = [-big / 2, 0, 0]; st.pts[B] = [-a / 2, h, 0]; st.pts[C] = [a / 2, h, 0]; st.pts[D] = [big / 2, 0, 0];
+    } else if (s.op === "apexOverCircumcenter") {
+      const ps = s.base.map((id) => need3(st, id));
+      if (ps.length < 3) throw new Error("apexOverCircumcenter: minim 3 puncte de bază");
+      const cc = circumcenterXY(ps[0], ps[1], ps[2]); // baza e în z=0
+      const R = Math.hypot(ps[0][0] - cc[0], ps[0][1] - cc[1]);
+      const hz = s.lateralEdge * s.lateralEdge - R * R;
+      if (hz <= 0) throw new Error("apexOverCircumcenter: muchia laterală e prea scurtă pentru circumraza bazei");
+      const H = Math.sqrt(hz);
+      st.pts[s.foot] = [cc[0], cc[1], 0];
+      st.pts[s.apex] = [cc[0], cc[1], H];
     } else if (s.op === "midpoint3") {
       const a = need3(st, s.of[0]), b = need3(st, s.of[1]);
       st.pts[s.id] = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2];

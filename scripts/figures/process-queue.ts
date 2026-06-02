@@ -18,7 +18,7 @@ async function pngDataUrl(svg: string | null): Promise<string | null> {
 }
 const ICON = (b: boolean) => (b ? "✅" : "⛔");
 
-interface Row { id: string; slug: string; condition: string; desired_kind: string | null; desired_ref: string | null; remarci: Remarks | null; iteratii: number | null; status: string | null }
+interface Row { id: string; slug: string; condition: string; desired_kind: string | null; desired_ref: string | null; remarci: Remarks | null; iteratii: number | null; status: string | null; verdict_uman: string | null }
 
 async function main() {
   const svc = createServiceClient();
@@ -27,9 +27,10 @@ async function main() {
   const statuses = process.argv.includes("--refresh") ? ["pending", "needs_revision", "marcat-uman", "auto-acceptat"]
     : process.argv.includes("--retry") ? ["pending", "needs_revision", "marcat-uman"]
     : ["pending", "needs_revision"];
+  // procesează cazurile din coadă PLUS orice rând fără randare (figură lipsă — chiar dacă e deja aprobat)
   const { data, error } = await svc.from("figura_autor")
-    .select("id, slug, condition, desired_kind, desired_ref, remarci, iteratii, status")
-    .in("status", statuses).order("updated_at");
+    .select("id, slug, condition, desired_kind, desired_ref, remarci, iteratii, status, verdict_uman")
+    .or(`status.in.(${statuses.join(",")}),render_png.is.null`).order("updated_at");
   if (error) { console.error(error.message); process.exit(1); }
   const rows = (data ?? []) as Row[];
 
@@ -54,7 +55,8 @@ async function main() {
     const { numeric, visual, desiredMatch } = res.gates;
     await svc.from("figura_autor").update({
       input_kind: c.input.kind, spec_generat: res.spec, gates: res.gates, render_png: png,
-      status: res.status, iteratii: (row.iteratii ?? 0) + 1, updated_at: new Date().toISOString(),
+      status: row.verdict_uman ?? res.status, // păstrează verdictul uman (nu retrograda un caz aprobat)
+      iteratii: (row.iteratii ?? 0) + 1, updated_at: new Date().toISOString(),
     }).eq("id", row.id);
 
     console.log(`${res.status === "auto-acceptat" ? "✓" : "⚑"} ${row.slug}  [${res.status}]  (rundă ${(row.iteratii ?? 0) + 1}, era „${row.status}")`);
