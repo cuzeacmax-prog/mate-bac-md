@@ -22,8 +22,11 @@ interface Row { id: string; slug: string; condition: string; desired_kind: strin
 
 async function main() {
   const svc = createServiceClient();
-  // --retry: reia și cazurile marcate-uman de motor (după ce extracția/registry s-a îmbunătățit).
-  const statuses = process.argv.includes("--retry") ? ["pending", "needs_revision", "marcat-uman"] : ["pending", "needs_revision"];
+  // --retry: reia și cazurile marcate-uman; --refresh: REGENEREAZĂ toate cazurile fără verdict uman
+  // (inclusiv auto-acceptat) după o îmbunătățire a MOTORULUI. Niciodată cele cu verdict approved/rejected.
+  const statuses = process.argv.includes("--refresh") ? ["pending", "needs_revision", "marcat-uman", "auto-acceptat"]
+    : process.argv.includes("--retry") ? ["pending", "needs_revision", "marcat-uman"]
+    : ["pending", "needs_revision"];
   const { data, error } = await svc.from("figura_autor")
     .select("id, slug, condition, desired_kind, desired_ref, remarci, iteratii, status")
     .in("status", statuses).order("updated_at");

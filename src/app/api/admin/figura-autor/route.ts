@@ -33,7 +33,8 @@ export async function POST(req: NextRequest) {
       .map((p) => ({ x: p.x, y: p.y, text: typeof p.text === 'string' ? p.text.slice(0, 200) : '' }))
       .slice(0, 30);
     if (!text && pins.length === 0) return NextResponse.json({ error: 'Remarcă goală.' }, { status: 400 });
-    const { error } = await svc.from('figura_autor').update({ remarci: { text: text.slice(0, 2000), pins }, status: 'needs_revision', updated_at: new Date().toISOString() }).eq('id', id);
+    // o remarcă = cerere de REVIZIE ⇒ verdictul anterior (approved/rejected) nu mai e valabil
+    const { error } = await svc.from('figura_autor').update({ remarci: { text: text.slice(0, 2000), pins }, status: 'needs_revision', verdict_uman: null, updated_at: new Date().toISOString() }).eq('id', id);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
     return NextResponse.json({ ok: true, id, status: 'needs_revision', pins: pins.length });
   }

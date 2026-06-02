@@ -156,7 +156,9 @@ export function coneSectionScene(R: number, H: number, cut: ConeCut): Scene3D | 
   const elements: SceneElement[] = [
     { kind: "cone3d", id: "con", radius: R, height: H },
     { kind: "circle3d", center: "S", radius: r },                                  // cercul de secțiune (plan ∥ bază)
-    { kind: "segment3d", of: ["V", "S"], dash: true, label: `${Math.round(a * 1000) / 1000}` }, // perpendiculara (distanța)
+    // AXA completă (punctată) vârf→centru bază, prin centrul secțiunii — ca în desenul DORIT
+    { kind: "segment3d", of: ["V", "S"], dash: true, label: `${Math.round(a * 1000) / 1000}` }, // porțiunea = distanța dată
+    { kind: "segment3d", of: ["S", "O"], dash: true },                              // continuarea axei până la baza
   ];
   return { points, elements };
 }
