@@ -53,3 +53,6 @@ scripts/extraction/output/_render-test/
 # ETAPA 14 — caches intermediare verificare CAS
 scripts/verify/_*.json
 scripts/extraction/_*.json
+
+# ETAPA 47 batch artifacts (PNGs + manifests; figures also in DB)
+scripts/figures/_b47/

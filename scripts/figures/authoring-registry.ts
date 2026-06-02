@@ -26,6 +26,48 @@ function normalizeMath(s: string): string {
   }).join("");
 }
 
+/** Număr dintr-un fragment, acceptând a√b, a\sqrt{b}, √b, sau simplu a (LaTeX tolerat). */
+function numTok(chunk: string): number | null {
+  let m = chunk.match(/(\d+(?:[.,]\d+)?)\s*(?:\\?sqrt\s*\{?|√)\s*(\d+)/);
+  if (m) return f(m[1]) * Math.sqrt(parseInt(m[2], 10));
+  m = chunk.match(/(?:\\?sqrt\s*\{?|√)\s*(\d+)/);
+  if (m) return Math.sqrt(parseInt(m[1], 10));
+  m = chunk.match(/(\d+(?:[.,]\d+)?)/);
+  return m ? f(m[1]) : null;
+}
+/** Prima valoare numerică (cu √) după un cuvânt-cheie. */
+function near(c: string, kw: RegExp, span = 28): number | null {
+  const m = c.match(kw); if (!m || m.index == null) return null;
+  return numTok(c.slice(m.index + m[0].length, m.index + m[0].length + span));
+}
+
+/**
+ * SOLID STANDARD (motor ETAPA 47): detectează TIPUL corpului din cuvinte-cheie + dimensiuni date (sau valori
+ * de afișare dacă nu sunt parsabile direct) → pictogramă 3D. Acoperă marea masă a modulelor V/VI.
+ */
+function standardSolid(c: string): Resolved | null {
+  const sides = c.includes("triunghiular") ? 3 : c.includes("hexagonal") ? 6 : c.includes("pentagonal") ? 5 : c.includes("patrulater") ? 4 : 4;
+  const D = (apex = false): DesiredDescriptor => ({ dim: "3D", orientation: apex ? "apex-sus" : undefined, mustLabels: [], minPolylines: 6 });
+  const baseEdge = near(c, /latura\s+baz[ei]/) ?? near(c, /muchia\s+baz[ei]/) ?? 4;
+  const height = near(c, /[iî]n[aă]l[tț]ime[a]?/) ?? 6;
+
+  if (c.includes("trunchi") && c.includes("piramid")) {
+    const b1 = near(c, /baz[ei]l?or?[\s\S]{0,30}?(\d)/) ?? 10; // aprox; afișare
+    return { input: { kind: "body3d", body: { kind: "frustum", baseSides: sides, baseEdge: Math.max(b1, 6), topEdge: Math.max(b1 / 2, 3), height } }, desired: D() };
+  }
+  if (c.includes("tetraedr")) return { input: { kind: "body3d", body: { kind: "tetrahedron", edge: near(c, /muchi[ae]/) ?? 5 } }, desired: D(true) };
+  if (c.includes("paralelipiped") || c.includes("cuboid")) {
+    return { input: { kind: "body3d", body: { kind: "box", length: near(c, /ad\s*=/) ?? 7, width: near(c, /ab\s*=/) ?? 4, height: near(c, /(?:aa.?1|[iî]n[aă]l[tț]ime)/) ?? 5 } }, desired: D() };
+  }
+  if (c.includes("cub")) { const e = near(c, /muchia/); const diag = near(c, /diagonal[aă]/); return { input: { kind: "body3d", body: { kind: "cube", edge: e ?? (diag ? diag / Math.sqrt(3) : 5) } }, desired: D() }; }
+  if (c.includes("prism")) return { input: { kind: "body3d", body: { kind: "prism", baseSides: sides, baseEdge, height } }, desired: D() };
+  if (c.includes("piramid")) return { input: { kind: "body3d", body: { kind: "regularPyramid", baseSides: sides, baseEdge, height } }, desired: D(true) };
+  if (c.includes("cilindru")) return { input: { kind: "body3d", body: { kind: "cylinder", radius: near(c, /raz[aă]/) ?? 3, height } }, desired: D() };
+  if (c.includes("sfer")) return { input: { kind: "body3d", body: { kind: "sphere", radius: near(c, /raz[aă]/) ?? 4 } }, desired: D() };
+  if (/\bcon\b|conic/.test(c)) return { input: { kind: "body3d", body: { kind: "cone", radius: near(c, /raz[aă]/) ?? 3, height } }, desired: D(true) };
+  return null;
+}
+
 export function resolveInput(condition: string): Resolved | null {
   const norm = normalizeMath(condition);
   const c = norm.toLowerCase();
@@ -159,5 +201,6 @@ export function resolveInput(condition: string): Resolved | null {
     }
   }
 
-  return null;
+  // ── FALLBACK: solid standard (cub/prismă/piramidă/tetraedru/paralelipiped/trunchi/con/cilindru/sferă) ──
+  return standardSolid(c);
 }
