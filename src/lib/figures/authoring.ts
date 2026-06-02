@@ -9,7 +9,7 @@
  * → randare → poarta vizuală (ETAPA 44) comparată cu DESENUL DORIT (structurat). Nepotrivire → marchează pt. om.
  */
 import type { FigureSpec2D } from "./spec";
-import type { FigureSpec3D, Scene3D } from "./spec3d";
+import type { FigureSpec3D, Scene3D, Body3D } from "./spec3d";
 import { solveAndVerify, solveAndVerify3D, type GeoProblem, type GeoProblem3D } from "./cas";
 import { coneSectionScene, verifyConeSection, type ConeCut } from "./relations";
 import { verifyConstruction } from "./verify";
@@ -22,7 +22,8 @@ export type PipelineInput =
   | { kind: "geo"; problem: GeoProblem }
   | { kind: "geo3d"; problem: GeoProblem3D }
   | { kind: "spec2d"; spec: FigureSpec2D }
-  | { kind: "scene"; scene: Scene3D };
+  | { kind: "scene"; scene: Scene3D }
+  | { kind: "body3d"; body: Body3D };
 
 /** Descrierea structurată a DESENULUI DORIT (ținta concretă de comparat cu randarea). */
 export interface DesiredDescriptor {
@@ -86,7 +87,7 @@ function buildAndVerifyNumeric(input: PipelineInput): { spec: FigureSpec2D | Fig
       numeric.checks = res.checks; numeric.ok = res.accepted;
       return { spec: res.spec ?? null, numeric, reason: res.accepted ? undefined : res.reason };
     }
-    const spec = input.kind === "spec2d" ? input.spec : ({ scene: input.scene } as FigureSpec3D);
+    const spec = input.kind === "spec2d" ? input.spec : input.kind === "body3d" ? ({ body: input.body } as FigureSpec3D) : ({ scene: input.scene } as FigureSpec3D);
     const inv = verifyConstruction(spec);
     numeric.checks = inv.checks; numeric.ok = inv.ok;
     return { spec, numeric, reason: inv.ok ? undefined : "invariante picate" };
