@@ -12,7 +12,7 @@
  * construcție comodă greșită (punct pe generatoare). Fix conceptual: relația se rezolvă la definiția
  * CANONICĂ după semnătura de tipuri; operatorii (secțiune) PĂSTREAZĂ definiția la transformare. Pur (fără DOM).
  */
-import type { Vec3 } from "./spec3d";
+import type { Vec3, Scene3D, Point3DSpec, SceneElement } from "./spec3d";
 import type { FigureSpec2D, FigureElement, FigurePoint } from "./spec";
 
 // ───────────────────────── obiecte tipizate ─────────────────────────
@@ -136,6 +136,27 @@ export function coneSectionFigure(R: number, H: number, cut: ConeCut): FigureSpe
     { kind: "segment", between: ["M", "N"], label: "MN" },
     { kind: "segment", between: ["V", "F"], label: `${Math.round(a * 1000) / 1000}` },
     { kind: "rightAngle", at: "F", from: ["V", "N"] },
+  ];
+  return { points, elements };
+}
+
+/**
+ * PICTOGRAMA 3D (ETAPA 43): conul ca CORP 3D + planul ∥ bază (cercul-secțiune) la poziția canonică +
+ * vârful + perpendiculara vârf→secțiune. NU un triunghi 2D gol — obiectul rămâne 3D.
+ */
+export function coneSectionScene(R: number, H: number, cut: ConeCut): Scene3D | null {
+  const sec = coneSection(R, H, cut);
+  if (!sec.ok) return null;
+  const a = sec.axialFromApex, r = sec.radius;
+  const points: Point3DSpec[] = [
+    { id: "V", x: 0, y: 0, z: H }, // vârful
+    { id: "O", x: 0, y: 0, z: 0 }, // centrul bazei
+    { id: "S", x: 0, y: 0, z: H - a }, // centrul secțiunii
+  ];
+  const elements: SceneElement[] = [
+    { kind: "cone3d", id: "con", radius: R, height: H },
+    { kind: "circle3d", center: "S", radius: r },                                  // cercul de secțiune (plan ∥ bază)
+    { kind: "segment3d", of: ["V", "S"], dash: true, label: `${Math.round(a * 1000) / 1000}` }, // perpendiculara (distanța)
   ];
   return { points, elements };
 }

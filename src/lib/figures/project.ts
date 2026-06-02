@@ -24,6 +24,7 @@ export interface Geom3D {
   faces: string[][];                 // pt. poliedre: fețe ca id-uri (→ muchii + back-face)
   segments: Array<{ a: V3; b: V3; dashed?: boolean; label?: string }>; // segmente libere (auxiliare)
   rounds: Round[];
+  circles?: Array<{ center: V3; R: number }>; // cercuri ORIZONTALE (z=const) — ex. cerc-secțiune
   arcs?: Array<{ pts: V3[] }>;        // marcaje de unghi (arce mici, pline)
   freeLabels?: Array<{ at: V3; text: string }>; // etichete libere (lungimi, unghiuri)
 }
@@ -66,6 +67,7 @@ export function sceneToGeom(scene: Scene3D): Geom3D {
   const pts = Object.entries(pmap).map(([id, p]) => ({ id, p, label: id }));
   const faces: string[][] = []; const segments: Geom3D["segments"] = []; const rounds: Round[] = [];
   const arcs: NonNullable<Geom3D["arcs"]> = []; const freeLabels: NonNullable<Geom3D["freeLabels"]> = [];
+  const circles: NonNullable<Geom3D["circles"]> = [];
   const base = (ref?: string | V3): V3 => (Array.isArray(ref) ? ref : (typeof ref === "string" && pmap[ref]) ? pmap[ref] : [0, 0, 0]);
   for (const e of scene.elements) {
     if (e.kind === "polyhedron") faces.push(...e.faces);
@@ -82,7 +84,8 @@ export function sceneToGeom(scene: Scene3D): Geom3D {
       const a = base(e.of[0]), b = base(e.of[1]);
       segments.push({ a, b, dashed: e.dash, label: e.label });
       if (e.label) freeLabels.push({ at: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2], text: e.label });
-    } else if (e.kind === "label3d") freeLabels.push({ at: base(e.at), text: e.text });
+    } else if (e.kind === "circle3d") circles.push({ center: base(e.center), R: e.radius });
+    else if (e.kind === "label3d") freeLabels.push({ at: base(e.at), text: e.text });
     else if (e.kind === "angle3d") {
       const at = base(e.at), r0 = base(e.rays[0]), r1 = base(e.rays[1]);
       const u0 = sub(r0, at), u1 = sub(r1, at);
@@ -97,7 +100,7 @@ export function sceneToGeom(scene: Scene3D): Geom3D {
       if (e.label) { const m = unit([d0[0] + d1[0], d0[1] + d1[1], d0[2] + d1[2]]); freeLabels.push({ at: [at[0] + 1.7 * rad * m[0], at[1] + 1.7 * rad * m[1], at[2] + 1.7 * rad * m[2]], text: e.label }); }
     }
   }
-  return { pts, faces, segments, rounds, arcs, freeLabels };
+  return { pts, faces, segments, rounds, circles, arcs, freeLabels };
 }
 
 export function specToGeom(spec: FigureSpec3D): Geom3D {
@@ -227,6 +230,13 @@ export function projectFigure(spec: FigureSpec3D, azDeg: number, elDeg: number):
         line(proj(apex), proj(baseS[iMax]), false);
       }
     }
+  }
+
+  // cercuri orizontale (cerc-secțiune): rim front plin / spate punctat (ca baza conului)
+  for (const c of g.circles ?? []) {
+    const s = sample(c.center, c.R, c.center[2]);
+    const cDepth = depth(c.center);
+    emitSplit(s, (p) => depth(p) < cDepth, true);
   }
 
   // etichete: lângă vârful PROIECTAT, offset mic spre afară (proporțional cu figura), fără coliziuni

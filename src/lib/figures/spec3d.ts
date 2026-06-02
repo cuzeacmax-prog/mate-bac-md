@@ -72,7 +72,9 @@ export interface ElInscribedSphere { kind: "inscribedSphere"; in?: string; inCon
 export interface ElLabel { kind: "label3d"; at: string | Vec3; text: string }
 /** Marcaj de unghi (ex. diedru): arc mic în planul (at→rays[0], at→rays[1]) + etichetă schematică. */
 export interface ElAngle3D { kind: "angle3d"; at: string; rays: [string, string]; label?: string }
-export type SceneElement = ElPolyhedron | ElSphere | ElCone | ElCylinder | ElSegment | ElInscribedSphere | ElLabel | ElAngle3D;
+/** Cerc ORIZONTAL (în plan ∥ bază, ⊥ axa z) — ex. cercul de secțiune al unui con. */
+export interface ElCircle3D { kind: "circle3d"; center: string | Vec3; radius: number }
+export type SceneElement = ElPolyhedron | ElSphere | ElCone | ElCylinder | ElSegment | ElInscribedSphere | ElLabel | ElAngle3D | ElCircle3D;
 
 export interface Scene3D { points: Point3DSpec[]; elements: SceneElement[] }
 
@@ -189,6 +191,7 @@ export function validateScene(scene: Scene3D): { errors: string[] } {
       }
       else if (e.kind === "label3d") { if (typeof e.at === "string" && !ids.has(e.at)) errors.push(`label3d: „${e.at}” nu există.`); }
       else if (e.kind === "angle3d") { if (!ids.has(e.at)) errors.push(`angle3d: vârful „${e.at}” nu există.`); (e.rays ?? []).forEach((v) => { if (!ids.has(v)) errors.push(`angle3d: raza „${v}” nu există.`); }); }
+      else if (e.kind === "circle3d") { if (!(e.radius > 0)) errors.push("circle3d: radius pozitiv."); if (typeof e.center === "string" && !ids.has(e.center)) errors.push(`circle3d: centrul „${e.center}” nu există.`); }
     } catch { errors.push(`${(e as { kind?: string }).kind ?? "element"}: structură invalidă.`); }
   }
   return { errors };

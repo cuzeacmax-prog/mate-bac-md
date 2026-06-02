@@ -6,7 +6,8 @@ import { solvePyramid, solvePerpFromVertex, solvePolyhedron, validateScene, norm
 import { verifyFigure2D, verifyFigure3D, type VerifyResult } from '@/lib/figures/verify';
 import { axialSection, dihedralSection } from '@/lib/figures/axial';
 import { solveAndVerify, solveAndVerify3D, type GeoProblem, type GeoProblem3D } from '@/lib/figures/cas';
-import { coneSectionFigure, verifyConeSection, type ConeCut } from '@/lib/figures/relations';
+import { coneSectionFigure, coneSectionScene, verifyConeSection, type ConeCut } from '@/lib/figures/relations';
+import { modelAndView, type Entity } from '@/lib/figures/object-model';
 
 const failedInvariants = (v: VerifyResult): string => v.checks.filter((c) => !c.pass).map((c) => `${c.name} (${c.detail})`).join(' · ');
 
@@ -36,10 +37,17 @@ const MODEL = 'claude-sonnet-4-6';
 export const SYSTEM_PROMPT =
   'Ești un extractor de FIGURI din enunțuri de geometrie (BAC MD). Clasifici și (dacă se poate) emiți o ' +
   'specificație, DOAR prin tool-ul record_figure_live.\n\n' +
-  'PREFERĂ SĂ DESENEZI: dacă textul descrie o configurație geometrică PLANĂ (chiar parțial), alege ' +
-  'figurabil_2d și emite ce poți. Folosește fara_figura DOAR pentru probleme pur algebrice/numerice fără desen.\n\n' +
+  '🧩 DOUĂ ETAPE SEPARATE (ETAPA 43) — NU clasifica „2D/3D" după cum e comod de desenat:\n' +
+  '  1) MODELEAZĂ OBIECTUL: emite ÎNTOTDEAUNA `object`={entities:[{kind,id?,role?}], relations:[…]}. Dimensiunea ține ' +
+  'de ENTITATE: con/piramidă/sferă/cilindru/prismă/cub/poliedru/trunchi/tetraedru = CORP 3D, MEREU — chiar dacă secțiunea ' +
+  'lui e un triunghi. triunghi/trapez/cerc/paralelogram/pătrat/romb ca obiect PRIMAR = 2D. relations ex.: "section", ' +
+  '"inscribed", "tangent". Un con cu plan de secțiune NU devine „2D" fiindcă secțiunea e triunghi — rămâne corp 3D.\n' +
+  '  2) Motorul ALEGE VEDEREA din model (pictogramă 3D implicit; secțiune axială DOAR la corpuri tangente înscrise — ' +
+  'ambiguitate). Tu emiți datele de randare (geo3d/coneCut/scene/spec2d) potrivite obiectului; verdict reflectă obiectul.\n\n' +
+  'PREFERĂ SĂ DESENEZI: emite ce poți. fara_figura DOAR pentru probleme pur algebrice/numerice fără desen. Pentru un ' +
+  'CORP 3D folosește verdict="3d" (chiar dacă desenezi și o secțiune) — NU „figurabil_2d" doar fiindcă apare un triunghi.\n\n' +
   'CLASIFICARE:\n' +
-  "- 'figurabil_2d' = geometrie PLANĂ (triunghi/patrulater/trapez/romb/pătrat/cerc în plan). Emite spec2d.\n" +
+  "- 'figurabil_2d' = obiect PRIMAR plan (triunghi/patrulater/trapez/romb/pătrat/cerc în plan). Emite spec2d/geo.\n" +
   '⛓ DEFINIȚII TIPIZATE (regulă conceptuală, NU pe enunț): un termen metric e DEFINIT de obiectele pe care le leagă; ' +
   'nu alegi tu construcția. „Distanța" e o FAMILIE după tipuri: distanță(punct,punct)=segment; distanță(punct,dreaptă)=' +
   'PERPENDICULARA (piciorul); distanță(punct,plan)=PERPENDICULARA. „la lungimea d PE o dreaptă/muchie/generatoare" = ' +
@@ -152,6 +160,7 @@ export const TOOL: Anthropic.Messages.Tool = {
     properties: {
       verdict: { type: 'string', enum: ['figurabil_2d', '3d', 'fara_figura'] },
       reason: { type: 'string' },
+      object: { type: ['object', 'null'], description: 'MODELUL OBIECTULUI (ETAPA 43): entități + relații. Dimensiunea se DEDUCE din entitate (con/piramidă/sferă=3D), NU din desen. {entities:[{kind,id?,role?}], relations:[…]}', properties: { entities: { type: 'array' }, relations: { type: 'array', items: { type: 'string' } } } },
       geo: { type: ['object', 'null'], description: 'GEOMETRY CAS 2D: build (constrângeri, ZERO coordonate) + givens (numerele din enunț). Preferat pentru figuri plane cu numere.', properties: { build: { type: 'array' }, givens: { type: 'array' } } },
       geo3d: { type: ['object', 'null'], description: 'GEOMETRY CAS 3D: solid din constrângeri (build) + solid{base,apex} + draw{segments,dihedral} + givens. Pentru piramide/corpuri cu numere date (diedru, apotemă, înălțime). ZERO coordonate.', properties: { build: { type: 'array' }, solid: { type: 'object' }, draw: { type: 'object' }, givens: { type: 'array' } } },
       coneCut: { type: ['object', 'null'], description: 'Secțiune de con prin plan ∥ bază, după relația TIPIZATĂ. {cone:{radius,height}, by:{rel:"distanceApexToParallelPlane"|"lengthAlongGeneratrixFromApex", value}}.', properties: { cone: { type: 'object', properties: { radius: { type: 'number' }, height: { type: 'number' } } }, by: { type: 'object', properties: { rel: { type: 'string' }, value: { type: 'number' } } } } },
@@ -177,7 +186,7 @@ export const TOOL: Anthropic.Messages.Tool = {
   },
 };
 
-interface ModelOut { verdict?: string; reason?: string; geo?: GeoProblem | null; geo3d?: GeoProblem3D | null; coneCut?: { cone?: { radius?: number; height?: number }; by?: ConeCut } | null; spec2d?: unknown; body3d?: (Body3D & { kind?: string }) | null; scene?: Scene3D | null; body3d_name?: string; unsupported_relation?: string; render3d?: string; section?: { kind?: string; apothem?: number; angle?: number } }
+interface ModelOut { verdict?: string; reason?: string; object?: { entities?: Entity[]; relations?: string[] } | null; geo?: GeoProblem | null; geo3d?: GeoProblem3D | null; coneCut?: { cone?: { radius?: number; height?: number }; by?: ConeCut } | null; spec2d?: unknown; body3d?: (Body3D & { kind?: string }) | null; scene?: Scene3D | null; body3d_name?: string; unsupported_relation?: string; render3d?: string; section?: { kind?: string; apothem?: number; angle?: number } }
 
 /** Verifică o figură 2D (structură + invariante) → {valid, error}. */
 function check2D(spec: FigureSpec2D): { valid: boolean; error: string | null } {
@@ -223,6 +232,12 @@ export async function POST(req: NextRequest) {
     const reason = out.reason ?? '';
     const unsupportedRelation = out.unsupported_relation || null;
 
+    // ── ETAPA 43: MODELUL OBIECTULUI (dimensiune intrinsecă) → ALEGEREA VEDERII (cu motiv). NU clasificăm 2D/3D după desen. ──
+    const objView = out.object && Array.isArray(out.object.entities) && out.object.entities.length
+      ? modelAndView(out.object.entities as Entity[], out.object.relations ?? [])
+      : null;
+    const objMeta = objView ? { object: { dim: objView.model.intrinsicDim, reason: objView.model.reason }, view: objView.choice.view, viewReason: objView.choice.reason, viewDetail: objView.choice.alongside } : {};
+
     // ── GEOMETRY CAS (ETAPA 41): constrângeri → solver → auto-verificare. Se AUTO-RESPINGE dacă nu reproduce numerele. ──
     if (out.geo && typeof out.geo === 'object' && Array.isArray(out.geo.build) && out.geo.build.length) {
       const res = solveAndVerify(out.geo as GeoProblem);
@@ -233,14 +248,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, spec: res.spec, valid: true, error: null, cas: true, checks: res.checks });
     }
 
-    // ── RELAȚIE TIPIZATĂ: secțiune de con poziționată după definiția canonică (distanță-la-plan vs lungime-pe-generatoare) ──
+    // ── RELAȚIE TIPIZATĂ + VEDERE (ETAPA 42/43): secțiune de con. OBIECTUL e 3D → IMPLICIT pictogramă 3D ──
     if (out.coneCut && out.coneCut.cone && out.coneCut.by && typeof out.coneCut.cone.radius === 'number' && typeof out.coneCut.cone.height === 'number') {
       const { radius, height } = out.coneCut.cone; const by = out.coneCut.by as ConeCut;
-      const spec = coneSectionFigure(radius, height, by);
-      if (!spec) return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, valid: false, error: 'con/secțiune invalidă', diagnostic: 'coneCut: parametri invalizi', typed: true });
       const v = verifyConeSection(radius, height, by, {}); // recompune din coordonate (plasa de siguranță)
+      // Vederea: conul e CORP 3D ⇒ pictogramă 3D (con + cerc-secțiune), NU triunghi 2D. Secțiune 2D doar dacă vederea aleasă o cere.
+      const wantSection2D = objView?.choice.view === 'axialSection';
+      if (!wantSection2D) {
+        const scene = coneSectionScene(radius, height, by);
+        if (!scene) return NextResponse.json({ dim: '3d', verdict: '3d', reason, valid: false, error: 'con/secțiune invalidă', diagnostic: 'coneCut: parametri invalizi', typed: true, ...objMeta });
+        const ver = verifyFigure3D({ scene } as FigureSpec3D);
+        if (!ver.ok) return NextResponse.json({ dim: '3d', verdict: '3d', reason, spec: { scene }, valid: false, error: failedInvariants(ver), diagnostic: `invariante 3D picate: ${failedInvariants(ver)}`, typed: true, ...objMeta });
+        return NextResponse.json({ dim: '3d', verdict: '3d', reason, spec: { scene }, valid: true, error: null, typed: true, relation: by.rel, checks: v.checks, ...objMeta });
+      }
+      const spec = coneSectionFigure(radius, height, by);
+      if (!spec) return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, valid: false, error: 'con/secțiune invalidă', diagnostic: 'coneCut: parametri invalizi', typed: true, ...objMeta });
       const { valid, error } = check2D(spec);
-      return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, spec, valid, error, typed: true, relation: by.rel, checks: v.checks });
+      return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, spec, valid, error, typed: true, relation: by.rel, checks: v.checks, ...objMeta });
     }
 
     // ── GEOMETRY CAS 3D (ETAPA 42): solid din constrângeri → proiecție + construcție auxiliară. Auto-respinge. ──
