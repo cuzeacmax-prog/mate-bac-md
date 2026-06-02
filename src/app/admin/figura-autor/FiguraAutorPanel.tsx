@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface GateCheck { id?: string; name?: string; pass: boolean; detail: string }
@@ -61,10 +61,26 @@ export default function FiguraAutorPanel({ items }: { items: AutorItem[] }) {
     approved: rows.filter((r) => r.status === "approved").length,
   }), [rows]);
 
-  function onFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0]; if (!f) return;
+  function readImage(f: File) {
     const reader = new FileReader(); reader.onload = () => setImageDataUrl(reader.result as string); reader.readAsDataURL(f);
   }
+  function onFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.target.files?.[0]; if (f) readImage(f);
+  }
+  // CTRL+V pe pagină: dacă în clipboard e o imagine → o ia ca DESEN DORIT (preview imediat; urcat la submit).
+  useEffect(() => {
+    function onPaste(e: ClipboardEvent) {
+      const items = e.clipboardData?.items; if (!items) return;
+      for (const it of items) {
+        if (it.kind === "file" && it.type.startsWith("image/")) {
+          const f = it.getAsFile(); if (f) { readImage(f); e.preventDefault(); }
+          return;
+        }
+      }
+    }
+    window.addEventListener("paste", onPaste);
+    return () => window.removeEventListener("paste", onPaste);
+  }, []);
   async function submitCase() {
     if (!condition.trim()) { alert("Scrie condiția."); return; }
     setSubmitting(true);
@@ -113,7 +129,15 @@ export default function FiguraAutorPanel({ items }: { items: AutorItem[] }) {
         <textarea value={condition} onChange={(e) => setCondition(e.target.value)} rows={3} placeholder="Condiția (enunțul)…" className="w-full rounded border border-gray-300 p-2 text-sm" />
         <div className="mt-2 flex items-center gap-3">
           <input type="file" accept="image/png,image/jpeg,image/webp" onChange={onFile} className="text-sm" />
-          {imageDataUrl && <span className="text-xs text-green-700">desen dorit atașat ✓</span>}
+          <span className="text-xs text-gray-400">sau <kbd className="rounded border border-gray-300 px-1">Ctrl+V</kbd> lipește o imagine</span>
+          {imageDataUrl && (
+            <span className="flex items-center gap-1 text-xs text-green-700">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={imageDataUrl} alt="dorit-preview" className="h-10 rounded border border-gray-200" />
+              desen dorit ✓
+              <button type="button" onClick={() => setImageDataUrl(null)} className="ml-1 text-gray-400 hover:text-gray-700">✕</button>
+            </span>
+          )}
           <button type="button" disabled={submitting} onClick={submitCase} className="ml-auto rounded bg-gray-900 px-4 py-1.5 text-sm text-white hover:bg-gray-700 disabled:opacity-40">{submitting ? "Se trimite…" : "Adaugă în coadă (pending)"}</button>
         </div>
       </div>
@@ -184,10 +208,13 @@ export default function FiguraAutorPanel({ items }: { items: AutorItem[] }) {
                     {(r.remarci.pins ?? []).map((p, i) => <span key={i}> · <strong>{i + 1}</strong>@({p.x},{p.y}) {p.text}</span>)}
                   </div>
                 )}
-                <div className="flex gap-2">
-                  <input value={d.text} onChange={(e) => setDraft((p) => ({ ...p, [r.id]: { ...(p[r.id] ?? { text: "", pins: [] }), text: e.target.value } }))}
-                    placeholder={`Remarcă pe desenul generat${d.pins.length ? ` (${d.pins.length} pini)` : ""}…`} className="flex-1 rounded border border-gray-300 px-2 py-1 text-sm" />
-                  <button type="button" disabled={saving === r.id} onClick={() => submitRemarks(r.id)} className="rounded bg-orange-600 px-3 py-1 text-xs text-white hover:bg-orange-700 disabled:opacity-40">Trimite remarci → revizuire</button>
+                <div className="flex items-end gap-2">
+                  <textarea value={d.text} rows={1}
+                    onChange={(e) => setDraft((p) => ({ ...p, [r.id]: { ...(p[r.id] ?? { text: "", pins: [] }), text: e.target.value } }))}
+                    onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitRemarks(r.id); } }}
+                    placeholder={`Remarcă pe desenul generat${d.pins.length ? ` (${d.pins.length} pini)` : ""}… (Enter trimite, Shift+Enter linie nouă)`}
+                    className="flex-1 resize-y rounded border border-gray-300 px-2 py-1 text-sm" />
+                  <button type="button" disabled={saving === r.id} onClick={() => submitRemarks(r.id)} className="rounded bg-orange-600 px-3 py-1 text-xs text-white hover:bg-orange-700 disabled:opacity-40">Trimite → revizuire</button>
                 </div>
               </div>
             </div>
