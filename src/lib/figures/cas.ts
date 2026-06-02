@@ -465,6 +465,10 @@ export type BuildStep3D =
   | { op: "isoTrapezoidFromAngle"; ids: [string, string, string, string]; smallBase: number; leg: number; baseAngleDeg: number }
   /** Apex peste CIRCUMCENTRUL bazei (⇒ toate muchiile laterale EGALE) la muchia laterală dată; `foot`=circumcentru. */
   | { op: "apexOverCircumcenter"; apex: string; foot: string; base: string[]; lateralEdge: number }
+  /** Prismă regulată: bază jos (z=0) + bază sus (z=height), n-gon regulat. */
+  | { op: "regularPrism"; bottom: string[]; top: string[]; sides: number; baseEdge: number; height: number }
+  /** Piramidă regulată (puncte explicite): bază regulată z=0 + apex pe axă la height. */
+  | { op: "regularPyramidPts"; base: string[]; apex: string; sides: number; baseEdge: number; height: number }
   /** Mijloc 3D. */
   | { op: "midpoint3"; id: string; of: [string, string] };
 
@@ -476,10 +480,14 @@ export type Given3D =
 
 export interface GeoProblem3D {
   build: BuildStep3D[];
-  /** Piramidă: baza (în ordine) + apex → poliedru (fața bazei + fețe laterale). */
-  solid?: { base: string[]; apex: string };
+  /** Solidul: piramidă (base+apex) SAU prismă (bottom+top) → poliedru cu fețele potrivite. */
+  solid?: { base: string[]; apex: string } | { bottom: string[]; top: string[] };
   /** Construcția auxiliară de desenat (toate prin id-uri de puncte, ZERO coordonate). */
-  draw?: { segments?: Array<{ of: [string, string]; dashed?: boolean; label?: string }>; dihedral?: { at: string; rays: [string, string]; label?: string } };
+  draw?: {
+    segments?: Array<{ of: [string, string]; dashed?: boolean; label?: string }>;
+    dihedral?: { at: string; rays: [string, string]; label?: string };
+    rightAngles3d?: Array<{ at: string; from: [string, string] }>;
+  };
   givens: Given3D[];
 }
 
@@ -533,6 +541,15 @@ export function solveConstraints3D(prob: GeoProblem3D): Store3D {
       const H = Math.sqrt(hz);
       st.pts[s.foot] = [cc[0], cc[1], 0];
       st.pts[s.apex] = [cc[0], cc[1], H];
+    } else if (s.op === "regularPrism") {
+      const n = Math.floor(s.sides); if (n < 3 || s.bottom.length < n || s.top.length < n) throw new Error("regularPrism: ids insuficiente");
+      const R = s.baseEdge / (2 * Math.sin(Math.PI / n)), t0 = Math.PI / n - Math.PI / 2;
+      for (let i = 0; i < n; i++) { const t = t0 + (2 * Math.PI * i) / n, x = R * Math.cos(t), y = R * Math.sin(t); st.pts[s.bottom[i]] = [x, y, 0]; st.pts[s.top[i]] = [x, y, s.height]; }
+    } else if (s.op === "regularPyramidPts") {
+      const n = Math.floor(s.sides); if (n < 3 || s.base.length < n) throw new Error("regularPyramidPts: ids insuficiente");
+      const R = s.baseEdge / (2 * Math.sin(Math.PI / n)), t0 = Math.PI / n - Math.PI / 2;
+      for (let i = 0; i < n; i++) { const t = t0 + (2 * Math.PI * i) / n; st.pts[s.base[i]] = [R * Math.cos(t), R * Math.sin(t), 0]; }
+      st.pts[s.apex] = [0, 0, s.height];
     } else if (s.op === "midpoint3") {
       const a = need3(st, s.of[0]), b = need3(st, s.of[1]);
       st.pts[s.id] = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2];
@@ -571,14 +588,21 @@ export function verifyGivens3D(st: Store3D, givens: Given3D[], tol = 1e-9): Chec
 export function cas3DToScene(prob: GeoProblem3D, st: Store3D): Scene3D {
   const points: Point3DSpec[] = Object.entries(st.pts).map(([id, [x, y, z]]) => ({ id, x, y, z }));
   const elements: SceneElement[] = [];
-  if (prob.solid) {
-    const base = prob.solid.base, apex = prob.solid.apex, n = base.length;
+  const solid = prob.solid;
+  if (solid && "apex" in solid) { // PIRAMIDĂ
+    const base = solid.base, apex = solid.apex, n = base.length;
     const faces: string[][] = [[...base]];
     for (let i = 0; i < n; i++) faces.push([apex, base[i], base[(i + 1) % n]]);
     elements.push({ kind: "polyhedron", vertices: [...base, apex], faces });
+  } else if (solid && "bottom" in solid) { // PRISMĂ
+    const b = solid.bottom, t = solid.top, n = b.length;
+    const faces: string[][] = [[...b], [...t]];
+    for (let i = 0; i < n; i++) faces.push([b[i], b[(i + 1) % n], t[(i + 1) % n], t[i]]);
+    elements.push({ kind: "polyhedron", vertices: [...b, ...t], faces });
   }
   for (const s of prob.draw?.segments ?? []) elements.push({ kind: "segment3d", of: s.of, dash: s.dashed, label: s.label });
   if (prob.draw?.dihedral) elements.push({ kind: "angle3d", at: prob.draw.dihedral.at, rays: prob.draw.dihedral.rays, label: prob.draw.dihedral.label });
+  for (const ra of prob.draw?.rightAngles3d ?? []) elements.push({ kind: "rightAngle3d", at: ra.at, from: ra.from });
   return { points, elements };
 }
 

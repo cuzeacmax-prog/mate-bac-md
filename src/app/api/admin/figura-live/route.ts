@@ -85,7 +85,16 @@ export const SYSTEM_PROMPT =
   '(trapez isoscel CIRCUMSCRIPTIBIL în baza piramidei; laturi=(a+b)/2, înălțime=√(latură²−((b−a)/2)²), incentru=center pe axă) · ' +
   '{op:"footOnEdge", id, from:center, edge:[P,Q]} (piciorul apotemei M pe muchia bazei) · ' +
   '{op:"apexOverPoint", apex, over:center, height:{mulTan:[{dist3:[center,M]}, diedru_grade]}} (V deasupra incentrului la H=r·tan(diedru)) · ' +
-  '{op:"midpoint3", id, of:[P,Q]}. height poate fi număr, {dist3:[P,Q]}, {scale3:[expr,k]} sau {mulTan:[expr,grade]}.\n' +
+  '{op:"midpoint3", id, of:[P,Q]} · {op:"regularPrism", bottom:[ids], top:[ids], sides, baseEdge, height} (prismă regulată) · ' +
+  '{op:"regularPyramidPts", base:[ids], apex, sides, baseEdge, height} (piramidă regulată, puncte explicite). ' +
+  'height poate fi număr, {dist3:[P,Q]}, {scale3:[expr,k]} sau {mulTan:[expr,grade]}.\n' +
+  '  ⭐ FIGURĂ DE REZOLVARE (nu doar carcasa): DESENEAZĂ construcția folosită de soluție. solid={base,apex} (piramidă) SAU ' +
+  '{bottom,top} (prismă). În draw.segments pune TOATE punctele/segmentele din relații/date (ex. M mijlocul unei muchii via ' +
+  'midpoint3; mediana CM; C₁M; muchia C₁C) + completarea naturală: înălțimea, apotema, înclinata, și TRIUNGHIUL DREPTUNGHIC ' +
+  'unde se rezolvă (o muchie laterală/înălțime cu un segment din bază). Marchează unghiul drept cu draw.rightAngles3d:[{at, from:[P,Q]}].\n' +
+  '  Ex. „prismă triunghiulară regulată ABCA₁B₁C₁, M mijlocul AB, C₁M=10, C₁C=8”: regularPrism(bottom:[A,B,C], top:[A1,B1,C1], ' +
+  'sides:3, baseEdge:4√3, height:8) → midpoint3(M, of:[A,B]); solid={bottom:[A,B,C], top:[A1,B1,C1]}; ' +
+  'draw.segments=[{of:[C,M]},{of:[C1,M],label:"10"},{of:[C1,C],label:"8"}], draw.rightAngles3d=[{at:C, from:[M,C1]}] (triunghiul dreptunghic C₁CM).\n' +
   '  givens (FIECARE număr): {kind:"length3", of:[P,Q], value} · {kind:"angle3", at, rays:[P,Q], value} (diedrul = angle3 la M între center și apex) · ' +
   '{kind:"sumEqual", left:[[P,Q]…], right:[[R,S]…], name?} (tangențial: Σbaze=Σlaturi). Valori iraționale exacte (4√3→6.928203230275509).\n' +
   '  draw: înălțimea center→apex (dashed:true), apotema center→M, înclinata apex→M, dihedral la M cu eticheta „60°".\n' +

@@ -87,7 +87,15 @@ export function sceneToGeom(scene: Scene3D): Geom3D {
       // eticheta segmentului o plasăm LATERAL (în proiecție), nu pe mijlocul liniei → vezi remarca „2 e pe linie"
       segments.push({ a: base(e.of[0]), b: base(e.of[1]), dashed: e.dash, label: e.label });
     } else if (e.kind === "circle3d") circles.push({ center: base(e.center), R: e.radius });
-    else if (e.kind === "label3d") freeLabels.push({ at: base(e.at), text: e.text });
+    else if (e.kind === "rightAngle3d") {
+      const at = base(e.at), p = base(e.from[0]), q = base(e.from[1]);
+      const u = unit(sub(p, at)), v = unit(sub(q, at));
+      const s = 0.16 * Math.min(nrm(sub(p, at)), nrm(sub(q, at)));
+      const k1: V3 = [at[0] + u[0] * s, at[1] + u[1] * s, at[2] + u[2] * s];
+      const k3: V3 = [at[0] + (u[0] + v[0]) * s, at[1] + (u[1] + v[1]) * s, at[2] + (u[2] + v[2]) * s];
+      const k2: V3 = [at[0] + v[0] * s, at[1] + v[1] * s, at[2] + v[2] * s];
+      arcs.push({ pts: [k1, k3, k2] }); // pătrățel de unghi drept (poliлинie plină)
+    } else if (e.kind === "label3d") freeLabels.push({ at: base(e.at), text: e.text });
     else if (e.kind === "angle3d") {
       const at = base(e.at), r0 = base(e.rays[0]), r1 = base(e.rays[1]);
       const u0 = sub(r0, at), u1 = sub(r1, at);
