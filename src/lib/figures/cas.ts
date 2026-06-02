@@ -381,6 +381,14 @@ export function casToFigureSpec(prob: GeoProblem, st: Store): FigureSpec2D {
     if (g.kind === "rightAngle") elements.push({ kind: "rightAngle", at: g.at, from: g.rays });
     else if (g.kind === "angle") elements.push({ kind: "angle", at: g.at, from: g.rays, label: `${g.value}°` });
   }
+  // BISECTOARE: marchează cele DOUĂ jumătăți EGALE la vârf (remarca „arată că bisectoarea împarte în unghiuri egale").
+  if (!prob.draw) for (const s of prob.build) {
+    if (s.op !== "bisectorFoot") continue;
+    const others = s.tri.filter((v) => v !== s.from);
+    if (others.length !== 2) continue;
+    elements.push({ kind: "equalAngle", at: s.from, from: [others[0], s.id], count: 1 });
+    elements.push({ kind: "equalAngle", at: s.from, from: [s.id, others[1]], count: 1 });
+  }
   return { points, elements };
 }
 

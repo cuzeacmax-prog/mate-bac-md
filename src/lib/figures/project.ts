@@ -81,9 +81,8 @@ export function sceneToGeom(scene: Scene3D): Geom3D {
       const { center, radius } = inscribedSphereInCone(R, H, c);
       rounds.push({ type: "sphere", center, R: radius, H: 0 });
     } else if (e.kind === "segment3d") {
-      const a = base(e.of[0]), b = base(e.of[1]);
-      segments.push({ a, b, dashed: e.dash, label: e.label });
-      if (e.label) freeLabels.push({ at: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2], text: e.label });
+      // eticheta segmentului o plasăm LATERAL (în proiecție), nu pe mijlocul liniei → vezi remarca „2 e pe linie"
+      segments.push({ a: base(e.of[0]), b: base(e.of[1]), dashed: e.dash, label: e.label });
     } else if (e.kind === "circle3d") circles.push({ center: base(e.center), R: e.radius });
     else if (e.kind === "label3d") freeLabels.push({ at: base(e.at), text: e.text });
     else if (e.kind === "angle3d") {
@@ -182,7 +181,12 @@ export function projectFigure(spec: FigureSpec3D, azDeg: number, elDeg: number):
     line(proj(pa), proj(pc), hidden);
   }
   // segmente libere (auxiliare): înălțime punctată, apotemă/înclinată pline
-  for (const s of g.segments) line(proj(s.a), proj(s.b), !!s.dashed);
+  const segLabels: Array<{ mid: [number, number]; perp: [number, number]; text: string }> = [];
+  for (const s of g.segments) {
+    const a2 = proj(s.a), b2 = proj(s.b);
+    line(a2, b2, !!s.dashed);
+    if (s.label) { const dx = b2[0] - a2[0], dy = b2[1] - a2[1], L = Math.hypot(dx, dy) || 1; segLabels.push({ mid: [(a2[0] + b2[0]) / 2, (a2[1] + b2[1]) / 2], perp: [-dy / L, dx / L], text: s.label }); }
+  }
   // arce de unghi (marcaje diedru) — mereu pline
   for (const ar of g.arcs ?? []) { const p2 = ar.pts.map(proj); p2.forEach((p) => acc(...p)); polylines.push({ pts: p2, dashed: false }); }
 
@@ -249,6 +253,13 @@ export function projectFigure(spec: FigureSpec3D, azDeg: number, elDeg: number):
   for (const l of placed) acc(l.x, l.y); // bbox include etichetele → nu se taie din cadru
   // etichete libere (lungimi/unghiuri auxiliare): poziție 3D proiectată, fără re-poziționare
   for (const fl of g.freeLabels ?? []) { const [x, y] = proj(fl.at); labels.push({ x, y, text: fl.text }); acc(x, y); }
+  // etichete de segment: LATERAL față de linie (perpendicular), spre exterior (departe de centru) — nu pe linie
+  for (const sl of segLabels) {
+    const toC = [sl.mid[0] - cx2, sl.mid[1] - cy2];
+    const sign = (sl.perp[0] * toC[0] + sl.perp[1] * toC[1]) >= 0 ? 1 : -1; // partea dinspre exterior
+    const x = sl.mid[0] + sign * sl.perp[0] * off, y = sl.mid[1] + sign * sl.perp[1] * off;
+    labels.push({ x, y, text: sl.text }); acc(x, y);
+  }
   const named: Record<string, [number, number]> = {};
   for (const q of g.pts) named[q.id] = proj(q.p);
   return { polylines, labels, bbox: { minX, minY, maxX, maxY }, named };

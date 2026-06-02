@@ -32,12 +32,17 @@ export interface DesiredDescriptor {
   minPolylines?: number;   // complexitate minimă (ex. con + cerc-secțiune ⇒ multe linii)
 }
 
+export interface Remark { x: number; y: number; text: string }
+export interface Remarks { text?: string; pins?: Remark[] }
+
 export interface AuthorCase {
   slug: string;
   condition: string;
   desired: { kind: "image"; ref: string } | { kind: "description"; ref: string };
   desiredDescriptor?: DesiredDescriptor;
   input: PipelineInput;
+  /** Remarci umane de la o rundă anterioară (text + pini localizați) — alimentează corecția. */
+  remarks?: Remarks;
 }
 
 export interface GateBlock { ok: boolean; checks: Array<{ id?: string; name?: string; pass: boolean; detail: string }> }
@@ -49,6 +54,8 @@ export interface AuthorResult {
   status: "auto-acceptat" | "marcat-uman";
   iteratii: number;
   reason?: string;
+  /** Remarcile considerate în această rundă (din runda anterioară). Recurente = gol GENERAL → reparăm motorul. */
+  remarksConsidered?: string[];
 }
 
 const is3D = (s: FigureSpec2D | FigureSpec3D): s is FigureSpec3D => "scene" in s || "body" in s;
@@ -117,22 +124,32 @@ function visualAndDesired(spec: FigureSpec2D | FigureSpec3D, want?: DesiredDescr
  * intrarea e adevăr-de-referință (trece din prima); când extractorul live greșește, aici se reîncearcă.
  */
 export function runAuthoring(c: AuthorCase, maxIter = 3): AuthorResult {
+  const considered = remarksToList(c.remarks);
   let iteratii = 0;
   let last: AuthorResult | null = null;
   while (iteratii < maxIter) {
     iteratii++;
     const { spec, numeric, reason } = buildAndVerifyNumeric(c.input);
     if (!spec || !numeric.ok) {
-      last = { slug: c.slug, spec, svg: spec ? safeSvg(spec) : null, gates: { numeric, visual: { ok: false, checks: [] }, desiredMatch: { ok: false, checks: [] } }, status: "marcat-uman", iteratii, reason: reason ?? "porți numerice picate" };
+      last = { slug: c.slug, spec, svg: spec ? safeSvg(spec) : null, gates: { numeric, visual: { ok: false, checks: [] }, desiredMatch: { ok: false, checks: [] } }, status: "marcat-uman", iteratii, reason: reason ?? "porți numerice picate", remarksConsidered: considered };
       break; // intrare fixă în bootstrap → nu are sens reîncercarea fără re-extracție
     }
     const { visual, desiredMatch } = visualAndDesired(spec, c.desiredDescriptor);
     const ok = numeric.ok && visual.ok && desiredMatch.ok;
-    last = { slug: c.slug, spec, svg: safeSvg(spec), gates: { numeric, visual, desiredMatch }, status: ok ? "auto-acceptat" : "marcat-uman", iteratii, reason: ok ? undefined : "nepotrivire vizuală / cu doritul" };
+    last = { slug: c.slug, spec, svg: safeSvg(spec), gates: { numeric, visual, desiredMatch }, status: ok ? "auto-acceptat" : "marcat-uman", iteratii, reason: ok ? undefined : "nepotrivire vizuală / cu doritul", remarksConsidered: considered };
     if (ok) break;
     break; // fără re-extracție live, o iterație e definitivă pentru bootstrap
   }
   return last!;
+}
+
+/** Remarcile (text + pini) ca listă lizibilă — intră în raport și sunt luate în considerare la corecție. */
+function remarksToList(r?: Remarks): string[] {
+  if (!r) return [];
+  const out: string[] = [];
+  if (r.text) out.push(r.text);
+  for (const p of r.pins ?? []) out.push(`@(${Math.round(p.x)},${Math.round(p.y)}) ${p.text}`);
+  return out;
 }
 
 function safeSvg(spec: FigureSpec2D | FigureSpec3D): string | null { try { return renderSVG(spec); } catch { return null; } }

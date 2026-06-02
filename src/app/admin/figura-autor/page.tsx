@@ -10,8 +10,8 @@ export default async function FiguraAutorPage() {
   const supabase = createServiceClient();
   const { data, error } = await supabase
     .from("figura_autor")
-    .select("id, slug, condition, desired_kind, desired_ref, input_kind, gates, render_png, status, verdict_uman, iteratii, updated_at")
-    .order("slug")
+    .select("id, slug, condition, desired_kind, desired_ref, input_kind, gates, render_png, status, verdict_uman, remarci, iteratii, updated_at")
+    .order("updated_at", { ascending: false })
     .limit(500);
   if (error) throw new Error(error.message);
 
@@ -26,6 +26,7 @@ export default async function FiguraAutorPage() {
     renderPng: (r.render_png as string | null) ?? null,
     status: (r.status as string | null) ?? null,
     verdict: (r.verdict_uman as string | null) ?? null,
+    remarci: (r.remarci as AutorItem["remarci"]) ?? null,
     iteratii: (r.iteratii as number | null) ?? 1,
   }));
 
