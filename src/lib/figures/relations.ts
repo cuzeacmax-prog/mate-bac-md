@@ -183,6 +183,37 @@ export function pyramidTrapezoidScene(smallBase: number, bigBase: number): Scene
   return { points, elements };
 }
 
+/**
+ * Cerc cu A,B,C pe el + D pe dreapta AB (B între A și D), cu ∠CBD = `angleCBD` EXACT (prin construcție:
+ * rotești direcția BD și intersectezi cu cercul → C). Figura ilustrativă pentru unghiul înscris/exterior.
+ */
+export function circleSecantAngle(angleCBD: number): FigureSpec2D {
+  const R = 5, rad = (d: number) => (d * Math.PI) / 180;
+  const on = (deg: number): [number, number] => [R * Math.cos(rad(deg)), R * Math.sin(rad(deg))];
+  const A = on(192), B = on(74);                                   // A stânga-jos, B sus-dreapta
+  const dBA = [B[0] - A[0], B[1] - A[1]], Lba = Math.hypot(dBA[0], dBA[1]);
+  const u: [number, number] = [dBA[0] / Lba, dBA[1] / Lba];        // direcția A→B (→ D dincolo de B)
+  const D: [number, number] = [B[0] + 0.55 * R * u[0], B[1] + 0.55 * R * u[1]];
+  const phi = rad(-angleCBD);                                       // BC = BD rotit cu −unghi (spre interiorul cercului)
+  const dBC: [number, number] = [u[0] * Math.cos(phi) - u[1] * Math.sin(phi), u[0] * Math.sin(phi) + u[1] * Math.cos(phi)];
+  const t = -2 * (B[0] * dBC[0] + B[1] * dBC[1]);                  // a doua intersecție a razei B+t·dBC cu cercul (centru O)
+  const C: [number, number] = [B[0] + t * dBC[0], B[1] + t * dBC[1]];
+  const r3 = (n: number) => Math.round(n * 1000) / 1000;
+  return {
+    points: [
+      { id: "O", x: 0, y: 0, label: "" },
+      { id: "A", x: r3(A[0]), y: r3(A[1]), label: "A" }, { id: "B", x: r3(B[0]), y: r3(B[1]), label: "B" },
+      { id: "C", x: r3(C[0]), y: r3(C[1]), label: "C" }, { id: "D", x: r3(D[0]), y: r3(D[1]), label: "D" },
+    ],
+    elements: [
+      { kind: "circle", center: "O", radius: R },
+      { kind: "segment", between: ["A", "D"] },   // dreapta A–B–D
+      { kind: "segment", between: ["B", "C"] },    // coarda BC
+      { kind: "angle", at: "B", from: ["C", "D"], label: `${r3(angleCBD)}°` },
+    ],
+  };
+}
+
 /** Plasă de siguranță (ETAPA 41): recompune secțiunea din coordonate și verifică numerele DATE. */
 export function verifyConeSection(R: number, H: number, cut: ConeCut, expect: { axial?: number; radius?: number; area?: number }, tol = 1e-9): { ok: boolean; checks: Array<{ name: string; pass: boolean; detail: string }> } {
   const sec = coneSection(R, H, cut);

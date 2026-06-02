@@ -7,7 +7,7 @@
  */
 import type { PipelineInput, DesiredDescriptor } from "../../src/lib/figures/authoring";
 import { axialSection, dihedralSection } from "../../src/lib/figures/axial";
-import { pyramidTrapezoidScene } from "../../src/lib/figures/relations";
+import { pyramidTrapezoidScene, circleSecantAngle } from "../../src/lib/figures/relations";
 import type { Scene3D } from "../../src/lib/figures/spec3d";
 import type { FigureSpec2D } from "../../src/lib/figures/spec";
 import type { GeoProblem } from "../../src/lib/figures/cas";
@@ -74,6 +74,12 @@ export function resolveInput(condition: string): Resolved | null {
         desired: { dim: "3D", orientation: "apex-sus", mustLabels: ["V", "A", "B"], minPolylines: 6 },
       };
     }
+  }
+
+  // ── A,B,C pe cerc + D pe dreapta AB, ∠CBD dat → cerc + secantă + coardă + unghi (unghi înscris/exterior) ──
+  if (c.includes("cerc") && c.includes("arc") && /∠|unghi/.test(c)) {
+    const angle = num(new RegExp(`${NUM}\\s*°`)) ?? num(/cbd[^0-9]{0,8}(\d+)/);
+    if (angle) return { input: { kind: "spec2d", spec: circleSecantAngle(angle) }, desired: { dim: "2D", mustLabels: ["A", "B", "C", "D"], minPolylines: 2 } };
   }
 
   // ── trapez isoscel CIRCUMSCRIPTIBIL (tangențial) 2D + cerc înscris (bazele date) ──
