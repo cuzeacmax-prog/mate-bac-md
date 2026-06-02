@@ -46,6 +46,7 @@
     "verify:geo-relations": "tsx scripts/verify/geometry-relations.ts",
     "verify:geo-views": "tsx scripts/verify/geometry-views.ts",
     "verify:visual-gate": "tsx scripts/verify/visual-gate.ts",
+    "figura:autor": "tsx --env-file=.env.local scripts/figures/author.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },

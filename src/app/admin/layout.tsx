@@ -71,6 +71,9 @@ export default async function AdminLayout({
         <Link href="/admin/figura-live" className="text-sm text-gray-600 hover:text-gray-900">
           Figură-live
         </Link>
+        <Link href="/admin/figura-autor" className="text-sm text-gray-600 hover:text-gray-900">
+          Figură-autor
+        </Link>
         <Link href="/app" className="text-sm text-gray-600 hover:text-gray-900 ml-auto">
           ← App
         </Link>
