@@ -32,10 +32,10 @@ const probes: Probe[] = [];
     draw: { segments: [{ of: ["C", "M"] }, { of: ["C1", "M"], label: "10" }, { of: ["C1", "C"], label: "8" }], rightAngles3d: [{ at: "C", from: ["M", "C1"] }] },
     givens: [{ kind: "length3", of: ["C1", "C"], value: 8 }, { kind: "length3", of: ["C1", "M"], value: 10 }],
   });
-  probes.push({ titlu: "prismă C₁M=10, C₁C=8 (triunghi dreptunghic C₁CM)", concepts: ["teorema-pitagora-spatiu", "inaltimea-corpului"], spec: g.spec, reason: g.reason });
+  probes.push({ titlu: "prismă C₁M=10, C₁C=8 (triunghi dreptunghic C₁CM)", concepts: ["g8-teorema-lui-pitagora", "g11-dreapta-perpendiculara-pe-un-plan"], spec: g.spec, reason: g.reason });
 }
 // 3) con-secțiune (plan paralel) — secțiune axială
-probes.push({ titlu: "con-secțiune (plan ∥ bază)", concepts: ["sectiune-axiala"], spec: { scene: coneSectionScene(3, 6, { rel: "distanceApexToParallelPlane", value: 2 })! } });
+probes.push({ titlu: "con-secțiune (plan ∥ bază)", concepts: ["g12-sectiuni-conice"], spec: { scene: coneSectionScene(3, 6, { rel: "distanceApexToParallelPlane", value: 2 })! } });
 // 4) piramidă regulată + apotemă — apotema bazei + înălțime
 {
   const g = geo3d({
@@ -44,7 +44,7 @@ probes.push({ titlu: "con-secțiune (plan ∥ bază)", concepts: ["sectiune-axia
     draw: { segments: [{ of: ["V", "O"], dashed: true, label: "H" }, { of: ["O", "M"], label: "a" }, { of: ["V", "M"] }], rightAngles3d: [{ at: "O", from: ["M", "V"] }] },
     givens: [{ kind: "length3", of: ["O", "M"], value: 3 }, { kind: "length3", of: ["V", "O"], value: 7 }],
   });
-  probes.push({ titlu: "piramidă apotemă (O centru, OM apotemă, VO înălțime)", concepts: ["apotema-bazei", "inaltimea-corpului"], spec: g.spec, reason: g.reason });
+  probes.push({ titlu: "piramidă apotemă (O centru, OM apotemă, VO înălțime)", concepts: ["g12-piramida-regulata", "g11-dreapta-perpendiculara-pe-un-plan"], spec: g.spec, reason: g.reason });
 }
 
 let allOk = true;

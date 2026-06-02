@@ -15,6 +15,7 @@ import { coneSectionScene, verifyConeSection, type ConeCut } from "./relations";
 import { verifyConstruction } from "./verify";
 import { renderToDrawing, renderSVG } from "./render-svg";
 import { structuredVisualChecks, type VisualCheck } from "./visual-gate";
+import { augmentConstruction } from "./construction-build";
 
 /** Intrarea de pipeline = ce produce extractorul (ZERO coordonate). În bootstrap = adevăr-de-referință. */
 export type PipelineInput =
@@ -42,6 +43,8 @@ export interface AuthorCase {
   desired: { kind: "image"; ref: string } | { kind: "description"; ref: string };
   desiredDescriptor?: DesiredDescriptor;
   input: PipelineInput;
+  /** Concepte-metodă cu care exercițiul e legat în graf (exercise_concept_link) — declanșează asamblarea construcției. */
+  concepts?: string[];
   /** Remarci umane de la o rundă anterioară (text + pini localizați) — alimentează corecția. */
   remarks?: Remarks;
 }
@@ -126,11 +129,14 @@ function visualAndDesired(spec: FigureSpec2D | FigureSpec3D, want?: DesiredDescr
  */
 export function runAuthoring(c: AuthorCase, maxIter = 3): AuthorResult {
   const considered = remarksToList(c.remarks);
+  // Construcția auxiliară derivă din conceptele cu care exercițiul e legat în graf (ETAPA 51): corpul gol
+  // (body3d) e îmbogățit cu centru/înălțime/apotemă/secțiune pe geometrie reală, înainte de porți.
+  const input = c.concepts?.length ? augmentConstruction(c.input, c.concepts) : c.input;
   let iteratii = 0;
   let last: AuthorResult | null = null;
   while (iteratii < maxIter) {
     iteratii++;
-    const { spec, numeric, reason } = buildAndVerifyNumeric(c.input);
+    const { spec, numeric, reason } = buildAndVerifyNumeric(input);
     if (!spec || !numeric.ok) {
       last = { slug: c.slug, spec, svg: spec ? safeSvg(spec) : null, gates: { numeric, visual: { ok: false, checks: [] }, desiredMatch: { ok: false, checks: [] } }, status: "marcat-uman", iteratii, reason: reason ?? "porți numerice picate", remarksConsidered: considered };
       break; // intrare fixă în bootstrap → nu are sens reîncercarea fără re-extracție

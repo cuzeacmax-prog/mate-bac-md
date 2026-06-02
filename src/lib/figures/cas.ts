@@ -472,7 +472,9 @@ export type BuildStep3D =
   /** Piramidă regulată (puncte explicite): bază regulată z=0 + apex pe axă la height. */
   | { op: "regularPyramidPts"; base: string[]; apex: string; sides: number; baseEdge: number; height: number }
   /** Mijloc 3D. */
-  | { op: "midpoint3"; id: string; of: [string, string] };
+  | { op: "midpoint3"; id: string; of: [string, string] }
+  /** Centroidul unei liste de puncte (ex. centrul unei baze regulate = media vârfurilor). */
+  | { op: "centroid3"; id: string; of: string[] };
 
 export type Given3D =
   | { kind: "length3"; of: [string, string]; value: number }
@@ -562,6 +564,11 @@ export function solveConstraints3D(prob: GeoProblem3D): Store3D {
     } else if (s.op === "midpoint3") {
       const a = need3(st, s.of[0]), b = need3(st, s.of[1]);
       st.pts[s.id] = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2];
+    } else if (s.op === "centroid3") {
+      if (s.of.length < 1) throw new Error("centroid3: cel puțin un punct necesar");
+      const acc: Vec3 = [0, 0, 0];
+      for (const id of s.of) { const p = need3(st, id); acc[0] += p[0]; acc[1] += p[1]; acc[2] += p[2]; }
+      st.pts[s.id] = [acc[0] / s.of.length, acc[1] / s.of.length, acc[2] / s.of.length];
     }
   }
   return st;
