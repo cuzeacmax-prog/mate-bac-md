@@ -386,8 +386,9 @@ export function casToFigureSpec(prob: GeoProblem, st: Store): FigureSpec2D {
     if (s.op !== "bisectorFoot") continue;
     const others = s.tri.filter((v) => v !== s.from);
     if (others.length !== 2) continue;
-    elements.push({ kind: "equalAngle", at: s.from, from: [others[0], s.id], count: 1 });
-    elements.push({ kind: "equalAngle", at: s.from, from: [s.id, others[1]], count: 1 });
+    // raze DIFERITE → cele două arce egale NU se contopesc pe raza comună (remarca „se contopesc liniile")
+    elements.push({ kind: "equalAngle", at: s.from, from: [others[0], s.id], count: 1, radius: 1 });
+    elements.push({ kind: "equalAngle", at: s.from, from: [s.id, others[1]], count: 1, radius: 1.45 });
   }
   return { points, elements };
 }

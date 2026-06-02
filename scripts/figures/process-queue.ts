@@ -22,9 +22,11 @@ interface Row { id: string; slug: string; condition: string; desired_kind: strin
 
 async function main() {
   const svc = createServiceClient();
+  // --retry: reia și cazurile marcate-uman de motor (după ce extracția/registry s-a îmbunătățit).
+  const statuses = process.argv.includes("--retry") ? ["pending", "needs_revision", "marcat-uman"] : ["pending", "needs_revision"];
   const { data, error } = await svc.from("figura_autor")
     .select("id, slug, condition, desired_kind, desired_ref, remarci, iteratii, status")
-    .in("status", ["pending", "needs_revision"]).order("updated_at");
+    .in("status", statuses).order("updated_at");
   if (error) { console.error(error.message); process.exit(1); }
   const rows = (data ?? []) as Row[];
 

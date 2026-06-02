@@ -109,7 +109,7 @@ export function specToGeom(spec: FigureSpec3D): Geom3D {
 // ── Proiecție ──
 export interface Polyline { pts: Array<[number, number]>; dashed: boolean }
 export interface LabelPos { x: number; y: number; text: string }
-export interface Drawing2D { polylines: Polyline[]; labels: LabelPos[]; bbox: { minX: number; minY: number; maxX: number; maxY: number }; named?: Record<string, [number, number]> }
+export interface Drawing2D { polylines: Polyline[]; labels: LabelPos[]; bbox: { minX: number; minY: number; maxX: number; maxY: number }; named?: Record<string, [number, number]>; dots?: Array<[number, number]> }
 
 /**
  * Plasare GENERALĂ a etichetelor de vârf (folosită de randorul 3D-proiectat; 2D folosește autoPosition).
@@ -262,5 +262,7 @@ export function projectFigure(spec: FigureSpec3D, azDeg: number, elDeg: number):
   }
   const named: Record<string, [number, number]> = {};
   for (const q of g.pts) named[q.id] = proj(q.p);
-  return { polylines, labels, bbox: { minX, minY, maxX, maxY }, named };
+  // punctișor la fiecare vârf etichetat (centrul bazei/secțiunii nu mai „plutește" fără reper)
+  const dots: Array<[number, number]> = g.pts.filter((q) => q.label).map((q) => proj(q.p));
+  return { polylines, labels, bbox: { minX, minY, maxX, maxY }, named, dots };
 }

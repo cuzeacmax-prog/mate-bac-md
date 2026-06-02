@@ -48,8 +48,8 @@ export type FigureElement =
   | { kind: "pointOnSegment"; on: [string, string]; ratio?: number; distanceFromA?: number; label?: string; color?: string; id?: string }
   /** Unghi DREPT marcat (pătrățel) la `at`, între razele către from[0], from[1]. Reutilizabil. */
   | { kind: "rightAngle"; at: string; from: [string, string]; color?: string }
-  /** Unghiuri EGALE: `count` arce concentrice la `at`. */
-  | { kind: "equalAngle"; at: string; from: [string, string]; count?: number; color?: string }
+  /** Unghiuri EGALE: `count` arce concentrice la `at`. `radius` = scală relativă (ca să nu se contopească arcele adiacente). */
+  | { kind: "equalAngle"; at: string; from: [string, string]; count?: number; radius?: number; color?: string }
   | { kind: "circle"; id?: string; center: string; through?: string; radius?: number; centerLabel?: string; color?: string }
   | { kind: "tangentLines"; from: string; to: string; markPoints?: boolean; pointLabels?: [string, string]; color?: string }
   | { kind: "midpoint"; of: [string, string]; label?: string; color?: string; id?: string }

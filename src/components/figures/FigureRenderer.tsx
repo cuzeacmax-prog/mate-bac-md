@@ -222,10 +222,10 @@ function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D, solved: Record<
         break;
       case "equalAngle": {
         const c = col(th, e.color, "#d97706");
-        const n = e.count ?? 1;
+        const n = e.count ?? 1; const rScale = e.radius ?? 1;
         for (let i = 0; i < n; i++) {
           board.create("angle", [pts[e.from[0]], pts[e.at], pts[e.from[1]]], {
-            radius: 0.5 + i * 0.13, type: "sector", fillOpacity: 0, strokeColor: c, strokeWidth: th.lw, withLabel: false, highlight: false,
+            radius: (0.5 + i * 0.13) * rScale, type: "sector", fillOpacity: 0, strokeColor: c, strokeWidth: th.lw, withLabel: false, highlight: false,
           });
         }
         break;

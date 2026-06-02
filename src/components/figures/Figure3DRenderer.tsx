@@ -56,6 +56,9 @@ export default function Figure3DRenderer({ spec, size = 460, className }: Figure
             fill="none" stroke={INK} strokeWidth={1.4} vectorEffect="non-scaling-stroke"
             strokeDasharray={pl.dashed ? "5 4" : undefined} strokeLinejoin="round" strokeLinecap="round" />
         ))}
+        {(drawing.dots ?? []).map((d, i) => (
+          <circle key={`d${i}`} cx={d[0]} cy={d[1]} r={span * 0.012} fill={INK} />
+        ))}
         {drawing.labels.map((l, i) => (
           <text key={i} x={l.x} y={l.y} fontSize={fs} fill={INK} textAnchor="middle" dominantBaseline="middle"
             style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic" }}>{l.text}</text>
