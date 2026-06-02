@@ -390,7 +390,16 @@ export function casToFigureSpec(prob: GeoProblem, st: Store): FigureSpec2D {
     elements.push({ kind: "equalAngle", at: s.from, from: [others[0], s.id], count: 1, radius: 1 });
     elements.push({ kind: "equalAngle", at: s.from, from: [s.id, others[1]], count: 1, radius: 1.45 });
   }
-  return { points, elements };
+  // ISOSCEL: baza (latura inegală) JOS, vârful SUS — convenție pedagogică (remarca „baza trebuie să fie jos").
+  let framing: FigureSpec2D["framing"] | undefined;
+  for (const s of prob.build) {
+    if (s.op !== "triangleSSS") continue;
+    const eq = (x: number, y: number) => Math.abs(x - y) < 1e-9; const [A, B, C] = s.ids;
+    if (eq(s.ab, s.ca)) framing = { baseEdge: [B, C] };       // AB=CA ⇒ vârf A, bază BC
+    else if (eq(s.ab, s.bc)) framing = { baseEdge: [C, A] };  // AB=BC ⇒ vârf B, bază CA
+    else if (eq(s.bc, s.ca)) framing = { baseEdge: [A, B] };  // BC=CA ⇒ vârf C, bază AB
+  }
+  return framing ? { points, elements, framing } : { points, elements };
 }
 
 // ───────────────────────── ORCHESTRATOR ─────────────────────────

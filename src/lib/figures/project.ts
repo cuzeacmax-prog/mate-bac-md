@@ -36,7 +36,10 @@ export function bodyToGeom(body: Body3D): Geom3D {
   const empty: Geom3D = { pts: [], faces: [], segments: [], rounds: [] };
   if (body.kind === "regularPyramid") {
     const s = solvePyramid(body);
-    return { pts: s.verts.map((v) => ({ id: v.id, p: v.xyz, label: v.id })), faces: s.faces.map((f) => f.map((i) => s.verts[i].id)), segments: [], rounds: [] };
+    // PICTOGRAMĂ: vârful vizibil sus chiar dacă piramida e turtită (înălțimea reală rămâne în spec/verificare)
+    const dispH = Math.max(body.height, 1.35 * s.circumR);
+    const pts = s.verts.map((v) => (v.id === s.apexId ? { id: v.id, p: [v.xyz[0], v.xyz[1], dispH] as V3, label: v.id } : { id: v.id, p: v.xyz, label: v.id }));
+    return { pts, faces: s.faces.map((f) => f.map((i) => s.verts[i].id)), segments: [], rounds: [] };
   }
   if (body.kind === "cube" || body.kind === "box" || body.kind === "prism" || body.kind === "tetrahedron" || body.kind === "frustum") {
     const s = solvePolyhedron(body);

@@ -171,7 +171,7 @@ function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D, solved: Record<
         if (e.id) els[e.id] = seg;
         addSeg(pts[e.from], foot);
         if (e.markRightAngle) board.create("angle", [pts[o1], foot, pts[e.from]], {
-          radius: 0.45, type: "square", fillColor: th.ink, strokeColor: th.ink, fillOpacity: th.bac ? 0 : 0.3, withLabel: false, highlight: false,
+          radius: 0.28, type: "square", fillColor: th.ink, strokeColor: th.ink, fillOpacity: th.bac ? 0 : 0.3, withLabel: false, highlight: false,
         });
         break;
       }
@@ -217,7 +217,7 @@ function buildFromSpec(JXG: any, board: any, spec: FigureSpec2D, solved: Record<
       }
       case "rightAngle":
         board.create("angle", [pts[e.from[0]], pts[e.at], pts[e.from[1]]], {
-          radius: 0.45, type: "square", fillColor: col(th, e.color, th.ink), strokeColor: col(th, e.color, th.ink), fillOpacity: th.bac ? 0 : 0.3, withLabel: false, highlight: false,
+          radius: 0.28, type: "square", fillColor: col(th, e.color, th.ink), strokeColor: col(th, e.color, th.ink), fillOpacity: th.bac ? 0 : 0.3, withLabel: false, highlight: false,
         });
         break;
       case "equalAngle": {
