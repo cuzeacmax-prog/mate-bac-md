@@ -43,7 +43,7 @@ export interface AuthorCase {
   desired: { kind: "image"; ref: string } | { kind: "description"; ref: string };
   desiredDescriptor?: DesiredDescriptor;
   input: PipelineInput;
-  /** Concepte-metodă cu care exercițiul e legat în graf (exercise_concept_link) — declanșează asamblarea construcției. */
+  /** Concepte din graf (exercise_concept_link) — DOAR pt. teorie/navigare; NU mai declanșează construcția (ETAPA 52). */
   concepts?: string[];
   /** Remarci umane de la o rundă anterioară (text + pini localizați) — alimentează corecția. */
   remarks?: Remarks;
@@ -129,9 +129,9 @@ function visualAndDesired(spec: FigureSpec2D | FigureSpec3D, want?: DesiredDescr
  */
 export function runAuthoring(c: AuthorCase, maxIter = 3): AuthorResult {
   const considered = remarksToList(c.remarks);
-  // Construcția auxiliară derivă din conceptele cu care exercițiul e legat în graf (ETAPA 51): corpul gol
+  // Construcția auxiliară se declanșează din TIPURILE DE RELAȚIE/OBIECT extrase de CAS (ETAPA 52): corpul gol
   // (body3d) e îmbogățit cu centru/înălțime/apotemă/secțiune pe geometrie reală, înainte de porți.
-  const input = c.concepts?.length ? augmentConstruction(c.input, c.concepts) : c.input;
+  const input = augmentConstruction(c.input);
   let iteratii = 0;
   let last: AuthorResult | null = null;
   while (iteratii < maxIter) {

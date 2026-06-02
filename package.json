@@ -52,7 +52,7 @@
     "test:watch": "vitest",
     "figura:batch47": "tsx --env-file=.env.local scripts/figures/batch47.ts",
     "verify:construction": "tsx scripts/verify/construction-patterns.ts",
-    "verify:construction-graph": "tsx scripts/verify/construction-graph.ts"
+    "verify:construction-relations": "tsx scripts/verify/construction-relations.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.78",

@@ -1,15 +1,16 @@
 /**
- * ETAPA 51 — ASAMBLAREA CONSTRUCȚIEI pe corpul real, derivată din conceptele-metodă cu care exercițiul e
- * legat în GRAF (exercise_concept_link). Extractorul produce de obicei un corp GOL (body3d, doar coaja); aici
- * îl convertim într-o scenă CAS cu puncte numite și ADĂUGĂM elementele auxiliare cerute de tiparele conceptelor
- * (centrul bazei, înălțimea, apotema, triunghiul dreptunghic, poligonul de secțiune) — pe geometrie reală, ZERO
- * coordonate inventate. Categoriile cerute vin din requiredFor(concepts); construcția le acoperă efectiv, astfel
- * încât poarta STRUCTURALĂ trece pentru că figura CHIAR conține construcția, nu pentru că am coborât poarta.
+ * ETAPA 51→52 — ASAMBLAREA CONSTRUCȚIEI pe corpul real, declanșată din TIPURILE DE RELAȚIE/OBIECT extrase de CAS
+ * (relation-trigger.ts), NU din exercise_concept_link. Extractorul produce de obicei un corp GOL (body3d, doar
+ * coaja); aici îl convertim într-o scenă CAS cu puncte numite și ADĂUGĂM elementele auxiliare cerute de tiparele
+ * tipurilor extrase (centrul bazei, înălțimea, apotema, triunghiul dreptunghic, poligonul de secțiune) — pe
+ * geometrie reală, ZERO coordonate inventate. Categoriile cerute vin din requiredFor(extractTriggers(input));
+ * poarta STRUCTURALĂ trece pentru că figura CHIAR conține construcția, nu pentru că am coborât poarta.
  */
 import type { GeoProblem3D, BuildStep3D } from "./cas";
 import type { Body3D } from "./spec3d";
 import type { PipelineInput } from "./authoring";
 import { requiredFor, type AuxCategory } from "./construction-patterns";
+import { extractTriggers } from "./relation-trigger";
 
 const LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H"];
 const baseIds = (n: number) => LETTERS.slice(0, n);
@@ -112,8 +113,8 @@ function completeProblem(prob: GeoProblem3D, need: Set<AuxCategory>): GeoProblem
  * Dacă intrarea e un corp poliedral GOL și conceptele (din graf) cer construcție, o asamblăm pe geometrie reală
  * și întoarcem un geo3d (scenă cu puncte + auxiliare). Altfel întoarcem intrarea neschimbată (fallback onest).
  */
-export function augmentConstruction(input: PipelineInput, concepts: string[]): PipelineInput {
-  const need = requiredFor(concepts).categories;
+export function augmentConstruction(input: PipelineInput): PipelineInput {
+  const need = requiredFor(extractTriggers(input)).categories;
   if (need.size === 0) return input;
 
   // geo3d deja construit (ex. matcher specific cuboid-diedru, ETAPA 49): completăm doar elementele auxiliare
