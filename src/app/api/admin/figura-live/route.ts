@@ -8,6 +8,7 @@ import { axialSection, dihedralSection } from '@/lib/figures/axial';
 import { solveAndVerify, solveAndVerify3D, type GeoProblem, type GeoProblem3D } from '@/lib/figures/cas';
 import { coneSectionFigure, coneSectionScene, verifyConeSection, type ConeCut } from '@/lib/figures/relations';
 import { modelAndView, type Entity } from '@/lib/figures/object-model';
+import { structuredVisualChecks } from '@/lib/figures/visual-gate';
 
 const failedInvariants = (v: VerifyResult): string => v.checks.filter((c) => !c.pass).map((c) => `${c.name} (${c.detail})`).join(' · ');
 
@@ -188,6 +189,15 @@ export const TOOL: Anthropic.Messages.Tool = {
 
 interface ModelOut { verdict?: string; reason?: string; object?: { entities?: Entity[]; relations?: string[] } | null; geo?: GeoProblem | null; geo3d?: GeoProblem3D | null; coneCut?: { cone?: { radius?: number; height?: number }; by?: ConeCut } | null; spec2d?: unknown; body3d?: (Body3D & { kind?: string }) | null; scene?: Scene3D | null; body3d_name?: string; unsupported_relation?: string; render3d?: string; section?: { kind?: string; apothem?: number; angle?: number } }
 
+/** POARTA VIZUALĂ (ETAPA 44): verificări structurate pe desenul randat. Returnează {visual, marked}.
+ *  Nu blochează (perceptual/failibil) — marchează pentru OM dacă pică (singurele revizuite manual). */
+function visualGate(spec: FigureSpec2D | FigureSpec3D): { visual: { ok: boolean; checks: { id: string; pass: boolean; detail: string }[] }; marked: boolean } {
+  try {
+    const r = structuredVisualChecks(spec);
+    return { visual: { ok: r.ok, checks: r.checks.map((c) => ({ id: c.id, pass: c.pass, detail: c.detail })) }, marked: !r.ok };
+  } catch (e) { return { visual: { ok: false, checks: [{ id: 'render', pass: false, detail: (e as Error).message }] }, marked: true }; }
+}
+
 /** Verifică o figură 2D (structură + invariante) → {valid, error}. */
 function check2D(spec: FigureSpec2D): { valid: boolean; error: string | null } {
   const v = validateSpec(spec);
@@ -245,7 +255,8 @@ export async function POST(req: NextRequest) {
         const diagnostic = `CAS a RESPINS (figura nu reproduce numerele date): ${res.reason ?? 'inconsistență'}`;
         return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, valid: false, error: res.reason, diagnostic, cas: true, checks: res.checks });
       }
-      return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, spec: res.spec, valid: true, error: null, cas: true, checks: res.checks });
+      const vg = visualGate(res.spec as FigureSpec2D);
+      return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, spec: res.spec, valid: true, error: null, cas: true, checks: res.checks, visual: vg.visual, marked: vg.marked });
     }
 
     // ── RELAȚIE TIPIZATĂ + VEDERE (ETAPA 42/43): secțiune de con. OBIECTUL e 3D → IMPLICIT pictogramă 3D ──
@@ -259,7 +270,8 @@ export async function POST(req: NextRequest) {
         if (!scene) return NextResponse.json({ dim: '3d', verdict: '3d', reason, valid: false, error: 'con/secțiune invalidă', diagnostic: 'coneCut: parametri invalizi', typed: true, ...objMeta });
         const ver = verifyFigure3D({ scene } as FigureSpec3D);
         if (!ver.ok) return NextResponse.json({ dim: '3d', verdict: '3d', reason, spec: { scene }, valid: false, error: failedInvariants(ver), diagnostic: `invariante 3D picate: ${failedInvariants(ver)}`, typed: true, ...objMeta });
-        return NextResponse.json({ dim: '3d', verdict: '3d', reason, spec: { scene }, valid: true, error: null, typed: true, relation: by.rel, checks: v.checks, ...objMeta });
+        const vg = visualGate({ scene } as FigureSpec3D);
+        return NextResponse.json({ dim: '3d', verdict: '3d', reason, spec: { scene }, valid: true, error: null, typed: true, relation: by.rel, checks: v.checks, visual: vg.visual, marked: vg.marked, ...objMeta });
       }
       const spec = coneSectionFigure(radius, height, by);
       if (!spec) return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, valid: false, error: 'con/secțiune invalidă', diagnostic: 'coneCut: parametri invalizi', typed: true, ...objMeta });
@@ -277,7 +289,8 @@ export async function POST(req: NextRequest) {
       // re-validează scena prin invariantele 3D (poartă comună cu randorul)
       const ver = verifyFigure3D(res.spec as FigureSpec3D);
       if (!ver.ok) return NextResponse.json({ dim: '3d', verdict: '3d', reason, spec: res.spec, valid: false, error: failedInvariants(ver), diagnostic: `invariante 3D picate: ${failedInvariants(ver)}`, cas: true });
-      return NextResponse.json({ dim: '3d', verdict: '3d', reason, spec: res.spec, valid: true, error: null, cas: true, composed: true, checks: res.checks });
+      const vg = visualGate(res.spec as FigureSpec3D);
+      return NextResponse.json({ dim: '3d', verdict: '3d', reason, spec: res.spec, valid: true, error: null, cas: true, composed: true, checks: res.checks, visual: vg.visual, marked: vg.marked });
     }
 
     // ── OPERATORI GENERALI (compun figura 2D din concepte — fără ramuri per-problemă) ──

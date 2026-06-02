@@ -45,6 +45,7 @@
     "verify:geo-cas": "tsx scripts/verify/geometry-cas.ts",
     "verify:geo-relations": "tsx scripts/verify/geometry-relations.ts",
     "verify:geo-views": "tsx scripts/verify/geometry-views.ts",
+    "verify:visual-gate": "tsx scripts/verify/visual-gate.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
