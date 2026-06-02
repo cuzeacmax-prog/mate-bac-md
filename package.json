@@ -50,7 +50,8 @@
     "figura:coada": "tsx --env-file=.env.local scripts/figures/process-queue.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "figura:batch47": "tsx --env-file=.env.local scripts/figures/batch47.ts"
+    "figura:batch47": "tsx --env-file=.env.local scripts/figures/batch47.ts",
+    "verify:construction": "tsx scripts/verify/construction-patterns.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.78",

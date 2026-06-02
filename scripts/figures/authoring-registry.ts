@@ -12,7 +12,7 @@ import type { Scene3D } from "../../src/lib/figures/spec3d";
 import type { FigureSpec2D } from "../../src/lib/figures/spec";
 import type { GeoProblem } from "../../src/lib/figures/cas";
 
-type Resolved = { input: PipelineInput; desired?: DesiredDescriptor };
+type Resolved = { input: PipelineInput; desired?: DesiredDescriptor; concepts?: string[] };
 const NUM = "(\\d+(?:[.,]\\d+)?)";
 const f = (s: string): number => parseFloat(s.replace(",", "."));
 
@@ -80,7 +80,7 @@ export function resolveInput(condition: string): Resolved | null {
     const dist = num(new RegExp(`distan[tț]a[\\s\\S]{0,30}?${NUM}`));
     if (H && volCoef && dist) {
       const R = Math.sqrt((3 * volCoef) / H);
-      return { input: { kind: "coneCut", cone: { radius: R, height: H }, by: { rel: "distanceApexToParallelPlane", value: dist } }, desired: { dim: "3D", orientation: "apex-sus", mustLabels: ["V", "O", String(dist)], minPolylines: 6 } };
+      return { input: { kind: "coneCut", cone: { radius: R, height: H }, by: { rel: "distanceApexToParallelPlane", value: dist } }, desired: { dim: "3D", orientation: "apex-sus", mustLabels: ["V", "O", String(dist)], minPolylines: 6 }, concepts: ["sectiune-axiala", "distanta-punct-plan"] };
     }
   }
 
@@ -88,7 +88,7 @@ export function resolveInput(condition: string): Resolved | null {
   if (c.includes("diedru") && c.includes("apotem")) {
     const r = num(new RegExp(`apotem[aă][\\s\\S]{0,25}?${NUM}`));
     const diedru = num(new RegExp(`diedru[\\s\\S]{0,25}?${NUM}`)) ?? num(new RegExp(`${NUM}\\s*(?:°|grade)`));
-    if (r && diedru) return { input: { kind: "spec2d", spec: dihedralSection(r, diedru) }, desired: { dim: "2D", orientation: "apex-sus", mustLabels: ["O", "M", "V"], minPolylines: 4 } };
+    if (r && diedru) return { input: { kind: "spec2d", spec: dihedralSection(r, diedru) }, desired: { dim: "2D", orientation: "apex-sus", mustLabels: ["O", "M", "V"], minPolylines: 4 }, concepts: ["unghi-diedru-intre-plane"] };
   }
 
   // ── sferă înscrisă în con → secțiune axială (triunghi isoscel + cerc înscris) ──
@@ -222,6 +222,7 @@ export function resolveInput(condition: string): Resolved | null {
           ],
         } },
         desired: { dim: "3D", mustLabels: ["A", "B", "C", "A1"], minPolylines: 6 },
+        concepts: ["unghi-diedru-intre-plane", "teorema-pitagora-spatiu"],
       };
     }
   }
