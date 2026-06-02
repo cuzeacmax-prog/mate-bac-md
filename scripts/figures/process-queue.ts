@@ -24,7 +24,10 @@ async function main() {
   const svc = createServiceClient();
   // --retry: reia și cazurile marcate-uman; --refresh: REGENEREAZĂ toate cazurile fără verdict uman
   // (inclusiv auto-acceptat) după o îmbunătățire a MOTORULUI. Niciodată cele cu verdict approved/rejected.
-  const statuses = process.argv.includes("--refresh") ? ["pending", "needs_revision", "marcat-uman", "auto-acceptat"]
+  // --all: RE-PROCESEAZĂ TOT (inclusiv approved) după o schimbare de motor — verdictul uman rămâne PRESERVAT
+  // (status = verdict_uman ?? res.status), doar spec_generat + render_png se regenerează (ex. ETAPA 53: construcția).
+  const statuses = process.argv.includes("--all") ? ["pending", "needs_revision", "marcat-uman", "auto-acceptat", "approved", "rejected"]
+    : process.argv.includes("--refresh") ? ["pending", "needs_revision", "marcat-uman", "auto-acceptat"]
     : process.argv.includes("--retry") ? ["pending", "needs_revision", "marcat-uman"]
     : ["pending", "needs_revision"];
   // procesează cazurile din coadă PLUS orice rând fără randare (figură lipsă — chiar dacă e deja aprobat)
