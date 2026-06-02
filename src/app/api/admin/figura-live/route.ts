@@ -86,7 +86,10 @@ export const SYSTEM_PROMPT =
   '{op:"footOnEdge", id, from:center, edge:[P,Q]} (piciorul apotemei M pe muchia bazei) · ' +
   '{op:"apexOverPoint", apex, over:center, height:{mulTan:[{dist3:[center,M]}, diedru_grade]}} (V deasupra incentrului la H=r·tan(diedru)) · ' +
   '{op:"midpoint3", id, of:[P,Q]} · {op:"regularPrism", bottom:[ids], top:[ids], sides, baseEdge, height} (prismă regulată) · ' +
-  '{op:"regularPyramidPts", base:[ids], apex, sides, baseEdge, height} (piramidă regulată, puncte explicite). ' +
+  '{op:"regularPyramidPts", base:[ids], apex, sides, baseEdge, height} (piramidă regulată, puncte explicite) · ' +
+  '{op:"box", bottom:[A,B,C,D], top:[A1,B1,C1,D1], length, width, height} (paralelipiped dreptunghic). ' +
+  'NICIUN corp nu e șablon: LEAGĂ dimensiunile date și CALCULEAZĂ necunoscutele din relații (ex. „unghiul dintre planele ' +
+  '(A₁BC) și (ABC)” = diedrul de-a lungul muchiei comune BC ⇒ din 45° rezultă AA₁=AB·tan45). ' +
   'height poate fi număr, {dist3:[P,Q]}, {scale3:[expr,k]} sau {mulTan:[expr,grade]}.\n' +
   '  ⭐ FIGURĂ DE REZOLVARE (nu doar carcasa): DESENEAZĂ construcția folosită de soluție. solid={base,apex} (piramidă) SAU ' +
   '{bottom,top} (prismă). În draw.segments pune TOATE punctele/segmentele din relații/date (ex. M mijlocul unei muchii via ' +
@@ -96,7 +99,9 @@ export const SYSTEM_PROMPT =
   'sides:3, baseEdge:4√3, height:8) → midpoint3(M, of:[A,B]); solid={bottom:[A,B,C], top:[A1,B1,C1]}; ' +
   'draw.segments=[{of:[C,M]},{of:[C1,M],label:"10"},{of:[C1,C],label:"8"}], draw.rightAngles3d=[{at:C, from:[M,C1]}] (triunghiul dreptunghic C₁CM).\n' +
   '  givens (FIECARE număr): {kind:"length3", of:[P,Q], value} · {kind:"angle3", at, rays:[P,Q], value} (diedrul = angle3 la M între center și apex) · ' +
-  '{kind:"sumEqual", left:[[P,Q]…], right:[[R,S]…], name?} (tangențial: Σbaze=Σlaturi). Valori iraționale exacte (4√3→6.928203230275509).\n' +
+  '{kind:"sumEqual", left:[[P,Q]…], right:[[R,S]…], name?} (tangențial: Σbaze=Σlaturi) · ' +
+  '{kind:"dihedral", edge:[P,Q], inPlane1:R, inPlane2:S, value} (UNGHI ÎNTRE PLANE = diedrul de-a lungul muchiei `edge`; ' +
+  'pune-l în givens ca să fie MĂSURAT, nu presupus). Valori iraționale exacte (4√3→6.928203230275509).\n' +
   '  draw: înălțimea center→apex (dashed:true), apotema center→M, înclinata apex→M, dihedral la M cu eticheta „60°".\n' +
   '  Ex. „piramidă cu baza trapez circumscriptibil baze 4 și 16, diedru la baza mare 60°”: isoTrapezoidTangential(16,4) → ' +
   'footOnEdge(M pe baza lungă) → apexOverPoint(H=r·tan60); solid={base:[cele 4 colțuri], apex:V}; givens cu bazele, latura 10, ' +

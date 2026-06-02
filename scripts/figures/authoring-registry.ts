@@ -201,6 +201,31 @@ export function resolveInput(condition: string): Resolved | null {
     }
   }
 
+  // ── paralelipiped dreptunghic cu UNGHI ÎNTRE PLANE (diedru) → rezolvă înălțimea din unghi + construcția soluției ──
+  if ((c.includes("paralelipiped") || c.includes("cuboid")) && /ab\s*=/.test(c) && /(\d+)\s*°/.test(c)) {
+    const AB = num(/ab\s*=\s*(\d+(?:[.,]\d+)?)/), BC = num(/bc\s*=\s*(\d+(?:[.,]\d+)?)/), ang = num(/(\d+(?:[.,]\d+)?)\s*°/);
+    if (AB && BC && ang) {
+      const H = AB * Math.tan((ang * Math.PI) / 180); const r3 = (n: number) => Math.round(n * 1000) / 1000;
+      return {
+        input: { kind: "geo3d", problem: {
+          build: [{ op: "box", bottom: ["A", "B", "C", "D"], top: ["A1", "B1", "C1", "D1"], length: AB, width: BC, height: H }],
+          solid: { bottom: ["A", "B", "C", "D"], top: ["A1", "B1", "C1", "D1"] },
+          draw: {
+            segments: [{ of: ["B", "C"], label: String(BC) }, { of: ["A", "B"], label: String(AB) }, { of: ["A", "A1"], label: String(r3(H)) }, { of: ["A1", "B"] }],
+            rightAngles3d: [{ at: "A", from: ["B", "A1"] }],            // unghi drept la A (AB ⊥ AA₁)
+            dihedral: { at: "B", rays: ["A", "A1"], label: `${ang}°` },  // diedrul (A₁BC)/(ABC) la B
+          },
+          givens: [
+            { kind: "length3", of: ["A", "B"], value: AB },
+            { kind: "length3", of: ["B", "C"], value: BC },
+            { kind: "dihedral", edge: ["B", "C"], inPlane1: "A", inPlane2: "A1", value: ang },
+          ],
+        } },
+        desired: { dim: "3D", mustLabels: ["A", "B", "C", "A1"], minPolylines: 6 },
+      };
+    }
+  }
+
   // ── FALLBACK: solid standard (cub/prismă/piramidă/tetraedru/paralelipiped/trunchi/con/cilindru/sferă) ──
   return standardSolid(c);
 }

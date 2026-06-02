@@ -465,6 +465,8 @@ export type BuildStep3D =
   | { op: "isoTrapezoidFromAngle"; ids: [string, string, string, string]; smallBase: number; leg: number; baseAngleDeg: number }
   /** Apex peste CIRCUMCENTRUL bazei (⇒ toate muchiile laterale EGALE) la muchia laterală dată; `foot`=circumcentru. */
   | { op: "apexOverCircumcenter"; apex: string; foot: string; base: string[]; lateralEdge: number }
+  /** Cuboid (paralelipiped dreptunghic): bază dreptunghi L×W (z=0) + sus (z=H). ids=[A,B,C,D]/[A1,B1,C1,D1]. */
+  | { op: "box"; bottom: [string, string, string, string]; top: [string, string, string, string]; length: number; width: number; height: number }
   /** Prismă regulată: bază jos (z=0) + bază sus (z=height), n-gon regulat. */
   | { op: "regularPrism"; bottom: string[]; top: string[]; sides: number; baseEdge: number; height: number }
   /** Piramidă regulată (puncte explicite): bază regulată z=0 + apex pe axă la height. */
@@ -476,7 +478,9 @@ export type Given3D =
   | { kind: "length3"; of: [string, string]; value: number }
   | { kind: "angle3"; at: string; rays: [string, string]; value: number }
   /** Egalitate de sume de lungimi (ex. trapez tangențial: Σ baze = Σ laturi). */
-  | { kind: "sumEqual"; left: Array<[string, string]>; right: Array<[string, string]>; name?: string };
+  | { kind: "sumEqual"; left: Array<[string, string]>; right: Array<[string, string]>; name?: string }
+  /** UNGHI ÎNTRE DOUĂ PLANE = diedrul de-a lungul muchiei comune `edge`, între semiplanul cu `inPlane1` și cel cu `inPlane2`. */
+  | { kind: "dihedral"; edge: [string, string]; inPlane1: string; inPlane2: string; value: number };
 
 export interface GeoProblem3D {
   build: BuildStep3D[];
@@ -541,6 +545,11 @@ export function solveConstraints3D(prob: GeoProblem3D): Store3D {
       const H = Math.sqrt(hz);
       st.pts[s.foot] = [cc[0], cc[1], 0];
       st.pts[s.apex] = [cc[0], cc[1], H];
+    } else if (s.op === "box") {
+      const [A, B, C, D] = s.bottom, [A1, B1, C1, D1] = s.top, L = s.length, W = s.width, H = s.height;
+      if (!(L > 0) || !(W > 0) || !(H > 0)) throw new Error("box: dimensiuni pozitive necesare");
+      st.pts[A] = [0, 0, 0]; st.pts[B] = [L, 0, 0]; st.pts[C] = [L, W, 0]; st.pts[D] = [0, W, 0];
+      st.pts[A1] = [0, 0, H]; st.pts[B1] = [L, 0, H]; st.pts[C1] = [L, W, H]; st.pts[D1] = [0, W, H];
     } else if (s.op === "regularPrism") {
       const n = Math.floor(s.sides); if (n < 3 || s.bottom.length < n || s.top.length < n) throw new Error("regularPrism: ids insuficiente");
       const R = s.baseEdge / (2 * Math.sin(Math.PI / n)), t0 = Math.PI / n - Math.PI / 2;
@@ -578,6 +587,14 @@ export function verifyGivens3D(st: Store3D, givens: Given3D[], tol = 1e-9): Chec
         const sum = (ps: Array<[string, string]>) => ps.reduce((s, [a, b]) => s + d3(need3(st, a), need3(st, b)), 0);
         const L = sum(g.left), R = sum(g.right);
         checks.push({ name: g.name ?? `Σstânga = Σdreapta`, pass: relEq(L, R, tol), detail: `${L.toFixed(6)} = ${R.toFixed(6)}` });
+      } else if (g.kind === "dihedral") {
+        // diedrul de-a lungul muchiei: unghiul dintre perpendicularele pe muchie (din fiecare semiplan) la piciorul lor
+        const E0 = need3(st, g.edge[0]), E1 = need3(st, g.edge[1]);
+        const footL = (X: Vec3): Vec3 => { const d = sub3(E1, E0); const t = dot3(sub3(X, E0), d) / (dot3(d, d) || 1); return [E0[0] + t * d[0], E0[1] + t * d[1], E0[2] + t * d[2]]; };
+        const P = need3(st, g.inPlane1), Q = need3(st, g.inPlane2);
+        const u = sub3(P, footL(P)), v = sub3(Q, footL(Q));
+        const ang = deg(Math.acos(Math.max(-1, Math.min(1, dot3(u, v) / ((Math.hypot(...u) * Math.hypot(...v)) || 1)))));
+        checks.push({ name: `unghi(plan,plan) de-a lungul ${g.edge.join("")} = ${g.value}°`, pass: relEq(ang, g.value, tol), detail: `diedru măsurat ${ang.toFixed(4)}°` });
       }
     } catch (e) { checks.push({ name: JSON.stringify(g), pass: false, detail: (e as Error).message }); }
   }
