@@ -43,6 +43,7 @@
     "verify:figures": "tsx scripts/figures/verify-figures.ts",
     "verify:figures-gen": "tsx scripts/verify/figures-generalization.ts",
     "verify:geo-cas": "tsx scripts/verify/geometry-cas.ts",
+    "verify:geo-relations": "tsx scripts/verify/geometry-relations.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },

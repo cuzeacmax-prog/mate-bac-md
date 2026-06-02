@@ -6,6 +6,7 @@ import { solvePyramid, solvePerpFromVertex, solvePolyhedron, validateScene, norm
 import { verifyFigure2D, verifyFigure3D, type VerifyResult } from '@/lib/figures/verify';
 import { axialSection, dihedralSection } from '@/lib/figures/axial';
 import { solveAndVerify, solveAndVerify3D, type GeoProblem, type GeoProblem3D } from '@/lib/figures/cas';
+import { coneSectionFigure, verifyConeSection, type ConeCut } from '@/lib/figures/relations';
 
 const failedInvariants = (v: VerifyResult): string => v.checks.filter((c) => !c.pass).map((c) => `${c.name} (${c.detail})`).join(' · ');
 
@@ -39,6 +40,15 @@ export const SYSTEM_PROMPT =
   'figurabil_2d și emite ce poți. Folosește fara_figura DOAR pentru probleme pur algebrice/numerice fără desen.\n\n' +
   'CLASIFICARE:\n' +
   "- 'figurabil_2d' = geometrie PLANĂ (triunghi/patrulater/trapez/romb/pătrat/cerc în plan). Emite spec2d.\n" +
+  '⛓ DEFINIȚII TIPIZATE (regulă conceptuală, NU pe enunț): un termen metric e DEFINIT de obiectele pe care le leagă; ' +
+  'nu alegi tu construcția. „Distanța" e o FAMILIE după tipuri: distanță(punct,punct)=segment; distanță(punct,dreaptă)=' +
+  'PERPENDICULARA (piciorul); distanță(punct,plan)=PERPENDICULARA. „la lungimea d PE o dreaptă/muchie/generatoare" = ' +
+  'lungimePeDreaptă — RELAȚIE DISTINCTĂ, NU distanță. Mapează relația AȘA CUM E ENUNȚATĂ; NU substitui o construcție mai ' +
+  'comodă (ex. NU pune un punct pe generatoare când enunțul spune distanța la PLAN). Obiectele impun metrica.\n' +
+  '• OPERATOR „coneCut” — secțiune de con printr-un plan ∥ bază, poziționat după relația TIPIZATĂ din enunț: ' +
+  'emite coneCut={cone:{radius,height}, by:{rel, value}} unde rel="distanceApexToParallelPlane" (enunțul dă distanța ' +
+  'de la VÂRF la PLAN → perpendiculara) SAU rel="lengthAlongGeneratrixFromApex" (enunțul dă lungimea PE GENERATOARE de ' +
+  'la vârf). Calculează radius din volum dacă e dat: V=(1/3)πR²H. Motorul derivă poziția axială canonic și o verifică.\n' +
   '⭐ OPERATOR PREFERAT „geo” (GEOMETRY CAS) — pentru ORICE figură PLANĂ cu NUMERE DATE (lungimi, unghiuri, arii, ' +
   'rapoarte, tangențe). NU plasezi NICIODATĂ coordonate. Emiți DOAR: entități + relații (construcție) + numerele DATE ' +
   '(constrângeri). Motorul calculează toate punctele prin FORMULE și RESPINGE automat dacă figura nu reproduce numerele.\n' +
@@ -144,6 +154,7 @@ export const TOOL: Anthropic.Messages.Tool = {
       reason: { type: 'string' },
       geo: { type: ['object', 'null'], description: 'GEOMETRY CAS 2D: build (constrângeri, ZERO coordonate) + givens (numerele din enunț). Preferat pentru figuri plane cu numere.', properties: { build: { type: 'array' }, givens: { type: 'array' } } },
       geo3d: { type: ['object', 'null'], description: 'GEOMETRY CAS 3D: solid din constrângeri (build) + solid{base,apex} + draw{segments,dihedral} + givens. Pentru piramide/corpuri cu numere date (diedru, apotemă, înălțime). ZERO coordonate.', properties: { build: { type: 'array' }, solid: { type: 'object' }, draw: { type: 'object' }, givens: { type: 'array' } } },
+      coneCut: { type: ['object', 'null'], description: 'Secțiune de con prin plan ∥ bază, după relația TIPIZATĂ. {cone:{radius,height}, by:{rel:"distanceApexToParallelPlane"|"lengthAlongGeneratrixFromApex", value}}.', properties: { cone: { type: 'object', properties: { radius: { type: 'number' }, height: { type: 'number' } } }, by: { type: 'object', properties: { rel: { type: 'string' }, value: { type: 'number' } } } } },
       spec2d: { type: ['object', 'null'], properties: { points: { type: 'array' }, elements: { type: 'array' }, intersections: {} } },
       body3d: {
         type: ['object', 'null'],
@@ -166,7 +177,7 @@ export const TOOL: Anthropic.Messages.Tool = {
   },
 };
 
-interface ModelOut { verdict?: string; reason?: string; geo?: GeoProblem | null; geo3d?: GeoProblem3D | null; spec2d?: unknown; body3d?: (Body3D & { kind?: string }) | null; scene?: Scene3D | null; body3d_name?: string; unsupported_relation?: string; render3d?: string; section?: { kind?: string; apothem?: number; angle?: number } }
+interface ModelOut { verdict?: string; reason?: string; geo?: GeoProblem | null; geo3d?: GeoProblem3D | null; coneCut?: { cone?: { radius?: number; height?: number }; by?: ConeCut } | null; spec2d?: unknown; body3d?: (Body3D & { kind?: string }) | null; scene?: Scene3D | null; body3d_name?: string; unsupported_relation?: string; render3d?: string; section?: { kind?: string; apothem?: number; angle?: number } }
 
 /** Verifică o figură 2D (structură + invariante) → {valid, error}. */
 function check2D(spec: FigureSpec2D): { valid: boolean; error: string | null } {
@@ -220,6 +231,16 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, valid: false, error: res.reason, diagnostic, cas: true, checks: res.checks });
       }
       return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, spec: res.spec, valid: true, error: null, cas: true, checks: res.checks });
+    }
+
+    // ── RELAȚIE TIPIZATĂ: secțiune de con poziționată după definiția canonică (distanță-la-plan vs lungime-pe-generatoare) ──
+    if (out.coneCut && out.coneCut.cone && out.coneCut.by && typeof out.coneCut.cone.radius === 'number' && typeof out.coneCut.cone.height === 'number') {
+      const { radius, height } = out.coneCut.cone; const by = out.coneCut.by as ConeCut;
+      const spec = coneSectionFigure(radius, height, by);
+      if (!spec) return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, valid: false, error: 'con/secțiune invalidă', diagnostic: 'coneCut: parametri invalizi', typed: true });
+      const v = verifyConeSection(radius, height, by, {}); // recompune din coordonate (plasa de siguranță)
+      const { valid, error } = check2D(spec);
+      return NextResponse.json({ dim: '2d', verdict: 'figurabil_2d', reason, spec, valid, error, typed: true, relation: by.rel, checks: v.checks });
     }
 
     // ── GEOMETRY CAS 3D (ETAPA 42): solid din constrângeri → proiecție + construcție auxiliară. Auto-respinge. ──
