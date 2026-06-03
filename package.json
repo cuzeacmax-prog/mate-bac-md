@@ -49,6 +49,8 @@
     "figura:autor": "tsx --env-file=.env.local scripts/figures/author.ts",
     "figura:coada": "tsx --env-file=.env.local scripts/figures/process-queue.ts",
     "figura:verifica-persistat": "tsx --env-file=.env.local scripts/figures/verify-persisted-construction.ts",
+    "figura:concepte": "tsx --env-file=.env.local scripts/figures/process-concepts.ts",
+    "figura:raport56": "tsx --env-file=.env.local scripts/figures/report56.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "figura:batch47": "tsx --env-file=.env.local scripts/figures/batch47.ts",

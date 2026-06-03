@@ -471,10 +471,14 @@ export type BuildStep3D =
   | { op: "regularPrism"; bottom: string[]; top: string[]; sides: number; baseEdge: number; height: number }
   /** Piramidă regulată (puncte explicite): bază regulată z=0 + apex pe axă la height. */
   | { op: "regularPyramidPts"; base: string[]; apex: string; sides: number; baseEdge: number; height: number }
+  /** Doar baza regulată (n-gon, z=0), fără apex — pt. apex rezolvat separat (ex. peste circumcentru). */
+  | { op: "regularBase"; ids: string[]; sides: number; baseEdge: number }
   /** Mijloc 3D. */
   | { op: "midpoint3"; id: string; of: [string, string] }
   /** Centroidul unei liste de puncte (ex. centrul unei baze regulate = media vârfurilor). */
-  | { op: "centroid3"; id: string; of: string[] };
+  | { op: "centroid3"; id: string; of: string[] }
+  /** Trapez ISOSCEL cu DIAGONALE PERPENDICULARE: baze AB=bottomBase ∥ DC=topBase; H=(a+b)/2; `inter`=AC∩BD. */
+  | { op: "isoTrapezoidPerpDiag"; ids: [string, string, string, string]; inter: string; bottomBase: number; topBase: number };
 
 export type Given3D =
   | { kind: "length3"; of: [string, string]; value: number }
@@ -561,6 +565,10 @@ export function solveConstraints3D(prob: GeoProblem3D): Store3D {
       const R = s.baseEdge / (2 * Math.sin(Math.PI / n)), t0 = Math.PI / n - Math.PI / 2;
       for (let i = 0; i < n; i++) { const t = t0 + (2 * Math.PI * i) / n; st.pts[s.base[i]] = [R * Math.cos(t), R * Math.sin(t), 0]; }
       st.pts[s.apex] = [0, 0, s.height];
+    } else if (s.op === "regularBase") {
+      const n = Math.floor(s.sides); if (n < 3 || s.ids.length < n) throw new Error("regularBase: ids insuficiente");
+      const R = s.baseEdge / (2 * Math.sin(Math.PI / n)), t0 = Math.PI / n - Math.PI / 2;
+      for (let i = 0; i < n; i++) { const t = t0 + (2 * Math.PI * i) / n; st.pts[s.ids[i]] = [R * Math.cos(t), R * Math.sin(t), 0]; }
     } else if (s.op === "midpoint3") {
       const a = need3(st, s.of[0]), b = need3(st, s.of[1]);
       st.pts[s.id] = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2];
@@ -569,6 +577,13 @@ export function solveConstraints3D(prob: GeoProblem3D): Store3D {
       const acc: Vec3 = [0, 0, 0];
       for (const id of s.of) { const p = need3(st, id); acc[0] += p[0]; acc[1] += p[1]; acc[2] += p[2]; }
       st.pts[s.id] = [acc[0] / s.of.length, acc[1] / s.of.length, acc[2] / s.of.length];
+    } else if (s.op === "isoTrapezoidPerpDiag") {
+      const a = s.bottomBase, b = s.topBase;
+      if (!(a > 0) || !(b > 0)) throw new Error("isoTrapezoidPerpDiag: baze pozitive necesare");
+      const H = (a + b) / 2; // trapez isoscel cu diagonale perpendiculare ⇒ înălțimea = semisuma bazelor
+      const [A, B, C, D] = s.ids;
+      st.pts[A] = [-a / 2, 0, 0]; st.pts[B] = [a / 2, 0, 0]; st.pts[C] = [b / 2, H, 0]; st.pts[D] = [-b / 2, H, 0];
+      st.pts[s.inter] = [0, (a * H) / (a + b), 0]; // AC ∩ BD pe axa de simetrie
     }
   }
   return st;
