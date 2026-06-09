@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { latexToSpeech } from '@/lib/voice/latex-to-speech';
+import { logApiUsage } from '@/lib/ai/usage-log';
+
+// OpenAI tts-1: $15.00 / 1M caractere (tokens_input = caractere pentru task 'tts')
+const TTS_PRICE_PER_CHAR = 15 / 1_000_000;
 
 /**
  * Elimină explicații redundante în formatul "ACRONIM (Explicație lungă)".
@@ -63,6 +67,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const ttsStart = Date.now();
     const ttsResponse = await fetch('https://api.openai.com/v1/audio/speech', {
       method: 'POST',
       headers: {
@@ -87,6 +92,19 @@ export async function POST(req: NextRequest) {
     // ETAPA 59 (P8): fără Cache-Control — răspunsurile POST nu se cache-uiesc
     // în browser; header-ul era inutil și inducea în eroare.
     const audioBlob = await ttsResponse.arrayBuffer();
+
+    // ETAPA 66 FAZA A: log TTS (tokens_input = caractere trimise la tts-1)
+    void logApiUsage({
+      userId: user.id,
+      taskName: 'tts',
+      model: 'tts-1',
+      endpoint: '/api/voice/synthesize',
+      inputTokens: speechText.length,
+      outputTokens: 0,
+      latencyMsTotal: Date.now() - ttsStart,
+      costUsd: speechText.length * TTS_PRICE_PER_CHAR,
+    });
+
     return new NextResponse(audioBlob, {
       headers: {
         'Content-Type': 'audio/mpeg',

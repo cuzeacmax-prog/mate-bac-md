@@ -1,0 +1,72 @@
+{
+  "generat_la": "2026-06-09T22:24:40.589Z",
+  "metoda": "măsurat: 10 mesaje live prin /api/chat (5 free + 5 premium), log din răspunsurile API",
+  "per_task": {
+    "embedding": {
+      "apeluri": 10,
+      "input_tokens_mediu": 44,
+      "output_tokens_mediu": 0,
+      "cached_input_total": 0,
+      "cost_mediu_usd": 0,
+      "ttfb_mediu_ms": null,
+      "latenta_totala_medie_ms": 401
+    },
+    "verify_math": {
+      "apeluri": 10,
+      "input_tokens_mediu": 1206,
+      "output_tokens_mediu": 50,
+      "cached_input_total": 0,
+      "cost_mediu_usd": 0.001455,
+      "ttfb_mediu_ms": null,
+      "latenta_totala_medie_ms": 1614
+    },
+    "chat_free": {
+      "apeluri": 5,
+      "input_tokens_mediu": 4661,
+      "output_tokens_mediu": 788,
+      "cached_input_total": 0,
+      "cost_mediu_usd": 0.008599,
+      "ttfb_mediu_ms": 1613,
+      "latenta_totala_medie_ms": 9952
+    },
+    "chat_premium": {
+      "apeluri": 5,
+      "input_tokens_mediu": 4819,
+      "output_tokens_mediu": 863,
+      "cached_input_total": 0,
+      "cost_mediu_usd": 0.027395,
+      "ttfb_mediu_ms": 1761,
+      "latenta_totala_medie_ms": 16476
+    },
+    "tts": {
+      "apeluri": 2,
+      "input_tokens_mediu": 115,
+      "output_tokens_mediu": 0,
+      "cached_input_total": 0,
+      "cost_mediu_usd": 0.001725,
+      "ttfb_mediu_ms": null,
+      "latenta_totala_medie_ms": 2935
+    }
+  },
+  "distributie_input_chat_free": {
+    "metoda": "Anthropic countTokens (același tokenizer) + medii din log",
+    "system_prompt_tokens": 3003,
+    "mesaj_tipic_tokens": 29,
+    "input_mediu_total_chat_free": 4661,
+    "istoric_si_context_tokens_mediu": 1629
+  },
+  "tts": {
+    "apeluri": 2,
+    "caractere_per_enunt": 115,
+    "cost_per_enunt_usd": 0.001725,
+    "latenta_ms": [
+      3561,
+      2308
+    ],
+    "nota": "măsurat live"
+  },
+  "client_side": {
+    "chat_free_ttfb_mediu_ms": 1976,
+    "chat_premium_ttfb_mediu_ms": 1896
+  }
+}

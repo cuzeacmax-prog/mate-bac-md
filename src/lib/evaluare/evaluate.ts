@@ -130,6 +130,7 @@ export async function evaluateAttempt(
       statement: exercise.statement,
       studentAnswer: detection.candidate,
       officialAnswer,
+      userId,
     });
     if (!verdict) return null; // judecătorul a eșuat — fără verdict, fără mastery
     evaluation = {

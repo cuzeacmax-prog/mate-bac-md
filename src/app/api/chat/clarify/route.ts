@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { CLARIFY_SYSTEM_PROMPT } from '@/lib/ai/system-prompt';
-import { callAIStream } from '@/lib/ai/router';
+import { callAIStream, getTaskPricing } from '@/lib/ai/router';
+import { logApiUsage, computeLlmCost } from '@/lib/ai/usage-log';
 
 export const dynamic = 'force-dynamic';
 
@@ -77,6 +78,7 @@ Răspunde concis, pedagogic, DOAR la întrebare.`;
 
   // ── Stream SSE ─────────────────────────────────────────────────────
   const encoder = new TextEncoder();
+  const requestStart = Date.now();
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -89,13 +91,44 @@ Răspunde concis, pedagogic, DOAR la întrebare.`;
           { system: CLARIFY_SYSTEM_PROMPT }
         );
 
+        let ttfbMs: number | null = null;
         for await (const chunk of result.textStream) {
           if (typeof chunk !== 'string') continue;
+          if (ttfbMs === null) ttfbMs = Date.now() - requestStart;
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: chunk })}\n\n`));
         }
 
         controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true })}\n\n`));
         controller.close();
+
+        // ETAPA 66 FAZA A: logarea apelului (tokens + cache + latență din API)
+        try {
+          const usage = await result.usage;
+          const pricing = await getTaskPricing(taskName);
+          const inputTokens = usage.inputTokens ?? 0;
+          const outputTokens = usage.outputTokens ?? 0;
+          const cacheRead = usage.inputTokenDetails?.cacheReadTokens ?? 0;
+          const cacheWrite = usage.inputTokenDetails?.cacheWriteTokens ?? 0;
+          void logApiUsage({
+            userId: user.id,
+            taskName,
+            model: pricing.model_name,
+            endpoint: '/api/chat/clarify',
+            inputTokens,
+            outputTokens,
+            cachedInputTokens: cacheRead,
+            latencyMsTotal: Date.now() - requestStart,
+            latencyMsTtfb: ttfbMs,
+            costUsd: computeLlmCost({
+              inputTokens, outputTokens,
+              cacheReadTokens: cacheRead, cacheWriteTokens: cacheWrite,
+              priceInputPer1M: pricing.price_input_per_1m,
+              priceOutputPer1M: pricing.price_output_per_1m,
+            }),
+          });
+        } catch (logErr) {
+          console.error('[clarify] usage log failed:', logErr instanceof Error ? logErr.message : logErr);
+        }
       } catch (err) {
         const msg = err instanceof Error ? err.message : 'Eroare AI';
         console.error('[clarify] stream error:', err);

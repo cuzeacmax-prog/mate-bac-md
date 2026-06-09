@@ -2,6 +2,7 @@ import { streamText, generateText, stepCountIs, type ToolSet } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { google } from "@ai-sdk/google";
 import { createServiceClient } from "@/lib/supabase/service";
+import { logApiUsage, computeLlmCost } from "./usage-log";
 import type { AiMessage, ModelConfig } from "./router.types";
 
 const configCache = new Map<string, { config: ModelConfig; expires: number }>();
@@ -58,11 +59,12 @@ export async function callAIStream(
 export async function callAI(
   taskName: string,
   messages: AiMessage[],
-  options?: { system?: string }
+  options?: { system?: string; userId?: string | null; endpoint?: string }
 ): Promise<{ text: string; inputTokens: number; outputTokens: number }> {
   const config = await getModelConfig(taskName);
   const model = buildModel(config);
 
+  const start = Date.now();
   const result = await generateText({
     model,
     system: options?.system,
@@ -70,11 +72,37 @@ export async function callAI(
     maxOutputTokens: config.max_tokens || undefined,
     temperature: config.temperature,
   });
+  const latencyMs = Date.now() - start;
+
+  // ETAPA 66 FAZA A: fiecare apel non-stream se loghează aici, central —
+  // cifrele vin din usage-ul răspunsului API, nu sunt estimate.
+  const inputTokens = result.usage.inputTokens ?? 0;
+  const outputTokens = result.usage.outputTokens ?? 0;
+  const cacheRead = result.usage.inputTokenDetails?.cacheReadTokens ?? 0;
+  const cacheWrite = result.usage.inputTokenDetails?.cacheWriteTokens ?? 0;
+  void logApiUsage({
+    userId: options?.userId ?? null,
+    taskName,
+    model: config.model_name,
+    endpoint: options?.endpoint ?? `task:${taskName}`,
+    inputTokens,
+    outputTokens,
+    cachedInputTokens: cacheRead,
+    latencyMsTotal: latencyMs,
+    costUsd: computeLlmCost({
+      inputTokens,
+      outputTokens,
+      cacheReadTokens: cacheRead,
+      cacheWriteTokens: cacheWrite,
+      priceInputPer1M: config.price_input_per_1m,
+      priceOutputPer1M: config.price_output_per_1m,
+    }),
+  });
 
   return {
     text: result.text,
-    inputTokens: result.usage.inputTokens ?? 0,
-    outputTokens: result.usage.outputTokens ?? 0,
+    inputTokens,
+    outputTokens,
   };
 }
 

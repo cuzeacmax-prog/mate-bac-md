@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { STUDY_SYSTEM_PROMPT, SOLVE_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
 import { callAIStream, callAIStreamWithTools, getTaskPricing } from "@/lib/ai/router";
+import { computeLlmCost } from "@/lib/ai/usage-log";
 import { generateEmbeddingForQuery } from "@/lib/embeddings/gemini";
 import {
   findRelevantMethods,
@@ -65,6 +66,8 @@ async function lookupLibrary(message: string): Promise<{ match: RagMatch | null;
 
 export async function POST(req: NextRequest) {
   console.log("[chat/route] POST started");
+  // ETAPA 66 FAZA A: latența se măsoară de la intrarea în handler
+  const requestStart = Date.now();
 
   // ── Auth ────────────────────────────────────────────────────────
   const supabase = await createClient();
@@ -285,6 +288,13 @@ export async function POST(req: NextRequest) {
   let assistantText = "";
   let inputTokens = 0;
   let outputTokens = 0;
+  // ETAPA 66 FAZA A: TTFB (primul chunk de text) + tokeni cache din usage
+  let ttfbMs: number | null = null;
+  let cacheReadTokens = 0;
+  let cacheWriteTokens = 0;
+  const markTtfb = () => {
+    if (ttfbMs === null) ttfbMs = Date.now() - requestStart;
+  };
 
   const stream = new ReadableStream({
     async start(controller) {
@@ -362,6 +372,7 @@ export async function POST(req: NextRequest) {
                   // Guard: ensure we have a real string — SDK may surprise at runtime
                   const chunk = event.text;
                   if (typeof chunk !== 'string') continue;
+                  markTtfb();
                   exText += chunk;
                   assistantText += chunk;
                   controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: chunk })}\n\n`));
@@ -385,6 +396,8 @@ export async function POST(req: NextRequest) {
               const exUsage = await exResult.usage;
               inputTokens += exUsage.inputTokens ?? 0;
               outputTokens += exUsage.outputTokens ?? 0;
+              cacheReadTokens += exUsage.inputTokenDetails?.cacheReadTokens ?? 0;
+              cacheWriteTokens += exUsage.inputTokenDetails?.cacheWriteTokens ?? 0;
             }
 
             console.log(`[chat/route] multi-exercise complete. exercises=${decomposed.exercises.length} svgs=${allSvgs.length}`);
@@ -422,6 +435,7 @@ export async function POST(req: NextRequest) {
                   // Guard: ensure we have a real string — SDK may surprise at runtime
                   const chunk = event.text;
                   if (typeof chunk !== 'string') continue;
+                  markTtfb();
                   assistantText += chunk;
                   chunkCount++;
                   controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: chunk })}\n\n`));
@@ -439,6 +453,7 @@ export async function POST(req: NextRequest) {
             } else {
               // No tools: use textStream (simpler)
               for await (const chunk of result.textStream) {
+                markTtfb();
                 assistantText += chunk;
                 chunkCount++;
                 controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: chunk })}\n\n`));
@@ -448,6 +463,8 @@ export async function POST(req: NextRequest) {
             const usage = await result.usage;
             inputTokens = usage.inputTokens ?? 0;
             outputTokens = usage.outputTokens ?? 0;
+            cacheReadTokens = usage.inputTokenDetails?.cacheReadTokens ?? 0;
+            cacheWriteTokens = usage.inputTokenDetails?.cacheWriteTokens ?? 0;
 
             console.log(`[chat/route] stream complete. task=${taskName} chunks=${chunkCount} svgs=${svgOutputs.length} in=${inputTokens} out=${outputTokens}`);
 
@@ -565,13 +582,18 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      // ── Cost log (only for AI calls) ────────────────────────────
+      // ── Cost log (only for AI calls) — ETAPA 66: + latență + cache ──
       if (!isDirectMatch && inputTokens > 0) {
         try {
           const pricing = await getTaskPricing(taskName);
-          const cost =
-            (inputTokens / 1_000_000) * pricing.price_input_per_1m +
-            (outputTokens / 1_000_000) * pricing.price_output_per_1m;
+          const cost = computeLlmCost({
+            inputTokens,
+            outputTokens,
+            cacheReadTokens,
+            cacheWriteTokens,
+            priceInputPer1M: pricing.price_input_per_1m,
+            priceOutputPer1M: pricing.price_output_per_1m,
+          });
 
           const { error: logErr } = await service.from("api_usage_log").insert({
             user_id: user.id,
@@ -579,6 +601,9 @@ export async function POST(req: NextRequest) {
             task_name: taskName,
             tokens_input: inputTokens,
             tokens_output: outputTokens,
+            cached_input_tokens: cacheReadTokens,
+            latency_ms_total: Date.now() - requestStart,
+            latency_ms_ttfb: ttfbMs,
             cost_usd: cost,
             endpoint: "/api/chat",
           });

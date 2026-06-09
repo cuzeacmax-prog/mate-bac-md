@@ -33,6 +33,8 @@ export async function judgeAnswer(params: {
   statement: string;
   studentAnswer: string;
   officialAnswer?: string | null;
+  /** pentru atribuirea costului în api_usage_log */
+  userId?: string | null;
 }): Promise<JudgeVerdict | null> {
   const { statement, studentAnswer, officialAnswer } = params;
   const userContent = [
@@ -46,6 +48,7 @@ export async function judgeAnswer(params: {
   try {
     const result = await callAI("judge_answer", [{ role: "user", content: userContent }], {
       system: JUDGE_SYSTEM,
+      userId: params.userId ?? null,
     });
     const raw = result.text.trim().replace(/^```(json)?\s*/i, "").replace(/```\s*$/, "");
     const parsed: unknown = JSON.parse(raw);
