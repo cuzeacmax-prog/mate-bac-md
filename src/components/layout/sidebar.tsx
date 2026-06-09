@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MessageSquare, Dumbbell, ClipboardList, BarChart2, Camera } from "lucide-react";
+import { MessageSquare, Dumbbell, ClipboardList, BarChart2, Camera, CalendarCheck } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
+  { href: "/app/azi",       label: "Azi",        icon: CalendarCheck, disabled: false },
   { href: "/app",           label: "Chat",       icon: MessageSquare, disabled: false },
   { href: "/app/practice",  label: "Exerciții",  icon: Dumbbell,      disabled: true  },
   { href: "/app/simulare",  label: "Simulare",   icon: ClipboardList, disabled: true  },
