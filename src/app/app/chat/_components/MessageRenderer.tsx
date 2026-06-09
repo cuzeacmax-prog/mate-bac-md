@@ -3,6 +3,7 @@
 import React, { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
+import remarkGfm from "remark-gfm"; // ETAPA 67 D2: tabele markdown în chatul liber
 import rehypeKatex from "rehype-katex";
 import type { Components } from "react-markdown";
 
@@ -137,7 +138,7 @@ const MarkdownBlock = React.memo(function MarkdownBlock({ content }: { content: 
   __blockRenderCounter.count++;
   return (
     <ReactMarkdown
-      remarkPlugins={[remarkMath]}
+      remarkPlugins={[remarkMath, remarkGfm]}
       rehypePlugins={[[rehypeKatex, KATEX_OPTIONS]]}
       components={COMPONENTS_STATIC}
     >
@@ -168,7 +169,7 @@ export function MessageRenderer({ content, isStreaming }: Props) {
       ))}
       {tailBlock !== null && (
         <ReactMarkdown
-          remarkPlugins={[remarkMath]}
+          remarkPlugins={[remarkMath, remarkGfm]}
           rehypePlugins={[[rehypeKatex, KATEX_OPTIONS]]}
           components={COMPONENTS_STREAMING}
         >

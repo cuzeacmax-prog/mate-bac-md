@@ -1,7 +1,9 @@
 import { ChatSidebarPanel } from "./_components/ChatSidebarPanel";
-import { ChatView } from "./_components/ChatView";
+import { LessonOrChat } from "./_components/LessonOrChat";
+import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { getConceptAnchor, buildIntroMessage } from "@/lib/concepts/anchor";
+import { chisinauToday, computeStreak } from "@/lib/daily/daily";
 import type { ChatMessage } from "./_components/ChatMessages";
 
 export const dynamic = "force-dynamic";
@@ -38,10 +40,18 @@ export default async function NewChatPage({
     }
   }
 
+  // ETAPA 67 FAZA C: streak-ul pentru micro-celebrarea din player
+  let streak = 0;
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) streak = await computeStreak(createServiceClient(), user.id, chisinauToday());
+  } catch { /* streak e decorativ aici */ }
+
   return (
     <>
       <ChatSidebarPanel />
-      <ChatView initialMessages={initialMessages} conceptSlug={anchorSlug} />
+      <LessonOrChat initialMessages={initialMessages} conceptSlug={anchorSlug} streak={streak} />
     </>
   );
 }
