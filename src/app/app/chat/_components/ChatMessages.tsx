@@ -8,6 +8,14 @@ export interface VerificationMeta {
   confidence: number;
 }
 
+/** ETAPA 63: verdictul evaluării încercării elevului (chat ancorat) */
+export interface AttemptMeta {
+  /** null = evaluat fără verdict de încredere (mastery neatins) */
+  correct: boolean | null;
+  method: "determinist" | "judecator";
+  confidence: number;
+}
+
 export interface ChatMetadata {
   method_used?: string | null;
   method_similarity?: number | null;
@@ -17,6 +25,8 @@ export interface ChatMetadata {
   svgs?: string[];
   /** Verificare matematică silențioasă (Haiku) */
   verification?: VerificationMeta | null;
+  /** ETAPA 63: verdictul încercării (atașat mesajului elevului) */
+  attempt?: AttemptMeta | null;
 }
 
 export interface ChatMessage {

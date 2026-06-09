@@ -113,6 +113,24 @@ export function useChat({
                 onConversationCreated?.(newConvId);
               }
             }
+            // ETAPA 63: verdictul încercării sosește DUPĂ done — patch pe
+            // metadata ultimului mesaj al ELEVULUI (feedback discret sub mesaj).
+            if (json.attempt) {
+              const attempt = json.attempt as NonNullable<ChatMetadata["attempt"]>;
+              setMessages((prev) => {
+                const next = [...prev];
+                for (let i = next.length - 1; i >= 0; i--) {
+                  if (next[i].role === "user") {
+                    next[i] = {
+                      ...next[i],
+                      metadata: { ...(next[i].metadata ?? {}), attempt } as ChatMetadata,
+                    };
+                    break;
+                  }
+                }
+                return next;
+              });
+            }
             // ETAPA 59 (P5): verificarea sosește DUPĂ done, ca eveniment separat —
             // patch pe metadata ultimului mesaj de asistent, fără să blocheze UI-ul.
             if (json.verification) {

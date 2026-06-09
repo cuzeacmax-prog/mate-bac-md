@@ -13,8 +13,9 @@ import {
 import { decomposeQuery, type DecomposedQuery } from "@/lib/chat/query-decomposer";
 import { resolveToolsForMethod, hasTools } from "@/lib/tools/tool-resolver";
 import { verifyMath, type VerificationResult } from "@/lib/chat/math-verifier";
-import { getConceptAnchor, buildConceptSystemAddendum } from "@/lib/concepts/anchor";
+import { getConceptAnchor, buildConceptSystemAddendum, type ConceptAnchor } from "@/lib/concepts/anchor";
 import { recordConceptEvidence } from "@/lib/mastery/evidence";
+import { pickCurrentExercise, evaluateAttempt, type AttemptEvaluation } from "@/lib/evaluare/evaluate";
 
 const FREE_MONTHLY_LIMIT = 30;
 const IS_DEV = process.env.NODE_ENV === "development";
@@ -211,18 +212,42 @@ export async function POST(req: NextRequest) {
   // ── ETAPA 60 (PAS 5): sesiune ancorată în concept din graf ─────
   // Teoria conceptului (max 2000 chars) + exerciții DOAR verificate.
   let anchoredConceptSlug: string | null = null;
+  let conceptAnchor: ConceptAnchor | null = null;
   if (conceptSlug) {
     try {
       const anchor = await getConceptAnchor(createServiceClient(), conceptSlug);
       if (anchor) {
         systemPrompt += `\n${buildConceptSystemAddendum(anchor)}`;
         anchoredConceptSlug = anchor.slug;
+        conceptAnchor = anchor;
       } else {
         console.error(`[chat/route] concept inexistent în graf, ignorat: ${conceptSlug}`);
       }
     } catch (err) {
       console.error("[chat/route] concept anchor failed:", err instanceof Error ? err.message : err);
     }
+  }
+
+  // ── ETAPA 63: evaluarea încercării rulează CONCURENT cu stream-ul ─────
+  // (Nivel A determinist pe linkuri strict-bijectiv, altfel judecător Haiku
+  //  izolat — vede DOAR enunț + răspuns elev + răspuns oficial.)
+  let attemptPromise: Promise<AttemptEvaluation | null> | null = null;
+  if (conceptAnchor && conceptAnchor.exercises.length > 0) {
+    const anchorForEval = conceptAnchor;
+    attemptPromise = (async () => {
+      const service = createServiceClient();
+      const exercise = await pickCurrentExercise(service, user.id, convId, anchorForEval);
+      if (!exercise) return null;
+      return evaluateAttempt(service, {
+        userId: user.id,
+        conversationId: convId,
+        message,
+        exercise,
+      });
+    })().catch((err) => {
+      console.error("[chat/route] attempt evaluation failed:", err instanceof Error ? err.message : err);
+      return null;
+    });
   }
 
   // ── Multi-exercise decompose (regex fast-path → Haiku) ────────
@@ -467,6 +492,32 @@ export async function POST(req: NextRequest) {
             }
           }
 
+          // ── ETAPA 63: verdictul încercării — eveniment separat, după done ──
+          if (attemptPromise) {
+            try {
+              const evaluation = await Promise.race([
+                attemptPromise,
+                new Promise<null>((resolve) => setTimeout(() => resolve(null), 8000)),
+              ]);
+              if (evaluation) {
+                console.log(`[chat/route] attempt evaluated: method=${evaluation.method} correct=${evaluation.correct} confidence=${evaluation.confidence.toFixed(2)}`);
+                controller.enqueue(
+                  encoder.encode(
+                    `data: ${JSON.stringify({
+                      attempt: {
+                        correct: evaluation.correct,
+                        method: evaluation.method,
+                        confidence: evaluation.confidence,
+                      },
+                    })}\n\n`
+                  )
+                );
+              }
+            } catch (aErr) {
+              console.warn("[chat/route] attempt event skipped:", aErr instanceof Error ? aErr.message : aErr);
+            }
+          }
+
           controller.close();
         } catch (err) {
           const msg = err instanceof Error ? err.message : "Eroare AI";
@@ -553,13 +604,19 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      // ── ETAPA 60 (PAS 5): urmă de evidență pentru sesiunea ancorată ──
-      // ONEST: corectitudinea încercării elevului NU e evaluată aici →
-      // correct=null = mastery NEatins; doar evidence_count/last_evidence_at/source.
-      // (Evaluarea încercărilor = etapă viitoare, marcată în raport.)
+      // ── ETAPA 60 (PAS 5) + ETAPA 63: evidență pentru sesiunea ancorată ──
+      // Cu verdict de încredere (determinist sau judecător ≥ 0.8) → EMA se mișcă;
+      // fără verdict → correct=null = doar urmă de expunere (mastery neatins).
       if (anchoredConceptSlug) {
         try {
-          await recordConceptEvidence(service, user.id, [anchoredConceptSlug], null, "chat");
+          const evaluation = attemptPromise ? await attemptPromise : null;
+          await recordConceptEvidence(
+            service,
+            user.id,
+            [anchoredConceptSlug],
+            evaluation?.correct ?? null,
+            "chat"
+          );
         } catch (err) {
           console.error("[chat/route] chat evidence failed:", err instanceof Error ? err.message : err);
         }

@@ -77,6 +77,7 @@
     "jsxgraph": "^1.12.2",
     "katex": "^0.16.47",
     "lucide-react": "^1.16.0",
+    "mathjs": "^15.2.0",
     "mupdf": "^1.27.0",
     "next": "16.2.6",
     "next-themes": "^0.4.6",
