@@ -19,6 +19,7 @@ import { getConceptAnchor, buildConceptSystemAddendum, type ConceptAnchor } from
 import { recordConceptEvidence } from "@/lib/mastery/evidence";
 import { pickCurrentExercise, evaluateAttempt, type AttemptEvaluation } from "@/lib/evaluare/evaluate";
 import { buildConversationHistory, type ConversationHistory } from "@/lib/chat/history";
+import { checkCostGuard, maybeWriteDailyCostAlert, KILL_SWITCH_MESSAGE } from "@/lib/cost/guard";
 
 const FREE_MONTHLY_LIMIT = 30;
 const IS_DEV = process.env.NODE_ENV === "development";
@@ -120,10 +121,18 @@ export async function POST(req: NextRequest) {
     status === "premium" || status.startsWith("family") || status === "admin";
 
   // ── Task name based on tier ─────────────────────────────────────
-  const taskName =
+  const tierTask =
     status === "admin" ? "chat_admin"
     : status === "premium" || status.startsWith("family") ? "chat_premium"
     : "chat_free";
+
+  // ── ETAPA 66 F1: gardul de cost (kill-switch + buget lunar per tier) ──
+  const guard = await checkCostGuard(createServiceClient(), user.id, tierTask, status);
+  if (!guard.allowed) {
+    return NextResponse.json({ error: guard.notice ?? KILL_SWITCH_MESSAGE }, { status: 503 });
+  }
+  const taskName = guard.effectiveTask;
+  const budgetNotice = guard.notice;
 
   const { match: ragMatch, embedding: queryEmbedding } = libraryResult;
   const isDirectMatch = ragMatch !== null && ragMatch.similarity >= RAG_DIRECT_THRESHOLD;
@@ -302,6 +311,12 @@ export async function POST(req: NextRequest) {
   const stream = new ReadableStream({
     async start(controller) {
       controller.enqueue(encoder.encode(`data: ${JSON.stringify({ ping: true })}\n\n`));
+
+      // ETAPA 66 F1: nota politicoasă de downgrade (peste buget) — în mesaj, nu tăcere
+      if (budgetNotice) {
+        assistantText += budgetNotice;
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: budgetNotice })}\n\n`));
+      }
 
       // ── Direct library match — no AI call ───────────────────────
       if (isDirectMatch && ragMatch) {
@@ -639,6 +654,9 @@ export async function POST(req: NextRequest) {
           console.error("[chat/route] increment_rate_limit threw:", err instanceof Error ? err.stack : err);
         }
       }
+
+      // ── ETAPA 66 F3: alerta de cost zilnic (o dată pe zi, best-effort) ──
+      void maybeWriteDailyCostAlert(service);
 
       // ── ETAPA 60 (PAS 5) + ETAPA 63: evidență pentru sesiunea ancorată ──
       // Cu verdict de încredere (determinist sau judecător ≥ 0.8) → EMA se mișcă;
