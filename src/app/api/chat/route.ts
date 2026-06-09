@@ -13,6 +13,8 @@ import {
 import { decomposeQuery, type DecomposedQuery } from "@/lib/chat/query-decomposer";
 import { resolveToolsForMethod, hasTools } from "@/lib/tools/tool-resolver";
 import { verifyMath, type VerificationResult } from "@/lib/chat/math-verifier";
+import { getConceptAnchor, buildConceptSystemAddendum } from "@/lib/concepts/anchor";
+import { recordConceptEvidence } from "@/lib/mastery/evidence";
 
 const FREE_MONTHLY_LIMIT = 30;
 const IS_DEV = process.env.NODE_ENV === "development";
@@ -74,7 +76,7 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Parse body ──────────────────────────────────────────────────
-  let body: { message: string; conversationId?: string; mode?: string };
+  let body: { message: string; conversationId?: string; mode?: string; concept?: string };
   try {
     body = await req.json();
   } catch (err) {
@@ -82,7 +84,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Body invalid" }, { status: 400 });
   }
 
-  const { message, conversationId, mode } = body;
+  const { message, conversationId, mode, concept: conceptSlug } = body;
   const chatMode: 'study' | 'solve' = mode === 'solve' ? 'solve' : 'study';
   if (!message?.trim()) {
     return NextResponse.json({ error: "Mesaj gol" }, { status: 400 });
@@ -204,6 +206,23 @@ export async function POST(req: NextRequest) {
   // Injectează exercițiu similar dacă există (context match)
   if (isContextMatch && ragMatch) {
     systemPrompt += `\n\n---\nContext relevant din biblioteca de exerciții (similaritate ${(ragMatch.similarity * 100).toFixed(0)}%):\nExercițiu: ${ragMatch.statement}\nSoluție: ${ragMatch.solution}`;
+  }
+
+  // ── ETAPA 60 (PAS 5): sesiune ancorată în concept din graf ─────
+  // Teoria conceptului (max 2000 chars) + exerciții DOAR verificate.
+  let anchoredConceptSlug: string | null = null;
+  if (conceptSlug) {
+    try {
+      const anchor = await getConceptAnchor(createServiceClient(), conceptSlug);
+      if (anchor) {
+        systemPrompt += `\n${buildConceptSystemAddendum(anchor)}`;
+        anchoredConceptSlug = anchor.slug;
+      } else {
+        console.error(`[chat/route] concept inexistent în graf, ignorat: ${conceptSlug}`);
+      }
+    } catch (err) {
+      console.error("[chat/route] concept anchor failed:", err instanceof Error ? err.message : err);
+    }
   }
 
   // ── Multi-exercise decompose (regex fast-path → Haiku) ────────
@@ -531,6 +550,18 @@ export async function POST(req: NextRequest) {
           }
         } catch (err) {
           console.error("[chat/route] increment_rate_limit threw:", err instanceof Error ? err.stack : err);
+        }
+      }
+
+      // ── ETAPA 60 (PAS 5): urmă de evidență pentru sesiunea ancorată ──
+      // ONEST: corectitudinea încercării elevului NU e evaluată aici →
+      // correct=null = mastery NEatins; doar evidence_count/last_evidence_at/source.
+      // (Evaluarea încercărilor = etapă viitoare, marcată în raport.)
+      if (anchoredConceptSlug) {
+        try {
+          await recordConceptEvidence(service, user.id, [anchoredConceptSlug], null, "chat");
+        } catch (err) {
+          console.error("[chat/route] chat evidence failed:", err instanceof Error ? err.message : err);
         }
       }
     },

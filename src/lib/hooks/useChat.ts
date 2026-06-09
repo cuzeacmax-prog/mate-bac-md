@@ -7,6 +7,8 @@ interface UseChatOptions {
   conversationId?: string;
   initialMessages?: ChatMessage[];
   mode?: 'study' | 'solve';
+  /** ETAPA 60: sesiune ancorată într-un concept din graf (slug) */
+  conceptSlug?: string;
   onRateLimit?: () => void;
   onConversationCreated?: (id: string) => void;
 }
@@ -15,6 +17,7 @@ export function useChat({
   conversationId: initialConvId,
   initialMessages = [],
   mode = 'study',
+  conceptSlug,
   onRateLimit,
   onConversationCreated,
 }: UseChatOptions = {}) {
@@ -42,7 +45,7 @@ export function useChat({
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: text, conversationId: convId, mode }),
+          body: JSON.stringify({ message: text, conversationId: convId, mode, concept: conceptSlug }),
         });
 
         if (res.status === 429) {
@@ -137,7 +140,7 @@ export function useChat({
         setStreamingContent("");
       }
     },
-    [convId, mode, isStreaming, onRateLimit, onConversationCreated]
+    [convId, mode, conceptSlug, isStreaming, onRateLimit, onConversationCreated]
   );
 
   return {

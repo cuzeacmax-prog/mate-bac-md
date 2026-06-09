@@ -12,9 +12,11 @@ import type { ChatMessage } from "./ChatMessages";
 interface Props {
   conversationId?: string;
   initialMessages?: ChatMessage[];
+  /** ETAPA 60: sesiune ancorată într-un concept din graf (slug) */
+  conceptSlug?: string;
 }
 
-export function ChatView({ conversationId, initialMessages }: Props) {
+export function ChatView({ conversationId, initialMessages, conceptSlug }: Props) {
   const router = useRouter();
   const [inputValue, setInputValue] = useState("");
   const [showRateLimitModal, setShowRateLimitModal] = useState(false);
@@ -24,6 +26,7 @@ export function ChatView({ conversationId, initialMessages }: Props) {
     conversationId,
     initialMessages,
     mode,
+    conceptSlug,
     onRateLimit: () => setShowRateLimitModal(true),
     onConversationCreated: (id) => {
       router.replace(`/app/chat/${id}`, { scroll: false });
