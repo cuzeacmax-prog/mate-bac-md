@@ -4,6 +4,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { STUDY_SYSTEM_PROMPT, SOLVE_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
 import { callAIStream, callAIStreamWithTools, getTaskPricing } from "@/lib/ai/router";
 import { computeLlmCost } from "@/lib/ai/usage-log";
+import type { SystemBlock } from "@/lib/ai/router.types";
 import { generateEmbeddingForQuery } from "@/lib/embeddings/gemini";
 import {
   findRelevantMethods,
@@ -198,29 +199,22 @@ export async function POST(req: NextRequest) {
     return serverError("user message insert", userMsgErr);
   }
 
-  // ── System prompt — mode-specific + inject metode BAC MD + context RAG ──
-  let systemPrompt = chatMode === 'solve' ? SOLVE_SYSTEM_PROMPT : STUDY_SYSTEM_PROMPT;
-
-  // Injectează instrucțiunile metodei detectate (via helper din solution-methods.ts)
-  const methodInstruction = buildMultiMethodInstruction(relevantMethods);
-  if (methodInstruction) {
-    systemPrompt += `\n\n${methodInstruction}`;
-  }
-
-  // Injectează exercițiu similar dacă există (context match)
-  if (isContextMatch && ragMatch) {
-    systemPrompt += `\n\n---\nContext relevant din biblioteca de exerciții (similaritate ${(ragMatch.similarity * 100).toFixed(0)}%):\nExercițiu: ${ragMatch.statement}\nSoluție: ${ragMatch.solution}`;
-  }
+  // ── System prompt pe BLOCURI (ETAPA 66 FAZA B — prompt caching) ──
+  // Bloc 1 STATIC (cache): promptul de bază al modului — identic pentru toți.
+  // Bloc 2 SEMI-STATIC (cache): ancora conceptului — stabilă pe conversație.
+  // Bloc 3 DINAMIC (necacheat): metodele + contextul RAG — variază per mesaj.
+  const basePrompt = chatMode === 'solve' ? SOLVE_SYSTEM_PROMPT : STUDY_SYSTEM_PROMPT;
 
   // ── ETAPA 60 (PAS 5): sesiune ancorată în concept din graf ─────
-  // Teoria conceptului (max 2000 chars) + exerciții DOAR verificate.
+  // Teoria conceptului (max 2000 chars) + exerciții servibile.
   let anchoredConceptSlug: string | null = null;
   let conceptAnchor: ConceptAnchor | null = null;
+  let anchorAddendum = "";
   if (conceptSlug) {
     try {
       const anchor = await getConceptAnchor(createServiceClient(), conceptSlug);
       if (anchor) {
-        systemPrompt += `\n${buildConceptSystemAddendum(anchor)}`;
+        anchorAddendum = buildConceptSystemAddendum(anchor);
         anchoredConceptSlug = anchor.slug;
         conceptAnchor = anchor;
       } else {
@@ -230,6 +224,22 @@ export async function POST(req: NextRequest) {
       console.error("[chat/route] concept anchor failed:", err instanceof Error ? err.message : err);
     }
   }
+
+  // Bloc 3: metodele detectate + exercițiul similar din bibliotecă (per mesaj)
+  let dynamicAddendum = "";
+  const methodInstruction = buildMultiMethodInstruction(relevantMethods);
+  if (methodInstruction) {
+    dynamicAddendum += `\n\n${methodInstruction}`;
+  }
+  if (isContextMatch && ragMatch) {
+    dynamicAddendum += `\n\n---\nContext relevant din biblioteca de exerciții (similaritate ${(ragMatch.similarity * 100).toFixed(0)}%):\nExercițiu: ${ragMatch.statement}\nSoluție: ${ragMatch.solution}`;
+  }
+
+  const systemBlocks: SystemBlock[] = [
+    { text: basePrompt, cache: true },
+    ...(anchorAddendum ? [{ text: anchorAddendum, cache: true }] : []),
+    ...(dynamicAddendum ? [{ text: dynamicAddendum }] : []),
+  ];
 
   // ── ETAPA 63: evaluarea încercării rulează CONCURENT cu stream-ul ─────
   // (Nivel A determinist pe linkuri strict-bijectiv, altfel judecător Haiku
@@ -345,7 +355,8 @@ export async function POST(req: NextRequest) {
 
             for (const ex of decomposed.exercises) {
               // RAG pentru sub-exercițiu (refolosim embedding global dacă textul e similar)
-              let exSystemPrompt = chatMode === 'solve' ? SOLVE_SYSTEM_PROMPT : STUDY_SYSTEM_PROMPT;
+              // bloc static cache-uit + metoda per sub-exercițiu necacheată
+              let exMethodAddendum = '';
               let exTools = {};
 
               // Metodă specifică sub-exercițiului (Gemini call per exercițiu)
@@ -354,7 +365,7 @@ export async function POST(req: NextRequest) {
                   const exEmbedding = await generateEmbeddingForQuery(ex.text);
                   const exMethods = await findRelevantMethods(exEmbedding, { threshold: METHOD_THRESHOLD, limit: 1 });
                   if (exMethods.length > 0) {
-                    exSystemPrompt += `\n\n${buildMethodInstruction(exMethods[0])}`;
+                    exMethodAddendum += `\n\n${buildMethodInstruction(exMethods[0])}`;
                     exTools = resolveToolsForMethod(exMethods[0].required_tools, exMethods[0].exercise_type);
                   }
                 } catch { /* continue without method */ }
@@ -363,7 +374,14 @@ export async function POST(req: NextRequest) {
               const exResult = await callAIStreamWithTools(
                 taskName,
                 [...priorMessages, { role: "user", content: ex.text }],
-                { system: exSystemPrompt, tools: Object.keys(exTools).length > 0 ? exTools : undefined, maxToolSteps: 3 }
+                {
+                  system: [
+                    { text: basePrompt, cache: true },
+                    ...(exMethodAddendum ? [{ text: exMethodAddendum }] : []),
+                  ] satisfies SystemBlock[],
+                  tools: Object.keys(exTools).length > 0 ? exTools : undefined,
+                  maxToolSteps: 3,
+                }
               );
 
               let exText = '';
@@ -423,8 +441,8 @@ export async function POST(req: NextRequest) {
             const svgOutputs: string[] = [];
 
             const result = toolsAvailable
-              ? await callAIStreamWithTools(taskName, [...priorMessages, { role: "user", content: message }], { system: systemPrompt, tools: toolsToUse, maxToolSteps: 3 })
-              : await callAIStream(taskName, [...priorMessages, { role: "user", content: message }], { system: systemPrompt });
+              ? await callAIStreamWithTools(taskName, [...priorMessages, { role: "user", content: message }], { system: systemBlocks, tools: toolsToUse, maxToolSteps: 3 })
+              : await callAIStream(taskName, [...priorMessages, { role: "user", content: message }], { system: systemBlocks });
 
             let chunkCount = 0;
 

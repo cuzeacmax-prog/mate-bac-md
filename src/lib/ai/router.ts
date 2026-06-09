@@ -1,9 +1,36 @@
-import { streamText, generateText, stepCountIs, type ToolSet } from "ai";
+import { streamText, generateText, stepCountIs, type ToolSet, type ModelMessage } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { google } from "@ai-sdk/google";
 import { createServiceClient } from "@/lib/supabase/service";
 import { logApiUsage, computeLlmCost } from "./usage-log";
-import type { AiMessage, ModelConfig } from "./router.types";
+import type { AiMessage, ModelConfig, SystemBlock } from "./router.types";
+
+/**
+ * ETAPA 66 FAZA B: system-ul ca blocuri → mesaje 'system' consecutive;
+ * blocurile cache:true primesc providerOptions.anthropic.cacheControl
+ * (provider-ul le mapează pe blocuri system cu cache_control ephemeral).
+ * String simplu = comportamentul vechi, neschimbat.
+ */
+function buildPrompt(
+  system: string | SystemBlock[] | undefined,
+  messages: AiMessage[]
+): { system?: string; messages: ModelMessage[] } {
+  if (system === undefined || typeof system === "string") {
+    return { system, messages: messages as ModelMessage[] };
+  }
+  const systemMessages: ModelMessage[] = system
+    .filter((b) => b.text.trim().length > 0)
+    .map((b) =>
+      b.cache
+        ? {
+            role: "system" as const,
+            content: b.text,
+            providerOptions: { anthropic: { cacheControl: { type: "ephemeral" as const } } },
+          }
+        : { role: "system" as const, content: b.text }
+    );
+  return { messages: [...systemMessages, ...(messages as ModelMessage[])] };
+}
 
 const configCache = new Map<string, { config: ModelConfig; expires: number }>();
 
@@ -42,15 +69,16 @@ function buildModel(config: ModelConfig) {
 export async function callAIStream(
   taskName: string,
   messages: AiMessage[],
-  options?: { system?: string }
+  options?: { system?: string | SystemBlock[] }
 ) {
   const config = await getModelConfig(taskName);
   const model = buildModel(config);
+  const prompt = buildPrompt(options?.system, messages);
 
   return streamText({
     model,
-    system: options?.system,
-    messages,
+    system: prompt.system,
+    messages: prompt.messages,
     maxOutputTokens: config.max_tokens || undefined,
     temperature: config.temperature,
   });
@@ -59,16 +87,17 @@ export async function callAIStream(
 export async function callAI(
   taskName: string,
   messages: AiMessage[],
-  options?: { system?: string; userId?: string | null; endpoint?: string }
+  options?: { system?: string | SystemBlock[]; userId?: string | null; endpoint?: string }
 ): Promise<{ text: string; inputTokens: number; outputTokens: number }> {
   const config = await getModelConfig(taskName);
   const model = buildModel(config);
+  const prompt = buildPrompt(options?.system, messages);
 
   const start = Date.now();
   const result = await generateText({
     model,
-    system: options?.system,
-    messages,
+    system: prompt.system,
+    messages: prompt.messages,
     maxOutputTokens: config.max_tokens || undefined,
     temperature: config.temperature,
   });
@@ -114,15 +143,16 @@ export async function callAI(
 export async function callAIStreamWithTools<T extends ToolSet>(
   taskName: string,
   messages: AiMessage[],
-  options: { system?: string; tools?: T; maxToolSteps?: number }
+  options: { system?: string | SystemBlock[]; tools?: T; maxToolSteps?: number }
 ) {
   const config = await getModelConfig(taskName);
   const model = buildModel(config);
+  const prompt = buildPrompt(options.system, messages);
 
   return streamText({
     model,
-    system: options.system,
-    messages,
+    system: prompt.system,
+    messages: prompt.messages,
     maxOutputTokens: config.max_tokens || undefined,
     temperature: config.temperature,
     tools: options.tools && Object.keys(options.tools).length > 0 ? options.tools : undefined,

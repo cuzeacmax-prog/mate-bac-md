@@ -88,7 +88,9 @@ Răspunde concis, pedagogic, DOAR la întrebare.`;
         const result = await callAIStream(
           taskName,
           [{ role: 'user', content: userMessage }],
-          { system: CLARIFY_SYSTEM_PROMPT }
+          // ETAPA 66 FAZA B: promptul clarify e static → breakpoint de cache
+          // (sub minimul cache-abil e ignorat silențios de Anthropic, fără cost)
+          { system: [{ text: CLARIFY_SYSTEM_PROMPT, cache: true }] }
         );
 
         let ttfbMs: number | null = null;

@@ -13,3 +13,14 @@ export interface AiMessage {
   role: "user" | "assistant";
   content: string;
 }
+
+/**
+ * ETAPA 66 FAZA B: bloc de system prompt cu opțiune de cache Anthropic.
+ * Ordinea blocurilor = prefixul promptului; blocurile cache:true devin
+ * breakpoint-uri cache_control ephemeral (max 4, validate de provider).
+ * Regulă: tot ce variază per-mesaj stă DUPĂ blocurile cache-uite.
+ */
+export interface SystemBlock {
+  text: string;
+  cache?: boolean;
+}
