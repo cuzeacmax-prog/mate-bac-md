@@ -12,7 +12,7 @@ const NAV_ITEMS = [
   { href: "/app/practice",  label: "Exerciții",  icon: Dumbbell,      disabled: true  },
   { href: "/app/simulare",  label: "Simulare",   icon: ClipboardList, disabled: true  },
   { href: "/app/photo",     label: "Foto",        icon: Camera,        disabled: true  },
-  { href: "/app/progres",   label: "Progres",    icon: BarChart2,     disabled: true  },
+  { href: "/app/progres",   label: "Progres",    icon: BarChart2,     disabled: false },
 ] as const;
 
 export function Sidebar() {
