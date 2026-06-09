@@ -56,3 +56,6 @@ scripts/extraction/_*.json
 
 # ETAPA 47 batch artifacts (PNGs + manifests; figures also in DB)
 scripts/figures/_b47/
+
+# Manuale & culegeri PDF sursa — prea mari pentru git (culegerea: 173MB > limita GitHub 100MB)
+docs/manuale-source/*.pdf
