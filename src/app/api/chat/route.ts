@@ -89,13 +89,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Mesaj gol" }, { status: 400 });
   }
 
-  // ── Profile + tier check ────────────────────────────────────────
-  const { data: profile, error: profileErr } = await supabase
-    .from("profiles")
-    .select("subscription_status")
-    .eq("id", user.id)
-    .single();
+  // ── ETAPA 59 (P6): pașii independenți rulează CONCURENT ─────────
+  // profil ∥ embedding+match bibliotecă ∥ istoric conversație existentă
+  const [profileResult, libraryResult, historyResult] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("subscription_status")
+      .eq("id", user.id)
+      .single(),
+    lookupLibrary(message),
+    conversationId
+      ? supabase
+          .from("messages")
+          .select("role, content")
+          .eq("conversation_id", conversationId)
+          .order("created_at", { ascending: true })
+          .limit(20)
+      : Promise.resolve({ data: null, error: null }),
+  ]);
 
+  const { data: profile, error: profileErr } = profileResult;
   if (profileErr) {
     return serverError("profile fetch", profileErr);
   }
@@ -110,40 +123,40 @@ export async function POST(req: NextRequest) {
     : status === "premium" || status.startsWith("family") ? "chat_premium"
     : "chat_free";
 
-  // ── Rate limit check ────────────────────────────────────────────
-  if (!isPremium) {
-    let allowed: boolean | null = null;
-    try {
-      const { data, error: rpcErr } = await supabase.rpc("check_rate_limit", {
-        p_user_id: user.id,
-        p_action_type: "message",
-      });
-      if (rpcErr) throw rpcErr;
-      allowed = data as boolean;
-    } catch (err) {
-      console.error("[chat/route] check_rate_limit threw:", err instanceof Error ? err.stack : err);
-      allowed = true; // fail-open
-    }
-
-    if (allowed === false) {
-      return NextResponse.json(
-        { error: "RATE_LIMIT_EXCEEDED", limit: FREE_MONTHLY_LIMIT },
-        { status: 429 }
-      );
-    }
-  }
-
-  // ── RAG library lookup (Gemini free tier — non-blocking) ────────
-  const { match: ragMatch, embedding: queryEmbedding } = await lookupLibrary(message);
+  const { match: ragMatch, embedding: queryEmbedding } = libraryResult;
   const isDirectMatch = ragMatch !== null && ragMatch.similarity >= RAG_DIRECT_THRESHOLD;
   const isContextMatch = ragMatch !== null && ragMatch.similarity >= RAG_CONTEXT_THRESHOLD && !isDirectMatch;
 
-  // ── Metode de rezolvare BAC MD (backwards-compat — [] dacă tabela nu există) ──
-  const relevantMethods: SolutionMethod[] = queryEmbedding
-    ? await findRelevantMethods(queryEmbedding, { threshold: METHOD_THRESHOLD, limit: 2 })
-    : [];
+  // ── Rate limit ∥ metode BAC MD (independente între ele) ─────────
+  const [allowed, relevantMethods] = await Promise.all([
+    (async (): Promise<boolean> => {
+      if (isPremium) return true;
+      try {
+        const { data, error: rpcErr } = await supabase.rpc("check_rate_limit", {
+          p_user_id: user.id,
+          p_action_type: "message",
+        });
+        if (rpcErr) throw rpcErr;
+        return data !== false;
+      } catch (err) {
+        console.error("[chat/route] check_rate_limit threw:", err instanceof Error ? err.stack : err);
+        return true; // fail-open
+      }
+    })(),
+    (async (): Promise<SolutionMethod[]> =>
+      queryEmbedding
+        ? findRelevantMethods(queryEmbedding, { threshold: METHOD_THRESHOLD, limit: 2 })
+        : [])(),
+  ]);
 
-  // ── Conversation create or load ─────────────────────────────────
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "RATE_LIMIT_EXCEEDED", limit: FREE_MONTHLY_LIMIT },
+      { status: 429 }
+    );
+  }
+
+  // ── Conversation create or load (abia DUPĂ rate-limit, ca un 429 să nu lase rânduri) ──
   let convId: string = conversationId ?? "";
   if (!convId) {
     const { data: conv, error: convErr } = await supabase
@@ -158,14 +171,7 @@ export async function POST(req: NextRequest) {
     convId = conv.id as string;
   }
 
-  // ── Load history ────────────────────────────────────────────────
-  const { data: history, error: historyErr } = await supabase
-    .from("messages")
-    .select("role, content")
-    .eq("conversation_id", convId)
-    .order("created_at", { ascending: true })
-    .limit(20);
-
+  const { data: history, error: historyErr } = historyResult;
   if (historyErr) {
     console.error("[chat/route] history fetch error:", historyErr);
   }
@@ -402,23 +408,7 @@ export async function POST(req: NextRequest) {
 
             console.log(`[chat/route] stream complete. task=${taskName} chunks=${chunkCount} svgs=${svgOutputs.length} in=${inputTokens} out=${outputTokens}`);
 
-            // ── Silent Math Verification (Haiku, max 3s) ────────────
-            let verificationData: Pick<VerificationResult, 'isCorrect' | 'confidence'> | null = null;
-            if (assistantText && chatMode === 'study') {
-              try {
-                const vResult = await Promise.race([
-                  verifyMath(message, assistantText),
-                  new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
-                ]);
-                if (vResult && vResult.confidence > 0) {
-                  verificationData = { isCorrect: vResult.isCorrect, confidence: vResult.confidence };
-                  console.log(`[chat/route] verification done: isCorrect=${vResult.isCorrect} confidence=${vResult.confidence.toFixed(2)}`);
-                }
-              } catch (vErr) {
-                console.warn('[chat/route] verification skipped:', vErr instanceof Error ? vErr.message : vErr);
-              }
-            }
-
+            // ── ETAPA 59 (P5): done pleacă IMEDIAT după ultimul token ──
             controller.enqueue(
               encoder.encode(
                 `data: ${JSON.stringify({
@@ -431,11 +421,32 @@ export async function POST(req: NextRequest) {
                     method_similarity: relevantMethods[0]?.similarity ?? null,
                     exercises_matched: isContextMatch ? 1 : 0,
                     svgs: svgOutputs,
-                    verification: verificationData,
                   },
                 })}\n\n`
               )
             );
+
+            // ── Verificare matematică DUPĂ done (eveniment separat) ──
+            // Sărită când răspunsul conține SVG-uri din calculatoare
+            // (matematica e deja calculată determinist de tool-uri).
+            if (assistantText && chatMode === 'study' && svgOutputs.length === 0) {
+              try {
+                const vResult = await Promise.race([
+                  verifyMath(message, assistantText),
+                  new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+                ]);
+                if (vResult && vResult.confidence > 0) {
+                  const verificationData: Pick<VerificationResult, 'isCorrect' | 'confidence'> =
+                    { isCorrect: vResult.isCorrect, confidence: vResult.confidence };
+                  console.log(`[chat/route] verification done (post-done): isCorrect=${vResult.isCorrect} confidence=${vResult.confidence.toFixed(2)}`);
+                  controller.enqueue(
+                    encoder.encode(`data: ${JSON.stringify({ verification: verificationData })}\n\n`)
+                  );
+                }
+              } catch (vErr) {
+                console.warn('[chat/route] verification skipped:', vErr instanceof Error ? vErr.message : vErr);
+              }
+            }
           }
 
           controller.close();

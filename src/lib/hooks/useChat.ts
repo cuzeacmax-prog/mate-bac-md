@@ -110,6 +110,24 @@ export function useChat({
                 onConversationCreated?.(newConvId);
               }
             }
+            // ETAPA 59 (P5): verificarea sosește DUPĂ done, ca eveniment separat —
+            // patch pe metadata ultimului mesaj de asistent, fără să blocheze UI-ul.
+            if (json.verification) {
+              const verification = json.verification as NonNullable<ChatMetadata["verification"]>;
+              setMessages((prev) => {
+                const next = [...prev];
+                for (let i = next.length - 1; i >= 0; i--) {
+                  if (next[i].role === "assistant") {
+                    next[i] = {
+                      ...next[i],
+                      metadata: { ...(next[i].metadata ?? {}), verification } as ChatMetadata,
+                    };
+                    break;
+                  }
+                }
+                return next;
+              });
+            }
           }
         }
       } catch (err) {
