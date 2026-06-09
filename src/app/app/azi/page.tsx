@@ -17,6 +17,8 @@ interface FrontierRow {
   grade_level: number;
   mastery: number;
   verified_exercises: number;
+  /** ETAPA 64: verificat CAS ∪ sursă-oficială (link strict-bijectiv) */
+  servable_exercises: number;
   prereq_total: number;
   prereq_ok: number;
 }
@@ -118,6 +120,8 @@ export default async function AziPage() {
                       clasa {r.grade_level}
                       {Number(r.verified_exercises) > 0 &&
                         ` · ${r.verified_exercises} exerciții verificate`}
+                      {Number(r.servable_exercises) > Number(r.verified_exercises) &&
+                        ` · ${Number(r.servable_exercises) - Number(r.verified_exercises)} din culegerea oficială BAC`}
                     </p>
                   </div>
                   <Link

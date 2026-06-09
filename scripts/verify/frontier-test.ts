@@ -97,12 +97,13 @@ async function main() {
       if (Number(r.prereq_total) !== Number(r.prereq_ok)) fail(`rând cu prerechizite nesatisfăcute: ${r.slug} (${r.prereq_ok}/${r.prereq_total})`);
       if (r.grade_level > GRADE) fail(`rând peste clasa elevului: ${r.slug} (g${r.grade_level})`);
     }
-    // ASSERT 5: ordonarea pune conceptele cu exerciții verificate înainte
-    const arr = (frontier ?? []) as Array<{ slug: string; verified_exercises: number }>;
-    const firstNoVerified = arr.findIndex((r) => Number(r.verified_exercises) === 0);
-    const lastVerified = arr.map((r, i) => (Number(r.verified_exercises) > 0 ? i : -1)).reduce((a, b) => Math.max(a, b), -1);
-    if (firstNoVerified !== -1 && lastVerified > firstNoVerified)
-      fail(`ordonare greșită: concept cu exerciții verificate după unul fără (idx ${lastVerified} > ${firstNoVerified})`);
+    // ASSERT 5 (ETAPA 64): ordonarea pune conceptele cu exerciții SERVIBILE înainte
+    // (servable = verificat CAS ∪ sursă-oficială cu link strict-bijectiv)
+    const arr = (frontier ?? []) as Array<{ slug: string; servable_exercises: number }>;
+    const firstNoServable = arr.findIndex((r) => Number(r.servable_exercises) === 0);
+    const lastServable = arr.map((r, i) => (Number(r.servable_exercises) > 0 ? i : -1)).reduce((a, b) => Math.max(a, b), -1);
+    if (firstNoServable !== -1 && lastServable > firstNoServable)
+      fail(`ordonare greșită: concept cu exerciții servibile după unul fără (idx ${lastServable} > ${firstNoServable})`);
 
     console.log('✅ TOATE aserțiunile au trecut: X în frontieră, Y blocat de prerechizit slab, Z exclus prin mastery, invariante + ordonare OK.');
   } finally {

@@ -75,19 +75,19 @@ async function main() {
   if (fErr) { console.error('frontier:', fErr.message); process.exit(1); }
   console.log('\n── frontiera (top 5) ──');
   for (const f of frontier ?? []) {
-    console.log(`  ${f.slug} (g${f.grade_level}) mastery=${Number(f.mastery).toFixed(2)} exerciții_verificate=${f.verified_exercises} prereq ${f.prereq_ok}/${f.prereq_total}`);
+    console.log(`  ${f.slug} (g${f.grade_level}) mastery=${Number(f.mastery).toFixed(2)} exerciții_verificate=${f.verified_exercises} servibile=${f.servable_exercises ?? '?'} prereq ${f.prereq_ok}/${f.prereq_total}`);
   }
   if (!frontier?.length) { console.error('✗ frontiera goală — eșec'); process.exit(1); }
 
   // 4) exercițiile verificate pe primul concept (același cod ca chat-ul)
   const top = frontier[0] as { slug: string };
   const anchor = await getConceptAnchor(svc, top.slug);
-  console.log(`\n── exerciții servite pe '${top.slug}' (doar VERIFICATE) ──`);
+  console.log(`\n── exerciții servite pe '${top.slug}' (servibile: verificat + sursă-oficială) ──`);
   if (!anchor || anchor.exercises.length === 0) {
-    console.log('  (niciun exercițiu verificat pentru acest concept — gol de conținut, raportat)');
+    console.log('  (niciun exercițiu servibil pentru acest concept — gol de conținut, raportat)');
   } else {
     for (const e of anchor.exercises) {
-      console.log(`  [${e.id}] ${e.module ?? '?'} figură=${e.has_figure ? 'DA → /api/figura/' + e.id : 'nu'}\n    ${e.statement.slice(0, 100)}…`);
+      console.log(`  [${e.id}] ${e.module ?? '?'} tier=${e.tier} figură=${e.has_figure ? 'DA → /api/figura/' + e.id : 'nu'}\n    ${e.statement.slice(0, 100)}…`);
     }
   }
 
