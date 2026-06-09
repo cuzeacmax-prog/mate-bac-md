@@ -7,6 +7,8 @@ import Link from "next/link";
 import { MathText } from "@/components/MathText";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
+import { chisinauToday, computeStreak, getOrCreateDailyChallenge } from "@/lib/daily/daily";
+import { DailyCard } from "./DailyCard";
 
 export const dynamic = "force-dynamic";
 
@@ -61,6 +63,13 @@ export default async function AziPage() {
     .maybeSingle();
   const grade = profileRow?.grade_level ?? 12;
 
+  // ETAPA 14: daily challenge determinist (seed user+dată) + streak (zero LLM)
+  const today = chisinauToday();
+  const [daily, streak] = await Promise.all([
+    getOrCreateDailyChallenge(service, user.id, grade, today),
+    computeStreak(service, user.id, today),
+  ]);
+
   const { data: frontier, error } = await service.rpc("frontier_concepts", {
     p_user_id: user.id,
     p_grade: grade,
@@ -101,6 +110,10 @@ export default async function AziPage() {
           programei (clasa {grade}).
         </p>
       </div>
+
+      {daily && (
+        <DailyCard exercises={daily.exercises} completed={daily.completed} streak={streak} />
+      )}
 
       {rows.length === 0 ? (
         <p className="text-muted-foreground">

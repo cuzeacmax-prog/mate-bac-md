@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
+import { chisinauToday, computeStreak } from "@/lib/daily/daily";
 import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
 
@@ -54,6 +56,14 @@ export default async function AppLayout({
 
   const messagesUsed = rateRow?.message_count ?? 0;
 
+  // ETAPA 14: streak-ul calculat server-side din streak_log (zero LLM)
+  let streak = 0;
+  try {
+    streak = await computeStreak(createServiceClient(), user.id, chisinauToday());
+  } catch (err) {
+    console.error("[app/layout] streak failed:", err instanceof Error ? err.message : err);
+  }
+
   return (
     <div className="flex flex-col h-screen">
       <Header
@@ -62,6 +72,7 @@ export default async function AppLayout({
         messagesUsed={messagesUsed}
         isPremium={isPremium}
         isAdmin={isAdmin}
+        streak={streak}
       />
       <div className="flex flex-1 min-h-0">
         <Sidebar />

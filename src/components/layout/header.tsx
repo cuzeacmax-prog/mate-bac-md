@@ -16,9 +16,11 @@ interface HeaderProps {
   messagesUsed?: number;
   isPremium?: boolean;
   isAdmin?: boolean;
+  /** ETAPA 14: seria de zile cu daily-ul completat */
+  streak?: number;
 }
 
-export function Header({ userEmail, userName, messagesUsed, isPremium, isAdmin }: HeaderProps) {
+export function Header({ userEmail, userName, messagesUsed, isPremium, isAdmin, streak }: HeaderProps) {
   const router = useRouter();
   const displayName = userName ?? userEmail?.split("@")[0] ?? "Elev";
 
@@ -41,6 +43,16 @@ export function Header({ userEmail, userName, messagesUsed, isPremium, isAdmin }
         </Link>
 
         <div className="flex items-center gap-3">
+          {typeof streak === "number" && streak > 0 && (
+            <Link
+              href="/app/azi"
+              className="flex items-center gap-1 text-sm font-semibold text-orange-600"
+              title={`Streak: ${streak} ${streak === 1 ? "zi" : "zile"} la rând`}
+            >
+              <span aria-hidden>🔥</span>
+              {streak}
+            </Link>
+          )}
           {showCounter && (
             <Badge
               variant={remaining <= 5 ? "destructive" : "secondary"}

@@ -90,12 +90,20 @@ export async function evaluateAttempt(
     conversationId: string;
     message: string;
     exercise: { id: string; statement: string };
+    /** 'chat_ancorat' (implicit) sau 'daily_challenge' (ETAPA 14) */
+    sessionType?: 'chat_ancorat' | 'daily_challenge';
+    /** true = mesajul E un răspuns prin construcție (câmp dedicat), sare detecția */
+    assumeAttempt?: boolean;
   }
 ): Promise<AttemptEvaluation | null> {
   const { userId, conversationId, message, exercise } = params;
+  const sessionType = params.sessionType ?? 'chat_ancorat';
 
-  const detection = detectAnswerAttempt(message);
-  if (!detection.isAttempt) return null;
+  let detection = detectAnswerAttempt(message);
+  if (!detection.isAttempt) {
+    if (!params.assumeAttempt) return null;
+    detection = { isAttempt: true, candidate: message.trim() };
+  }
 
   const officialAnswer = await getOfficialAnswer(service, exercise.id);
 
@@ -141,7 +149,7 @@ export async function evaluateAttempt(
     is_correct: evaluation.correct,
     user_answer: detection.candidate.slice(0, 500),
     correct_answer: officialAnswer ? officialAnswer.slice(0, 500) : null,
-    session_type: "chat_ancorat",
+    session_type: sessionType,
     metadata: {
       conversation_id: conversationId,
       method: evaluation.method,
