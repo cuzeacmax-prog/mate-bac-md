@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Minus, X, Send, Loader2 } from 'lucide-react';
 import { type Interaction, useInteractionsStore } from '@/lib/stores/interactions-store';
 import { MessageRenderer } from '@/app/app/chat/_components/MessageRenderer';
+import { MathText } from '@/components/MathText';
 
 interface Props {
   interaction: Interaction;
@@ -178,7 +179,7 @@ export function InlineMiniChat({ interaction, messageId }: Props) {
           {hasResponse && (
             <>
               <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                <span className="font-semibold">Întrebarea ta:</span> {interaction.question}
+                <span className="font-semibold">Întrebarea ta:</span> <MathText text={interaction.question} />
               </p>
               <div className="text-sm">
                 <MessageRenderer content={interaction.response} isStreaming={interaction.isStreaming} />

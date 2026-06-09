@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { MathText } from '@/components/MathText';
 import { useOnboardingStore } from '@/lib/stores/onboarding-store';
 import { track, Events } from '@/lib/analytics/posthog-client';
 
@@ -109,7 +110,7 @@ export default function FirstLessonPage() {
               {/* Concept */}
               <div className="rounded-2xl bg-blue-50 border border-blue-100 p-5">
                 <p className="text-xs font-semibold text-blue-600 uppercase mb-2">Conceptul</p>
-                <p className="text-sm leading-relaxed text-blue-900">{lesson.concept}</p>
+                <p className="text-sm leading-relaxed text-blue-900"><MathText text={lesson.concept} /></p>
               </div>
 
               {/* Example */}
@@ -139,7 +140,7 @@ export default function FirstLessonPage() {
                 >
                   <div className="rounded-2xl bg-primary/5 border border-primary/20 p-4">
                     <p className="text-sm font-semibold text-primary mb-1">Exercițiu</p>
-                    <p className="font-medium">{lesson.question}</p>
+                    <p className="font-medium"><MathText text={lesson.question} /></p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
@@ -150,7 +151,7 @@ export default function FirstLessonPage() {
                         className="rounded-2xl border-2 border-border bg-card hover:border-primary/60 p-4 text-center font-semibold transition-all active:scale-95"
                       >
                         <span className="text-xs text-muted-foreground uppercase block mb-1">{letter}</span>
-                        <span className="text-sm">{lesson.options[letter]}</span>
+                        <span className="text-sm"><MathText text={lesson.options[letter]} /></span>
                       </button>
                     ))}
                   </div>
@@ -180,7 +181,7 @@ export default function FirstLessonPage() {
               {/* Explanation */}
               <div className="rounded-xl bg-muted/50 p-4">
                 <p className="text-xs font-semibold text-muted-foreground uppercase mb-2">Explicație</p>
-                <p className="text-sm leading-relaxed">{lesson.explanation}</p>
+                <p className="text-sm leading-relaxed"><MathText text={lesson.explanation} /></p>
               </div>
 
               {/* Streak */}

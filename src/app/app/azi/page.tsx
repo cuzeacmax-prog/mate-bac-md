@@ -4,6 +4,7 @@
  * + numele prerechizitelor. Fără diagnostic făcut → empty state cu CTA.
  */
 import Link from "next/link";
+import { MathText } from "@/components/MathText";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 
@@ -112,7 +113,7 @@ export default async function AziPage() {
               <div key={r.concept_id} className="rounded-2xl border bg-card p-5 space-y-3">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <h2 className="font-medium leading-snug">{r.name}</h2>
+                    <h2 className="font-medium leading-snug"><MathText text={r.name} /></h2>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       clasa {r.grade_level}
                       {Number(r.verified_exercises) > 0 &&
@@ -127,11 +128,15 @@ export default async function AziPage() {
                   </Link>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  {Number(r.prereq_total) === 0
-                    ? "Fără prerechizite — punct de pornire."
-                    : `De ce e următorul: toate cele ${r.prereq_total} prerechizite ✓ (${prereqs
+                  {Number(r.prereq_total) === 0 ? (
+                    "Fără prerechizite — punct de pornire."
+                  ) : (
+                    <MathText
+                      text={`De ce e următorul: toate cele ${r.prereq_total} prerechizite ✓ (${prereqs
                         .slice(0, 4)
                         .join(", ")}${prereqs.length > 4 ? "…" : ""})`}
+                    />
+                  )}
                 </p>
               </div>
             );

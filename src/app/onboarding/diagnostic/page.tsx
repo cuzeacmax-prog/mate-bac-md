@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { MathText } from '@/components/MathText';
 import { useOnboardingStore } from '@/lib/stores/onboarding-store';
 import { shouldStop } from '@/lib/diagnostic/adaptive';
 import { track, Events } from '@/lib/analytics/posthog-client';
@@ -196,7 +197,7 @@ export default function DiagnosticPage() {
             >
               {/* Prompt */}
               <div className="rounded-2xl bg-muted/50 p-5">
-                <p className="text-base font-medium leading-relaxed">{exercise.prompt}</p>
+                <p className="text-base font-medium leading-relaxed"><MathText text={exercise.prompt} /></p>
                 {exercise.difficulty >= 4 && (
                   <span className="mt-2 inline-block rounded-full bg-amber-100 text-amber-700 text-xs font-medium px-2 py-0.5">
                     Dificil
@@ -230,7 +231,7 @@ export default function DiagnosticPage() {
                       <span className="rounded-full bg-muted/80 px-2.5 py-1 text-sm font-bold shrink-0 uppercase">
                         {letter}
                       </span>
-                      <span className="text-sm font-medium">{optionText}</span>
+                      <span className="text-sm font-medium"><MathText text={optionText} /></span>
                     </motion.button>
                   );
                 })}

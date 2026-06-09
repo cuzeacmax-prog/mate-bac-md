@@ -13,6 +13,8 @@ export interface MathSegment {
   type: "text" | "math";
   value: string;
   display: boolean; // doar pentru type==='math'
+  /** textul original cu delimitatori (fallback „text brut" la LaTeX invalid) */
+  raw?: string;
 }
 
 // ATENȚIE: ch poate fi undefined (past sfârșit). /[A-Za-z]/.test(undefined) ar fi TRUE
@@ -107,6 +109,27 @@ function segmentPlain(text: string): MathSegment[] {
     i++;
   }
   flushText(text.length);
+  return out;
+}
+
+/**
+ * Segmentează STRICT pe delimitatori expliciți ($$...$$, \[...\], $...$, \(...\)).
+ * Pentru afișările către elev (ETAPA 62): doar matematica delimitată se randează,
+ * textul românesc (și orice LaTeX nedelimitat) rămâne text brut.
+ */
+export function segmentDelimitedMath(text: string): MathSegment[] {
+  if (!text) return [];
+  const out: MathSegment[] = [];
+  const re = /\$\$([\s\S]+?)\$\$|\\\[([\s\S]+?)\\\]|\$([^$\n]+?)\$|\\\(([\s\S]+?)\\\)/g;
+  let last = 0; let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) out.push({ type: "text", value: text.slice(last, m.index), display: false });
+    const display = m[1] != null || m[2] != null;
+    const val = (m[1] ?? m[2] ?? m[3] ?? m[4] ?? "").trim();
+    out.push({ type: "math", value: val, display, raw: m[0] });
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) out.push({ type: "text", value: text.slice(last), display: false });
   return out;
 }
 
