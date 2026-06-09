@@ -118,11 +118,20 @@ export async function POST(req: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { sessionId, history, gradeLevel } = await req.json() as {
-    sessionId: string;
-    history: DiagnosticAttempt[];
-    gradeLevel: number;
-  };
+  // ETAPA 59: clientul trimite DOAR sessionId; istoricul și clasa vin din
+  // diagnostic_sessions (sursa de adevăr pe server), nu din body-ul clientului.
+  const { sessionId } = await req.json() as { sessionId: string };
+  if (!sessionId) return Response.json({ error: 'sessionId obligatoriu' }, { status: 400 });
+
+  const { data: session, error: sessionErr } = await supabase
+    .from('diagnostic_sessions')
+    .select('grade_level, exercises_log, user_id')
+    .eq('id', sessionId)
+    .single();
+  if (sessionErr || !session) return Response.json({ error: 'Sesiune inexistentă' }, { status: 404 });
+
+  const history = ((session.exercises_log as DiagnosticAttempt[] | null) ?? []);
+  const gradeLevel = session.grade_level ?? 12;
 
   const targetDifficulty = nextDifficulty(history);
   const usedIds = history.map((h) => h.exercise_id);

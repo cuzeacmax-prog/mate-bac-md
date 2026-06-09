@@ -27,12 +27,11 @@ export default function TrialPage() {
       await fetch('/api/onboarding/complete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        // ETAPA 59: predicția/slăbiciunile NU se mai trimit din client —
+        // serverul le citește din diagnostic_sessions.
         body: JSON.stringify({
           gradeLevel: store.gradeLevel,
           targetBacScore: store.targetBacScore,
-          initialBacPrediction: store.initialBacPrediction,
-          weaknesses: store.weaknesses,
-          diagnosticSessionId: store.diagnosticSessionId,
           activatedTrial,
         }),
       });

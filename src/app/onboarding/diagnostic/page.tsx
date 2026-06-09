@@ -54,14 +54,12 @@ export default function DiagnosticPage() {
     setAnswerState('idle');
     setCorrectLetter(null);
 
+    // ETAPA 59: serverul citește istoricul și clasa din diagnostic_sessions;
+    // clientul trimite doar sessionId.
     const res = await fetch('/api/diagnostic/next', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        sessionId: sid,
-        history: store.diagnosticHistory,
-        gradeLevel,
-      }),
+      body: JSON.stringify({ sessionId: sid }),
     });
     const data = await res.json();
 
@@ -73,7 +71,7 @@ export default function DiagnosticPage() {
     setExercise(data.exercise);
     setQuestionStart(Date.now());
     setLoading(false);
-  }, [store.diagnosticHistory, gradeLevel, handleFinish]);
+  }, [handleFinish]);
 
   // ── Init session ──────────────────────────────────────────────────────────
   useEffect(() => {
