@@ -1,14 +1,14 @@
-// IMPORTANT: NU rula manual peste noapte. Doar utilizatorul prezent.
-// Rulează cu: npm run batch:test (test 2 ex.) sau npm run batch:full (200 ex., ~$15-20 cost)
+﻿// IMPORTANT: NU rula manual peste noapte. Doar utilizatorul prezent.
+// RuleazÄƒ cu: npm run batch:test (test 2 ex.) sau npm run batch:full (200 ex., ~$15-20 cost)
 //
-// BATCH_LIMIT=0 (default) = ZERO executare. Setează explicit pentru a rula.
+// BATCH_LIMIT=0 (default) = ZERO executare. SeteazÄƒ explicit pentru a rula.
 
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { createServiceClient } from '../../src/lib/supabase/service';
-import { generateExerciseFromTriangle } from '../../src/lib/library/exerciseGenerator';
+import { generateExerciseFromTriangle } from './exerciseGenerator';
 import { generateEmbedding, EMBEDDING_DIMENSIONS } from '../../src/lib/embeddings/gemini';
 import {
   generateTriangleVariations,
@@ -35,9 +35,9 @@ import { compileTikz } from '../../src/lib/tikz/compile';
 const LIMIT = process.env.BATCH_LIMIT ? parseInt(process.env.BATCH_LIMIT, 10) : 0;
 
 if (LIMIT === 0) {
-  console.log('\n⚠️  BATCH_LIMIT=0 (default) — nicio variație procesată.');
-  console.log('   Setează BATCH_LIMIT=2 pentru test sau BATCH_LIMIT=200 pentru full run.');
-  console.log('   Folosește: npm run batch:test sau npm run batch:full\n');
+  console.log('\nâš ï¸  BATCH_LIMIT=0 (default) â€” nicio variaÈ›ie procesatÄƒ.');
+  console.log('   SeteazÄƒ BATCH_LIMIT=2 pentru test sau BATCH_LIMIT=200 pentru full run.');
+  console.log('   FoloseÈ™te: npm run batch:test sau npm run batch:full\n');
   process.exit(0);
 }
 
@@ -45,7 +45,7 @@ const PROGRESS_FILE = path.resolve(path.dirname(fileURLToPath(import.meta.url)),
 const MAX_RETRIES = 3;
 const RATE_LIMIT_MS = 800;
 
-// ─── Progress persistence ─────────────────────────────────────────────────────
+// â”€â”€â”€ Progress persistence â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 interface ProgressFile {
   completed_hashes: string[];
@@ -78,7 +78,7 @@ function paramsHash(shape: string, params: unknown): string {
   return crypto.createHash('sha1').update(`${shape}:${JSON.stringify(params)}`).digest('hex').slice(0, 12);
 }
 
-// ─── Retry with exponential backoff ──────────────────────────────────────────
+// â”€â”€â”€ Retry with exponential backoff â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 async function withRetry<T>(fn: () => Promise<T>, label: string): Promise<T> {
   let lastErr: Error = new Error('unknown');
@@ -89,7 +89,7 @@ async function withRetry<T>(fn: () => Promise<T>, label: string): Promise<T> {
       lastErr = e instanceof Error ? e : new Error(String(e));
       if (attempt < MAX_RETRIES) {
         const delay = 1000 * Math.pow(2, attempt - 1);
-        console.log(`    ♻️  Retry ${attempt}/${MAX_RETRIES} ${label} în ${delay}ms…`);
+        console.log(`    â™»ï¸  Retry ${attempt}/${MAX_RETRIES} ${label} Ã®n ${delay}msâ€¦`);
         await new Promise((r) => setTimeout(r, delay));
       }
     }
@@ -97,7 +97,7 @@ async function withRetry<T>(fn: () => Promise<T>, label: string): Promise<T> {
   throw lastErr;
 }
 
-// ─── Shape entry types ────────────────────────────────────────────────────────
+// â”€â”€â”€ Shape entry types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 type ShapeEntry = {
   shape: string;
@@ -160,9 +160,9 @@ async function main() {
 
   const skipped = allVariations.length - allVariations.filter((v) => !completedSet.has(v.hash)).length;
 
-  console.log(`\n🚀 Batch generator pornit. Limit: ${LIMIT} / ${allVariations.length} variații totale.`);
-  if (skipped > 0) console.log(`♻️  Resume: ${skipped} variații deja procesate (din progress.json), omise.`);
-  console.log(`📋 De procesat: ${pending.length} variații.\n`);
+  console.log(`\nðŸš€ Batch generator pornit. Limit: ${LIMIT} / ${allVariations.length} variaÈ›ii totale.`);
+  if (skipped > 0) console.log(`â™»ï¸  Resume: ${skipped} variaÈ›ii deja procesate (din progress.json), omise.`);
+  console.log(`ðŸ“‹ De procesat: ${pending.length} variaÈ›ii.\n`);
 
   const supabase = createServiceClient();
   let success = 0;
@@ -172,22 +172,22 @@ async function main() {
   for (let i = 0; i < pending.length; i++) {
     const entry = pending[i];
     const itemStart = Date.now();
-    console.log(`[${i + 1}/${pending.length}] Procesare ${entry.shape} (hash: ${entry.hash})…`);
+    console.log(`[${i + 1}/${pending.length}] Procesare ${entry.shape} (hash: ${entry.hash})â€¦`);
 
     try {
-      console.log('  ⚙️  Calculator geometric…');
+      console.log('  âš™ï¸  Calculator geometricâ€¦');
       const geo = entry.generate(entry.params);
 
-      console.log('  🎨 Compilare TikZ → SVG…');
+      console.log('  ðŸŽ¨ Compilare TikZ â†’ SVGâ€¦');
       const compiled = await withRetry(() => compileTikz(geo.tikz), 'compileTikz');
 
-      console.log('  🤖 Generare enunț + soluție (Sonnet)…');
+      console.log('  ðŸ¤– Generare enunÈ› + soluÈ›ie (Sonnet)â€¦');
       const exercise = await withRetry(() =>
         generateExerciseFromTriangle({ shape: entry.shape, params: entry.params, computed: geo.computed }),
         'generateExercise'
       );
 
-      console.log(`  🧠 Generare embedding (Gemini ${EMBEDDING_DIMENSIONS}d)…`);
+      console.log(`  ðŸ§  Generare embedding (Gemini ${EMBEDDING_DIMENSIONS}d)â€¦`);
       const embeddingText = `${exercise.statement} ${exercise.tags.join(' ')}`;
       const embedding = await withRetry(() => generateEmbedding(embeddingText), 'generateEmbedding');
 
@@ -195,7 +195,7 @@ async function main() {
         throw new Error(`Embedding dimension mismatch: got ${embedding.length}, expected ${EMBEDDING_DIMENSIONS}`);
       }
 
-      console.log('  💾 Insert în DB…');
+      console.log('  ðŸ’¾ Insert Ã®n DBâ€¦');
       const { error } = await withRetry(async () => {
         const res = await supabase.from('solved_exercises').insert({
           statement: exercise.statement,
@@ -221,7 +221,7 @@ async function main() {
       saveProgress({ ...progress, last_run: new Date().toISOString() });
 
       const elapsed = ((Date.now() - itemStart) / 1000).toFixed(1);
-      console.log(`  ✅ Success în ${elapsed}s\n`);
+      console.log(`  âœ… Success Ã®n ${elapsed}s\n`);
       success++;
 
       // Rate limiting
@@ -230,7 +230,7 @@ async function main() {
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error(`  ❌ Failed: ${msg}\n`);
+      console.error(`  âŒ Failed: ${msg}\n`);
       progress.total_failed++;
       saveProgress({ ...progress, last_run: new Date().toISOString() });
       failed++;
@@ -238,11 +238,11 @@ async function main() {
   }
 
   const totalSec = ((Date.now() - startTime) / 1000).toFixed(0);
-  console.log('🏁 Batch complet:');
-  console.log(`   ✅ Success: ${success}`);
-  console.log(`   ❌ Failed: ${failed}`);
-  console.log(`   ⏱️  Timp total: ${totalSec}s`);
-  console.log(`   📊 Total cumulat: ${progress.total_success} succes, ${progress.total_failed} eșuate\n`);
+  console.log('ðŸ Batch complet:');
+  console.log(`   âœ… Success: ${success}`);
+  console.log(`   âŒ Failed: ${failed}`);
+  console.log(`   â±ï¸  Timp total: ${totalSec}s`);
+  console.log(`   ðŸ“Š Total cumulat: ${progress.total_success} succes, ${progress.total_failed} eÈ™uate\n`);
 }
 
 main().catch((err) => {

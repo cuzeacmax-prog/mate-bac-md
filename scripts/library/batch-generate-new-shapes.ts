@@ -1,11 +1,11 @@
-/**
+﻿/**
  * batch-generate-new-shapes.ts
- * Generează 2 exerciții test per shape nou (17 tipuri × 2 = max 34 exerciții).
+ * GenereazÄƒ 2 exerciÈ›ii test per shape nou (17 tipuri Ã— 2 = max 34 exerciÈ›ii).
  *
- * Rulează cu: npx tsx scripts/library/batch-generate-new-shapes.ts
+ * RuleazÄƒ cu: npx tsx scripts/library/batch-generate-new-shapes.ts
  * Cost estimat: ~$1.50-3.00
  *
- * ATENȚIE: Rulează DOAR shape-urile noi — nu strica ce există deja în DB.
+ * ATENÈšIE: RuleazÄƒ DOAR shape-urile noi â€” nu strica ce existÄƒ deja Ã®n DB.
  */
 
 import * as fs from 'fs';
@@ -13,7 +13,7 @@ import * as path from 'path';
 import * as crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { createServiceClient } from '../../src/lib/supabase/service';
-import { generateExerciseFromTriangle } from '../../src/lib/library/exerciseGenerator';
+import { generateExerciseFromTriangle } from './exerciseGenerator';
 import { generateEmbedding, EMBEDDING_DIMENSIONS } from '../../src/lib/embeddings/gemini';
 
 // Geometry calculators
@@ -98,7 +98,7 @@ async function withRetry<T>(fn: () => Promise<T>, label: string): Promise<T> {
       lastErr = e instanceof Error ? e : new Error(String(e));
       if (attempt < MAX_RETRIES) {
         const delay = 1000 * Math.pow(2, attempt - 1);
-        console.log(`    ♻️  Retry ${attempt}/${MAX_RETRIES} ${label} în ${delay}ms…`);
+        console.log(`    â™»ï¸  Retry ${attempt}/${MAX_RETRIES} ${label} Ã®n ${delay}msâ€¦`);
         await new Promise((r) => setTimeout(r, delay));
       }
     }
@@ -187,10 +187,10 @@ async function main() {
   const totalPlanned = allVariations.length;
   const skipped = allVariations.length - pending.length;
 
-  console.log(`\n🚀 Generare shape-uri NOI — BAC MD`);
-  console.log(`📋 Total planificat: ${totalPlanned} exerciții`);
-  if (skipped > 0) console.log(`♻️  Resume: ${skipped} deja procesate, omise.`);
-  console.log(`📋 De procesat: ${pending.length} exerciții.\n`);
+  console.log(`\nðŸš€ Generare shape-uri NOI â€” BAC MD`);
+  console.log(`ðŸ“‹ Total planificat: ${totalPlanned} exerciÈ›ii`);
+  if (skipped > 0) console.log(`â™»ï¸  Resume: ${skipped} deja procesate, omise.`);
+  console.log(`ðŸ“‹ De procesat: ${pending.length} exerciÈ›ii.\n`);
 
   const supabase = createServiceClient();
   let success = 0;
@@ -201,22 +201,22 @@ async function main() {
   for (let i = 0; i < pending.length; i++) {
     const entry = pending[i];
     const itemStart = Date.now();
-    console.log(`[${i + 1}/${pending.length}] ${entry.shape} (hash: ${entry.hash})…`);
+    console.log(`[${i + 1}/${pending.length}] ${entry.shape} (hash: ${entry.hash})â€¦`);
 
     try {
-      console.log('  ⚙️  Calculator geometric…');
+      console.log('  âš™ï¸  Calculator geometricâ€¦');
       const geo = entry.generate(entry.params);
 
-      console.log('  🎨 Compilare TikZ → SVG…');
+      console.log('  ðŸŽ¨ Compilare TikZ â†’ SVGâ€¦');
       const compiled = await withRetry(() => compileTikz(geo.tikz), 'compileTikz');
 
-      console.log('  🤖 Generare enunț + soluție (Sonnet)…');
+      console.log('  ðŸ¤– Generare enunÈ› + soluÈ›ie (Sonnet)â€¦');
       const exercise = await withRetry(() =>
         generateExerciseFromTriangle({ shape: entry.shape, params: entry.params, computed: geo.computed }),
         'generateExercise'
       );
 
-      console.log(`  🧠 Generare embedding (Gemini ${EMBEDDING_DIMENSIONS}d)…`);
+      console.log(`  ðŸ§  Generare embedding (Gemini ${EMBEDDING_DIMENSIONS}d)â€¦`);
       const embeddingText = `${exercise.statement} ${exercise.tags.join(' ')}`;
       const embedding = await withRetry(() => generateEmbedding(embeddingText), 'generateEmbedding');
 
@@ -224,7 +224,7 @@ async function main() {
         throw new Error(`Embedding dimension mismatch: got ${embedding.length}, expected ${EMBEDDING_DIMENSIONS}`);
       }
 
-      console.log('  💾 Insert în DB…');
+      console.log('  ðŸ’¾ Insert Ã®n DBâ€¦');
       const { error } = await withRetry(async () => {
         return await supabase.from('solved_exercises').insert({
           statement: exercise.statement,
@@ -249,7 +249,7 @@ async function main() {
       saveProgress({ ...progress, last_run: new Date().toISOString() });
 
       const elapsed = ((Date.now() - itemStart) / 1000).toFixed(1);
-      console.log(`  ✅ Success în ${elapsed}s\n`);
+      console.log(`  âœ… Success Ã®n ${elapsed}s\n`);
       success++;
 
       if (i < pending.length - 1) {
@@ -257,7 +257,7 @@ async function main() {
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error(`  ❌ Failed: ${msg}\n`);
+      console.error(`  âŒ Failed: ${msg}\n`);
       progress.total_failed++;
       saveProgress({ ...progress, last_run: new Date().toISOString() });
       failed++;
@@ -267,19 +267,19 @@ async function main() {
 
   const totalSec = ((Date.now() - startTime) / 1000).toFixed(0);
 
-  console.log('\n═══════════════════════════════════════════════════════════');
+  console.log('\nâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•');
   console.log('RAPORT FINAL ETAPA 4.X.GEOMETRY-COMPLETE');
-  console.log('═══════════════════════════════════════════════════════════');
-  console.log(`Shape-uri noi implementate: 17/17 ✅`);
-  console.log(`Exerciții test generate: ${success} / ${totalPlanned}`);
-  console.log(`❌ Failed: ${failed}`);
-  console.log(`⏱️  Timp total: ${totalSec}s`);
-  console.log(`📊 Total cumulat: ${progress.total_success} succes, ${progress.total_failed} eșuate`);
+  console.log('â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•');
+  console.log(`Shape-uri noi implementate: 17/17 âœ…`);
+  console.log(`ExerciÈ›ii test generate: ${success} / ${totalPlanned}`);
+  console.log(`âŒ Failed: ${failed}`);
+  console.log(`â±ï¸  Timp total: ${totalSec}s`);
+  console.log(`ðŸ“Š Total cumulat: ${progress.total_success} succes, ${progress.total_failed} eÈ™uate`);
   if (failedItems.length > 0) {
     console.log('\nFailed items:');
     failedItems.forEach((f) => console.log(`  - ${f}`));
   }
-  console.log('═══════════════════════════════════════════════════════════\n');
+  console.log('â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•\n');
 }
 
 main().catch((err) => {

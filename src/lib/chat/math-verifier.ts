@@ -4,7 +4,9 @@
  * Rulează DUPĂ ce stream-ul principal s-a terminat.
  */
 
-import Anthropic from '@anthropic-ai/sdk';
+// ETAPA 59 (P7): modelul vine din ai_model_config (task 'verify_math'), prin router —
+// zero modele hardcodate în src/lib.
+import { callAI } from '@/lib/ai/router';
 
 export interface VerificationResult {
   isCorrect: boolean;
@@ -48,30 +50,21 @@ export async function verifyMath(
   question: string,
   aiResponse: string,
 ): Promise<VerificationResult> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
+  if (!process.env.ANTHROPIC_API_KEY) {
     return makeDefault();
   }
 
   try {
-    const client = new Anthropic({ apiKey });
-
-    const response = await client.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 512,
-      system: VERIFIER_PROMPT,
-      messages: [
+    const { text } = await callAI(
+      'verify_math',
+      [
         {
           role: 'user',
           content: `Întrebare elev:\n${question.slice(0, 500)}\n\nRăspuns AI:\n${aiResponse.slice(0, 2000)}\n\nReturnează JSON.`,
         },
       ],
-    });
-
-    const text = response.content
-      .filter((b) => b.type === 'text')
-      .map((b) => (b as { type: 'text'; text: string }).text)
-      .join('');
+      { system: VERIFIER_PROMPT }
+    );
 
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) return makeDefault();

@@ -14,9 +14,9 @@
  *  - "a) Aflați derivata b) Monotonia" → single (sub-puncte ale aceeași funcții)
  */
 
-import Anthropic from '@anthropic-ai/sdk';
-
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
+// ETAPA 59 (P7): modelul vine din ai_model_config (task 'decompose'), prin router —
+// zero modele hardcodate în src/lib.
+import { callAI } from '@/lib/ai/router';
 
 // ─── Tipuri ───────────────────────────────────────────────────────────────────
 
@@ -86,17 +86,11 @@ Returnează STRICT JSON valid (fără text înainte sau după):
 Maxim 5 exerciții. Dacă mai multe, primele 5.`;
 
 async function callHaikuDecomposer(query: string): Promise<DecomposedQuery> {
-  const response = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 1024,
-    system: DECOMPOSE_SYSTEM,
-    messages: [{ role: 'user', content: query }],
-  });
-
-  const text = response.content
-    .filter((b) => b.type === 'text')
-    .map((b) => (b as { type: 'text'; text: string }).text)
-    .join('');
+  const { text } = await callAI(
+    'decompose',
+    [{ role: 'user', content: query }],
+    { system: DECOMPOSE_SYSTEM }
+  );
 
   // Extract JSON robust (poate fi înconjurat de text)
   const jsonMatch = text.match(/\{[\s\S]*\}/);
