@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import "katex/dist/katex.min.css"; // ETAPA 66 E2: math doar pe rutele care o randează
 
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";

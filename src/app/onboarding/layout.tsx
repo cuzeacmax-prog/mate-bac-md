@@ -1,5 +1,6 @@
 'use client';
 
+import 'katex/dist/katex.min.css'; // ETAPA 66 E2: diagnostic + first-lesson randează math
 import { usePathname } from 'next/navigation';
 
 const STEPS = [

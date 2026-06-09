@@ -5,8 +5,21 @@ const PROTECTED_PREFIX = "/app";
 const AUTH_PREFIX = "/auth";
 
 export async function proxy(request: NextRequest) {
-  const { supabaseResponse, user } = await updateSession(request);
+  const { supabaseResponse, user, supabase } = await updateSession(request);
   const { pathname } = request.nextUrl;
+
+  // ETAPA 66 FAZA E3: redirectul userilor logați de pe landing s-a mutat AICI
+  // din app/page.tsx, ca pagina / să rămână STATICĂ (○) — fără cookies în page.
+  if (pathname === "/" && user) {
+    const { data: profile } = await supabase
+      .from("user_profiles")
+      .select("onboarding_completed")
+      .eq("id", user.id)
+      .single();
+    const dest = request.nextUrl.clone();
+    dest.pathname = profile?.onboarding_completed ? "/app" : "/onboarding/welcome";
+    return NextResponse.redirect(dest);
+  }
 
   if (pathname.startsWith(PROTECTED_PREFIX) && !user) {
     const loginUrl = request.nextUrl.clone();

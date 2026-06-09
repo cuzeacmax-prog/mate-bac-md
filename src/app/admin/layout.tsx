@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import "katex/dist/katex.min.css"; // ETAPA 66 E2: panourile admin randează math
 import { createClient } from "@/lib/supabase/server";
 
 export default async function AdminLayout({

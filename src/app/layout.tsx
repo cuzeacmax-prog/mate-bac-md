@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import "katex/dist/katex.min.css";
+// ETAPA 66 FAZA E2: katex.min.css NU mai e global — se importă doar în
+// layout-urile rutelor care randează matematică (/app, /onboarding, /admin).
 import { PosthogProvider } from "@/components/analytics/PosthogProvider";
 
 const geistSans = Geist({
