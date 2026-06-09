@@ -5,14 +5,52 @@ import { callAIStream } from '@/lib/ai/router';
 
 export const dynamic = 'force-dynamic';
 
+const FREE_MONTHLY_LIMIT = 30;
+
 export async function POST(req: NextRequest) {
   // ── Auth ──────────────────────────────────────────────────────────
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = (await createClient()) as any;
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     return NextResponse.json({ error: 'Neautentificat' }, { status: 401 });
+  }
+
+  // ── Tier + task per tier (ETAPA 59: nu mai rulăm pe chat_admin) ──
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('subscription_status')
+    .eq('id', user.id)
+    .single();
+
+  const status: string = profile?.subscription_status ?? 'free';
+  const isPremium =
+    status === 'premium' || status.startsWith('family') || status === 'admin';
+  const taskName =
+    status === 'admin' ? 'chat_admin'
+    : status === 'premium' || status.startsWith('family') ? 'chat_premium'
+    : 'chat_free';
+
+  // ── Rate limit: un clarify = un mesaj din aceeași cotă ca chat-ul ─
+  if (!isPremium) {
+    let allowed: boolean | null = null;
+    try {
+      const { data, error: rpcErr } = await supabase.rpc('check_rate_limit', {
+        p_user_id: user.id,
+        p_action_type: 'message',
+      });
+      if (rpcErr) throw rpcErr;
+      allowed = data as boolean;
+    } catch (err) {
+      console.error('[clarify] check_rate_limit threw:', err instanceof Error ? err.stack : err);
+      allowed = true; // fail-open, identic cu /api/chat
+    }
+    if (allowed === false) {
+      return NextResponse.json(
+        { error: 'RATE_LIMIT_EXCEEDED', limit: FREE_MONTHLY_LIMIT },
+        { status: 429 }
+      );
+    }
   }
 
   // ── Parse body ────────────────────────────────────────────────────
@@ -45,9 +83,8 @@ Răspunde concis, pedagogic, DOAR la întrebare.`;
       controller.enqueue(encoder.encode(`data: ${JSON.stringify({ ping: true })}\n\n`));
 
       try {
-        // Clarify uses the same AI router as main chat (admin tier for simplicity)
         const result = await callAIStream(
-          'chat_admin',
+          taskName,
           [{ role: 'user', content: userMessage }],
           { system: CLARIFY_SYSTEM_PROMPT }
         );
@@ -64,6 +101,19 @@ Răspunde concis, pedagogic, DOAR la întrebare.`;
         console.error('[clarify] stream error:', err);
         controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: msg })}\n\n`));
         controller.close();
+      }
+
+      // ── Consumă din cotă, ca în /api/chat ──────────────────────────
+      if (!isPremium) {
+        try {
+          const { error: rlErr } = await supabase.rpc('increment_rate_limit', {
+            p_user_id: user.id,
+            p_action_type: 'message',
+          });
+          if (rlErr) console.error('[clarify] increment_rate_limit error:', JSON.stringify(rlErr));
+        } catch (err) {
+          console.error('[clarify] increment_rate_limit threw:', err instanceof Error ? err.stack : err);
+        }
       }
     },
   });
