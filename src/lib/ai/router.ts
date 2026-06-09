@@ -1,4 +1,4 @@
-import { streamText, generateText, stepCountIs, type ToolSet, type ModelMessage } from "ai";
+import { streamText, generateText, stepCountIs, Output, type ToolSet, type ModelMessage, type FlexibleSchema } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
 import { google } from "@ai-sdk/google";
 import { createServiceClient } from "@/lib/supabase/service";
@@ -159,6 +159,34 @@ export async function callAIStreamWithTools<T extends ToolSet>(
     stopWhen: options.tools && Object.keys(options.tools).length > 0
       ? stepCountIs(options.maxToolSteps ?? 4)
       : undefined,
+  });
+}
+
+/**
+ * ETAPA 67 FAZA B: stream STRUCTURAT — listă de elemente validate de schema
+ * dată (AI SDK v6: streamText + Output.array → result.elementStream).
+ * System-ul acceptă SystemBlock[] (cache-ul din ETAPA 66 se păstrează).
+ */
+export async function callAIStreamArray<ELEMENT>(
+  taskName: string,
+  messages: AiMessage[],
+  options: {
+    system?: string | SystemBlock[];
+    elementSchema: FlexibleSchema<ELEMENT>;
+    schemaName?: string;
+  }
+) {
+  const config = await getModelConfig(taskName);
+  const model = buildModel(config);
+  const prompt = buildPrompt(options.system, messages);
+
+  return streamText({
+    model,
+    system: prompt.system,
+    messages: prompt.messages,
+    maxOutputTokens: config.max_tokens || undefined,
+    temperature: config.temperature,
+    output: Output.array({ element: options.elementSchema, name: options.schemaName }),
   });
 }
 

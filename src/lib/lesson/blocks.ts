@@ -99,6 +99,42 @@ export const RecapBlockSchema = z.object({
   puncte: z.array(propozitii(1).and(z.string().max(160))).min(1).max(3),
 });
 
+/**
+ * Schema STRUCTURALĂ pentru model (Output.array element): aceleași forme,
+ * FĂRĂ refine-urile de propoziții — refine nu se serializează în JSON Schema,
+ * iar validarea SDK per element ar omorî stream-ul la prima limită depășită.
+ * Limitele stricte le aplică serverul cu parseLessonBlock; invalidul se recere.
+ */
+export const LessonBlockModelSchema = z.discriminatedUnion('tip', [
+  z.object({ tip: z.literal('intro'), titlu: z.string(), ideea_mare: z.string() }),
+  z.object({ tip: z.literal('step'), titlu_scurt: z.string(), corp: z.string(), formula: z.string().optional() }),
+  z.object({ tip: z.literal('formula'), latex: z.string(), explicatie: z.string() }),
+  z.object({
+    tip: z.literal('example'),
+    enunt: z.string(),
+    pasi: z.array(z.object({ text: z.string(), formula: z.string().optional() })),
+  }),
+  z.object({
+    tip: z.literal('quiz'),
+    intrebare: z.string(),
+    optiuni: z.object({ a: z.string(), b: z.string(), c: z.string(), d: z.string() }),
+    corecta: z.enum(['a', 'b', 'c', 'd']),
+  }),
+  z.object({
+    tip: z.literal('table'),
+    titlu: z.string().optional(),
+    coloane: z.array(z.string()),
+    randuri: z.array(z.array(z.string())),
+  }),
+  z.object({
+    tip: z.literal('figure'),
+    exercise_id: z.string(),
+    layer_max: z.number().optional(),
+    legenda: z.string().optional(),
+  }),
+  z.object({ tip: z.literal('recap'), puncte: z.array(z.string()) }),
+]);
+
 export const LessonBlockSchema = z.discriminatedUnion('tip', [
   IntroBlockSchema,
   StepBlockSchema,
