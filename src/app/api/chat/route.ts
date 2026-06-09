@@ -18,6 +18,7 @@ import { verifyMath, type VerificationResult } from "@/lib/chat/math-verifier";
 import { getConceptAnchor, buildConceptSystemAddendum, type ConceptAnchor } from "@/lib/concepts/anchor";
 import { recordConceptEvidence } from "@/lib/mastery/evidence";
 import { pickCurrentExercise, evaluateAttempt, type AttemptEvaluation } from "@/lib/evaluare/evaluate";
+import { buildConversationHistory, type ConversationHistory } from "@/lib/chat/history";
 
 const FREE_MONTHLY_LIMIT = 30;
 const IS_DEV = process.env.NODE_ENV === "development";
@@ -96,7 +97,7 @@ export async function POST(req: NextRequest) {
   }
 
   // ── ETAPA 59 (P6): pașii independenți rulează CONCURENT ─────────
-  // profil ∥ embedding+match bibliotecă ∥ istoric conversație existentă
+  // profil ∥ embedding+match bibliotecă ∥ istoric (ETAPA 66 D1: 6 integrale + rezumat)
   const [profileResult, libraryResult, historyResult] = await Promise.all([
     supabase
       .from("profiles")
@@ -105,13 +106,8 @@ export async function POST(req: NextRequest) {
       .single(),
     lookupLibrary(message),
     conversationId
-      ? supabase
-          .from("messages")
-          .select("role, content")
-          .eq("conversation_id", conversationId)
-          .order("created_at", { ascending: true })
-          .limit(20)
-      : Promise.resolve({ data: null, error: null }),
+      ? buildConversationHistory(createServiceClient(), conversationId)
+      : Promise.resolve({ messages: [], summary: null } as ConversationHistory),
   ]);
 
   const { data: profile, error: profileErr } = profileResult;
@@ -177,16 +173,9 @@ export async function POST(req: NextRequest) {
     convId = conv.id as string;
   }
 
-  const { data: history, error: historyErr } = historyResult;
-  if (historyErr) {
-    console.error("[chat/route] history fetch error:", historyErr);
-  }
-
-  const priorMessages = (
-    (history as { role: string; content: string | null }[] | null) ?? []
-  )
-    .filter((m) => m.role === "user" || m.role === "assistant")
-    .map((m) => ({ role: m.role as "user" | "assistant", content: m.content ?? "" }));
+  // ETAPA 66 D1: ultimele 6 mesaje integrale + rezumat compact persistat
+  const priorMessages = historyResult.messages;
+  const historySummary = historyResult.summary;
 
   // ── Save user message ───────────────────────────────────────────
   const { error: userMsgErr } = await supabase.from("messages").insert({
@@ -233,6 +222,10 @@ export async function POST(req: NextRequest) {
   }
   if (isContextMatch && ragMatch) {
     dynamicAddendum += `\n\n---\nContext relevant din biblioteca de exerciții (similaritate ${(ragMatch.similarity * 100).toFixed(0)}%):\nExercițiu: ${ragMatch.statement}\nSoluție: ${ragMatch.solution}`;
+  }
+  // ETAPA 66 D1: rezumatul mesajelor mai vechi (fereastra de 6 a alunecat)
+  if (historySummary) {
+    dynamicAddendum += `\n\n---\nREZUMATUL conversației de până acum (mesajele mai vechi, comprimate):\n${historySummary}`;
   }
 
   const systemBlocks: SystemBlock[] = [
