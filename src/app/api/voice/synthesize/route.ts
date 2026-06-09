@@ -1,10 +1,21 @@
+import { createHash } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
 import { latexToSpeech } from '@/lib/voice/latex-to-speech';
 import { logApiUsage } from '@/lib/ai/usage-log';
 
 // OpenAI tts-1: $15.00 / 1M caractere (tokens_input = caractere pentru task 'tts')
 const TTS_PRICE_PER_CHAR = 15 / 1_000_000;
+
+// ETAPA 66 FAZA C: cache persistent în Storage. Enunțurile din bibliotecă sunt
+// FINITE → hit rate crește natural. Cheia acoperă tot ce influențează audio-ul.
+const TTS_BUCKET = 'tts-cache';
+const TTS_SPEED = 0.95;
+
+function ttsCacheKey(speechText: string, voice: string): string {
+  return createHash('sha256').update(`${speechText}|${voice}|${TTS_SPEED}`).digest('hex') + '.mp3';
+}
 
 /**
  * Elimină explicații redundante în formatul "ACRONIM (Explicație lungă)".
@@ -57,7 +68,38 @@ export async function POST(req: NextRequest) {
     console.log('[voice/synthesize] Speech text:', speechText.slice(0, 200), speechText.length > 200 ? '…' : '');
   }
 
-  // ── OpenAI TTS-1 ─────────────────────────────────────────────────
+  // ── Cache Storage: hit → servește fără OpenAI ─────────────────────
+  const service = createServiceClient();
+  const cacheKey = ttsCacheKey(speechText, voice);
+  try {
+    const hitStart = Date.now();
+    const { data: cached } = await service.storage.from(TTS_BUCKET).download(cacheKey);
+    if (cached) {
+      const bytes = await cached.arrayBuffer();
+      void logApiUsage({
+        userId: user.id,
+        taskName: 'tts',
+        model: 'tts-cache',
+        endpoint: '/api/voice/synthesize',
+        inputTokens: speechText.length,
+        outputTokens: 0,
+        latencyMsTotal: Date.now() - hitStart,
+        costUsd: 0,
+      });
+      return new NextResponse(bytes, {
+        headers: {
+          'Content-Type': 'audio/mpeg',
+          'Content-Length': String(bytes.byteLength),
+          'X-TTS-Cache': 'hit',
+        },
+      });
+    }
+  } catch (err) {
+    // cache-ul nu are voie să strice TTS-ul — miss forțat
+    console.error('[voice/synthesize] cache read failed:', err instanceof Error ? err.message : err);
+  }
+
+  // ── OpenAI TTS-1 (miss) ───────────────────────────────────────────
   const openaiKey = process.env.OPENAI_API_KEY;
   if (!openaiKey) {
     return NextResponse.json(
@@ -105,10 +147,19 @@ export async function POST(req: NextRequest) {
       costUsd: speechText.length * TTS_PRICE_PER_CHAR,
     });
 
+    // ETAPA 66 FAZA C: scrie în cache (best-effort, nu blochează răspunsul)
+    void service.storage
+      .from(TTS_BUCKET)
+      .upload(cacheKey, Buffer.from(audioBlob), { contentType: 'audio/mpeg', upsert: true })
+      .then(({ error }) => {
+        if (error) console.error('[voice/synthesize] cache write failed:', error.message);
+      });
+
     return new NextResponse(audioBlob, {
       headers: {
         'Content-Type': 'audio/mpeg',
         'Content-Length': String(audioBlob.byteLength),
+        'X-TTS-Cache': 'miss',
       },
     });
   } catch (err) {
