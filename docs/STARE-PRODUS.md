@@ -1,4 +1,25 @@
-# STARE PRODUS — după maratoanele ETAPELE 62–65 + 66 (10 iunie 2026)
+# STARE PRODUS — după maratoanele ETAPELE 62–65 + 66 + 67 (10 iunie 2026)
+
+## ETAPA 67 — lecția structurată (player tip quiz)
+
+**Live:** study mode + `?concept=` pe /app/chat = **LessonPlayer** (cale nouă; Solve și
+chatul liber neatinse, fallback automat la orice eșec): AI-ul emite blocuri tipizate
+(contract Zod cu limite VALIDATE — intro≤2 propoziții, step≤3, example≤4 pași, recap≤3),
+blocul invalid e respins + recerut; UN bloc pe ecran, progres animat, quiz A-D verificat
+pe SERVER (corecta nu există pe client) → mastery (ETAPA 63), micro-celebrare + streak;
+LessonTable (date, nu markdown) + remark-gfm adăugat în chatul liber (tabelele markdown
+nu se randau deloc); **figuri stratificate 19/19** (`<g data-layer 0-3>`: carcasă → date
+→ auxiliar → mărimea cerută), dezvăluire progresivă în player.
+
+**Dovezi:** etapa67-lesson-smoke (23 blocuri valide, 3 respinse+recerute, corecta doar
+server, quiz mișcă EMA exact), etapa67-language-test (toate blocurile ≤3 propoziții vs
+perete de chat 4077 chars), etapa67-layers-report (19/19 stratificabile, 4 straturi).
+
+**MARCAT:** blocurile recerute se adaugă la FINALUL lecției (ordine imperfectă);
+fallback-ul intern ({fallback:true} la stream mort) nu e forțabil în test fără mock —
+dovedit doar drumul 503→client (guard) + reviziune de cod pe onFallback.
+
+---
 
 ## ETAPA 66 — cost & performanță (tabelul-rege, baseline → după)
 
