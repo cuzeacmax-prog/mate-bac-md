@@ -31,8 +31,14 @@ async function main() {
   const svc = createServiceClient();
   const { data, error } = await svc.from("figura_autor").select("id, slug, condition, verdict_uman, iteratii, status").order("slug");
   if (error) { console.error(error.message); process.exit(1); }
-  const rows = (data ?? []) as Row[];
+  let rows = (data ?? []) as Row[];
   const all = process.argv.includes("--all");
+  // ETAPA 57: --doar=slug1,slug2 → re-procesează țintit (același pipeline, subset de rânduri)
+  const doarArg = process.argv.find((a) => a.startsWith("--doar="));
+  if (doarArg) {
+    const doar = new Set(doarArg.slice("--doar=".length).split(",").map((s) => s.trim()).filter(Boolean));
+    rows = rows.filter((r) => doar.has(r.slug));
+  }
 
   let acceptate = 0, esuate = 0, neatinse = 0, relatie = 0;
   console.log(`\n════════ ETAPA 56 — RE-PROCESARE CONCEPT-DRIVEN (${rows.length} figuri) ════════\n`);
