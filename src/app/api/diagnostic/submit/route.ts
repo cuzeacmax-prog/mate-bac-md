@@ -6,6 +6,8 @@ import {
   identifyWeaknesses,
 } from '@/lib/diagnostic/adaptive';
 import type { DiagnosticAttempt } from '@/lib/diagnostic/adaptive';
+import { getConceptSlugsForTopic } from '@/lib/diagnostic/topic-concept-map';
+import { recordConceptEvidence } from '@/lib/mastery/evidence';
 
 // Correct letters for fallback exercises (keyed by id)
 const FALLBACK_ANSWERS: Record<string, { correct_letter: string; difficulty: number; topic_id: string }> = {
@@ -114,6 +116,17 @@ export async function POST(req: Request) {
       }),
     })
     .eq('id', sessionId);
+
+  // ETAPA 60 (PAS 2): evidență în concept_mastery pe conceptele mapate ale
+  // topicului (EMA α=0.3, vezi lib/mastery/evidence.ts). Topice nemapate → no-op.
+  const conceptSlugs = getConceptSlugsForTopic(topicId);
+  if (conceptSlugs.length > 0) {
+    const { written, skipped } = await recordConceptEvidence(db, user.id, conceptSlugs, isCorrect, 'diagnostic');
+    if (skipped.length > 0) {
+      console.error('[diagnostic/submit] slug-uri sărite (inexistente):', skipped.join(', '));
+    }
+    console.log(`[diagnostic/submit] concept_mastery: ${written} concepte actualizate (corect=${isCorrect})`);
+  }
 
   // Log to exercise_attempts
   await supabase.from('exercise_attempts').insert({
