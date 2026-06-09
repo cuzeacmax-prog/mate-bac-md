@@ -31,11 +31,49 @@ export default function DiagnosticPage() {
   const [loading, setLoading] = useState(true);
   const [answerState, setAnswerState] = useState<AnswerState>('idle');
   const [correctLetter, setCorrectLetter] = useState<string | null>(null);
-  const [questionStart, setQuestionStart] = useState<number>(Date.now());
+  // Pornirea cronometrării întrebării se setează la încărcarea exercițiului (nu la render).
+  const [questionStart, setQuestionStart] = useState<number>(0);
   const [finishing, setFinishing] = useState(false);
 
   const history = store.diagnosticHistory;
   const gradeLevel = store.gradeLevel ?? 12;
+
+  const handleFinish = useCallback((prediction: number | null, weaknesses: string[] | null) => {
+    setFinishing(true);
+    if (prediction) store.setInitialBacPrediction(prediction);
+    if (weaknesses?.length) store.setWeaknesses(weaknesses);
+    track(Events.DIAGNOSTIC_COMPLETED, {
+      questions: history.length + 1,
+      prediction,
+    });
+    setTimeout(() => router.push('/onboarding/reveal'), 600);
+  }, [history.length, router, store]);
+
+  const fetchNextExercise = useCallback(async (sid: string) => {
+    setLoading(true);
+    setAnswerState('idle');
+    setCorrectLetter(null);
+
+    const res = await fetch('/api/diagnostic/next', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sessionId: sid,
+        history: store.diagnosticHistory,
+        gradeLevel,
+      }),
+    });
+    const data = await res.json();
+
+    if (data.finished || !data.exercise) {
+      handleFinish(null, null);
+      return;
+    }
+
+    setExercise(data.exercise);
+    setQuestionStart(Date.now());
+    setLoading(false);
+  }, [store.diagnosticHistory, gradeLevel, handleFinish]);
 
   // ── Init session ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -70,34 +108,7 @@ export default function DiagnosticPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fetchNextExercise = useCallback(async (sid: string) => {
-    setLoading(true);
-    setAnswerState('idle');
-    setCorrectLetter(null);
-
-    const res = await fetch('/api/diagnostic/next', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        sessionId: sid,
-        history: store.diagnosticHistory,
-        gradeLevel,
-      }),
-    });
-    const data = await res.json();
-
-    if (data.finished || !data.exercise) {
-      handleFinish(null, null);
-      return;
-    }
-
-    setExercise(data.exercise);
-    setQuestionStart(Date.now());
-    setLoading(false);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [store.diagnosticHistory, gradeLevel]);
-
-  async function handleAnswer(letter: string) {
+  const handleAnswer = useCallback(async (letter: string) => {
     if (answerState !== 'idle' || !exercise || !sessionId) return;
 
     const timeSpent = Math.round((Date.now() - questionStart) / 1000);
@@ -136,18 +147,7 @@ export default function DiagnosticPage() {
     setTimeout(() => {
       fetchNextExercise(sessionId);
     }, 900);
-  }
-
-  function handleFinish(prediction: number | null, weaknesses: string[] | null) {
-    setFinishing(true);
-    if (prediction) store.setInitialBacPrediction(prediction);
-    if (weaknesses?.length) store.setWeaknesses(weaknesses);
-    track(Events.DIAGNOSTIC_COMPLETED, {
-      questions: history.length + 1,
-      prediction,
-    });
-    setTimeout(() => router.push('/onboarding/reveal'), 600);
-  }
+  }, [answerState, exercise, sessionId, questionStart, store, fetchNextExercise, handleFinish]);
 
   const progress = Math.min(history.length / MAX_Q, 1);
 

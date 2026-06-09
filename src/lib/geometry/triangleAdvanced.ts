@@ -125,7 +125,7 @@ function detectCoincidences(
 // Deduces {a, b, c} from any valid combination of sides and angles.
 function deduceTriangleSides(input: TriangleAdvancedInput): { a: number; b: number; c: number } {
   const toRad = (deg: number) => (deg * Math.PI) / 180;
-  let { a, b, c } = input;
+  const { a, b, c } = input;
   let A = input.angle_A;
   let B = input.angle_B;
   let C = input.angle_C;

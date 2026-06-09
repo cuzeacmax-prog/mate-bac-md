@@ -8,6 +8,7 @@ import {
   fmt, fmtLabel, GraphOutput,
   generateAxesTikz, pointsToTikzSegments,
   sampleFunction, autoRange, wrapTikz, markedPointTikz,
+  evaluateExpression, sampleFunctionSmart,
 } from './_helpers';
 
 // ─── GraphOutput re-export ─────────────────────────────────────────────────────
@@ -477,7 +478,6 @@ export interface FunctionPlotInput {
 }
 
 export function generateFunctionPlot(input: FunctionPlotInput): GraphOutput {
-  const { evaluateExpression } = require('./_helpers') as typeof import('./_helpers');
   const fn = (x: number) => evaluateExpression(input.expression, x);
 
   const domain = input.domain;
@@ -485,7 +485,6 @@ export function generateFunctionPlot(input: FunctionPlotInput): GraphOutput {
   const [ymin, ymax] = input.range ?? autoRange(fn, domain, 100, 0.8);
   const yRange: [number, number] = [Math.min(ymin, -0.5), Math.max(ymax, 0.5)];
 
-  const { sampleFunctionSmart } = require('./_helpers') as typeof import('./_helpers');
   let body = generateAxesTikz(xmin, xmax, yRange[0], yRange[1], { show_grid: input.show_grid ?? true });
   const samples = sampleFunctionSmart(fn, domain, 200, yRange[0], yRange[1]);
   body += pointsToTikzSegments(samples, 'thick, blue');

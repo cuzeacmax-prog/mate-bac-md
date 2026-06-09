@@ -58,7 +58,14 @@ export default function MethodologiesPage() {
     }
   }, [page, grade, topic, validated]);
 
-  useEffect(() => { void fetchItems(); }, [fetchItems]);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      await Promise.resolve(); // ieșim din faza sincronă a effect-ului
+      if (!cancelled) void fetchItems();
+    })();
+    return () => { cancelled = true; };
+  }, [fetchItems]);
 
   async function handleDelete(id: string, name: string) {
     if (!confirm(`Ștergi metoda "${name}"?`)) return;

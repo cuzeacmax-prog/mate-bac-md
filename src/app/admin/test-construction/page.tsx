@@ -833,7 +833,7 @@ function SectionForm({ sectionType, onResult }: { sectionType: ShapeType; onResu
 
   async function handle() {
     setLoading(true); setError('');
-    let shape = sectionType.replace('section_', '');
+    const shape = sectionType.replace('section_', '');
     let input: Record<string, unknown>;
     if (sectionType === 'section_cube') {
       input = { side: parseFloat(side), plane_type: planeType, plane_position: 0.5, show_full_cube: true, highlight_section: true, label_section_vertices: true };

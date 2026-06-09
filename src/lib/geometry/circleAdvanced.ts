@@ -161,7 +161,7 @@ export function generateCircleAdvanced(input: CircleAdvancedInput): CircleAdvanc
   const computed: CircleAdvancedOutput['computed'] = {};
   const steps: CircleAdvancedOutput['construction_steps'] = [];
 
-  let base = `\\begin{tikzpicture}\n`;
+  const base = `\\begin{tikzpicture}\n`;
   let cum = base;
 
   // Step 1: Circle + center + radius
@@ -331,7 +331,7 @@ export function generateCircleAdvanced(input: CircleAdvancedInput): CircleAdvanc
   if (input.highlight_arc) {
     const arc = input.highlight_arc;
     const color = arc.color ?? 'blue';
-    let a1 = arc.angle1;
+    const a1 = arc.angle1;
     let a2 = arc.angle2;
     if (a2 < a1) a2 += 360;
     cum += `  \\draw[${color}, ultra thick] (${fmt(cx)},${fmt(cy)}) ++(${fmt(a1)}:${fmt(r)}) arc (${fmt(a1)}:${fmt(a2)}:${fmt(r)});\n`;
@@ -347,7 +347,7 @@ export function generateCircleAdvanced(input: CircleAdvancedInput): CircleAdvanc
   if (input.highlight_sector) {
     const sec = input.highlight_sector;
     const color = sec.fill_color ?? 'blue!20';
-    let a1 = sec.angle1;
+    const a1 = sec.angle1;
     let a2 = sec.angle2;
     if (a2 < a1) a2 += 360;
     cum += `  \\fill[${color}] (${fmt(cx)},${fmt(cy)}) -- ++(${fmt(a1)}:${fmt(r)}) arc (${fmt(a1)}:${fmt(a2)}:${fmt(r)}) -- cycle;\n`;

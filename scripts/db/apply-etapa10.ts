@@ -120,6 +120,16 @@ function loadMigration(): string {
   );
 }
 
+// Tipuri minimale pentru clientul `pg` (dependență opțională, importată dinamic).
+interface PgClient {
+  connect(): Promise<void>;
+  query(sql: string): Promise<{ rows: Array<Record<string, unknown>> }>;
+  end(): Promise<void>;
+}
+interface PgModule {
+  Client: new (cfg: { connectionString: string; ssl?: { rejectUnauthorized: boolean } }) => PgClient;
+}
+
 // ── Metodă 1: supabase db query --linked ────────────────────────────────────
 function runSupabaseQuery(sql: string, description: string): boolean {
   const tmpFile = join(ROOT, 'scripts/db/_tmp_query.sql');
@@ -146,9 +156,9 @@ function runSupabaseQuery(sql: string, description: string): boolean {
       console.error(`   ❌ ${err}`);
       return false;
     }
-  } catch (err: any) {
+  } catch (err) {
     if (existsSync(tmpFile)) try { unlinkSync(tmpFile); } catch {}
-    console.error(`   ❌ spawn error: ${err.message}`);
+    console.error(`   ❌ spawn error: ${err instanceof Error ? err.message : err}`);
     return false;
   }
 }
@@ -156,7 +166,7 @@ function runSupabaseQuery(sql: string, description: string): boolean {
 // ── Metodă 2: pg direct ─────────────────────────────────────────────────────
 async function runPg(sql: string, description: string, connStr: string): Promise<boolean> {
   try {
-    const { default: pg } = await import('pg') as any;
+    const { default: pg } = await import('pg') as unknown as { default: PgModule };
     const client = new pg.Client({
       connectionString: connStr,
       ssl: { rejectUnauthorized: false },
@@ -166,15 +176,15 @@ async function runPg(sql: string, description: string, connStr: string): Promise
     await client.end();
     console.log(`   ✅ ${description}`);
     return true;
-  } catch (err: any) {
-    console.error(`   ❌ pg: ${err.message}`);
+  } catch (err) {
+    console.error(`   ❌ pg: ${err instanceof Error ? err.message : err}`);
     return false;
   }
 }
 
 async function verifyPg(connStr: string): Promise<void> {
   try {
-    const { default: pg } = await import('pg') as any;
+    const { default: pg } = await import('pg') as unknown as { default: PgModule };
     const client = new pg.Client({ connectionString: connStr, ssl: { rejectUnauthorized: false } });
     await client.connect();
     const { rows } = await client.query(VERIFY_SQL);
@@ -209,7 +219,7 @@ function generateManual(): void {
 }
 
 // ── helpers ──────────────────────────────────────────────────────────────────
-function printVerify(row: any): void {
+function printVerify(row: Record<string, unknown>): void {
   console.log('');
   console.log('📊 VERIFICARE DB:');
   console.log(`   Total tabele public:  ${row.total_tables}`);

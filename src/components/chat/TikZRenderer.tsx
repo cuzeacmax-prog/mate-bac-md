@@ -98,14 +98,17 @@ export function TikZRenderer({ code }: Props) {
     [code, instanceId]
   );
 
-  useEffect(() => {
-    if (heightCache.has(instanceId)) {
-      setIframeHeight(heightCache.get(instanceId)!);
-      setStatus("done");
-      return;
-    }
+  // Re-sincronizare la schimbarea instanceId — ajustare de state în timpul render-ului,
+  // modelul recomandat de React în locul unui setState direct într-un effect.
+  const [prevInstanceId, setPrevInstanceId] = useState(instanceId);
+  if (prevInstanceId !== instanceId) {
+    setPrevInstanceId(instanceId);
+    setStatus(heightCache.has(instanceId) ? "done" : "loading");
+    setIframeHeight(heightCache.get(instanceId) ?? 0);
+  }
 
-    setStatus("loading");
+  useEffect(() => {
+    if (heightCache.has(instanceId)) return; // deja compilat → nu mai așteptăm mesaje
 
     const handler = (e: MessageEvent) => {
       if (!e.data || e.data.tikzId !== instanceId) return;

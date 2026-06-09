@@ -79,7 +79,10 @@ async function applyViaPg(): Promise<boolean> {
 
   try {
     // Dynamic import to handle optional dependency
-    const { default: pg } = await import('pg' as string) as any;
+    interface PgClient { connect(): Promise<void>; query(sql: string): Promise<unknown>; end(): Promise<void> }
+    const { default: pg } = await import('pg' as string) as unknown as {
+      default: { Client: new (cfg: { connectionString: string }) => PgClient };
+    };
     const client = new pg.Client({ connectionString: dbUrl });
     await client.connect();
 
@@ -89,12 +92,13 @@ async function applyViaPg(): Promise<boolean> {
     await client.end();
     console.log('  ✅ Migration aplicată via pg!');
     return true;
-  } catch (e: any) {
-    if (e?.code === '42P07') {
+  } catch (e) {
+    const err = e as { code?: string; message?: string };
+    if (err?.code === '42P07') {
       console.log('  ⏭️  Tabela există deja (pg: 42P07)');
       return true;
     }
-    console.log(`  ❌ pg error: ${e.message || e}`);
+    console.log(`  ❌ pg error: ${err.message || e}`);
     return false;
   }
 }

@@ -12,7 +12,16 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Bundle terț minificat (vendored TikZJax) — nu e cod al proiectului.
+    "public/tikzjax/**",
   ]),
+  // Fișierele .cjs sunt CommonJS prin definiție: require() e singura formă de import.
+  {
+    files: ["**/*.cjs"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;

@@ -90,7 +90,7 @@ export function InlineMiniChat({ interaction, messageId }: Props) {
         <span className="shrink-0">💬</span>
         {interaction.blockType
           ? <span className="capitalize font-medium">{interaction.blockType}</span>
-          : <span className="truncate italic">"{interaction.selectedText.slice(0, 40)}{interaction.selectedText.length > 40 ? '…' : ''}"</span>
+          : <span className="truncate italic">&bdquo;{interaction.selectedText.slice(0, 40)}{interaction.selectedText.length > 40 ? '…' : ''}&rdquo;</span>
         }
         {interaction.response && <span className="shrink-0 text-blue-500">— răspuns disponibil</span>}
       </motion.button>

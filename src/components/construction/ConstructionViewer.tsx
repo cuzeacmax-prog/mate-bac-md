@@ -19,9 +19,13 @@ interface ConstructionViewerProps {
 export function ConstructionViewer({ steps, title, isOpen, onClose }: ConstructionViewerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  useEffect(() => {
+  // Reset la pasul 0 când se (re)deschide — ajustare de state în timpul render-ului,
+  // modelul recomandat de React în locul unui setState într-un effect.
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen);
     if (isOpen) setCurrentIndex(0);
-  }, [isOpen]);
+  }
 
   useEffect(() => {
     if (!isOpen) return;

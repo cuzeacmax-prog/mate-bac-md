@@ -74,7 +74,12 @@ export default function LibraryReviewPage() {
   }, [page, topic, difficulty, grade, needsReview]);
 
   useEffect(() => {
-    void fetchItems();
+    let cancelled = false;
+    (async () => {
+      await Promise.resolve(); // ieșim din faza sincronă a effect-ului
+      if (!cancelled) void fetchItems();
+    })();
+    return () => { cancelled = true; };
   }, [fetchItems]);
 
   async function approve(id: string) {
