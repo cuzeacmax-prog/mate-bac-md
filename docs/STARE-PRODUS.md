@@ -1,4 +1,24 @@
-# STARE PRODUS — după maratoanele ETAPELE 62–65 + 66 + 67 (10 iunie 2026)
+# STARE PRODUS — după maratoanele ETAPELE 62–69 (10 iunie 2026)
+
+## ETAPA 68 — dashboard progres (/app/progres, în nav)
+
+Harta conceptelor clasei pe domeniile ETAPA 61 (7 domenii, 131 concepte la cl. 12),
+stare nestudiat/în-lucru/stăpânit din concept_mastery, click → lecția conceptului;
+cifre (stăpânite, exerciții corecte/încercate, streak, ultimele 5 activități);
+predicția BAC DOAR cu diagnostic terminat, ca interval ±0.5 „estimare orientativă".
+Dovadă: etapa68-acceptance EXIT=0 — fiecare cifră = SQL independent.
+
+## ETAPA 69 — simulare BAC (/app/simulare, în nav; MVP onest, variantă PARȚIALĂ)
+
+Structura DICTATĂ de pool (audit întâi): 9 exerciții din modulele I–VII, exclusiv
+servibile CU răspuns oficial (91 în pool; scorare determinist-întâi prin ETAPA 63);
+**Modulul VIII = gol, marcat pe intro, nu fabricat**. Cronometru server-side
+(started_at + 90 min + 60s grație; submit după deadline → 410, attempt închis
+expired:true). Player cu navigare liberă + «revin», rezultat pe module, greșitele
+cu link spre lecție, evidență concept_mastery source='exam', notă ca interval
+„simulare parțială — acoperă modulele …".
+Dovadă: etapa69-acceptance EXIT=0 — scor exact 5/9 pe răspunsuri mixte, mastery
+0→0.30 cu source=exam, expirarea forțată respinsă și persistată.
 
 ## ETAPA 67 — lecția structurată (player tip quiz)
 

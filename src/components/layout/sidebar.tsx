@@ -10,7 +10,7 @@ const NAV_ITEMS = [
   { href: "/app/azi",       label: "Azi",        icon: CalendarCheck, disabled: false },
   { href: "/app",           label: "Chat",       icon: MessageSquare, disabled: false },
   { href: "/app/practice",  label: "Exerciții",  icon: Dumbbell,      disabled: true  },
-  { href: "/app/simulare",  label: "Simulare",   icon: ClipboardList, disabled: true  },
+  { href: "/app/simulare",  label: "Simulare",   icon: ClipboardList, disabled: false },
   { href: "/app/photo",     label: "Foto",        icon: Camera,        disabled: true  },
   { href: "/app/progres",   label: "Progres",    icon: BarChart2,     disabled: false },
 ] as const;

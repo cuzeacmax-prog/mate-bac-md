@@ -90,8 +90,8 @@ export async function evaluateAttempt(
     conversationId: string;
     message: string;
     exercise: { id: string; statement: string };
-    /** 'chat_ancorat' (implicit) sau 'daily_challenge' (ETAPA 14) */
-    sessionType?: 'chat_ancorat' | 'daily_challenge';
+    /** 'chat_ancorat' (implicit), 'daily_challenge' (ETAPA 14) sau 'mock_bac' (ETAPA 69) */
+    sessionType?: 'chat_ancorat' | 'daily_challenge' | 'mock_bac';
     /** true = mesajul E un răspuns prin construcție (câmp dedicat), sare detecția */
     assumeAttempt?: boolean;
   }

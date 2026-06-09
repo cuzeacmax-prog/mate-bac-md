@@ -16,7 +16,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 export const MASTERY_ALPHA = 0.3;
 
-export type EvidenceSource = 'diagnostic' | 'chat' | 'exercise';
+export type EvidenceSource = 'diagnostic' | 'chat' | 'exercise' | 'exam';
 
 interface ConceptRef { id: string; slug: string }
 
