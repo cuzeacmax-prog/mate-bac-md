@@ -21,8 +21,7 @@ const ALLOWED_VOICES = new Set(['alloy', 'echo', 'fable', 'onyx', 'nova', 'shimm
 
 export async function POST(req: NextRequest) {
   // ── Auth ──────────────────────────────────────────────────────────
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = (await createClient()) as any;
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: 'Neautentificat' }, { status: 401 });
@@ -85,12 +84,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'TTS failed' }, { status: 502 });
     }
 
-    // Stream audio direct la client cu caching (1h)
+    // ETAPA 59 (P8): fără Cache-Control — răspunsurile POST nu se cache-uiesc
+    // în browser; header-ul era inutil și inducea în eroare.
     const audioBlob = await ttsResponse.arrayBuffer();
     return new NextResponse(audioBlob, {
       headers: {
         'Content-Type': 'audio/mpeg',
-        'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
         'Content-Length': String(audioBlob.byteLength),
       },
     });

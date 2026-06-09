@@ -64,8 +64,7 @@ export async function POST(req: NextRequest) {
   console.log("[chat/route] POST started");
 
   // ── Auth ────────────────────────────────────────────────────────
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = (await createClient()) as any;
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
