@@ -42,20 +42,21 @@ export function drawSpec2D(spec: FigureSpec2D): Drawing2D {
   const segLabels: Array<{ mid: V2; perp: V2; text: string }> = [];
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
   const acc = (x: number, y: number) => { minX = Math.min(minX, x); minY = Math.min(minY, y); maxX = Math.max(maxX, x); maxY = Math.max(maxY, y); };
-  const poly = (pts: V2[], dashed = false, closed = false) => { const ps = closed ? [...pts, pts[0]] : pts; polylines.push({ pts: ps, dashed }); ps.forEach((p) => acc(p[0], p[1])); };
+  // ETAPA 67 F: layer = proveniența semantică (0 carcasă, 1 date, 2 auxiliar, 3 mărimea)
+  const poly = (pts: V2[], dashed = false, closed = false, layer = 0) => { const ps = closed ? [...pts, pts[0]] : pts; polylines.push({ pts: ps, dashed, layer }); ps.forEach((p) => acc(p[0], p[1])); };
   const P = (id: string): V2 | null => named[id] ?? null;
 
   const tri3 = (ids: string[]): [V2, V2, V2] | null => { const a = P(ids[0]), b = P(ids[1]), c = P(ids[2]); return a && b && c ? [a, b, c] : null; };
   for (const e of spec.elements as FigureElement[]) {
     if (e.kind === "polygon") { const ps = e.points.map(P).filter(Boolean) as V2[]; if (ps.length >= 2) poly(ps, false, true); }
     else if (e.kind === "triangleFromSides") { const t = tri3(e.ids); if (t) poly(t, false, true); }
-    else if (e.kind === "segment") { const a = P(e.between[0]), b = P(e.between[1]); if (a && b) { poly([a, b]); if (e.label) { const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1; segLabels.push({ mid: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], perp: [-dy / L, dx / L], text: e.label }); } } }
+    else if (e.kind === "segment") { const a = P(e.between[0]), b = P(e.between[1]); if (a && b) { poly([a, b], false, false, 2); if (e.label) { const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1; segLabels.push({ mid: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], perp: [-dy / L, dx / L], text: e.label }); } } }
     else if (e.kind === "incircle") { const t = tri3(e.of); if (t) { const { c, r } = incenter(...t); poly(circlePts(c, r)); } }
     else if (e.kind === "circumcircle") { const t = tri3(e.of); if (t) { const { c, r } = circumcenter(...t); poly(circlePts(c, r)); } }
     else if (e.kind === "circle") { const c = P(e.center); if (c) { const r = e.radius ?? (e.through && P(e.through) ? Math.hypot(c[0] - P(e.through)![0], c[1] - P(e.through)![1]) : 1); poly(circlePts(c, r)); } }
-    else if (e.kind === "rightAngle") { const at = P(e.at), p = P(e.from[0]), q = P(e.from[1]); if (at && p && q) { const u = unit(at, p), v = unit(at, q); const s = 0.07 * span2(named); const k1: V2 = [at[0] + u[0] * s, at[1] + u[1] * s], k2: V2 = [at[0] + v[0] * s, at[1] + v[1] * s], k3: V2 = [at[0] + (u[0] + v[0]) * s, at[1] + (u[1] + v[1]) * s]; poly([k1, k3, k2]); } }
-    else if (e.kind === "angle") { const at = e.at ? P(e.at) : null; const p = e.from ? P(e.from[0]) : null, q = e.from ? P(e.from[1]) : null; if (at && p && q) { const u = unit(at, p), v = unit(at, q); const s = 0.16 * span2(named); const arc: V2[] = Array.from({ length: 13 }, (_, i) => { const t = i / 12; const m = unit2([u[0] * (1 - t) + v[0] * t, u[1] * (1 - t) + v[1] * t]); return [at[0] + m[0] * s, at[1] + m[1] * s] as V2; }); poly(arc); if (e.label) { const m = unit2([u[0] + v[0], u[1] + v[1]]); labels.push({ x: at[0] + m[0] * s * 1.6, y: at[1] + m[1] * s * 1.6, text: e.label }); } } }
-    else if (e.kind === "equalAngle") { const at = P(e.at), p = P(e.from[0]), q = P(e.from[1]); if (at && p && q) { const u = unit(at, p), v = unit(at, q); const n = e.count ?? 1; const scale = e.radius ?? 1; for (let k = 0; k < n; k++) { const s = (0.12 + k * 0.035) * span2(named) * scale; const arc: V2[] = Array.from({ length: 11 }, (_, i) => { const t = i / 10; const m = unit2([u[0] * (1 - t) + v[0] * t, u[1] * (1 - t) + v[1] * t]); return [at[0] + m[0] * s, at[1] + m[1] * s] as V2; }); poly(arc); } } }
+    else if (e.kind === "rightAngle") { const at = P(e.at), p = P(e.from[0]), q = P(e.from[1]); if (at && p && q) { const u = unit(at, p), v = unit(at, q); const s = 0.07 * span2(named); const k1: V2 = [at[0] + u[0] * s, at[1] + u[1] * s], k2: V2 = [at[0] + v[0] * s, at[1] + v[1] * s], k3: V2 = [at[0] + (u[0] + v[0]) * s, at[1] + (u[1] + v[1]) * s]; poly([k1, k3, k2], false, false, 1); } }
+    else if (e.kind === "angle") { const at = e.at ? P(e.at) : null; const p = e.from ? P(e.from[0]) : null, q = e.from ? P(e.from[1]) : null; if (at && p && q) { const u = unit(at, p), v = unit(at, q); const s = 0.16 * span2(named); const arc: V2[] = Array.from({ length: 13 }, (_, i) => { const t = i / 12; const m = unit2([u[0] * (1 - t) + v[0] * t, u[1] * (1 - t) + v[1] * t]); return [at[0] + m[0] * s, at[1] + m[1] * s] as V2; }); poly(arc, false, false, 1); if (e.label) { const m = unit2([u[0] + v[0], u[1] + v[1]]); labels.push({ x: at[0] + m[0] * s * 1.6, y: at[1] + m[1] * s * 1.6, text: e.label, layer: 1 }); } } }
+    else if (e.kind === "equalAngle") { const at = P(e.at), p = P(e.from[0]), q = P(e.from[1]); if (at && p && q) { const u = unit(at, p), v = unit(at, q); const n = e.count ?? 1; const scale = e.radius ?? 1; for (let k = 0; k < n; k++) { const s = (0.12 + k * 0.035) * span2(named) * scale; const arc: V2[] = Array.from({ length: 11 }, (_, i) => { const t = i / 10; const m = unit2([u[0] * (1 - t) + v[0] * t, u[1] * (1 - t) + v[1] * t]); return [at[0] + m[0] * s, at[1] + m[1] * s] as V2; }); poly(arc, false, false, 1); } } }
     else if (e.kind === "midpoint") { const a = P(e.of[0]), b = P(e.of[1]); if (a && b && e.id) named[e.id] = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]; }
   }
 
@@ -69,7 +70,7 @@ export function drawSpec2D(spec: FigureSpec2D): Drawing2D {
     const toC = [sl.mid[0] - cx, sl.mid[1] - cy];
     const sign = (sl.perp[0] * toC[0] + sl.perp[1] * toC[1]) >= 0 ? 1 : -1;
     const x = sl.mid[0] + sign * sl.perp[0] * off, y = sl.mid[1] + sign * sl.perp[1] * off;
-    labels.push({ x, y, text: sl.text }); acc(x, y);
+    labels.push({ x, y, text: sl.text, layer: 3 }); acc(x, y);
   }
   // PUNCTIȘOR la fiecare vârf etichetat (ca să fie clar la ce se referă eticheta)
   const dots: V2[] = anchors.map((a) => [a.x, a.y]);
@@ -99,15 +100,39 @@ export function toSVG(drawing: Drawing2D, size = 460): string {
   const w = maxX - minX || 1, h = maxY - minY || 1, span = Math.max(w, h), pad = span * 0.14;
   const vb = `${minX - pad} ${minY - pad} ${w + 2 * pad} ${h + 2 * pad}`;
   const fs = span * 0.052;
-  const lines = drawing.polylines.map((pl) =>
-    `<polyline points="${pl.pts.map((p) => `${r(p[0])},${r(p[1])}`).join(" ")}" fill="none" stroke="${INK}" stroke-width="1.4" vector-effect="non-scaling-stroke" ${pl.dashed ? 'stroke-dasharray="5 4" ' : ""}stroke-linejoin="round" stroke-linecap="round"/>`,
-  ).join("");
+  const lineOf = (pl: Drawing2D["polylines"][number]) =>
+    `<polyline points="${pl.pts.map((p) => `${r(p[0])},${r(p[1])}`).join(" ")}" fill="none" stroke="${INK}" stroke-width="1.4" vector-effect="non-scaling-stroke" ${pl.dashed ? 'stroke-dasharray="5 4" ' : ""}stroke-linejoin="round" stroke-linecap="round"/>`;
   const dotR = span * 0.012;
-  const dots = (drawing.dots ?? []).map((d) => `<circle cx="${r(d[0])}" cy="${r(d[1])}" r="${r(dotR)}" fill="${INK}"/>`).join("");
-  const texts = drawing.labels.filter((l) => l.text).map((l) =>
-    `<text x="${r(l.x)}" y="${r(l.y)}" font-size="${r(fs)}" fill="${INK}" text-anchor="middle" dominant-baseline="middle" font-family="Georgia,'Times New Roman',serif" font-style="italic">${esc(l.text)}</text>`,
-  ).join("");
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="${vb}" preserveAspectRatio="xMidYMid meet"><rect x="${minX - pad}" y="${minY - pad}" width="${w + 2 * pad}" height="${h + 2 * pad}" fill="white"/>${lines}${dots}${texts}</svg>`;
+  const dotOf = (d: [number, number]) => `<circle cx="${r(d[0])}" cy="${r(d[1])}" r="${r(dotR)}" fill="${INK}"/>`;
+  const textOf = (l: Drawing2D["labels"][number]) =>
+    `<text x="${r(l.x)}" y="${r(l.y)}" font-size="${r(fs)}" fill="${INK}" text-anchor="middle" dominant-baseline="middle" font-family="Georgia,'Times New Roman',serif" font-style="italic">${esc(l.text)}</text>`;
+
+  // ETAPA 67 FAZA F: dacă elementele au proveniență pe ≥2 straturi semantice,
+  // grupează-le pe <g data-layer=N> (dezvăluire progresivă în LessonPlayer).
+  // Fără straturi distincte → SVG plat, figura apare întreagă (cazul MARCAT).
+  const layerOf = (x: { layer?: number }) => x.layer ?? 0;
+  const layers = new Set<number>([
+    ...drawing.polylines.map(layerOf),
+    ...drawing.labels.filter((l) => l.text).map(layerOf),
+  ]);
+  let body: string;
+  if (layers.size >= 2) {
+    const parts: string[] = [];
+    for (const layer of [...layers].sort((a, b) => a - b)) {
+      const lines = drawing.polylines.filter((pl) => layerOf(pl) === layer).map(lineOf).join("");
+      // punctele de vârf țin de carcasă (stratul 0)
+      const dots = layer === 0 ? (drawing.dots ?? []).map(dotOf).join("") : "";
+      const texts = drawing.labels.filter((l) => l.text && layerOf(l) === layer).map(textOf).join("");
+      parts.push(`<g data-layer="${layer}">${lines}${dots}${texts}</g>`);
+    }
+    body = parts.join("");
+  } else {
+    body =
+      drawing.polylines.map(lineOf).join("") +
+      (drawing.dots ?? []).map(dotOf).join("") +
+      drawing.labels.filter((l) => l.text).map(textOf).join("");
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="${vb}" preserveAspectRatio="xMidYMid meet"><rect x="${minX - pad}" y="${minY - pad}" width="${w + 2 * pad}" height="${h + 2 * pad}" fill="white"/>${body}</svg>`;
 }
 const r = (n: number) => Math.round(n * 1000) / 1000;
 const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]!));

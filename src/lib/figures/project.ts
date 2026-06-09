@@ -118,8 +118,14 @@ export function specToGeom(spec: FigureSpec3D): Geom3D {
 }
 
 // ── Proiecție ──
-export interface Polyline { pts: Array<[number, number]>; dashed: boolean }
-export interface LabelPos { x: number; y: number; text: string }
+/**
+ * ETAPA 67 FAZA F: `layer` = proveniența semantică pentru dezvăluirea progresivă:
+ * 0 carcasa corpului · 1 datele marcate (unghiuri, etichete de date) ·
+ * 2 construcția auxiliară (segmente libere) · 3 mărimea cerută (etichetele auxiliare).
+ * Lipsă = 0. SVG-ul grupează pe <g data-layer=N> DOAR dacă există ≥2 straturi.
+ */
+export interface Polyline { pts: Array<[number, number]>; dashed: boolean; layer?: number }
+export interface LabelPos { x: number; y: number; text: string; layer?: number }
 export interface Drawing2D { polylines: Polyline[]; labels: LabelPos[]; bbox: { minX: number; minY: number; maxX: number; maxY: number }; named?: Record<string, [number, number]>; dots?: Array<[number, number]> }
 
 /**
@@ -164,7 +170,7 @@ export function projectFigure(spec: FigureSpec3D, azDeg: number, elDeg: number):
   const labels: Drawing2D["labels"] = [];
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
   const acc = (x: number, y: number) => { minX = Math.min(minX, x); minY = Math.min(minY, y); maxX = Math.max(maxX, x); maxY = Math.max(maxY, y); };
-  const line = (a2: [number, number], b2: [number, number], dashed: boolean) => { polylines.push({ pts: [a2, b2], dashed }); acc(...a2); acc(...b2); };
+  const line = (a2: [number, number], b2: [number, number], dashed: boolean, layer = 0) => { polylines.push({ pts: [a2, b2], dashed, layer }); acc(...a2); acc(...b2); };
 
   // back-face: normala feței ≈ centroidFață − centroidCorp (poliedru convex); front dacă dot(normal, dir) > 0
   const allP = g.pts.map((q) => q.p);
@@ -191,15 +197,15 @@ export function projectFigure(spec: FigureSpec3D, azDeg: number, elDeg: number):
     const hidden = fronts.length > 0 && fronts.every((x) => !x);
     line(proj(pa), proj(pc), hidden);
   }
-  // segmente libere (auxiliare): înălțime punctată, apotemă/înclinată pline
+  // segmente libere (auxiliare) = STRATUL 2: înălțime punctată, apotemă pline
   const segLabels: Array<{ mid: [number, number]; perp: [number, number]; text: string }> = [];
   for (const s of g.segments) {
     const a2 = proj(s.a), b2 = proj(s.b);
-    line(a2, b2, !!s.dashed);
+    line(a2, b2, !!s.dashed, 2);
     if (s.label) { const dx = b2[0] - a2[0], dy = b2[1] - a2[1], L = Math.hypot(dx, dy) || 1; segLabels.push({ mid: [(a2[0] + b2[0]) / 2, (a2[1] + b2[1]) / 2], perp: [-dy / L, dx / L], text: s.label }); }
   }
-  // arce de unghi (marcaje diedru) — mereu pline
-  for (const ar of g.arcs ?? []) { const p2 = ar.pts.map(proj); p2.forEach((p) => acc(...p)); polylines.push({ pts: p2, dashed: false }); }
+  // arce de unghi (marcaje) = STRATUL 1 (datele marcate) — mereu pline
+  for (const ar of g.arcs ?? []) { const p2 = ar.pts.map(proj); p2.forEach((p) => acc(...p)); polylines.push({ pts: p2, dashed: false, layer: 1 }); }
 
   // corpuri rotunde
   const sample = (center: V3, R: number, z: number, n = 72): V3[] => Array.from({ length: n }, (_, i) => { const t = (2 * Math.PI * i) / n; return [center[0] + R * Math.cos(t), center[1] + R * Math.sin(t), z] as V3; });
@@ -262,14 +268,14 @@ export function projectFigure(spec: FigureSpec3D, azDeg: number, elDeg: number):
   const placed = placeVertexLabels(anchors, cx2, cy2, off);
   labels.push(...placed);
   for (const l of placed) acc(l.x, l.y); // bbox include etichetele → nu se taie din cadru
-  // etichete libere (lungimi/unghiuri auxiliare): poziție 3D proiectată, fără re-poziționare
-  for (const fl of g.freeLabels ?? []) { const [x, y] = proj(fl.at); labels.push({ x, y, text: fl.text }); acc(x, y); }
-  // etichete de segment: LATERAL față de linie (perpendicular), spre exterior (departe de centru) — nu pe linie
+  // etichete libere (date marcate: lungimi/unghiuri) = STRATUL 1
+  for (const fl of g.freeLabels ?? []) { const [x, y] = proj(fl.at); labels.push({ x, y, text: fl.text, layer: 1 }); acc(x, y); }
+  // etichete de segment auxiliar (numele mărimii, ex. „h") = STRATUL 3 (mărimea cerută)
   for (const sl of segLabels) {
     const toC = [sl.mid[0] - cx2, sl.mid[1] - cy2];
     const sign = (sl.perp[0] * toC[0] + sl.perp[1] * toC[1]) >= 0 ? 1 : -1; // partea dinspre exterior
     const x = sl.mid[0] + sign * sl.perp[0] * off, y = sl.mid[1] + sign * sl.perp[1] * off;
-    labels.push({ x, y, text: sl.text }); acc(x, y);
+    labels.push({ x, y, text: sl.text, layer: 3 }); acc(x, y);
   }
   const named: Record<string, [number, number]> = {};
   for (const q of g.pts) named[q.id] = proj(q.p);
