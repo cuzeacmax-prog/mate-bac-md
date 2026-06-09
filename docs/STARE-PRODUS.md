@@ -1,4 +1,26 @@
-# STARE PRODUS — după maratonul ETAPELE 62–65 (10 iunie 2026)
+# STARE PRODUS — după maratoanele ETAPELE 62–65 + 66 (10 iunie 2026)
+
+## ETAPA 66 — cost & performanță (tabelul-rege, baseline → după)
+
+| Metrică | Baseline (MĂSURAT) | După | Δ | Statut |
+|---|---|---|---|---|
+| Cost/mesaj premium (conversație) | $0.0274 | $0.0079 (cache 83–99% din input) | **−71%** | MĂSURAT (etapa66-cache-test) |
+| Cost/mesaj free | $0.0086 | $0.0086 (conv. scurte) | 0% | MĂSURAT — Haiku 4.5 sub minimul cache-abil (4096 tok, empiric); prefixul va crește natural cu contractul ETAPA 67 |
+| Istoric tokeni (mesajul 15) | 12 629 | 6 502 (rezumat persistat + 6 integrale) | **−49%** | MĂSURAT (countTokens) |
+| Cost TTS/enunț repetat | $0.001725 | $0 (hit Storage) · test 20 redări: −50% | →0 pe conținut repetat | MĂSURAT (10/10 hit runda 2) |
+| Latență TTS pe hit | 3212 ms | 631 ms | **−80%** | MĂSURAT |
+| Randări KaTeX (mesaj 8 blocuri, 40 chunks) | ≈320 echiv. | 8 | **−97%** | MĂSURAT (contor în test jsdom) |
+| Landing `/` | ƒ dynamic | ○ static | — | MĂSURAT (build output) |
+| TTFB chat | 1.6–1.8 s | similar (ne-remăsurat sistematic) | — | MARCAT: nemăsurat după |
+| Dimensiune cache TTS la 1000 enunțuri | — | ~130 MB | — | ESTIMAT (extrapolare din 133 KB/fișier măsurat) |
+
+Garduri active: buget lunar per tier (downgrade politicos la Haiku), kill-switch global,
+alertă cost zilnic cu banner în /admin/metrics (p50/p95, rate cache, cost/zi, top useri).
+Instrumentare: fiecare apel LLM/TTS/embedding scrie tokens+cache+latență în api_usage_log.
+
+---
+
+# Maratonul ETAPELE 62–65
 
 Document scurt de stare: ce e live, ce e marcat onest, ce lipsește.
 Detaliile per etapă sunt în mesajele de commit (prefix `ETAPA <N>:`).
