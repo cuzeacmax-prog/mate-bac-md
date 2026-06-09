@@ -6,20 +6,8 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import type { Components } from "react-markdown";
 
-// Viz renderers disabled — moving to library-based static SVG approach (Phase 3)
-// const TikZRenderer = dynamic(
-//   () => import("@/components/chat/TikZRenderer").then((m) => ({ default: m.TikZRenderer })),
-//   { ssr: false }
-// );
-// const GeoGebraEmbed = dynamic(
-//   () => import("@/components/chat/GeoGebraEmbed").then((m) => ({ default: m.GeoGebraEmbed })),
-//   { ssr: false }
-// );
-// const ThreeRenderer = dynamic(
-//   () => import("@/components/chat/ThreeRenderer").then((m) => ({ default: m.ThreeRenderer })),
-//   { ssr: false }
-// );
-
+// Limbajele viz din mesaje sunt servite din bibliotecă (SVG static), nu randate client-side.
+// Componentele TikZRenderer/GeoGebraEmbed/ThreeRenderer au fost șterse în ETAPA 59 (cod mort).
 const VIZ_LANGS = new Set(["tikz", "geogebra", "three"]);
 
 interface Props {
@@ -63,10 +51,6 @@ export function MessageRenderer({ content, isStreaming }: Props) {
 
       if (VIZ_LANGS.has(lang)) {
         if (isStreaming) return null;
-        // Viz renderers disabled — will serve from library (Phase 3)
-        // if (lang === "tikz")     return <TikZRenderer code={codeContent} />;
-        // if (lang === "geogebra") return <GeoGebraEmbed commands={codeContent} />;
-        // if (lang === "three")    return <ThreeRenderer spec={codeContent} />;
         return (
           <span className="text-xs text-muted-foreground italic">
             [Vizualizare disponibilă curând în bibliotecă]
