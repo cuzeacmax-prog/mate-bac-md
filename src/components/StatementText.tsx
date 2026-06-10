@@ -15,7 +15,10 @@ export function StatementText({ text, className }: { text: string; className?: s
   return (
     <span className={className ?? "block space-y-2"}>
       {table.before && <MathText text={table.before} className="block whitespace-pre-wrap" />}
-      <LessonTable coloane={table.columns} randuri={table.rows} />
+      {/* tabelele late nu sparg mobilul — scroll orizontal în card */}
+      <span className="block overflow-x-auto">
+        <LessonTable coloane={table.columns} randuri={table.rows} />
+      </span>
       {table.after && <MathText text={table.after} className="block whitespace-pre-wrap" />}
     </span>
   );

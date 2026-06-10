@@ -4,6 +4,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { MessageRenderer } from "./MessageRenderer";
 import { BlockSelectableMessage } from "@/components/chat/BlockSelectableMessage";
+import { LessonTranscript, parseLessonContent } from "@/components/chat/LessonTranscript";
 import { VoicePlayer } from "@/components/chat/VoicePlayer";
 import { VerificationBadge } from "@/components/chat/VerificationBadge";
 import type { ChatMetadata } from "./ChatMessages";
@@ -60,15 +61,20 @@ export const MessageBubble = React.memo(function MessageBubble({
         {/* ── Assistant message ────────────────────────────────── */}
         {!isUser && (
           <>
-            {showInteractive ? (
-              <BlockSelectableMessage
-                messageId={messageId!}
-                content={content}
-                isStreaming={isStreaming}
-              />
-            ) : (
-              <MessageRenderer content={content} isStreaming={isStreaming} />
-            )}
+            {/* ETAPA 73: mesajul-lecție (JSON persistat) → transcript, nu JSON brut */}
+            {(() => {
+              const lesson = parseLessonContent(content);
+              if (lesson) return <LessonTranscript concept={lesson.concept} blocks={lesson.blocks} />;
+              return showInteractive ? (
+                <BlockSelectableMessage
+                  messageId={messageId!}
+                  content={content}
+                  isStreaming={isStreaming}
+                />
+              ) : (
+                <MessageRenderer content={content} isStreaming={isStreaming} />
+              );
+            })()}
 
             {/* SVG-uri geometrice */}
             {hasSvgs && (

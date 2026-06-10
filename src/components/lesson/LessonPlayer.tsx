@@ -107,19 +107,23 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
       })
       .catch(() => { /* ecranul rămâne fără cifre, nu gol */ });
   }, [finished, conceptSlug]);
-  const startedRef = useRef(false);
 
   // ── streamul lecției ──────────────────────────────────────────────────────
+  // ETAPA 73 (defect dovedit de bucla vizuală): vechiul guard startedRef bloca
+  // PERMANENT player-ul sub StrictMode (dev): prima montare pornea fetch-ul,
+  // cleanup-ul îl marca cancelled, iar remontarea era oprită de startedRef →
+  // toate evenimentele se aruncau și „Pregătesc lecția…" rămânea pe ecran.
+  // Acum: AbortController per montare + un mic delay (montarea fantomă din
+  // StrictMode se abortează ÎNAINTE să plece request-ul → zero apeluri LLM duble).
   useEffect(() => {
-    if (startedRef.current) return;
-    startedRef.current = true;
-    let cancelled = false;
-    (async () => {
+    const ac = new AbortController();
+    const timer = setTimeout(async () => {
       try {
         const resp = await fetch("/api/lesson/start", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ concept: conceptSlug }),
+          signal: ac.signal,
         });
         if (!resp.ok || !resp.body) throw new Error(`HTTP ${resp.status}`);
         const reader = resp.body.getReader();
@@ -135,7 +139,7 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
             if (!line.startsWith("data: ")) continue;
             let ev: { block?: LessonBlockClient; done?: boolean; fallback?: boolean; messageId?: string; error?: string };
             try { ev = JSON.parse(line.slice(6)); } catch { continue; }
-            if (cancelled) return;
+            if (ac.signal.aborted) return;
             if (ev.fallback || ev.error) throw new Error(ev.error ?? "fallback");
             if (ev.block) setBlocks((prev) => [...prev, ev.block!]);
             if (ev.done) {
@@ -144,13 +148,17 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
             }
           }
         }
-        if (!cancelled) setStreamDone(true);
+        if (!ac.signal.aborted) setStreamDone(true);
       } catch (err) {
+        if (ac.signal.aborted) return; // demontare normală, nu eșec
         console.error("[LessonPlayer] fallback:", err instanceof Error ? err.message : err);
-        if (!cancelled) onFallback();
+        onFallback();
       }
-    })();
-    return () => { cancelled = true; };
+    }, 150);
+    return () => {
+      clearTimeout(timer);
+      ac.abort();
+    };
   }, [conceptSlug, onFallback]);
 
   const current = blocks[idx];
