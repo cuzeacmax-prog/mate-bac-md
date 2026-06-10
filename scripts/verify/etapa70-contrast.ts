@@ -55,6 +55,8 @@ const DOMAIN_KEYS = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'viii'] as const;
 const DOMAIN_PAIRS = DOMAIN_KEYS.flatMap((k) => [
   { fg: `domain-${k}-fg`, bg: `domain-${k}-bg`, min: 4.5, rol: `text pe fundal domeniul ${k.toUpperCase()} (AA)` },
   { fg: `domain-${k}`, bg: 'background', min: 3, rol: `nuanța domeniului ${k.toUpperCase()} ca UI (AA non-text)` },
+  // ETAPA 71 D: tab-uri active + butoane „Învață" = text deschis pe nuanță
+  { fg: 'primary-foreground', bg: `domain-${k}`, min: 4.5, rol: `text deschis pe nuanța ${k.toUpperCase()} (AA)` },
 ]);
 
 const PAIRS: Array<{ fg: string; bg: string; min: number; rol: string }> = [

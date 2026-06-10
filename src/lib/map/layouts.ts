@@ -41,3 +41,18 @@ export const MAP_LAYOUTS: Record<DomainColor['key'], MapLayout> = {
   vi: layoutVI as MapLayout,
   viii: layoutVIII as MapLayout,
 };
+
+// ETAPA 71 FAZA D: slug → cheia domeniului (pentru culoarea care curge prin
+// sait). DOAR server-side — JSON-urile de layout nu intră în bundle-ul client.
+let slugToDomain: Map<string, DomainColor['key']> | null = null;
+export function domainKeyForSlug(slug: string): DomainColor['key'] | null {
+  if (!slugToDomain) {
+    slugToDomain = new Map();
+    for (const [key, layout] of Object.entries(MAP_LAYOUTS) as Array<[DomainColor['key'], MapLayout]>) {
+      for (const n of layout.nodes) {
+        if (!slugToDomain.has(n.slug)) slugToDomain.set(n.slug, key);
+      }
+    }
+  }
+  return slugToDomain.get(slug) ?? null;
+}

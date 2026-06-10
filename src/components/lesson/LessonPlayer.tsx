@@ -24,6 +24,8 @@ import type { LessonBlockClient } from "@/lib/lesson/blocks";
 interface Props {
   conceptSlug: string;
   streak: number;
+  /** ETAPA 71 D: cheia domeniului — accentul lecției (null = primarul) */
+  domainKey?: string | null;
   /** streamul structurat a eșuat → cade pe chat-ul markdown existent */
   onFallback: () => void;
   /** elevul vrea chatul liber (escape hatch) */
@@ -46,7 +48,15 @@ type QuizState = {
 
 const LETTERS = ["a", "b", "c", "d"] as const;
 
-export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: Props) {
+export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExitToChat }: Props) {
+  // ETAPA 71 D: accentul domeniului curge în lecție (bară progres, evidențieri
+  // non-matematice, manipulative) — matematica rămâne --math-fg
+  const accentStyle = domainKey
+    ? ({
+        "--lesson-accent": `var(--domain-${domainKey})`,
+        "--manip-accent": `var(--domain-${domainKey})`,
+      } as React.CSSProperties)
+    : ({ "--lesson-accent": "var(--primary)" } as React.CSSProperties);
   const [blocks, setBlocks] = useState<LessonBlockClient[]>([]);
   const [streamDone, setStreamDone] = useState(false);
   const [messageId, setMessageId] = useState<string | null>(null);
@@ -383,7 +393,7 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
 
   // ── player-ul: un bloc odată ──────────────────────────────────────────────
   return (
-    <div className="relative flex-1 flex flex-col min-w-0">
+    <div className="relative flex-1 flex flex-col min-w-0" style={accentStyle}>
       {current.tip === "intro" && <AnimatedBackdrop />}
       {/* bara de progres (estetica diagnosticului) */}
       <div className="px-4 pt-3 pb-2 shrink-0">
@@ -406,7 +416,8 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
         </div>
         <div className="h-2 bg-muted rounded-full overflow-hidden">
           <motion.div
-            className="h-full bg-primary rounded-full"
+            className="h-full rounded-full"
+            style={{ background: "var(--lesson-accent, var(--primary))" }}
             animate={{ width: `${progress * 100}%` }}
             transition={progressFill}
           />

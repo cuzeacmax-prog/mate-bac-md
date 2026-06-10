@@ -9,6 +9,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { MathText } from "@/components/MathText";
+import { MODULE_DOMAINS } from "@/lib/map/domain-colors";
 import type { ProgressDomain } from "@/lib/progres/data";
 
 const STATUS_STYLE: Record<string, string> = {
@@ -20,16 +21,34 @@ const STATUS_STYLE: Record<string, string> = {
 export function ProgressMap({ domains }: { domains: ProgressDomain[] }) {
   return (
     <div className="space-y-6">
-      {domains.map((d, di) => (
+      {domains.map((d, di) => {
+        // ETAPA 71 D: secțiunea poartă culoarea domeniului
+        const dk = MODULE_DOMAINS[d.module]?.key;
+        return (
         <motion.section
           key={d.module}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: di * 0.05, duration: 0.35 }}
-          className="rounded-2xl border bg-card p-5"
+          className="rounded-2xl border bg-card p-5 border-t-4"
+          style={dk ? { borderTopColor: `var(--domain-${dk})` } : undefined}
         >
           <div className="flex items-baseline justify-between mb-3 gap-2">
-            <h2 className="font-semibold">{d.module}</h2>
+            <h2 className="font-semibold flex items-center gap-2">
+              {dk && (
+                <span
+                  aria-hidden
+                  className="inline-block w-2.5 h-2.5 rounded-full"
+                  style={{ background: `var(--domain-${dk})` }}
+                />
+              )}
+              {d.module}
+              {dk && (
+                <span className="text-xs font-normal text-muted-foreground">
+                  · {MODULE_DOMAINS[d.module].label}
+                </span>
+              )}
+            </h2>
             <p className="text-xs text-muted-foreground">
               {d.mastered}/{d.total} stăpânite
               {d.inProgress > 0 && ` · ${d.inProgress} în lucru`}
@@ -60,7 +79,8 @@ export function ProgressMap({ domains }: { domains: ProgressDomain[] }) {
             </div>
           )}
         </motion.section>
-      ))}
+        );
+      })}
     </div>
   );
 }

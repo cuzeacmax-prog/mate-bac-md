@@ -6,6 +6,7 @@
 import Link from "next/link";
 import { MathText } from "@/components/MathText";
 import { AnimatedBackdrop } from "@/components/motion/AnimatedBackdrop";
+import { domainKeyForSlug } from "@/lib/map/layouts";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { chisinauToday, computeStreak, getOrCreateDailyChallenge } from "@/lib/daily/daily";
@@ -135,8 +136,14 @@ export default async function AziPage() {
         <div className="space-y-4">
           {rows.map((r) => {
             const prereqs = prereqNames.get(r.concept_id) ?? [];
+            // ETAPA 71 D: conceptul își poartă culoarea domeniului
+            const dk = domainKeyForSlug(r.slug);
             return (
-              <div key={r.concept_id} className="rounded-2xl border bg-card p-5 space-y-3">
+              <div
+                key={r.concept_id}
+                className="rounded-2xl border bg-card p-5 space-y-3 border-l-4"
+                style={dk ? { borderLeftColor: `var(--domain-${dk})` } : undefined}
+              >
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h2 className="font-medium leading-snug"><MathText text={r.name} /></h2>
@@ -150,7 +157,8 @@ export default async function AziPage() {
                   </div>
                   <Link
                     href={`/app/chat?concept=${encodeURIComponent(r.slug)}`}
-                    className="shrink-0 rounded-xl bg-primary text-primary-foreground px-4 py-2 text-sm font-medium"
+                    className="shrink-0 rounded-xl text-primary-foreground px-4 py-2 text-sm font-medium"
+                    style={{ background: dk ? `var(--domain-${dk})` : "var(--primary)" }}
                   >
                     Învață
                   </Link>

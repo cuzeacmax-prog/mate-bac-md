@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { getConceptAnchor, buildIntroMessage } from "@/lib/concepts/anchor";
 import { chisinauToday, computeStreak } from "@/lib/daily/daily";
+import { domainKeyForSlug } from "@/lib/map/layouts";
 import type { ChatMessage } from "./_components/ChatMessages";
 
 export const dynamic = "force-dynamic";
@@ -48,10 +49,18 @@ export default async function NewChatPage({
     if (user) streak = await computeStreak(createServiceClient(), user.id, chisinauToday());
   } catch { /* streak e decorativ aici */ }
 
+  // ETAPA 71 D: culoarea domeniului curge în player (server-side lookup)
+  const domainKey = anchorSlug ? domainKeyForSlug(anchorSlug) : null;
+
   return (
     <>
       <ChatSidebarPanel />
-      <LessonOrChat initialMessages={initialMessages} conceptSlug={anchorSlug} streak={streak} />
+      <LessonOrChat
+        initialMessages={initialMessages}
+        conceptSlug={anchorSlug}
+        streak={streak}
+        domainKey={domainKey}
+      />
     </>
   );
 }

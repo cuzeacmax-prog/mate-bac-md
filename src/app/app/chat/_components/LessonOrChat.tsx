@@ -17,9 +17,11 @@ interface Props {
   conceptSlug?: string;
   initialMessages?: ChatMessage[];
   streak: number;
+  /** ETAPA 71 D: cheia domeniului — accentul lecției poartă culoarea lui */
+  domainKey?: string | null;
 }
 
-export function LessonOrChat({ conceptSlug, initialMessages, streak }: Props) {
+export function LessonOrChat({ conceptSlug, initialMessages, streak, domainKey }: Props) {
   const { mode } = useChatModeStore();
   const [forceChat, setForceChat] = useState(false);
 
@@ -28,6 +30,7 @@ export function LessonOrChat({ conceptSlug, initialMessages, streak }: Props) {
       <LessonPlayer
         conceptSlug={conceptSlug}
         streak={streak}
+        domainKey={domainKey ?? null}
         onFallback={() => setForceChat(true)}
         onExitToChat={() => setForceChat(true)}
       />
