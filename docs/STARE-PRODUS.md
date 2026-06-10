@@ -1,4 +1,36 @@
-# STARE PRODUS — după maratoanele ETAPELE 62–71 (10 iunie 2026)
+# STARE PRODUS — după maratoanele ETAPELE 62–73 (10 iunie 2026)
+
+## ETAPA 73 — design reset „GLASS DARK" (identitatea v2, aprobată)
+
+**Live:** spec în `docs/DESIGN.md`; dark = singura temă v1; **fontul reparat
+la rădăcină** (defect dovedit: `--font-sans: var(--font-sans)` autoreferențial
+→ serif de sistem; acum Manrope prin next/font, computed style verificat în
+browser); fundal albastru-cărbune + glass 1/2/3 + orb violet→roz→lime;
+REGULA SACRĂ: KaTeX 1.05em aproape-alb pe suprafață SOLIDĂ (--math-surface),
+figurile = foaie albă dedicată; contrast 32/32 AA pe dark; toate ecranele
+refăcute (sidebar/header glass, azi, hartă-constelație, player, chat cu
+listă grupată pe zi, progres cu inele+borne în loc de zidul de pastile,
+simulare, abonament, onboarding); tabelele markdown din enunțuri se randează
+nativ (StatementText), nerandabilele excluse din daily (1/423 marcat).
+**Bucla vizuală cu dovezi**: 15 screenshot-uri în `docs/design-review/etapa73/`,
+3 runde, 3 defecte reale prinse: JSON-ul lecției brut în chat (→
+LessonTranscript), tabel ieșit din card pe mobil, și un BUG FUNCȚIONAL —
+LessonPlayer blocat permanent pe „Pregătesc lecția" în dev (guard
+startedRef × StrictMode; fix cu AbortController + delay anti-dublare).
+
+## ETAPA 72 — triaj critic (toate 3 cu diagnoza dovedită)
+
+P1 harta nu mai omoară tab-ul: cauza = setState per pointermove → re-render
+complet (139 noduri/pixel); fix: transform pe <g> prin rAF + ref, puls CSS
+max 15 noduri, graf memoizat, error boundary. Stress 60s Playwright: heap
+13.6→10.5 MB, zero crash. P2 mesajele nu mai dispar: cauza = SSE fără buffer
+între chunk-uri (done tăiat = mesaj necomis); fix: parser cu buffer purtat +
+plasă de siguranță + boundary PER MESAJ cu fallback text brut + logare în
+katex_error_report. P3 LaTeX-ul nu mai înghite text: cauza = slice(0,600)
+tăia teoria în mijlocul $$; fix: truncateOutsideMath + segmentare defensivă
+(>200 chars sau diacritice în „formulă" = text) + info ca bloc separat;
+sanitizer: 169/1528 body-uri marcate (body_latex_issues), 0 auto-fix mecanic.
+
 
 ## ETAPA 71 — harta cunoașterii, lentile, manipulative, plăți (mock)
 
