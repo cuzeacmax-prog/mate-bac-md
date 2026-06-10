@@ -12,6 +12,8 @@ import { motion } from "framer-motion";
 import { Loader2, Flag } from "lucide-react";
 import { MathText } from "@/components/MathText";
 import { LayeredFigure } from "@/components/lesson/LayeredFigure";
+import { AnimatedBackdrop } from "@/components/motion/AnimatedBackdrop";
+import { buttonTap } from "@/lib/motion/motion";
 import type { ExamAttempt, ExamResult } from "@/lib/simulare/exam";
 
 type Phase = "intro" | "running" | "submitting" | "result" | "expired";
@@ -91,7 +93,8 @@ export function SimularePlayer({ audit }: {
 
   if (phase === "intro") {
     return (
-      <div className="max-w-2xl mx-auto px-6 py-10 space-y-5">
+      <div className="relative max-w-2xl mx-auto px-6 py-10 space-y-5">
+        <AnimatedBackdrop />
         <h1 className="text-2xl font-semibold">Simulare BAC — variantă parțială</h1>
         <div className="rounded-2xl border bg-card p-5 space-y-3 text-sm leading-relaxed">
           <p><strong>{plannedCount} exerciții</strong> din culegerea oficială, cu răspuns verificabil · <strong>90 de minute</strong>, cronometru pe server.</p>
@@ -105,9 +108,9 @@ export function SimularePlayer({ audit }: {
           <p className="text-muted-foreground">Navighezi liber între exerciții, poți marca «revin». Nota e estimată DOAR pe ce s-a testat, ca interval.</p>
         </div>
         {error && <p className="text-sm text-destructive">{error}</p>}
-        <button onClick={start} className="w-full rounded-2xl bg-primary text-primary-foreground py-3.5 font-semibold">
+        <motion.button whileTap={buttonTap} onClick={start} className="w-full rounded-2xl bg-primary text-primary-foreground py-3.5 font-semibold">
           Începe simularea →
-        </button>
+        </motion.button>
       </div>
     );
   }
@@ -204,7 +207,7 @@ export function SimularePlayer({ audit }: {
             className={`w-8 h-8 rounded-lg border text-xs font-semibold transition-colors ${
               i === idx ? "border-primary bg-primary text-primary-foreground"
               : flagged.has(it.exercise_id) ? "border-amber-400 bg-amber-50 text-amber-800"
-              : answers[it.exercise_id]?.trim() ? "border-green-300 bg-green-50 text-green-800"
+              : answers[it.exercise_id]?.trim() ? "border-success/40 bg-success-bg text-success-foreground"
               : "border-border bg-card"
             }`}
           >

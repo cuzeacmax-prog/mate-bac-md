@@ -16,6 +16,8 @@ import { Loader2 } from "lucide-react";
 import { MathText } from "@/components/MathText";
 import { LessonTable } from "@/components/lesson/LessonTable";
 import { LayeredFigure } from "@/components/lesson/LayeredFigure";
+import { AnimatedBackdrop } from "@/components/motion/AnimatedBackdrop";
+import { SPRING, buttonTap, progressFill, celebrate } from "@/lib/motion/motion";
 import type { LessonBlockClient } from "@/lib/lesson/blocks";
 
 interface Props {
@@ -141,12 +143,13 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
     const quizResults = Object.values(quizStates).filter(Boolean) as NonNullable<QuizState>[];
     const correctCount = quizResults.filter((q) => q.correct).length;
     return (
-      <div className="flex-1 flex items-center justify-center px-6">
+      <div className="relative flex-1 flex items-center justify-center px-6">
+        <AnimatedBackdrop intensity="bold" />
         <motion.div
           className="text-center space-y-5 max-w-sm"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ type: "spring", stiffness: 260, damping: 18 }}
+          variants={celebrate}
+          initial="hidden"
+          animate="visible"
         >
           <motion.div
             className="text-6xl"
@@ -166,12 +169,13 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
             <span className="text-3xl">🔥</span>
             <p className="font-bold">Streak: {streak} {streak === 1 ? "zi" : "zile"}</p>
           </div>
-          <button
+          <motion.button
+            whileTap={buttonTap}
             onClick={onExitToChat}
             className="w-full rounded-xl bg-primary text-primary-foreground px-5 py-3 font-medium"
           >
             Pune o întrebare în chat →
-          </button>
+          </motion.button>
         </motion.div>
       </div>
     );
@@ -179,7 +183,8 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
 
   // ── player-ul: un bloc odată ──────────────────────────────────────────────
   return (
-    <div className="flex-1 flex flex-col min-w-0">
+    <div className="relative flex-1 flex flex-col min-w-0">
+      {current.tip === "intro" && <AnimatedBackdrop />}
       {/* bara de progres (estetica diagnosticului) */}
       <div className="px-4 pt-3 pb-2 shrink-0">
         <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
@@ -192,7 +197,7 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
           <motion.div
             className="h-full bg-primary rounded-full"
             animate={{ width: `${progress * 100}%` }}
-            transition={{ duration: 0.35 }}
+            transition={progressFill}
           />
         </div>
       </div>
@@ -204,7 +209,7 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
-            transition={{ type: "spring", stiffness: 300, damping: 26 }}
+            transition={SPRING.standard}
           >
             <BlockCard
               block={current}
@@ -307,8 +312,8 @@ function BlockCard({
               const text = block.optiuni[letter];
               let variant = "border-border bg-card hover:border-primary/60 hover:bg-primary/5";
               if (quizState) {
-                if (letter === quizState.corecta) variant = "border-green-400 bg-green-50 text-green-800";
-                else if (letter === quizState.selected) variant = "border-red-300 bg-red-50 text-red-700";
+                if (letter === quizState.corecta) variant = "border-success/50 bg-success-bg text-success-foreground";
+                else if (letter === quizState.selected) variant = "border-danger-foreground/30 bg-danger-bg text-danger-foreground";
                 else variant = "border-border bg-card opacity-60";
               }
               return (
@@ -317,7 +322,7 @@ function BlockCard({
                   onClick={() => !quizState && onAnswer(quizId, letter)}
                   disabled={!!quizState || pendingQuiz}
                   className={`w-full rounded-2xl border-2 p-4 text-left flex items-center gap-3 transition-all ${variant} disabled:cursor-default`}
-                  whileTap={!quizState ? { scale: 0.98 } : {}}
+                  whileTap={!quizState ? buttonTap : {}}
                 >
                   <span className="rounded-full bg-muted/80 px-2.5 py-1 text-sm font-bold uppercase shrink-0">
                     {letter}
@@ -334,7 +339,7 @@ function BlockCard({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 className={`rounded-xl px-4 py-3 text-center text-sm font-medium ${
-                  quizState.correct ? "bg-green-100 text-green-800" : "bg-red-50 text-red-700"
+                  quizState.correct ? "bg-success-bg text-success-foreground" : "bg-danger-bg text-danger-foreground"
                 }`}
               >
                 {quizState.correct
@@ -363,12 +368,12 @@ function BlockCard({
       );
     case "recap":
       return (
-        <div className="rounded-2xl bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 p-6 space-y-3">
-          <p className="text-xs font-semibold text-green-700 uppercase">Ce ai învățat</p>
+        <div className="rounded-2xl bg-success-bg border border-success/30 p-6 space-y-3">
+          <p className="text-xs font-semibold text-success-foreground uppercase">Ce ai învățat</p>
           <ul className="space-y-2">
             {block.puncte.map((p, i) => (
               <li key={i} className="flex gap-2.5 text-sm leading-relaxed">
-                <span className="text-green-600 shrink-0">✓</span>
+                <span className="text-success shrink-0">✓</span>
                 <MathText text={p} />
               </li>
             ))}

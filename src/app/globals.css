@@ -46,75 +46,104 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  /* ETAPA 70: tokens semantice noi (matematica monocromă + feedback) */
+  --color-math-fg: var(--math-fg);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-success-foreground: var(--success-foreground);
+  --color-danger-bg: var(--danger-bg);
+  --color-danger-foreground: var(--danger-foreground);
 }
 
+/*
+ * ETAPA 70 FAZA A — design system v1 „energic-modern".
+ * Primar: indigo-violet electric. Accent UNIC: lime electric.
+ * Fundal alb-cald, text închis. Contrast verificat de poarta
+ * scripts/verify/etapa70-contrast.ts (citește valorile de AICI).
+ * EXCEPȚIA SACRĂ: --math-fg monocrom înalt-contrast — energia e în ramă,
+ * nu în matematică.
+ */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --background: oklch(0.99 0.007 95);
+  --foreground: oklch(0.21 0.03 281);
+  --card: oklch(1 0.002 95);
+  --card-foreground: oklch(0.21 0.03 281);
+  --popover: oklch(1 0.002 95);
+  --popover-foreground: oklch(0.21 0.03 281);
+  --primary: oklch(0.50 0.24 277);
+  --primary-foreground: oklch(0.99 0.005 95);
+  --secondary: oklch(0.95 0.03 280);
+  --secondary-foreground: oklch(0.32 0.12 277);
+  --muted: oklch(0.955 0.012 95);
+  --muted-foreground: oklch(0.45 0.025 281);
+  --accent: oklch(0.87 0.20 128);
+  --accent-foreground: oklch(0.27 0.07 130);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --border: oklch(0.91 0.015 280);
+  --input: oklch(0.91 0.015 280);
+  --ring: oklch(0.60 0.18 277);
+  --chart-1: oklch(0.50 0.24 277);
+  --chart-2: oklch(0.87 0.20 128);
+  --chart-3: oklch(0.65 0.15 277);
+  --chart-4: oklch(0.45 0.18 290);
+  --chart-5: oklch(0.55 0.10 130);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: oklch(0.975 0.01 280);
+  --sidebar-foreground: oklch(0.21 0.03 281);
+  --sidebar-primary: oklch(0.50 0.24 277);
+  --sidebar-primary-foreground: oklch(0.99 0.005 95);
+  --sidebar-accent: oklch(0.95 0.03 280);
+  --sidebar-accent-foreground: oklch(0.32 0.12 277);
+  --sidebar-border: oklch(0.91 0.015 280);
+  --sidebar-ring: oklch(0.60 0.18 277);
+  /* matematica: monocrom, înalt-contrast, NEatinsă de energia paletei */
+  --math-fg: oklch(0.145 0 0);
+  /* feedback corect/greșit (înlocuiește culorile green/red hardcodate) */
+  --success: oklch(0.55 0.15 150);
+  --success-bg: oklch(0.95 0.05 150);
+  --success-foreground: oklch(0.32 0.09 150);
+  --danger-bg: oklch(0.95 0.03 25);
+  --danger-foreground: oklch(0.40 0.16 27);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: oklch(0.16 0.02 281);
+  --foreground: oklch(0.97 0.008 95);
+  --card: oklch(0.21 0.025 281);
+  --card-foreground: oklch(0.97 0.008 95);
+  --popover: oklch(0.21 0.025 281);
+  --popover-foreground: oklch(0.97 0.008 95);
+  --primary: oklch(0.68 0.18 277);
+  --primary-foreground: oklch(0.16 0.02 281);
+  --secondary: oklch(0.27 0.04 280);
+  --secondary-foreground: oklch(0.97 0.008 95);
+  --muted: oklch(0.27 0.03 281);
+  --muted-foreground: oklch(0.72 0.02 281);
+  --accent: oklch(0.80 0.18 128);
+  --accent-foreground: oklch(0.22 0.06 130);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --ring: oklch(0.68 0.18 277);
+  --chart-1: oklch(0.68 0.18 277);
+  --chart-2: oklch(0.80 0.18 128);
+  --chart-3: oklch(0.55 0.15 277);
+  --chart-4: oklch(0.60 0.18 290);
+  --chart-5: oklch(0.65 0.10 130);
+  --sidebar: oklch(0.21 0.025 281);
+  --sidebar-foreground: oklch(0.97 0.008 95);
+  --sidebar-primary: oklch(0.68 0.18 277);
+  --sidebar-primary-foreground: oklch(0.16 0.02 281);
+  --sidebar-accent: oklch(0.27 0.04 280);
+  --sidebar-accent-foreground: oklch(0.97 0.008 95);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-ring: oklch(0.68 0.18 277);
+  --math-fg: oklch(0.97 0 0);
+  --success: oklch(0.65 0.15 150);
+  --success-bg: oklch(0.28 0.06 150);
+  --success-foreground: oklch(0.90 0.08 150);
+  --danger-bg: oklch(0.28 0.05 25);
+  --danger-foreground: oklch(0.85 0.10 25);
 }
 
 @layer base {
@@ -126,5 +155,45 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* ── ETAPA 70: EXCEPȚIA SACRĂ — matematica monocrom înalt-contrast ──────────
+ * Formulele KaTeX și figurile BAC rămân în --math-fg indiferent de rama
+ * colorată în care apar. Energia paletei nu intră în conținutul matematic. */
+.katex {
+  color: var(--math-fg);
+}
+.figura-bac svg {
+  color: var(--math-fg);
+}
+
+/* ── ETAPA 70: fundalul animat (AnimatedBackdrop) ───────────────────────────
+ * DOAR transform + opacity (compozitate pe GPU, zero layout thrash). */
+@keyframes backdrop-drift-1 {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  33%  { transform: translate3d(6%, -8%, 0) scale(1.12); }
+  66%  { transform: translate3d(-5%, 6%, 0) scale(0.94); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+@keyframes backdrop-drift-2 {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  40%  { transform: translate3d(-7%, 5%, 0) scale(1.08); }
+  75%  { transform: translate3d(4%, -6%, 0) scale(0.96); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+@keyframes backdrop-drift-3 {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(5%, 7%, 0) scale(1.15); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+.backdrop-blob-1 { animation: backdrop-drift-1 26s ease-in-out infinite; }
+.backdrop-blob-2 { animation: backdrop-drift-2 32s ease-in-out infinite; }
+.backdrop-blob-3 { animation: backdrop-drift-3 38s ease-in-out infinite; }
+
+/* prefers-reduced-motion: totul degradează la static/fade simplu */
+@media (prefers-reduced-motion: reduce) {
+  .backdrop-blob-1, .backdrop-blob-2, .backdrop-blob-3 {
+    animation: none;
   }
 }

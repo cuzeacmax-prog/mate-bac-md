@@ -69,7 +69,7 @@ export function LayeredFigure({ exerciseId, layerMax }: Props) {
   return (
     <div
       ref={hostRef}
-      className="mx-auto max-w-full [&_svg]:max-w-full [&_svg]:h-auto bg-white rounded-lg"
+      className="figura-bac mx-auto max-w-full [&_svg]:max-w-full [&_svg]:h-auto bg-white rounded-lg"
       // SVG-ul vine exclusiv din /api/figura (randat server-side din spec persistat) — trusted
       dangerouslySetInnerHTML={{ __html: svg }}
     />

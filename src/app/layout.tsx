@@ -4,6 +4,7 @@ import "./globals.css";
 // ETAPA 66 FAZA E2: katex.min.css NU mai e global — se importă doar în
 // layout-urile rutelor care randează matematică (/app, /onboarding, /admin).
 import { PosthogProvider } from "@/components/analytics/PosthogProvider";
+import { MotionProvider } from "@/components/motion/MotionProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +33,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-          <PosthogProvider>{children}</PosthogProvider>
+          <MotionProvider>
+            <PosthogProvider>{children}</PosthogProvider>
+          </MotionProvider>
         </body>
     </html>
   );

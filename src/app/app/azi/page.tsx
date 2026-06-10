@@ -5,6 +5,7 @@
  */
 import Link from "next/link";
 import { MathText } from "@/components/MathText";
+import { AnimatedBackdrop } from "@/components/motion/AnimatedBackdrop";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { chisinauToday, computeStreak, getOrCreateDailyChallenge } from "@/lib/daily/daily";
@@ -40,7 +41,8 @@ export default async function AziPage() {
 
   if (!evidenceCount) {
     return (
-      <div className="max-w-2xl mx-auto px-6 py-16 text-center space-y-4">
+      <div className="relative max-w-2xl mx-auto px-6 py-16 text-center space-y-4">
+        <AnimatedBackdrop />
         <h1 className="text-2xl font-semibold">Ce înveți azi</h1>
         <p className="text-muted-foreground">
           Încă nu știm de unde să începem — fă întâi diagnosticul scurt (5–8 întrebări),
@@ -102,7 +104,8 @@ export default async function AziPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-6 py-10 space-y-6">
+    <div className="relative max-w-2xl mx-auto px-6 py-10 space-y-6">
+      <AnimatedBackdrop />
       <div>
         <h1 className="text-2xl font-semibold">Ce înveți azi</h1>
         <p className="text-sm text-muted-foreground mt-1">
