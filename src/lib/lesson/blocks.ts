@@ -86,11 +86,29 @@ export const TableBlockSchema = z.object({
   randuri: z.array(z.array(z.string().trim().max(80)).min(2).max(6)).min(1).max(8),
 });
 
-export const FigureBlockSchema = z.object({
-  tip: z.literal('figure'),
-  exercise_id: z.string().uuid(),
-  /** până la ce strat se dezvăluie (FAZA F); lipsă = figura întreagă */
-  layer_max: z.number().int().min(0).max(3).optional(),
+export const FigureBlockSchema = z
+  .object({
+    tip: z.literal('figure'),
+    /** ETAPA 70 B1: 'exercise' = figura exercițiului (figura_autor);
+     *  'theory' = figura canonică din registrul theory-figures */
+    kind: z.enum(['theory', 'exercise']).default('exercise'),
+    exercise_id: z.string().uuid().optional(),
+    theory_slug: z.string().trim().min(1).max(120).optional(),
+    /** până la ce strat se dezvăluie (FAZA F); lipsă = figura întreagă */
+    layer_max: z.number().int().min(0).max(3).optional(),
+    legenda: z.string().trim().max(160).optional(),
+  })
+  .refine((b) => (b.kind === 'exercise' ? !!b.exercise_id : !!b.theory_slug), {
+    message: "figure: kind='exercise' cere exercise_id; kind='theory' cere theory_slug",
+  });
+
+/** ETAPA 70 B2: AI-ul CERE un grafic de funcție; serverul îl validează
+ *  (mathjs whitelist) și îl randează determinist — AI-ul nu desenează nimic. */
+export const PlotBlockSchema = z.object({
+  tip: z.literal('plot'),
+  expr: z.string().trim().min(1).max(120),
+  domain: z.tuple([z.number(), z.number()]),
+  puncte_marcate: z.array(z.number()).max(6).optional(),
   legenda: z.string().trim().max(160).optional(),
 });
 
@@ -128,29 +146,44 @@ export const LessonBlockModelSchema = z.discriminatedUnion('tip', [
   }),
   z.object({
     tip: z.literal('figure'),
-    exercise_id: z.string(),
+    kind: z.enum(['theory', 'exercise']).optional(),
+    exercise_id: z.string().optional(),
+    theory_slug: z.string().optional(),
     layer_max: z.number().optional(),
+    legenda: z.string().optional(),
+  }),
+  z.object({
+    tip: z.literal('plot'),
+    expr: z.string(),
+    domain: z.array(z.number()),
+    puncte_marcate: z.array(z.number()).optional(),
     legenda: z.string().optional(),
   }),
   z.object({ tip: z.literal('recap'), puncte: z.array(z.string()) }),
 ]);
 
-export const LessonBlockSchema = z.discriminatedUnion('tip', [
+// FigureBlockSchema are .refine → nu poate intra direct în discriminatedUnion;
+// îl validăm separat în parseLessonBlock.
+const NON_FIGURE_SCHEMAS = z.discriminatedUnion('tip', [
   IntroBlockSchema,
   StepBlockSchema,
   FormulaBlockSchema,
   ExampleBlockSchema,
   QuizBlockSchema,
   TableBlockSchema,
-  FigureBlockSchema,
+  PlotBlockSchema,
   RecapBlockSchema,
 ]);
 
-export type LessonBlock = z.infer<typeof LessonBlockSchema>;
+export type FigureBlock = z.infer<typeof FigureBlockSchema>;
+export type PlotBlock = z.infer<typeof PlotBlockSchema>;
+export type LessonBlock = z.infer<typeof NON_FIGURE_SCHEMAS> | FigureBlock;
 export type QuizBlock = z.infer<typeof QuizBlockSchema>;
 export type LessonBlockClient =
-  | Exclude<LessonBlock, QuizBlock>
-  | (Omit<QuizBlock, 'corecta'> & { quiz_id: string });
+  | Exclude<LessonBlock, QuizBlock | PlotBlock>
+  | (Omit<QuizBlock, 'corecta'> & { quiz_id: string })
+  /** plotul ajunge la client CU svg-ul randat pe server */
+  | (PlotBlock & { svg: string });
 
 /**
  * Validează un bloc brut de la model. Întoarce blocul tipizat sau eroarea
@@ -159,7 +192,9 @@ export type LessonBlockClient =
 export function parseLessonBlock(raw: unknown):
   | { ok: true; block: LessonBlock }
   | { ok: false; error: string } {
-  const result = LessonBlockSchema.safeParse(raw);
+  const isFigure =
+    typeof raw === 'object' && raw !== null && (raw as { tip?: unknown }).tip === 'figure';
+  const result = isFigure ? FigureBlockSchema.safeParse(raw) : NON_FIGURE_SCHEMAS.safeParse(raw);
   if (result.success) return { ok: true, block: result.data };
   const issues = result.error.issues
     .map((i) => `${i.path.join('.') || '(rădăcină)'}: ${i.message}`)

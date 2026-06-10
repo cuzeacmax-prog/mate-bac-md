@@ -19,7 +19,15 @@ TIPURILE DE BLOCURI (contractul):
 - example: enunț scurt + cel mult 4 pași; fiecare pas = 1 propoziție + opțional 1 formulă.
 - quiz: întrebare cu opțiunile a-d + corecta (sistemul o ascunde de elev).
 - table: coloane + rânduri ca DATE (niciodată tabel markdown în text).
-- figure: exercise_id al exercițiului cu figură primit în context (doar dacă există).
+- figure: o figură servită de sistem. Două feluri:
+  · kind:'theory' + theory_slug — figura CANONICĂ a conceptului, DOAR dacă sistemul
+    anunță în context că există („FIGURA CANONICĂ disponibilă"). Emite-o imediat
+    după intro, când introduci teoria nouă.
+  · kind:'exercise' + exercise_id — figura exercițiului primit în context (doar dacă există).
+- plot: CERI un grafic de funcție — {expr, domain:[a,b], puncte_marcate?}; expr e o
+  expresie de x (sin, cos, tan, sqrt, abs, exp, log, ln permise). Sistemul îl VALIDEAZĂ
+  și îl desenează determinist — tu nu desenezi nimic. Folosește plot când graficul
+  ajută înțelegerea (monotonie, semn, arii). Expresia invalidă pierde blocul.
 - recap: MAXIM 3 puncte, câte 1 propoziție.
 
 REGULI DE LIMBAJ (încălcarea = blocul e respins de validator și recerut):
@@ -43,6 +51,8 @@ export interface LessonRequestContext {
   gradeLevel: number | null;
   theory: string;
   exercises: Array<{ id: string; statement: string; official_answer: string | null; has_figure: boolean }>;
+  /** ETAPA 70 B3: figura canonică din registrul theory-figures, dacă există */
+  theoryFigure?: { slug: string; descriere: string } | null;
 }
 
 /** mesajul user pentru generarea lecției (context dinamic, necacheat) */
@@ -57,9 +67,12 @@ export function buildLessonUserMessage(ctx: LessonRequestContext): string {
         )
         .join('\n\n')
     : '(fără exerciții servibile — lecția rămâne pe teorie + quiz-uri conceptuale)';
+  const theoryFigureLine = ctx.theoryFigure
+    ? `\nFIGURA CANONICĂ disponibilă pentru acest concept: emite blocul {tip:'figure', kind:'theory', theory_slug:'${ctx.theoryFigure.slug}'} imediat după intro. Figura arată: ${ctx.theoryFigure.descriere}.`
+    : '';
   return `Generează lecția structurată pentru conceptul: ${ctx.conceptName}
 Clasa elevului: ${ctx.gradeLevel ?? 12}
-
+${theoryFigureLine}
 TEORIA DE REFERINȚĂ (sursa de adevăr — extrage, nu contrazice):
 ${ctx.theory || '(fără teorie în graf — folosește doar exercițiile)'}
 

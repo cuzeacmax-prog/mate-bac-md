@@ -360,10 +360,27 @@ function BlockCard({
     case "figure":
       return (
         <div className="rounded-2xl bg-card border p-5 space-y-3">
-          <LayeredFigure exerciseId={block.exercise_id} layerMax={block.layer_max} />
+          {block.kind === "theory" && block.theory_slug ? (
+            <TheoryFigure slug={block.theory_slug} />
+          ) : block.exercise_id ? (
+            <LayeredFigure exerciseId={block.exercise_id} layerMax={block.layer_max} />
+          ) : null}
           {block.legenda && (
             <p className="text-sm text-muted-foreground text-center"><MathText text={block.legenda} /></p>
           )}
+        </div>
+      );
+    case "plot":
+      return (
+        <div className="rounded-2xl bg-card border p-5 space-y-3">
+          <div
+            className="figura-bac mx-auto max-w-full [&_svg]:max-w-full [&_svg]:h-auto"
+            // SVG-ul e randat EXCLUSIV pe server (renderPlotSVG, expr validat) — trusted
+            dangerouslySetInnerHTML={{ __html: (block as { svg?: string }).svg ?? "" }}
+          />
+          <p className="text-sm text-muted-foreground text-center">
+            <MathText text={block.legenda ?? `$y = ${block.expr}$`} />
+          </p>
         </div>
       );
     case "recap":
@@ -383,4 +400,37 @@ function BlockCard({
     default:
       return null;
   }
+}
+
+/** figura canonică de teorie — SVG determinist din /api/figura-teorie */
+function TheoryFigure({ slug }: { slug: string }) {
+  const [svg, setSvg] = useState<string | null>(null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`/api/figura-teorie/${encodeURIComponent(slug)}`)
+      .then((r) => (r.ok ? r.text() : null))
+      .then((text) => {
+        if (cancelled) return;
+        if (text && text.includes("<svg")) setSvg(text);
+        else setFailed(true);
+      })
+      .catch(() => !cancelled && setFailed(true));
+    return () => { cancelled = true; };
+  }, [slug]);
+  if (failed) return <p className="text-xs text-muted-foreground text-center">(figura nu e disponibilă)</p>;
+  if (!svg) {
+    return (
+      <div className="flex justify-center py-8">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+  return (
+    <div
+      className="figura-bac mx-auto max-w-full [&_svg]:max-w-full [&_svg]:h-auto"
+      // SVG-ul vine exclusiv din registrul theory-figures (cod determinist) — trusted
+      dangerouslySetInnerHTML={{ __html: svg }}
+    />
+  );
 }

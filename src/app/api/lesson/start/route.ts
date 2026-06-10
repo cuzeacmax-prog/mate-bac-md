@@ -25,6 +25,8 @@ import {
   type LessonBlock,
 } from '@/lib/lesson/blocks';
 import { LESSON_SYSTEM_PROMPT, buildLessonUserMessage, buildRetryMessage } from '@/lib/lesson/prompt';
+import { getTheoryFigure } from '@/lib/lesson/theory-figures/registry';
+import { renderPlotSVG } from '@/lib/lesson/plot';
 import type { SystemBlock } from '@/lib/ai/router.types';
 
 export const dynamic = 'force-dynamic';
@@ -98,6 +100,8 @@ export async function POST(req: NextRequest) {
     // contractul + regulile de limbaj = PREFIX STATIC (cache cross-lecții)
     { text: LESSON_SYSTEM_PROMPT, cache: true },
   ];
+  // ETAPA 70 B3: figura canonică de teorie, dacă registrul o are
+  const theoryEntry = getTheoryFigure(anchor.slug);
   const userMessage = buildLessonUserMessage({
     conceptName: anchor.name,
     gradeLevel,
@@ -105,6 +109,7 @@ export async function POST(req: NextRequest) {
     exercises: anchor.exercises.map((e) => ({
       id: e.id, statement: e.statement, official_answer: e.official_answer, has_figure: e.has_figure,
     })),
+    theoryFigure: theoryEntry ? { slug: anchor.slug, descriere: theoryEntry.descriere } : null,
   });
 
   const encoder = new TextEncoder();
@@ -123,6 +128,24 @@ export async function POST(req: NextRequest) {
       let cacheWrite = 0;
 
       const emitBlock = (block: LessonBlock) => {
+        // ETAPA 70 B: blocurile servite de sistem se VERIFICĂ înainte de emit;
+        // invalidul se pierde (logat), lecția continuă fără el.
+        if (block.tip === 'figure' && block.kind === 'theory') {
+          if (!block.theory_slug || !getTheoryFigure(block.theory_slug)) {
+            console.error('[lesson] figure theory respins: slug inexistent în registru:', block.theory_slug);
+            return;
+          }
+        }
+        if (block.tip === 'plot') {
+          const rendered = renderPlotSVG(block.expr, block.domain, block.puncte_marcate);
+          if (!rendered.ok) {
+            console.error('[lesson] plot respins:', rendered.error, '| expr:', block.expr);
+            return;
+          }
+          serverBlocks.push(block);
+          send({ block: { ...block, svg: rendered.svg } });
+          return;
+        }
         serverBlocks.push(block);
         if (block.tip === 'quiz') {
           quizCount++;
