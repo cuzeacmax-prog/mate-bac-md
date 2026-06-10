@@ -158,10 +158,13 @@ export type Database = {
       }
       api_usage_log: {
         Row: {
+          cached_input_tokens: number | null
           cost_usd: number | null
           created_at: string | null
           endpoint: string | null
           id: string
+          latency_ms_total: number | null
+          latency_ms_ttfb: number | null
           model: string | null
           task_name: string | null
           tokens_input: number | null
@@ -169,10 +172,13 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          cached_input_tokens?: number | null
           cost_usd?: number | null
           created_at?: string | null
           endpoint?: string | null
           id?: string
+          latency_ms_total?: number | null
+          latency_ms_ttfb?: number | null
           model?: string | null
           task_name?: string | null
           tokens_input?: number | null
@@ -180,10 +186,13 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          cached_input_tokens?: number | null
           cost_usd?: number | null
           created_at?: string | null
           endpoint?: string | null
           id?: string
+          latency_ms_total?: number | null
+          latency_ms_ttfb?: number | null
           model?: string | null
           task_name?: string | null
           tokens_input?: number | null
@@ -521,6 +530,35 @@ export type Database = {
           },
         ]
       }
+      concept_family_membership: {
+        Row: {
+          concept_id: string
+          created_by: string
+          module: string
+          root_slug: string
+        }
+        Insert: {
+          concept_id: string
+          created_by?: string
+          module: string
+          root_slug: string
+        }
+        Update: {
+          concept_id?: string
+          created_by?: string
+          module?: string
+          root_slug?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concept_family_membership_concept_id_fkey"
+            columns: ["concept_id"]
+            isOneToOne: false
+            referencedRelation: "concepts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       concept_inventory_raw: {
         Row: {
           created_at: string | null
@@ -553,6 +591,41 @@ export type Database = {
           subtopic?: string | null
         }
         Relationships: []
+      }
+      concept_mastery: {
+        Row: {
+          concept_id: string
+          evidence_count: number
+          last_evidence_at: string | null
+          mastery: number
+          source: string[]
+          user_id: string
+        }
+        Insert: {
+          concept_id: string
+          evidence_count?: number
+          last_evidence_at?: string | null
+          mastery?: number
+          source?: string[]
+          user_id: string
+        }
+        Update: {
+          concept_id?: string
+          evidence_count?: number
+          last_evidence_at?: string | null
+          mastery?: number
+          source?: string[]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concept_mastery_concept_id_fkey"
+            columns: ["concept_id"]
+            isOneToOne: false
+            referencedRelation: "concepts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       concepts: {
         Row: {
@@ -618,6 +691,8 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string
+          summary: string | null
+          summary_through: number
           title: string | null
           topic: string | null
           updated_at: string | null
@@ -626,6 +701,8 @@ export type Database = {
         Insert: {
           created_at?: string | null
           id?: string
+          summary?: string | null
+          summary_through?: number
           title?: string | null
           topic?: string | null
           updated_at?: string | null
@@ -634,6 +711,8 @@ export type Database = {
         Update: {
           created_at?: string | null
           id?: string
+          summary?: string | null
+          summary_through?: number
           title?: string | null
           topic?: string | null
           updated_at?: string | null
@@ -772,6 +851,7 @@ export type Database = {
       }
       diagnostic_exercises: {
         Row: {
+          converted_etapa70: string | null
           correct_answer: string
           correct_letter: string
           created_at: string | null
@@ -780,11 +860,13 @@ export type Database = {
           explanation: string | null
           grade_level: number
           id: string
+          original_etapa70: Json | null
           prompt: string
           source_scenario_id: string | null
           topic_id: string
         }
         Insert: {
+          converted_etapa70?: string | null
           correct_answer: string
           correct_letter: string
           created_at?: string | null
@@ -793,11 +875,13 @@ export type Database = {
           explanation?: string | null
           grade_level: number
           id?: string
+          original_etapa70?: Json | null
           prompt: string
           source_scenario_id?: string | null
           topic_id: string
         }
         Update: {
+          converted_etapa70?: string | null
           correct_answer?: string
           correct_letter?: string
           created_at?: string | null
@@ -806,6 +890,7 @@ export type Database = {
           explanation?: string | null
           grade_level?: number
           id?: string
+          original_etapa70?: Json | null
           prompt?: string
           source_scenario_id?: string | null
           topic_id?: string
@@ -1009,6 +1094,13 @@ export type Database = {
             referencedRelation: "exercise_raw"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "exercise_answer_link_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "exercise_servable"
+            referencedColumns: ["exercise_id"]
+          },
         ]
       }
       exercise_answers: {
@@ -1052,11 +1144,11 @@ export type Database = {
           exercise_id: string | null
           hints_used: number | null
           id: string
-          is_correct: boolean
+          is_correct: boolean | null
           metadata: Json | null
           session_type: string | null
           time_spent_seconds: number | null
-          topic_id: string
+          topic_id: string | null
           user_answer: string | null
           user_id: string | null
         }
@@ -1067,11 +1159,11 @@ export type Database = {
           exercise_id?: string | null
           hints_used?: number | null
           id?: string
-          is_correct: boolean
+          is_correct?: boolean | null
           metadata?: Json | null
           session_type?: string | null
           time_spent_seconds?: number | null
-          topic_id: string
+          topic_id?: string | null
           user_answer?: string | null
           user_id?: string | null
         }
@@ -1082,11 +1174,11 @@ export type Database = {
           exercise_id?: string | null
           hints_used?: number | null
           id?: string
-          is_correct?: boolean
+          is_correct?: boolean | null
           metadata?: Json | null
           session_type?: string | null
           time_spent_seconds?: number | null
-          topic_id?: string
+          topic_id?: string | null
           user_answer?: string | null
           user_id?: string | null
         }
@@ -1101,6 +1193,61 @@ export type Database = {
         ]
       }
       exercise_concept_link: {
+        Row: {
+          concept_id: string
+          created_at: string
+          created_by: string
+          exercise_id: string
+          id: string
+          module_ok: boolean
+          rank: number
+          similarity: number
+        }
+        Insert: {
+          concept_id: string
+          created_at?: string
+          created_by?: string
+          exercise_id: string
+          id?: string
+          module_ok?: boolean
+          rank: number
+          similarity: number
+        }
+        Update: {
+          concept_id?: string
+          created_at?: string
+          created_by?: string
+          exercise_id?: string
+          id?: string
+          module_ok?: boolean
+          rank?: number
+          similarity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exercise_concept_link_concept_id_fkey1"
+            columns: ["concept_id"]
+            isOneToOne: false
+            referencedRelation: "concepts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exercise_concept_link_exercise_id_fkey1"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "exercise_raw"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exercise_concept_link_exercise_id_fkey1"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "exercise_servable"
+            referencedColumns: ["exercise_id"]
+          },
+        ]
+      }
+      exercise_concept_link_legacy: {
         Row: {
           concept_id: string
           created_at: string | null
@@ -1142,6 +1289,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "exercise_raw"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exercise_concept_link_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "exercise_servable"
+            referencedColumns: ["exercise_id"]
           },
         ]
       }
@@ -1213,6 +1367,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "exercise_raw"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exercise_figure_spec_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "exercise_servable"
+            referencedColumns: ["exercise_id"]
           },
         ]
       }
@@ -1306,6 +1467,13 @@ export type Database = {
             referencedRelation: "exercise_raw"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "exercise_verification_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "exercise_servable"
+            referencedColumns: ["exercise_id"]
+          },
         ]
       }
       exercises: {
@@ -1353,6 +1521,7 @@ export type Database = {
           created_at: string | null
           desired_kind: string | null
           desired_ref: string | null
+          exercise_id: string | null
           gates: Json | null
           id: string
           input_kind: string | null
@@ -1370,6 +1539,7 @@ export type Database = {
           created_at?: string | null
           desired_kind?: string | null
           desired_ref?: string | null
+          exercise_id?: string | null
           gates?: Json | null
           id?: string
           input_kind?: string | null
@@ -1387,6 +1557,7 @@ export type Database = {
           created_at?: string | null
           desired_kind?: string | null
           desired_ref?: string | null
+          exercise_id?: string | null
           gates?: Json | null
           id?: string
           input_kind?: string | null
@@ -1399,7 +1570,22 @@ export type Database = {
           updated_at?: string | null
           verdict_uman?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "figura_autor_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "exercise_raw"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "figura_autor_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "exercise_servable"
+            referencedColumns: ["exercise_id"]
+          },
+        ]
       }
       gap_analysis: {
         Row: {
@@ -2140,6 +2326,33 @@ export type Database = {
           },
         ]
       }
+      system_config: {
+        Row: {
+          description: string | null
+          id: string
+          key: string
+          updated_at: string | null
+          updated_by: string | null
+          value: Json
+        }
+        Insert: {
+          description?: string | null
+          id?: string
+          key: string
+          updated_at?: string | null
+          updated_by?: string | null
+          value: Json
+        }
+        Update: {
+          description?: string | null
+          id?: string
+          key?: string
+          updated_at?: string | null
+          updated_by?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
       tikz_templates: {
         Row: {
           calculator_function: string | null
@@ -2330,6 +2543,30 @@ export type Database = {
           },
         ]
       }
+      user_focus: {
+        Row: {
+          concept_ids: string[]
+          created_at: string
+          expires_at: string
+          label: string | null
+          user_id: string
+        }
+        Insert: {
+          concept_ids?: string[]
+          created_at?: string
+          expires_at: string
+          label?: string | null
+          user_id: string
+        }
+        Update: {
+          concept_ids?: string[]
+          created_at?: string
+          expires_at?: string
+          label?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_profiles: {
         Row: {
           ai_cost_reset_at: string | null
@@ -2445,12 +2682,33 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      exercise_servable: {
+        Row: {
+          exercise_id: string | null
+          provenance: string | null
+          tier: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       check_rate_limit: {
         Args: { p_action_type: string; p_user_id: string }
         Returns: boolean
+      }
+      frontier_concepts: {
+        Args: { p_grade: number; p_limit?: number; p_user_id: string }
+        Returns: {
+          concept_id: string
+          grade_level: number
+          mastery: number
+          name: string
+          prereq_ok: number
+          prereq_total: number
+          servable_exercises: number
+          slug: string
+          verified_exercises: number
+        }[]
       }
       increment_rate_limit: {
         Args: { p_action_type: string; p_user_id: string }
@@ -2519,6 +2777,7 @@ export type Database = {
           topic: string
         }[]
       }
+      month_cost: { Args: { p_user_id: string }; Returns: number }
     }
     Enums: {
       [_ in never]: never

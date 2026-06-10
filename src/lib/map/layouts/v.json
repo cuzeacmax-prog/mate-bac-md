@@ -1,0 +1,537 @@
+{
+ "module": "Modulul V",
+ "label": "Poliedre",
+ "width": 1735,
+ "height": 1032,
+ "nodes": [
+  {
+   "id": "126b52d3-9cba-45f3-a2f0-84c4db997037",
+   "slug": "g12-volumul-unui-corp-geometric",
+   "name": "volumul unui corp geometric",
+   "grade": 12,
+   "x": 523,
+   "y": 364,
+   "servable": 1,
+   "prereqs": [
+    {
+     "id": "10995383-a0a1-4134-a424-fd1c0f29efe5",
+     "slug": "g5-volum",
+     "name": "volum"
+    }
+   ]
+  },
+  {
+   "id": "25d01f7f-ad11-4231-ade8-bb4feba456ca",
+   "slug": "g12-poliedru-convex",
+   "name": "poliedru convex",
+   "grade": 12,
+   "x": 597,
+   "y": 212,
+   "servable": 0,
+   "prereqs": [
+    {
+     "id": "f71f9c9f-d69c-492f-8f07-03b47c33f2ed",
+     "slug": "g8-poligon-convex",
+     "name": "poligon convex"
+    },
+    {
+     "id": "b96dee57-48a5-4787-9140-769d8a39294c",
+     "slug": "g12-poliedru",
+     "name": "poliedru"
+    }
+   ]
+  },
+  {
+   "id": "26871957-43e1-4c65-b4f7-3e3c73975443",
+   "slug": "g12-sectiunea-piramidei-cu-plan-paralel-cu-baza",
+   "name": "secțiunea piramidei cu plan paralel cu baza",
+   "grade": 12,
+   "x": 463,
+   "y": 820,
+   "servable": 0,
+   "prereqs": [
+    {
+     "id": "eac25fcb-a645-4a83-8363-4e9ec5586906",
+     "slug": "g12-piramida",
+     "name": "piramidă"
+    },
+    {
+     "id": "7d0c00ef-2b89-4514-990b-f6b0735c364b",
+     "slug": "g10-teorema-lui-thales",
+     "name": "teorema lui Thales"
+    }
+   ]
+  },
+  {
+   "id": "382d9c0b-0787-40e0-b565-b59f771e8226",
+   "slug": "g12-prisma-oblica",
+   "name": "prismă oblică",
+   "grade": 12,
+   "x": 1141,
+   "y": 212,
+   "servable": 0,
+   "prereqs": [
+    {
+     "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+     "slug": "g12-prisma",
+     "name": "prismă"
+    }
+   ]
+  },
+  {
+   "id": "39190f01-9d3a-4363-9e2d-14490228755a",
+   "slug": "g12-trunchi-de-piramida",
+   "name": "trunchi de piramidă",
+   "grade": 12,
+   "x": 127,
+   "y": 820,
+   "servable": 13,
+   "prereqs": [
+    {
+     "id": "e5b9969c-5a54-4410-af2c-d0fad12a18aa",
+     "slug": "g9-trunchi-de-piramida",
+     "name": "trunchi de piramidă"
+    }
+   ]
+  },
+  {
+   "id": "4057214d-40cb-4f75-820d-cd526029c43b",
+   "slug": "g12-volumul-prismei",
+   "name": "volumul prismei",
+   "grade": 12,
+   "x": 832,
+   "y": 668,
+   "servable": 2,
+   "prereqs": [
+    {
+     "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+     "slug": "g12-prisma",
+     "name": "prismă"
+    },
+    {
+     "id": "126b52d3-9cba-45f3-a2f0-84c4db997037",
+     "slug": "g12-volumul-unui-corp-geometric",
+     "name": "volumul unui corp geometric"
+    },
+    {
+     "id": "5fc87233-a87d-4355-aec8-52cc1775d9e3",
+     "slug": "g12-volumul-paralelipipedului-dreptunghic",
+     "name": "volumul paralelipipedului dreptunghic"
+    }
+   ]
+  },
+  {
+   "id": "45f94eaf-4e56-4d3c-9fed-5b354f309f8f",
+   "slug": "g12-poliedru-regulat",
+   "name": "poliedru regulat",
+   "grade": 12,
+   "x": 261,
+   "y": 212,
+   "servable": 0,
+   "prereqs": [
+    {
+     "id": "4418b0ca-791f-4c62-b4f8-9a78688b60a2",
+     "slug": "g9-poligon-regulat",
+     "name": "poligon regulat"
+    },
+    {
+     "id": "b96dee57-48a5-4787-9140-769d8a39294c",
+     "slug": "g12-poliedru",
+     "name": "poliedru"
+    }
+   ]
+  },
+  {
+   "id": "5de9f445-8e05-44cf-bfe7-79a575a52474",
+   "slug": "g12-paralelipiped",
+   "name": "paralelipiped",
+   "grade": 12,
+   "x": 1477,
+   "y": 212,
+   "servable": 10,
+   "prereqs": [
+    {
+     "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+     "slug": "g12-prisma",
+     "name": "prismă"
+    }
+   ]
+  },
+  {
+   "id": "5fc87233-a87d-4355-aec8-52cc1775d9e3",
+   "slug": "g12-volumul-paralelipipedului-dreptunghic",
+   "name": "volumul paralelipipedului dreptunghic",
+   "grade": 12,
+   "x": 785,
+   "y": 516,
+   "servable": 9,
+   "prereqs": [
+    {
+     "id": "c7e92210-2692-46a7-ae76-3e5561619102",
+     "slug": "g12-paralelipiped-dreptunghic",
+     "name": "paralelipiped dreptunghic"
+    },
+    {
+     "id": "126b52d3-9cba-45f3-a2f0-84c4db997037",
+     "slug": "g12-volumul-unui-corp-geometric",
+     "name": "volumul unui corp geometric"
+    }
+   ]
+  },
+  {
+   "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+   "slug": "g12-prisma",
+   "name": "prismă",
+   "grade": 12,
+   "x": 1121,
+   "y": 60,
+   "servable": 3,
+   "prereqs": [
+    {
+     "id": "67b595be-7608-4fad-96f5-7e81278cdaea",
+     "slug": "g9-prisma",
+     "name": "prismă"
+    }
+   ]
+  },
+  {
+   "id": "814ddbf3-8de2-4c35-acfd-a6eb256a035e",
+   "slug": "g12-prisma-regulata",
+   "name": "prismă regulată",
+   "grade": 12,
+   "x": 973,
+   "y": 212,
+   "servable": 0,
+   "prereqs": [
+    {
+     "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+     "slug": "g12-prisma",
+     "name": "prismă"
+    },
+    {
+     "id": "4418b0ca-791f-4c62-b4f8-9a78688b60a2",
+     "slug": "g9-poligon-regulat",
+     "name": "poligon regulat"
+    }
+   ]
+  },
+  {
+   "id": "85f70c37-b9a1-432a-b568-40f143a03937",
+   "slug": "g12-cub",
+   "name": "cub",
+   "grade": 12,
+   "x": 1645,
+   "y": 212,
+   "servable": 0,
+   "prereqs": [
+    {
+     "id": "da4101c2-eb66-442a-8f61-0751220bbe1d",
+     "slug": "g9-cub",
+     "name": "cub"
+    },
+    {
+     "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+     "slug": "g12-prisma",
+     "name": "prismă"
+    }
+   ]
+  },
+  {
+   "id": "88c9e308-9441-42ef-b8e0-c6905ff9f9c0",
+   "slug": "g12-sectiune-a-poliedrului",
+   "name": "secțiune a poliedrului",
+   "grade": 12,
+   "x": 429,
+   "y": 212,
+   "servable": 0,
+   "prereqs": [
+    {
+     "id": "b96dee57-48a5-4787-9140-769d8a39294c",
+     "slug": "g12-poliedru",
+     "name": "poliedru"
+    },
+    {
+     "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+     "slug": "g12-prisma",
+     "name": "prismă"
+    }
+   ]
+  },
+  {
+   "id": "8a084915-95d4-4829-8700-f6405241fb3d",
+   "slug": "g12-tetraedru",
+   "name": "tetraedru",
+   "grade": 12,
+   "x": 93,
+   "y": 212,
+   "servable": 0,
+   "prereqs": [
+    {
+     "id": "b96dee57-48a5-4787-9140-769d8a39294c",
+     "slug": "g12-poliedru",
+     "name": "poliedru"
+    },
+    {
+     "id": "782ea464-bf05-4140-ac29-2b18b6d632aa",
+     "slug": "g12-tetraedru-transparent-opac",
+     "name": "tetraedru transparent / opac"
+    }
+   ]
+  },
+  {
+   "id": "b96dee57-48a5-4787-9140-769d8a39294c",
+   "slug": "g12-poliedru",
+   "name": "poliedru",
+   "grade": 12,
+   "x": 355,
+   "y": 60,
+   "servable": 0,
+   "prereqs": [
+    {
+     "id": "dfc3d37e-872c-4f1c-9d65-554cdff0a3f9",
+     "slug": "g9-poliedru",
+     "name": "poliedru"
+    }
+   ]
+  },
+  {
+   "id": "c7e92210-2692-46a7-ae76-3e5561619102",
+   "slug": "g12-paralelipiped-dreptunghic",
+   "name": "paralelipiped dreptunghic",
+   "grade": 12,
+   "x": 1477,
+   "y": 364,
+   "servable": 8,
+   "prereqs": [
+    {
+     "id": "5de9f445-8e05-44cf-bfe7-79a575a52474",
+     "slug": "g12-paralelipiped",
+     "name": "paralelipiped"
+    },
+    {
+     "id": "4a4212fc-b6d5-4584-a7e3-d81b21659bc7",
+     "slug": "g4-paralelipiped-dreptunghic",
+     "name": "paralelipiped dreptunghic"
+    }
+   ]
+  },
+  {
+   "id": "d2d4ef97-7804-4285-ae90-78694f3b0ab6",
+   "slug": "g12-sfere-inscrise-si-circumscrise-poliedrelor-si-cilindrului",
+   "name": "sfere înscrise și circumscrise poliedrelor și cilindrului",
+   "grade": 12,
+   "x": 295,
+   "y": 820,
+   "servable": 1,
+   "prereqs": [
+    {
+     "id": "b89edf5d-8cad-4b34-a21f-0a3a6f314768",
+     "slug": "g12-sfera-si-corpul-sferic",
+     "name": "sfera și corpul sferic"
+    },
+    {
+     "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+     "slug": "g12-prisma",
+     "name": "prismă"
+    },
+    {
+     "id": "eac25fcb-a645-4a83-8363-4e9ec5586906",
+     "slug": "g12-piramida",
+     "name": "piramidă"
+    },
+    {
+     "id": "187310c8-6f4f-49c3-98c5-0e6ceb08c85a",
+     "slug": "g12-cilindrul-circular-drept",
+     "name": "cilindrul circular drept"
+    }
+   ]
+  },
+  {
+   "id": "d89b1ff6-949f-4611-8afa-1f8a96e56154",
+   "slug": "g12-volumul-piramidei",
+   "name": "volumul piramidei",
+   "grade": 12,
+   "x": 631,
+   "y": 820,
+   "servable": 5,
+   "prereqs": [
+    {
+     "id": "eac25fcb-a645-4a83-8363-4e9ec5586906",
+     "slug": "g12-piramida",
+     "name": "piramidă"
+    },
+    {
+     "id": "126b52d3-9cba-45f3-a2f0-84c4db997037",
+     "slug": "g12-volumul-unui-corp-geometric",
+     "name": "volumul unui corp geometric"
+    },
+    {
+     "id": "4057214d-40cb-4f75-820d-cd526029c43b",
+     "slug": "g12-volumul-prismei",
+     "name": "volumul prismei"
+    }
+   ]
+  },
+  {
+   "id": "e0b5edb7-e4c3-47a3-ac2e-bb8a18dd70ed",
+   "slug": "g12-prisma-dreapta",
+   "name": "prismă dreaptă",
+   "grade": 12,
+   "x": 1309,
+   "y": 212,
+   "servable": 3,
+   "prereqs": [
+    {
+     "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+     "slug": "g12-prisma",
+     "name": "prismă"
+    }
+   ]
+  },
+  {
+   "id": "eac25fcb-a645-4a83-8363-4e9ec5586906",
+   "slug": "g12-piramida",
+   "name": "piramidă",
+   "grade": 12,
+   "x": 362,
+   "y": 668,
+   "servable": 16,
+   "prereqs": [
+    {
+     "id": "82286799-5c6a-4629-8263-186acb370ee6",
+     "slug": "g9-piramida",
+     "name": "piramidă"
+    }
+   ]
+  },
+  {
+   "id": "f465b079-3e12-4d52-926a-dd19243c914a",
+   "slug": "g12-volumul-trunchiului-de-piramida",
+   "name": "volumul trunchiului de piramidă",
+   "grade": 12,
+   "x": 90,
+   "y": 972,
+   "servable": 1,
+   "prereqs": [
+    {
+     "id": "39190f01-9d3a-4363-9e2d-14490228755a",
+     "slug": "g12-trunchi-de-piramida",
+     "name": "trunchi de piramidă"
+    },
+    {
+     "id": "126b52d3-9cba-45f3-a2f0-84c4db997037",
+     "slug": "g12-volumul-unui-corp-geometric",
+     "name": "volumul unui corp geometric"
+    },
+    {
+     "id": "d89b1ff6-949f-4611-8afa-1f8a96e56154",
+     "slug": "g12-volumul-piramidei",
+     "name": "volumul piramidei"
+    }
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": "25d01f7f-ad11-4231-ade8-bb4feba456ca",
+   "to": "b96dee57-48a5-4787-9140-769d8a39294c"
+  },
+  {
+   "from": "45f94eaf-4e56-4d3c-9fed-5b354f309f8f",
+   "to": "b96dee57-48a5-4787-9140-769d8a39294c"
+  },
+  {
+   "from": "8a084915-95d4-4829-8700-f6405241fb3d",
+   "to": "b96dee57-48a5-4787-9140-769d8a39294c"
+  },
+  {
+   "from": "85f70c37-b9a1-432a-b568-40f143a03937",
+   "to": "770a29b4-85a7-413f-b8b8-4fd5d4972341"
+  },
+  {
+   "from": "5de9f445-8e05-44cf-bfe7-79a575a52474",
+   "to": "770a29b4-85a7-413f-b8b8-4fd5d4972341"
+  },
+  {
+   "from": "c7e92210-2692-46a7-ae76-3e5561619102",
+   "to": "5de9f445-8e05-44cf-bfe7-79a575a52474"
+  },
+  {
+   "from": "e0b5edb7-e4c3-47a3-ac2e-bb8a18dd70ed",
+   "to": "770a29b4-85a7-413f-b8b8-4fd5d4972341"
+  },
+  {
+   "from": "382d9c0b-0787-40e0-b565-b59f771e8226",
+   "to": "770a29b4-85a7-413f-b8b8-4fd5d4972341"
+  },
+  {
+   "from": "814ddbf3-8de2-4c35-acfd-a6eb256a035e",
+   "to": "770a29b4-85a7-413f-b8b8-4fd5d4972341"
+  },
+  {
+   "from": "88c9e308-9441-42ef-b8e0-c6905ff9f9c0",
+   "to": "b96dee57-48a5-4787-9140-769d8a39294c"
+  },
+  {
+   "from": "88c9e308-9441-42ef-b8e0-c6905ff9f9c0",
+   "to": "770a29b4-85a7-413f-b8b8-4fd5d4972341"
+  },
+  {
+   "from": "26871957-43e1-4c65-b4f7-3e3c73975443",
+   "to": "eac25fcb-a645-4a83-8363-4e9ec5586906"
+  },
+  {
+   "from": "5fc87233-a87d-4355-aec8-52cc1775d9e3",
+   "to": "c7e92210-2692-46a7-ae76-3e5561619102"
+  },
+  {
+   "from": "5fc87233-a87d-4355-aec8-52cc1775d9e3",
+   "to": "126b52d3-9cba-45f3-a2f0-84c4db997037"
+  },
+  {
+   "from": "4057214d-40cb-4f75-820d-cd526029c43b",
+   "to": "770a29b4-85a7-413f-b8b8-4fd5d4972341"
+  },
+  {
+   "from": "4057214d-40cb-4f75-820d-cd526029c43b",
+   "to": "126b52d3-9cba-45f3-a2f0-84c4db997037"
+  },
+  {
+   "from": "4057214d-40cb-4f75-820d-cd526029c43b",
+   "to": "5fc87233-a87d-4355-aec8-52cc1775d9e3"
+  },
+  {
+   "from": "d89b1ff6-949f-4611-8afa-1f8a96e56154",
+   "to": "eac25fcb-a645-4a83-8363-4e9ec5586906"
+  },
+  {
+   "from": "d89b1ff6-949f-4611-8afa-1f8a96e56154",
+   "to": "126b52d3-9cba-45f3-a2f0-84c4db997037"
+  },
+  {
+   "from": "d89b1ff6-949f-4611-8afa-1f8a96e56154",
+   "to": "4057214d-40cb-4f75-820d-cd526029c43b"
+  },
+  {
+   "from": "f465b079-3e12-4d52-926a-dd19243c914a",
+   "to": "39190f01-9d3a-4363-9e2d-14490228755a"
+  },
+  {
+   "from": "f465b079-3e12-4d52-926a-dd19243c914a",
+   "to": "126b52d3-9cba-45f3-a2f0-84c4db997037"
+  },
+  {
+   "from": "f465b079-3e12-4d52-926a-dd19243c914a",
+   "to": "d89b1ff6-949f-4611-8afa-1f8a96e56154"
+  },
+  {
+   "from": "d2d4ef97-7804-4285-ae90-78694f3b0ab6",
+   "to": "770a29b4-85a7-413f-b8b8-4fd5d4972341"
+  },
+  {
+   "from": "d2d4ef97-7804-4285-ae90-78694f3b0ab6",
+   "to": "eac25fcb-a645-4a83-8363-4e9ec5586906"
+  }
+ ],
+ "generated": "2026-06-10"
+}

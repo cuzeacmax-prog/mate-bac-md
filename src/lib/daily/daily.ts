@@ -11,6 +11,7 @@
  * Zero LLM aici; evaluarea răspunsurilor trece prin lib/evaluare (ETAPA 63).
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { getActiveFocus } from '@/lib/map/focus';
 
 export interface DailyExercise {
   exercise_id: string;
@@ -125,10 +126,20 @@ export async function getOrCreateDailyChallenge(
     console.error('[daily] frontier failed:', frErr.message);
     return null;
   }
-  const concepts = ((frontier ?? []) as FrontierRowLite[]).filter(
+  let concepts = ((frontier ?? []) as FrontierRowLite[]).filter(
     (r) => Number(r.servable_exercises) > 0
   );
   if (concepts.length === 0) return null; // fără diagnostic / fără conținut servibil
+
+  // ETAPA 71 B4: lentila „test mâine" — daily-ul se restrânge la focus.
+  // Focus fără conținut servibil pe frontieră → cădere onestă pe frontiera plină.
+  const focus = await getActiveFocus(service, userId);
+  if (focus) {
+    const focusSet = new Set(focus.concept_ids);
+    const focused = concepts.filter((c) => focusSet.has(c.concept_id));
+    if (focused.length > 0) concepts = focused;
+    else console.error('[daily] focus activ fără concepte servibile pe frontieră — folosesc frontiera întreagă');
+  }
 
   // 3) candidați: exercițiile servibile ale primelor concepte din frontieră
   const conceptIds = concepts.slice(0, DAILY_MAX).map((c) => c.concept_id);

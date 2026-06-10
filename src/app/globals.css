@@ -237,9 +237,24 @@
 .backdrop-blob-2 { animation: backdrop-drift-2 32s ease-in-out infinite; }
 .backdrop-blob-3 { animation: backdrop-drift-3 38s ease-in-out infinite; }
 
+/* ── ETAPA 71 B2: inelul pulsând al nodurilor disponibile pe hartă ────────── */
+@keyframes map-pulse {
+  0%   { opacity: 0.9; transform: scale(1); }
+  50%  { opacity: 0.25; transform: scale(1.18); }
+  100% { opacity: 0.9; transform: scale(1); }
+}
+.map-pulse {
+  animation: map-pulse 2.2s ease-in-out infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
 /* prefers-reduced-motion: totul degradează la static/fade simplu */
 @media (prefers-reduced-motion: reduce) {
   .backdrop-blob-1, .backdrop-blob-2, .backdrop-blob-3 {
+    animation: none;
+  }
+  .map-pulse {
     animation: none;
   }
 }

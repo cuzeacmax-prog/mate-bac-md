@@ -1,0 +1,647 @@
+{
+ "module": "Modulul I",
+ "label": "Primitive și integrale nedefinite",
+ "width": 1526,
+ "height": 1792,
+ "nodes": [
+  {
+   "id": "2021e294-9ae4-4166-96b1-30c585f9e2a3",
+   "slug": "g12-aria-suprafetei-de-rotatie",
+   "name": "aria suprafeței de rotație",
+   "grade": 12,
+   "x": 436,
+   "y": 1276,
+   "servable": 18,
+   "prereqs": [
+    {
+     "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+     "slug": "g12-integrala-definita",
+     "name": "integrală definită"
+    },
+    {
+     "id": "27730b94-e5d3-4ed1-b1aa-a3be5085a9cd",
+     "slug": "g12-volumul-corpului-de-rotatie",
+     "name": "volumul corpului de rotație"
+    }
+   ]
+  },
+  {
+   "id": "27730b94-e5d3-4ed1-b1aa-a3be5085a9cd",
+   "slug": "g12-volumul-corpului-de-rotatie",
+   "name": "volumul corpului de rotație",
+   "grade": 12,
+   "x": 503,
+   "y": 1124,
+   "servable": 12,
+   "prereqs": [
+    {
+     "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+     "slug": "g12-integrala-definita",
+     "name": "integrală definită"
+    }
+   ]
+  },
+  {
+   "id": "2af3de6e-3d4c-4def-96b6-0880d696d5c8",
+   "slug": "g12-centrul-de-greutate-al-placii-omogene",
+   "name": "centrul de greutate al plăcii omogene",
+   "grade": 12,
+   "x": 1298,
+   "y": 1732,
+   "servable": 0,
+   "prereqs": [
+    {
+     "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+     "slug": "g12-integrala-definita",
+     "name": "integrală definită"
+    },
+    {
+     "id": "4e8472ea-5a01-4d8d-add1-eadb08519809",
+     "slug": "g12-aria-multimii-delimitate-de-graficele-a-doua-functii",
+     "name": "aria mulțimii delimitate de graficele a două funcții"
+    }
+   ]
+  },
+  {
+   "id": "4e8472ea-5a01-4d8d-add1-eadb08519809",
+   "slug": "g12-aria-multimii-delimitate-de-graficele-a-doua-functii",
+   "name": "aria mulțimii delimitate de graficele a două funcții",
+   "grade": 12,
+   "x": 1298,
+   "y": 1580,
+   "servable": 24,
+   "prereqs": [
+    {
+     "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+     "slug": "g12-integrala-definita",
+     "name": "integrală definită"
+    },
+    {
+     "id": "b2dee2a2-ca25-40ef-afba-9b9833565420",
+     "slug": "g12-aria-subgraficului-unei-functii",
+     "name": "aria subgraficului unei funcții"
+    }
+   ]
+  },
+  {
+   "id": "5425c7a5-4284-4b2b-930c-07e13be2bb33",
+   "slug": "g12-suma-riemann",
+   "name": "sumă Riemann",
+   "grade": 12,
+   "x": 513,
+   "y": 668,
+   "servable": 0,
+   "prereqs": [
+    {
+     "id": "683d6921-7cd9-4832-bc90-5028a780b5c3",
+     "slug": "g12-diviziunea-unui-interval",
+     "name": "diviziunea unui interval"
+    }
+   ]
+  },
+  {
+   "id": "5dcd38a5-8ffd-464d-9a2c-b08fefa84c9a",
+   "slug": "g12-teorema-de-medie-pentru-integrala-definita",
+   "name": "teorema de medie pentru integrala definită",
+   "grade": 12,
+   "x": 1040,
+   "y": 1276,
+   "servable": 9,
+   "prereqs": [
+    {
+     "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+     "slug": "g12-integrala-definita",
+     "name": "integrală definită"
+    },
+    {
+     "id": "c765e6e6-a237-440a-8308-08103db253e5",
+     "slug": "g12-proprietatile-integralei-definite",
+     "name": "proprietățile integralei definite"
+    }
+   ]
+  },
+  {
+   "id": "61f1d043-5bb7-4fe6-ae9f-0d42c5418bfb",
+   "slug": "g12-legea-de-variatie-a-cantitatii-de-sare-din-solutie-omogena",
+   "name": "legea de variație a cantității de sare din soluție omogenă",
+   "grade": 12,
+   "x": 90,
+   "y": 516,
+   "servable": 0,
+   "prereqs": [
+    {
+     "id": "e790b8b8-5e36-4601-8a17-04fb9f889e84",
+     "slug": "g12-primitiva-a-unei-functii",
+     "name": "primitivă a unei funcții"
+    },
+    {
+     "id": "8d9818ee-07bd-4616-b32b-7e496ea37a24",
+     "slug": "g12-integrala-nedefinita",
+     "name": "integrală nedefinită"
+    }
+   ]
+  },
+  {
+   "id": "683d6921-7cd9-4832-bc90-5028a780b5c3",
+   "slug": "g12-diviziunea-unui-interval",
+   "name": "diviziunea unui interval",
+   "grade": 12,
+   "x": 701,
+   "y": 516,
+   "servable": 0,
+   "prereqs": [
+    {
+     "id": "8d9818ee-07bd-4616-b32b-7e496ea37a24",
+     "slug": "g12-integrala-nedefinita",
+     "name": "integrală nedefinită"
+    }
+   ]
+  },
+  {
+   "id": "6c47c3fc-0c73-439b-827c-0f84af677bb8",
+   "slug": "g12-interpretarea-geometrica-a-integralei-definite",
+   "name": "interpretarea geometrică a integralei definite",
+   "grade": 12,
+   "x": 1389,
+   "y": 1276,
+   "servable": 6,
+   "prereqs": [
+    {
+     "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+     "slug": "g12-integrala-definita",
+     "name": "integrală definită"
+    },
+    {
+     "id": "c622442e-3eae-4c27-918f-7881e5fe5bbf",
+     "slug": "g12-formula-leibniz-newton",
+     "name": "formula Leibniz–Newton"
+    }
+   ]
+  },
+  {
+   "id": "741bc38d-b470-4f73-9ee8-97c1f1904c81",
+   "slug": "g12-metoda-integrarii-prin-parti-pentru-integrala-definita",
+   "name": "metoda integrării prin părți pentru integrala definită",
+   "grade": 12,
+   "x": 268,
+   "y": 1124,
+   "servable": 73,
+   "prereqs": [
+    {
+     "id": "fecc9f76-238a-4949-a07c-a715e744c691",
+     "slug": "g12-metoda-integrarii-prin-parti-integrala-nedefinita",
+     "name": "metoda integrării prin părți (integrală nedefinită)"
+    },
+    {
+     "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+     "slug": "g12-integrala-definita",
+     "name": "integrală definită"
+    }
+   ]
+  },
+  {
+   "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+   "slug": "g12-integrala-definita",
+   "name": "integrală definită",
+   "grade": 12,
+   "x": 1084,
+   "y": 972,
+   "servable": 5,
+   "prereqs": [
+    {
+     "id": "8c31016d-9c1a-4b04-af88-8ae7f98a842f",
+     "slug": "g12-functie-integrabila-in-sens-riemann",
+     "name": "funcție integrabilă (în sens Riemann)"
+    }
+   ]
+  },
+  {
+   "id": "80a931b8-b1d2-4c9b-8019-35116af7282d",
+   "slug": "g12-integrala-riemann-limita-sumei-integrale",
+   "name": "integrala Riemann (limita sumei integrale)",
+   "grade": 12,
+   "x": 711,
+   "y": 972,
+   "servable": 0,
+   "prereqs": [
+    {
+     "id": "5425c7a5-4284-4b2b-930c-07e13be2bb33",
+     "slug": "g12-suma-riemann",
+     "name": "sumă Riemann"
+    },
+    {
+     "id": "8c31016d-9c1a-4b04-af88-8ae7f98a842f",
+     "slug": "g12-functie-integrabila-in-sens-riemann",
+     "name": "funcție integrabilă (în sens Riemann)"
+    }
+   ]
+  },
+  {
+   "id": "871acd05-fb9b-421f-95ad-622820a08b80",
+   "slug": "g12-legea-descompunerii-substantei-radioactive",
+   "name": "legea descompunerii substanței radioactive",
+   "grade": 12,
+   "x": 298,
+   "y": 516,
+   "servable": 0,
+   "prereqs": [
+    {
+     "id": "e790b8b8-5e36-4601-8a17-04fb9f889e84",
+     "slug": "g12-primitiva-a-unei-functii",
+     "name": "primitivă a unei funcții"
+    },
+    {
+     "id": "8d9818ee-07bd-4616-b32b-7e496ea37a24",
+     "slug": "g12-integrala-nedefinita",
+     "name": "integrală nedefinită"
+    }
+   ]
+  },
+  {
+   "id": "8c31016d-9c1a-4b04-af88-8ae7f98a842f",
+   "slug": "g12-functie-integrabila-in-sens-riemann",
+   "name": "funcție integrabilă (în sens Riemann)",
+   "grade": 12,
+   "x": 758,
+   "y": 820,
+   "servable": 1,
+   "prereqs": [
+    {
+     "id": "683d6921-7cd9-4832-bc90-5028a780b5c3",
+     "slug": "g12-diviziunea-unui-interval",
+     "name": "diviziunea unui interval"
+    },
+    {
+     "id": "5425c7a5-4284-4b2b-930c-07e13be2bb33",
+     "slug": "g12-suma-riemann",
+     "name": "sumă Riemann"
+    }
+   ]
+  },
+  {
+   "id": "8d9818ee-07bd-4616-b32b-7e496ea37a24",
+   "slug": "g12-integrala-nedefinita",
+   "name": "integrală nedefinită",
+   "grade": 12,
+   "x": 355,
+   "y": 364,
+   "servable": 35,
+   "prereqs": [
+    {
+     "id": "e790b8b8-5e36-4601-8a17-04fb9f889e84",
+     "slug": "g12-primitiva-a-unei-functii",
+     "name": "primitivă a unei funcții"
+    },
+    {
+     "id": "9e4f747c-39ca-4bab-8bff-3cc768fc4a1b",
+     "slug": "g12-proprietatile-integralei-nedefinite",
+     "name": "proprietățile integralei nedefinite"
+    }
+   ]
+  },
+  {
+   "id": "952ce95f-aea8-4696-98ee-1971ab28255b",
+   "slug": "g12-metoda-schimbarii-de-variabila-in-calculul-primitivelor",
+   "name": "metoda schimbării de variabilă în calculul primitivelor",
+   "grade": 12,
+   "x": 889,
+   "y": 972,
+   "servable": 18,
+   "prereqs": [
+    {
+     "id": "8d9818ee-07bd-4616-b32b-7e496ea37a24",
+     "slug": "g12-integrala-nedefinita",
+     "name": "integrală nedefinită"
+    }
+   ]
+  },
+  {
+   "id": "9e4f747c-39ca-4bab-8bff-3cc768fc4a1b",
+   "slug": "g12-proprietatile-integralei-nedefinite",
+   "name": "proprietățile integralei nedefinite",
+   "grade": 12,
+   "x": 402,
+   "y": 212,
+   "servable": 21,
+   "prereqs": [
+    {
+     "id": "e790b8b8-5e36-4601-8a17-04fb9f889e84",
+     "slug": "g12-primitiva-a-unei-functii",
+     "name": "primitivă a unei funcții"
+    }
+   ]
+  },
+  {
+   "id": "9e518300-b4e8-4e1c-af8b-30f39efe287c",
+   "slug": "g12-tabelul-integralelor-nedefinite-uzuale",
+   "name": "tabelul integralelor nedefinite uzuale",
+   "grade": 12,
+   "x": 533,
+   "y": 516,
+   "servable": 0,
+   "prereqs": [
+    {
+     "id": "e790b8b8-5e36-4601-8a17-04fb9f889e84",
+     "slug": "g12-primitiva-a-unei-functii",
+     "name": "primitivă a unei funcții"
+    },
+    {
+     "id": "8d9818ee-07bd-4616-b32b-7e496ea37a24",
+     "slug": "g12-integrala-nedefinita",
+     "name": "integrală nedefinită"
+    }
+   ]
+  },
+  {
+   "id": "b2dee2a2-ca25-40ef-afba-9b9833565420",
+   "slug": "g12-aria-subgraficului-unei-functii",
+   "name": "aria subgraficului unei funcții",
+   "grade": 12,
+   "x": 1342,
+   "y": 1428,
+   "servable": 27,
+   "prereqs": [
+    {
+     "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+     "slug": "g12-integrala-definita",
+     "name": "integrală definită"
+    },
+    {
+     "id": "6c47c3fc-0c73-439b-827c-0f84af677bb8",
+     "slug": "g12-interpretarea-geometrica-a-integralei-definite",
+     "name": "interpretarea geometrică a integralei definite"
+    }
+   ]
+  },
+  {
+   "id": "c622442e-3eae-4c27-918f-7881e5fe5bbf",
+   "slug": "g12-formula-leibniz-newton",
+   "name": "formula Leibniz–Newton",
+   "grade": 12,
+   "x": 1436,
+   "y": 1124,
+   "servable": 6,
+   "prereqs": [
+    {
+     "id": "e790b8b8-5e36-4601-8a17-04fb9f889e84",
+     "slug": "g12-primitiva-a-unei-functii",
+     "name": "primitivă a unei funcții"
+    },
+    {
+     "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+     "slug": "g12-integrala-definita",
+     "name": "integrală definită"
+    }
+   ]
+  },
+  {
+   "id": "c765e6e6-a237-440a-8308-08103db253e5",
+   "slug": "g12-proprietatile-integralei-definite",
+   "name": "proprietățile integralei definite",
+   "grade": 12,
+   "x": 1077,
+   "y": 1124,
+   "servable": 186,
+   "prereqs": [
+    {
+     "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+     "slug": "g12-integrala-definita",
+     "name": "integrală definită"
+    }
+   ]
+  },
+  {
+   "id": "e790b8b8-5e36-4601-8a17-04fb9f889e84",
+   "slug": "g12-primitiva-a-unei-functii",
+   "name": "primitivă a unei funcții",
+   "grade": 12,
+   "x": 355,
+   "y": 60,
+   "servable": 23,
+   "prereqs": [
+    {
+     "id": "1f2fe4b8-d64d-4905-bc1b-b987f2574424",
+     "slug": "g12-reguli-de-calcul-al-derivatelor",
+     "name": "reguli de calcul al derivatelor"
+    },
+    {
+     "id": "b4640a44-0c12-4221-8ef3-1346e9bcce93",
+     "slug": "g12-tabelul-derivatelor-functiilor-elementare",
+     "name": "tabelul derivatelor funcțiilor elementare"
+    }
+   ]
+  },
+  {
+   "id": "fecc9f76-238a-4949-a07c-a715e744c691",
+   "slug": "g12-metoda-integrarii-prin-parti-integrala-nedefinita",
+   "name": "metoda integrării prin părți (integrală nedefinită)",
+   "grade": 12,
+   "x": 184,
+   "y": 972,
+   "servable": 40,
+   "prereqs": [
+    {
+     "id": "8d9818ee-07bd-4616-b32b-7e496ea37a24",
+     "slug": "g12-integrala-nedefinita",
+     "name": "integrală nedefinită"
+    }
+   ]
+  },
+  {
+   "id": "ffab4ca0-4795-4540-833b-29422a09b66f",
+   "slug": "g12-lungimea-graficului-unei-functii-derivabile",
+   "name": "lungimea graficului unei funcții derivabile",
+   "grade": 12,
+   "x": 691,
+   "y": 1124,
+   "servable": 0,
+   "prereqs": [
+    {
+     "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+     "slug": "g12-integrala-definita",
+     "name": "integrală definită"
+    }
+   ]
+  },
+  {
+   "id": "ffc1fd8a-e12b-4d54-8b7d-695556ae64b1",
+   "slug": "g12-metoda-substitutiei-pentru-integrala-definita",
+   "name": "metoda substituției pentru integrala definită",
+   "grade": 12,
+   "x": 899,
+   "y": 1124,
+   "servable": 117,
+   "prereqs": [
+    {
+     "id": "952ce95f-aea8-4696-98ee-1971ab28255b",
+     "slug": "g12-metoda-schimbarii-de-variabila-in-calculul-primitivelor",
+     "name": "metoda schimbării de variabilă în calculul primitivelor"
+    },
+    {
+     "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+     "slug": "g12-integrala-definita",
+     "name": "integrală definită"
+    }
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": "8d9818ee-07bd-4616-b32b-7e496ea37a24",
+   "to": "e790b8b8-5e36-4601-8a17-04fb9f889e84"
+  },
+  {
+   "from": "8d9818ee-07bd-4616-b32b-7e496ea37a24",
+   "to": "9e4f747c-39ca-4bab-8bff-3cc768fc4a1b"
+  },
+  {
+   "from": "fecc9f76-238a-4949-a07c-a715e744c691",
+   "to": "8d9818ee-07bd-4616-b32b-7e496ea37a24"
+  },
+  {
+   "from": "952ce95f-aea8-4696-98ee-1971ab28255b",
+   "to": "8d9818ee-07bd-4616-b32b-7e496ea37a24"
+  },
+  {
+   "from": "9e518300-b4e8-4e1c-af8b-30f39efe287c",
+   "to": "e790b8b8-5e36-4601-8a17-04fb9f889e84"
+  },
+  {
+   "from": "9e518300-b4e8-4e1c-af8b-30f39efe287c",
+   "to": "8d9818ee-07bd-4616-b32b-7e496ea37a24"
+  },
+  {
+   "from": "61f1d043-5bb7-4fe6-ae9f-0d42c5418bfb",
+   "to": "e790b8b8-5e36-4601-8a17-04fb9f889e84"
+  },
+  {
+   "from": "61f1d043-5bb7-4fe6-ae9f-0d42c5418bfb",
+   "to": "8d9818ee-07bd-4616-b32b-7e496ea37a24"
+  },
+  {
+   "from": "871acd05-fb9b-421f-95ad-622820a08b80",
+   "to": "e790b8b8-5e36-4601-8a17-04fb9f889e84"
+  },
+  {
+   "from": "871acd05-fb9b-421f-95ad-622820a08b80",
+   "to": "8d9818ee-07bd-4616-b32b-7e496ea37a24"
+  },
+  {
+   "from": "9e4f747c-39ca-4bab-8bff-3cc768fc4a1b",
+   "to": "e790b8b8-5e36-4601-8a17-04fb9f889e84"
+  },
+  {
+   "from": "8c31016d-9c1a-4b04-af88-8ae7f98a842f",
+   "to": "683d6921-7cd9-4832-bc90-5028a780b5c3"
+  },
+  {
+   "from": "8c31016d-9c1a-4b04-af88-8ae7f98a842f",
+   "to": "5425c7a5-4284-4b2b-930c-07e13be2bb33"
+  },
+  {
+   "from": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+   "to": "8c31016d-9c1a-4b04-af88-8ae7f98a842f"
+  },
+  {
+   "from": "b2dee2a2-ca25-40ef-afba-9b9833565420",
+   "to": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224"
+  },
+  {
+   "from": "b2dee2a2-ca25-40ef-afba-9b9833565420",
+   "to": "6c47c3fc-0c73-439b-827c-0f84af677bb8"
+  },
+  {
+   "from": "683d6921-7cd9-4832-bc90-5028a780b5c3",
+   "to": "8d9818ee-07bd-4616-b32b-7e496ea37a24"
+  },
+  {
+   "from": "5425c7a5-4284-4b2b-930c-07e13be2bb33",
+   "to": "683d6921-7cd9-4832-bc90-5028a780b5c3"
+  },
+  {
+   "from": "c622442e-3eae-4c27-918f-7881e5fe5bbf",
+   "to": "e790b8b8-5e36-4601-8a17-04fb9f889e84"
+  },
+  {
+   "from": "c622442e-3eae-4c27-918f-7881e5fe5bbf",
+   "to": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224"
+  },
+  {
+   "from": "c765e6e6-a237-440a-8308-08103db253e5",
+   "to": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224"
+  },
+  {
+   "from": "80a931b8-b1d2-4c9b-8019-35116af7282d",
+   "to": "5425c7a5-4284-4b2b-930c-07e13be2bb33"
+  },
+  {
+   "from": "80a931b8-b1d2-4c9b-8019-35116af7282d",
+   "to": "8c31016d-9c1a-4b04-af88-8ae7f98a842f"
+  },
+  {
+   "from": "6c47c3fc-0c73-439b-827c-0f84af677bb8",
+   "to": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224"
+  },
+  {
+   "from": "6c47c3fc-0c73-439b-827c-0f84af677bb8",
+   "to": "c622442e-3eae-4c27-918f-7881e5fe5bbf"
+  },
+  {
+   "from": "5dcd38a5-8ffd-464d-9a2c-b08fefa84c9a",
+   "to": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224"
+  },
+  {
+   "from": "5dcd38a5-8ffd-464d-9a2c-b08fefa84c9a",
+   "to": "c765e6e6-a237-440a-8308-08103db253e5"
+  },
+  {
+   "from": "741bc38d-b470-4f73-9ee8-97c1f1904c81",
+   "to": "fecc9f76-238a-4949-a07c-a715e744c691"
+  },
+  {
+   "from": "741bc38d-b470-4f73-9ee8-97c1f1904c81",
+   "to": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224"
+  },
+  {
+   "from": "ffc1fd8a-e12b-4d54-8b7d-695556ae64b1",
+   "to": "952ce95f-aea8-4696-98ee-1971ab28255b"
+  },
+  {
+   "from": "ffc1fd8a-e12b-4d54-8b7d-695556ae64b1",
+   "to": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224"
+  },
+  {
+   "from": "2021e294-9ae4-4166-96b1-30c585f9e2a3",
+   "to": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224"
+  },
+  {
+   "from": "2021e294-9ae4-4166-96b1-30c585f9e2a3",
+   "to": "27730b94-e5d3-4ed1-b1aa-a3be5085a9cd"
+  },
+  {
+   "from": "ffab4ca0-4795-4540-833b-29422a09b66f",
+   "to": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224"
+  },
+  {
+   "from": "27730b94-e5d3-4ed1-b1aa-a3be5085a9cd",
+   "to": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224"
+  },
+  {
+   "from": "4e8472ea-5a01-4d8d-add1-eadb08519809",
+   "to": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224"
+  },
+  {
+   "from": "4e8472ea-5a01-4d8d-add1-eadb08519809",
+   "to": "b2dee2a2-ca25-40ef-afba-9b9833565420"
+  },
+  {
+   "from": "2af3de6e-3d4c-4def-96b6-0880d696d5c8",
+   "to": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224"
+  },
+  {
+   "from": "2af3de6e-3d4c-4def-96b6-0880d696d5c8",
+   "to": "4e8472ea-5a01-4d8d-add1-eadb08519809"
+  }
+ ],
+ "generated": "2026-06-10"
+}
