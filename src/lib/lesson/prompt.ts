@@ -83,6 +83,39 @@ EXERCIȚIILE SERVIBILE (folosește-le în example/quiz; figura doar cu id-ul dat
 ${exercisesBlock}`;
 }
 
+/**
+ * ETAPA 70 FAZA E — chatul îngrădit în lecție: instrucțiunea FERMĂ pentru
+ * întrebările libere din player. Fără clasificator suplimentar — gardul e
+ * în prompt, iar răspunsul vine ca blocuri (max 3), nu zid de text.
+ */
+export const ASK_GUARD_PROMPT = `Ești Profesor Maxim — predai matematică pentru BAC (Republica Moldova), în română.
+Elevul e ÎN MIJLOCUL unei lecții structurate și a pus o întrebare liberă.
+
+REGULA FERMĂ DE TEMĂ: răspunzi DOAR în limitele temei curente (conceptul lecției
+și prerechizitele lui imediate). Dacă întrebarea iese din temă (alt capitol, alt
+obiect de studiu, non-matematică), NU răspunde la subiect: emite UN SINGUR bloc
+step cu un refuz blând, de exemplu: „Acum suntem la <conceptul lecției> — hai să
+terminăm întâi. Subiectul tău îl găsești în pagina «Azi» după lecție."
+
+FORMATUL RĂSPUNSULUI: MAXIM 3 blocuri (step / formula / example / table / plot),
+fiecare scurt (regulile lecției se aplică: o idee per bloc, max 3 propoziții).
+NICIODATĂ quiz sau figure aici. Matematica DOAR între delimitatori $...$.`;
+
+/** mesajul user pentru o întrebare din player (FAZA E) */
+export function buildAskUserMessage(ctx: {
+  conceptName: string;
+  theory: string;
+  question: string;
+}): string {
+  return `Conceptul lecției curente: ${ctx.conceptName}
+
+TEORIA DE REFERINȚĂ (sursa de adevăr):
+${ctx.theory || '(fără teorie în graf)'}
+
+ÎNTREBAREA ELEVULUI:
+${ctx.question}`;
+}
+
 /** mesajul de re-cerere pentru blocurile respinse de validator (FAZA B) */
 export function buildRetryMessage(invalid: Array<{ raw: unknown; error: string }>): string {
   return `Aceste blocuri au fost RESPINSE de validator. Re-emite-le corectat (același conținut, comprimat la limite), DOAR blocurile de mai jos:

@@ -53,6 +53,11 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
   const [quizStates, setQuizStates] = useState<Record<string, QuizState>>({});
   const [pendingQuiz, setPendingQuiz] = useState(false);
   const [finished, setFinished] = useState(false);
+  // ETAPA 70 E: chatul îngrădit în lecție (întrebare → max 3 blocuri)
+  const [askInput, setAskInput] = useState("");
+  const [askPending, setAskPending] = useState(false);
+  const [askAnswer, setAskAnswer] = useState<LessonBlockClient[] | null>(null);
+  const [askError, setAskError] = useState<string | null>(null);
   const startedRef = useRef(false);
 
   // ── streamul lecției ──────────────────────────────────────────────────────
@@ -200,6 +205,30 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
     [messageId, pendingQuiz]
   );
 
+  // ETAPA 70 E: întrebarea pleacă cu ancora conceptului; gardul de temă e în
+  // system prompt pe server; răspunsul vine ca blocuri, nu zid de text
+  const submitAsk = useCallback(async () => {
+    const question = askInput.trim();
+    if (!question || askPending) return;
+    setAskPending(true);
+    setAskError(null);
+    try {
+      const resp = await fetch("/api/lesson/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ concept: conceptSlug, question }),
+      });
+      const data = await resp.json();
+      if (!resp.ok) throw new Error(data.error ?? `HTTP ${resp.status}`);
+      setAskAnswer(data.blocks as LessonBlockClient[]);
+      setAskInput("");
+    } catch (err) {
+      setAskError(err instanceof Error ? err.message : "Eroare");
+    } finally {
+      setAskPending(false);
+    }
+  }, [askInput, askPending, conceptSlug]);
+
   // ── loading inițial ───────────────────────────────────────────────────────
   if (blocks.length === 0) {
     return (
@@ -295,7 +324,47 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
         </AnimatePresence>
       </div>
 
-      <div className="px-4 pb-5 max-w-lg mx-auto w-full shrink-0">
+      <div className="px-4 pb-5 max-w-lg mx-auto w-full shrink-0 space-y-3">
+        {/* ETAPA 70 E: răspunsul la întrebarea elevului — blocuri, nu zid de text */}
+        <AnimatePresence>
+          {askAnswer && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="rounded-2xl border border-primary/20 bg-card p-4 space-y-3 max-h-72 overflow-y-auto"
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold text-primary uppercase">Răspuns la întrebarea ta</p>
+                <button onClick={() => setAskAnswer(null)} className="text-xs text-muted-foreground underline underline-offset-2">
+                  închide
+                </button>
+              </div>
+              {askAnswer.map((b, i) => (
+                <AskAnswerBlock key={i} block={b} />
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+        {askError && <p className="text-xs text-destructive text-center">{askError}</p>}
+
+        <div className="flex gap-2">
+          <input
+            value={askInput}
+            onChange={(e) => setAskInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && submitAsk()}
+            placeholder="Întreabă ceva despre lecție…"
+            className="flex-1 rounded-xl border px-3 py-2 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary/40"
+          />
+          <button
+            onClick={submitAsk}
+            disabled={askPending || !askInput.trim()}
+            className="rounded-xl border border-primary/40 text-primary px-3.5 py-2 text-sm font-medium disabled:opacity-40"
+          >
+            {askPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Întreabă"}
+          </button>
+        </div>
+
         {current.tip !== "quiz" && (
           <button
             onClick={advance}
@@ -545,6 +614,55 @@ function BlockCard({
             ))}
           </ul>
         </div>
+      );
+    default:
+      return null;
+  }
+}
+
+/** ETAPA 70 E: un bloc din răspunsul îngrădit (doar step/formula/example/table/plot) */
+function AskAnswerBlock({ block }: { block: LessonBlockClient }) {
+  switch (block.tip) {
+    case "step":
+      return (
+        <div className="text-sm space-y-1">
+          <p className="font-semibold"><MathText text={block.titlu_scurt} /></p>
+          <p className="leading-relaxed"><MathText text={block.corp} /></p>
+          {block.formula && (
+            <div className="text-center overflow-x-auto"><MathText text={`$$${block.formula}$$`} /></div>
+          )}
+        </div>
+      );
+    case "formula":
+      return (
+        <div className="text-sm space-y-1 text-center">
+          <div className="overflow-x-auto"><MathText text={`$$${block.latex}$$`} /></div>
+          <p className="text-muted-foreground"><MathText text={block.explicatie} /></p>
+        </div>
+      );
+    case "example":
+      return (
+        <div className="text-sm space-y-1.5">
+          <p className="font-medium"><MathText text={block.enunt} /></p>
+          <ol className="list-decimal ml-5 space-y-1">
+            {block.pasi.map((p, i) => (
+              <li key={i}>
+                <MathText text={p.text} />
+                {p.formula && <div className="overflow-x-auto"><MathText text={`$$${p.formula}$$`} /></div>}
+              </li>
+            ))}
+          </ol>
+        </div>
+      );
+    case "table":
+      return <LessonTable titlu={block.titlu} coloane={block.coloane} randuri={block.randuri} />;
+    case "plot":
+      return (
+        <div
+          className="figura-bac mx-auto max-w-full [&_svg]:max-w-full [&_svg]:h-auto"
+          // SVG randat exclusiv pe server (renderPlotSVG, expr validat) — trusted
+          dangerouslySetInnerHTML={{ __html: (block as { svg?: string }).svg ?? "" }}
+        />
       );
     default:
       return null;
