@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { feedSse } from "@/lib/chat/sse";
 import type { ChatMessage, ChatMetadata } from "@/app/app/chat/_components/ChatMessages";
 
 interface UseChatOptions {
@@ -78,23 +79,19 @@ export function useChat({
 
         const decoder = new TextDecoder();
         let accumulated = "";
+        // ETAPA 72 P2: bufferul SSE se POARTĂ între read-uri — un eveniment
+        // tăiat la graniță de chunk nu se mai pierde (cauza mesajelor dispărute)
+        let sseBuffer = "";
+        let committed = false;
 
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
 
-          const raw = decoder.decode(value, { stream: true });
-          const lines = raw.split("\n");
+          const fed = feedSse(sseBuffer, decoder.decode(value, { stream: true }));
+          sseBuffer = fed.buffer;
 
-          for (const line of lines) {
-            if (!line.startsWith("data: ")) continue;
-            let json: Record<string, unknown>;
-            try {
-              json = JSON.parse(line.slice(6));
-            } catch {
-              // Chunk parțial sau linie goală — normal în SSE
-              continue;
-            }
+          for (const json of fed.events) {
             if (json.ping) continue; // heartbeat inițial
             if (json.error) {
               // Eroare explicită din server — surfacează în UI
@@ -113,6 +110,7 @@ export function useChat({
                 svgs: meta?.svgs ?? [],
                 metadata: meta,
               };
+              committed = true;
               setMessages((prev) => [...prev, assistantMsg]);
               setStreamingContent("");
               // Navigate only after streaming completes — server has saved messages by now
@@ -157,6 +155,17 @@ export function useChat({
               });
             }
           }
+        }
+
+        // ETAPA 72 P2: plasă de siguranță — dacă done nu a sosit (stream rupt),
+        // textul acumulat NU dispare: se comite ca mesaj (serverul l-a salvat)
+        if (!committed && accumulated) {
+          console.error("[useChat] stream încheiat fără done — comit textul acumulat");
+          setMessages((prev) => [
+            ...prev,
+            { id: crypto.randomUUID(), role: "assistant", content: accumulated },
+          ]);
+          if (newConvId) onConversationCreated?.(newConvId);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Eroare necunoscută");

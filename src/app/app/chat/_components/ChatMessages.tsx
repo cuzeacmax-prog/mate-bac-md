@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { MessageBubble } from "./MessageBubble";
+import { MessageErrorBoundary } from "@/components/chat/MessageErrorBoundary";
 
 export interface VerificationMeta {
   isCorrect: boolean;
@@ -67,14 +68,17 @@ export function ChatMessages({ messages, streamingContent, isStreaming }: Props)
   return (
     <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
       {messages.map((msg) => (
-        <MessageBubble
-          key={msg.id}
-          messageId={msg.id}
-          role={msg.role}
-          content={msg.content}
-          svgs={msg.svgs}
-          metadata={msg.metadata}
-        />
+        // ETAPA 72 P2: boundary PER MESAJ — un mesaj care crapă cade pe
+        // fallback (text brut), restul conversației rămâne intact
+        <MessageErrorBoundary key={msg.id} rawContent={msg.content}>
+          <MessageBubble
+            messageId={msg.id}
+            role={msg.role}
+            content={msg.content}
+            svgs={msg.svgs}
+            metadata={msg.metadata}
+          />
+        </MessageErrorBoundary>
       ))}
       {isStreaming && streamingContent !== undefined && (
         <MessageBubble
