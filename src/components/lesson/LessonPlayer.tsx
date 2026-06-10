@@ -18,6 +18,7 @@ import { LessonTable } from "@/components/lesson/LessonTable";
 import { LayeredFigure } from "@/components/lesson/LayeredFigure";
 import { AnimatedBackdrop } from "@/components/motion/AnimatedBackdrop";
 import { SPRING, buttonTap, progressFill, celebrate } from "@/lib/motion/motion";
+import { playSound, preloadSounds, soundsEnabled, setSoundsEnabled } from "@/lib/sound/sounds";
 import type { LessonBlockClient } from "@/lib/lesson/blocks";
 
 interface Props {
@@ -58,6 +59,14 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
   const [askPending, setAskPending] = useState(false);
   const [askAnswer, setAskAnswer] = useState<LessonBlockClient[] | null>(null);
   const [askError, setAskError] = useState<string | null>(null);
+  // ETAPA 70 F: toggle-ul de sunete (persistat în localStorage, default ON);
+  // inițializare lazy — pe server e true, clientul citește localStorage
+  const [soundOn, setSoundOn] = useState(() =>
+    typeof window === "undefined" ? true : soundsEnabled()
+  );
+  useEffect(() => {
+    preloadSounds();
+  }, []);
   const startedRef = useRef(false);
 
   // ── streamul lecției ──────────────────────────────────────────────────────
@@ -120,9 +129,14 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
 
   const advance = useCallback(() => {
     if (idx + 1 < blocks.length) setIdx(idx + 1);
-    else if (streamDone) setFinished(true);
+    else if (streamDone) {
+      setFinished(true);
+      // ETAPA 70 F: momentele 3+4 — lecția completă, apoi scânteia de streak
+      playSound("complete");
+      if (streak > 0) setTimeout(() => playSound("streak"), 800);
+    }
     // altfel: așteptăm următorul bloc din stream (butonul arată spinner)
-  }, [idx, blocks.length, streamDone]);
+  }, [idx, blocks.length, streamDone, streak]);
 
   const answerQuiz = useCallback(
     async (quizId: string, letter: string) => {
@@ -136,6 +150,7 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
         });
         const data = await resp.json();
         if (!resp.ok) throw new Error(data.error ?? `HTTP ${resp.status}`);
+        playSound(data.correct ? "correct" : "wrong");
         setQuizStates((prev) => {
           const old = prev[quizId];
           const wrongOptions = old?.wrongOptions ?? [];
@@ -191,6 +206,7 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
         });
         const data = await resp.json();
         if (!resp.ok) throw new Error(data.error ?? `HTTP ${resp.status}`);
+        if (data.correct !== null) playSound(data.correct ? "correct" : "wrong");
         setQuizStates((prev) => {
           const old = prev[quizId];
           if (!old) return prev;
@@ -290,9 +306,20 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
       <div className="px-4 pt-3 pb-2 shrink-0">
         <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
           <span>Lecție · pasul {idx + 1}{streamDone ? ` din ${total}` : ""}</span>
-          <button onClick={onExitToChat} className="underline underline-offset-2">
-            chat liber
-          </button>
+          <span className="flex items-center gap-3">
+            {/* ETAPA 70 F: toggle-ul de sunete, vizibil în player */}
+            <button
+              onClick={() => { const next = !soundOn; setSoundOn(next); setSoundsEnabled(next); }}
+              aria-label={soundOn ? "Oprește sunetele" : "Pornește sunetele"}
+              title={soundOn ? "Sunete: pornite" : "Sunete: oprite"}
+              suppressHydrationWarning
+            >
+              {soundOn ? "🔊" : "🔇"}
+            </button>
+            <button onClick={onExitToChat} className="underline underline-offset-2">
+              chat liber
+            </button>
+          </span>
         </div>
         <div className="h-2 bg-muted rounded-full overflow-hidden">
           <motion.div
