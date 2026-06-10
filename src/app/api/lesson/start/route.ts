@@ -27,6 +27,7 @@ import {
 import { LESSON_SYSTEM_PROMPT, buildLessonUserMessage, buildRetryMessage } from '@/lib/lesson/prompt';
 import { getTheoryFigure } from '@/lib/lesson/theory-figures/registry';
 import { renderPlotSVG } from '@/lib/lesson/plot';
+import { renderManipulative } from '@/lib/lesson/manipulatives';
 import type { SystemBlock } from '@/lib/ai/router.types';
 
 export const dynamic = 'force-dynamic';
@@ -140,6 +141,17 @@ export async function POST(req: NextRequest) {
           const rendered = renderPlotSVG(block.expr, block.domain, block.puncte_marcate);
           if (!rendered.ok) {
             console.error('[lesson] plot respins:', rendered.error, '| expr:', block.expr);
+            return;
+          }
+          serverBlocks.push(block);
+          send({ block: { ...block, svg: rendered.svg } });
+          return;
+        }
+        // ETAPA 71 C2: manipulativul se validează pe schema kind-ului
+        if (block.tip === 'manipulative') {
+          const rendered = renderManipulative(block.kind, block.params);
+          if (!rendered.ok) {
+            console.error('[lesson] manipulative respins:', rendered.error, '| kind:', block.kind);
             return;
           }
           serverBlocks.push(block);

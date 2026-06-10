@@ -116,6 +116,19 @@ export const PlotBlockSchema = z.object({
   legenda: z.string().trim().max(160).optional(),
 });
 
+/** ETAPA 71 C2: AI-ul INVOCĂ un manipulativ cu parametri; serverul validează
+ *  params pe schema kind-ului (lib/lesson/manipulatives) și randează SVG-ul.
+ *  De la model params vine ca STRING JSON (limita de grammar) — îl parsăm aici. */
+export const ManipulativeBlockSchema = z.object({
+  tip: z.literal('manipulative'),
+  kind: z.enum(['zaruri', 'monede', 'urna', 'persoane', 'carti', 'dreapta-numerica', 'bare-fractii', 'venn']),
+  params: z.preprocess((v) => {
+    if (typeof v !== 'string') return v;
+    try { return JSON.parse(v); } catch { return v; }
+  }, z.record(z.string(), z.unknown())),
+  legenda: z.string().trim().max(160).optional(),
+});
+
 export const RecapBlockSchema = z.object({
   tip: z.literal('recap'),
   puncte: z.array(propozitii(1).and(z.string().max(160))).min(1).max(3),
@@ -165,6 +178,15 @@ export const LessonBlockModelSchema = z.discriminatedUnion('tip', [
     puncte_marcate: z.array(z.number()).optional(),
     legenda: z.string().optional(),
   }),
+  z.object({
+    tip: z.literal('manipulative'),
+    kind: z.string(),
+    // STRING JSON, nu obiect: schema cu chei dinamice/multe opționale nu trece
+    // de grammar-ul structured output (limita Anthropic: 24 opționale).
+    // Serverul parsează stringul și validează pe schema kind-ului (R5 intact).
+    params: z.string(),
+    legenda: z.string().optional(),
+  }),
   z.object({ tip: z.literal('recap'), puncte: z.array(z.string()) }),
 ]);
 
@@ -178,18 +200,21 @@ const NON_FIGURE_SCHEMAS = z.discriminatedUnion('tip', [
   QuizBlockSchema,
   TableBlockSchema,
   PlotBlockSchema,
+  ManipulativeBlockSchema,
   RecapBlockSchema,
 ]);
 
 export type FigureBlock = z.infer<typeof FigureBlockSchema>;
 export type PlotBlock = z.infer<typeof PlotBlockSchema>;
+export type ManipulativeBlock = z.infer<typeof ManipulativeBlockSchema>;
 export type LessonBlock = z.infer<typeof NON_FIGURE_SCHEMAS> | FigureBlock;
 export type QuizBlock = z.infer<typeof QuizBlockSchema>;
 export type LessonBlockClient =
-  | Exclude<LessonBlock, QuizBlock | PlotBlock>
+  | Exclude<LessonBlock, QuizBlock | PlotBlock | ManipulativeBlock>
   | (Omit<QuizBlock, 'corecta'> & { quiz_id: string })
-  /** plotul ajunge la client CU svg-ul randat pe server */
-  | (PlotBlock & { svg: string });
+  /** plotul/manipulativul ajung la client CU svg-ul randat pe server */
+  | (PlotBlock & { svg: string })
+  | (ManipulativeBlock & { svg: string });
 
 /**
  * Validează un bloc brut de la model. Întoarce blocul tipizat sau eroarea

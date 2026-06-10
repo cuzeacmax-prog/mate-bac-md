@@ -711,6 +711,19 @@ function BlockCard({
           </p>
         </div>
       );
+    case "manipulative":
+      return (
+        <div className="rounded-2xl bg-card border p-5 space-y-3">
+          <div
+            className="figura-bac mx-auto max-w-full [&_svg]:max-w-full [&_svg]:h-auto"
+            // SVG randat EXCLUSIV pe server (renderManipulative, params validați) — trusted
+            dangerouslySetInnerHTML={{ __html: (block as { svg?: string }).svg ?? "" }}
+          />
+          {block.legenda && (
+            <p className="text-sm text-muted-foreground text-center"><MathText text={block.legenda} /></p>
+          )}
+        </div>
+      );
     case "recap":
       return (
         <div className="rounded-2xl bg-success-bg border border-success/30 p-6 space-y-3">

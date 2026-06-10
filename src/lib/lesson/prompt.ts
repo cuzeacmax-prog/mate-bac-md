@@ -31,6 +31,17 @@ TIPURILE DE BLOCURI (contractul):
   expresie de x (sin, cos, tan, sqrt, abs, exp, log, ln permise). Sistemul îl VALIDEAZĂ
   și îl desenează determinist — tu nu desenezi nimic. Folosește plot când graficul
   ajută înțelegerea (monotonie, semn, arii). Expresia invalidă pierde blocul.
+- manipulative: INVOCI o componentă vizuală deterministă — {kind, params, legenda?}.
+  Kinds și parametrii lor (sistemul validează; invalid = blocul se pierde):
+  · zaruri{n≤4, fete:[1..6] exact n} · monede{n≤8, rezultate?:['B'|'S'] exact n}
+  · urna{bile:[{culoare,n}] total≤20, extrase?:[culori]} · persoane{n≤10, evidentiati?:[poziții 1-based], ordonat?:bool}
+  · carti{n≤8, valori?:[text scurt] exact n} · dreapta-numerica{min, max, puncte?:[..], intervale?:[{de_la,pana_la}]}
+  · bare-fractii{numitor 2-12, evidentiate≤numitor} · venn{eticheta_a, eticheta_b, zone?:['A'|'B'|'AB']}
+  OBLIGATORIU la probabilitate/combinatorică/fracții/mulțimi: invocă manipulativul
+  potrivit cu numerele EXACTE din exercițiu (cei 4 copii din problemă = persoane{n:4},
+  nu o ilustrație generică). Tu invoci — sistemul desenează. Câmpul params e un
+  STRING JSON cu parametrii kind-ului, NICIODATĂ gol. Exemplu COMPLET de bloc valid:
+  {"tip":"manipulative","kind":"urna","params":"{\\"bile\\":[{\\"culoare\\":\\"rosii\\",\\"n\\":3},{\\"culoare\\":\\"albe\\",\\"n\\":2}],\\"extrase\\":[\\"rosii\\"]}","legenda":"3 bile roșii și 2 albe; extragem una."}
 - recap: MAXIM 3 puncte, câte 1 propoziție.
 
 REGULI DE LIMBAJ (încălcarea = blocul e respins de validator și recerut):
@@ -47,7 +58,8 @@ REGULI DE LIMBAJ (încălcarea = blocul e respins de validator și recerut):
 
 STRUCTURA RECOMANDATĂ a lecției (8-14 blocuri):
 intro → step-uri cu example intercalate → quiz după fiecare idee majoră (minim 2 quiz-uri)
-→ figure unde există → recap. Quiz-urile testează FIX ce s-a predat în blocurile anterioare.`;
+→ figure unde există → manipulative la conceptele vizuale → recap.
+Quiz-urile testează FIX ce s-a predat în blocurile anterioare.`;
 
 export interface LessonRequestContext {
   conceptName: string;
@@ -73,9 +85,13 @@ export function buildLessonUserMessage(ctx: LessonRequestContext): string {
   const theoryFigureLine = ctx.theoryFigure
     ? `\nFIGURA CANONICĂ disponibilă pentru acest concept: emite blocul {tip:'figure', kind:'theory', theory_slug:'${ctx.theoryFigure.slug}'} imediat după intro. Figura arată: ${ctx.theoryFigure.descriere}.`
     : '';
+  // ETAPA 71 C3: conceptele vizuale primesc instrucțiunea fermă de manipulativ
+  const visualHint = /probabilitat|eveniment|combinat|permut|aranjament|fract|multim|statistic/i.test(ctx.conceptName)
+    ? `\nCONCEPT VIZUAL: emite OBLIGATORIU cel puțin un bloc manipulative (urna/zaruri/monede/persoane/carti/venn/bare-fractii/dreapta-numerica) cu numerele EXACTE din exemplul folosit — imediat după exemplul pe care îl ilustrează.`
+    : '';
   return `Generează lecția structurată pentru conceptul: ${ctx.conceptName}
 Clasa elevului: ${ctx.gradeLevel ?? 12}
-${theoryFigureLine}
+${theoryFigureLine}${visualHint}
 TEORIA DE REFERINȚĂ (sursa de adevăr — extrage, nu contrazice):
 ${ctx.theory || '(fără teorie în graf — folosește doar exercițiile)'}
 
