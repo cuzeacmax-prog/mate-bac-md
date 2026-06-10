@@ -1,11 +1,13 @@
 import { createClient } from '@/lib/supabase/server';
+import { createServiceClient } from '@/lib/supabase/service';
+import { startTrial } from '@/lib/payments/state';
 
 export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { gradeLevel, targetBacScore } = await req.json();
+  const { gradeLevel, targetBacScore, activatedTrial } = await req.json();
 
   // ETAPA 59: predicția și slăbiciunile vin din diagnostic_sessions (calculate
   // pe server la submit), NU din body-ul clientului.
@@ -44,6 +46,16 @@ export async function POST(req: Request) {
   // Starea elevului trăiește în concept_mastery, scrisă per-evidență de
   // /api/diagnostic/submit (și chat) pe conceptele din graf, nu pe topice plate.
   void weaknesses; // păstrat doar pentru telemetrie viitoare; nu se persistă aici
+
+  // ETAPA 71 E2: trialul de 7 zile se LEAGĂ de subscriptions (status trialing
+  // cu expirare) — nu mai rămâne un flag paralel ignorat.
+  if (activatedTrial === true) {
+    try {
+      await startTrial(createServiceClient(), user.id);
+    } catch (err) {
+      console.error('[onboarding/complete] startTrial failed:', err instanceof Error ? err.message : err);
+    }
+  }
 
   return Response.json({ success: true });
 }

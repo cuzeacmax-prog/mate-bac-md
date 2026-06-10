@@ -141,10 +141,10 @@ function RateLimitModal({ onClose }: { onClose: () => void }) {
             Mai târziu
           </button>
           <a
-            href="/app/upgrade"
+            href="/app/abonament"
             className="flex-1 bg-primary text-primary-foreground rounded-lg px-4 py-2 text-sm text-center font-medium hover:bg-primary/90"
           >
-            Upgrade — 149 lei/lună
+            Vezi abonamentul →
           </a>
         </div>
       </div>
