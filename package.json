@@ -57,7 +57,8 @@
     "verify:construction": "tsx scripts/verify/construction-patterns.ts",
     "verify:construction-relations": "tsx scripts/verify/construction-relations.ts",
     "verify:topic-map": "tsx --env-file=.env.local scripts/verify/topic-concept-map.ts",
-    "verify:module-map": "tsx --env-file=.env.local scripts/verify/module-concept-map.ts"
+    "verify:module-map": "tsx --env-file=.env.local scripts/verify/module-concept-map.ts",
+    "verify:milestones": "tsx --env-file=.env.local scripts/verify/milestones.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.78",

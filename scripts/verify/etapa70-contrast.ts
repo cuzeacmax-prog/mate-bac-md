@@ -50,7 +50,15 @@ function token(name: string): [number, number, number] {
   return oklchToSrgb(Number(m[1]), Number(m[2]), Number(m[3]));
 }
 
+/** ETAPA 71 A2: cele 7 domenii — text pe fundalul de domeniu (AA) + nuanța ca UI */
+const DOMAIN_KEYS = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'viii'] as const;
+const DOMAIN_PAIRS = DOMAIN_KEYS.flatMap((k) => [
+  { fg: `domain-${k}-fg`, bg: `domain-${k}-bg`, min: 4.5, rol: `text pe fundal domeniul ${k.toUpperCase()} (AA)` },
+  { fg: `domain-${k}`, bg: 'background', min: 3, rol: `nuanța domeniului ${k.toUpperCase()} ca UI (AA non-text)` },
+]);
+
 const PAIRS: Array<{ fg: string; bg: string; min: number; rol: string }> = [
+  ...DOMAIN_PAIRS,
   { fg: 'foreground', bg: 'background', min: 7, rol: 'text principal (AAA)' },
   { fg: 'primary-foreground', bg: 'primary', min: 4.5, rol: 'text pe butonul primar (AA)' },
   { fg: 'accent-foreground', bg: 'accent', min: 4.5, rol: 'text pe accent energic (AA)' },
