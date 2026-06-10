@@ -8,6 +8,7 @@
  * Tot extragere — nimic generat.
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { truncateOutsideMath } from '@/lib/content-math';
 
 export type ExerciseTier = 'verificat' | 'sursa-oficiala';
 
@@ -130,7 +131,8 @@ export async function getConceptAnchor(
     slug: concept.slug as string,
     name: concept.name as string,
     grade_level: (concept.grade_level as number | null) ?? null,
-    theory: ((concept.body as string | null) ?? '').slice(0, MAX_THEORY_CHARS),
+    // ETAPA 72 P3: tăiere în afara matematicii (slice rupea formule $$ deschise)
+    theory: truncateOutsideMath((concept.body as string | null) ?? '', MAX_THEORY_CHARS),
     exercises,
   };
 }
@@ -166,15 +168,21 @@ Reguli pentru această sesiune: rămâi pe acest concept; dacă elevul deviază,
 
 /** Primul mesaj al asistentului (template determinist, ZERO LLM). */
 export function buildIntroMessage(anchor: ConceptAnchor): string {
-  const theoryExcerpt = anchor.theory.slice(0, 600);
+  // ETAPA 72 P3: tăierea NU rupe formule ($$ rămas deschis înghițea textul de
+  // după — bug-ul raportat pe „centrul de greutate al plăcii omogene")
+  const theoryExcerpt = truncateOutsideMath(anchor.theory, 600);
   const first = anchor.exercises[0];
   const intro = `**${anchor.name}** (clasa ${anchor.grade_level ?? '?'})
 
-${theoryExcerpt}${anchor.theory.length > 600 ? '…' : ''}`;
+${theoryExcerpt}${anchor.theory.length > theoryExcerpt.length ? '…' : ''}`;
   if (!first) {
+    // bloc INFO separat prin linie orizontală — niciodată concatenat în
+    // blocul de teorie/formulă (P3c)
     return `${intro}
 
-Pentru acest concept nu am încă exerciții servibile în bibliotecă — putem lucra pe teorie: pune-mi orice întrebare despre el.`;
+---
+
+ℹ️ Pentru acest concept nu am încă exerciții servibile în bibliotecă — putem lucra pe teorie: pune-mi orice întrebare despre el.`;
   }
   const figura = first.has_figure ? `\n\n![Figura exercițiului](/api/figura/${first.id})` : '';
   const sursa = first.tier === 'verificat' ? 'verificat din culegere' : 'din culegerea oficială BAC';

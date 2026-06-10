@@ -113,9 +113,21 @@ function segmentPlain(text: string): MathSegment[] {
 }
 
 /**
+ * ETAPA 72 P3a: o „formulă" suspectă e aproape sigur TEXT ÎNGHIȚIT de
+ * delimitatori nebalansați: peste 200 de caractere sau cu diacritice românești
+ * înăuntru. Se randează ca text brut, nu se extinde formula.
+ */
+const SUSPECT_MATH_LEN = 200;
+const RO_DIACRITICS = /[ăâîșțĂÂÎȘȚ]/;
+export function isSuspectMath(value: string): boolean {
+  return value.length > SUSPECT_MATH_LEN || RO_DIACRITICS.test(value);
+}
+
+/**
  * Segmentează STRICT pe delimitatori expliciți ($$...$$, \[...\], $...$, \(...\)).
  * Pentru afișările către elev (ETAPA 62): doar matematica delimitată se randează,
  * textul românesc (și orice LaTeX nedelimitat) rămâne text brut.
+ * ETAPA 72 P3a (defensiv): match-ul suspect (text înghițit) → TEXT BRUT.
  */
 export function segmentDelimitedMath(text: string): MathSegment[] {
   if (!text) return [];
@@ -126,10 +138,45 @@ export function segmentDelimitedMath(text: string): MathSegment[] {
     if (m.index > last) out.push({ type: "text", value: text.slice(last, m.index), display: false });
     const display = m[1] != null || m[2] != null;
     const val = (m[1] ?? m[2] ?? m[3] ?? m[4] ?? "").trim();
-    out.push({ type: "math", value: val, display, raw: m[0] });
+    if (isSuspectMath(val)) {
+      // delimitatori nebalansați au înghițit proză — nu extindem formula
+      out.push({ type: "text", value: m[0], display: false });
+    } else {
+      out.push({ type: "math", value: val, display, raw: m[0] });
+    }
     last = m.index + m[0].length;
   }
   if (last < text.length) out.push({ type: "text", value: text.slice(last), display: false });
+  return out;
+}
+
+/**
+ * ETAPA 72 P3c: taie un text la ~max caractere FĂRĂ să rupă o formulă —
+ * tăietura cade întotdeauna pe o graniță de segment text (în afara
+ * delimitatorilor). Sursa bug-ului „formula înghite textul": slice(0, 600)
+ * reteza teoria în mijlocul unui $$...$$.
+ */
+export function truncateOutsideMath(text: string, max: number): string {
+  if (text.length <= max) return text;
+  const segments = segmentDelimitedMath(text);
+  // formula care încalecă limita se include ÎNTREAGĂ (cu toleranță),
+  // nu se taie pe jumătate și nici nu se pierde
+  const MATH_OVERFLOW = 400;
+  let out = '';
+  for (const seg of segments) {
+    const piece = seg.type === 'math' ? (seg.raw ?? `$${seg.value}$`) : seg.value;
+    if (out.length + piece.length > max) {
+      if (seg.type === 'text') {
+        // putem tăia ÎN INTERIORUL textului, niciodată în math
+        const room = max - out.length;
+        if (room > 0) out += piece.slice(0, room);
+      } else if (out.length + piece.length <= max + MATH_OVERFLOW) {
+        out += piece; // formula întreagă, cu toleranță
+      }
+      break;
+    }
+    out += piece;
+  }
   return out;
 }
 
