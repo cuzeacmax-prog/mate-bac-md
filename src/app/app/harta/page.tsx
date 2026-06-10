@@ -6,7 +6,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { getKnowledgeMap } from "@/lib/map/state";
-import { MapView } from "./MapView";
+import { MapView, MapErrorBoundary } from "./MapView";
 
 export const dynamic = "force-dynamic";
 
@@ -23,5 +23,9 @@ export default async function HartaPage() {
   const grade = (profileRow?.grade_level as number | null) ?? 12;
 
   const map = await getKnowledgeMap(createServiceClient(), user.id, grade);
-  return <MapView map={map} />;
+  return (
+    <MapErrorBoundary>
+      <MapView map={map} />
+    </MapErrorBoundary>
+  );
 }

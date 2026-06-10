@@ -1,13 +1,18 @@
 "use client";
 
 /**
- * MapView — ETAPA 71 FAZA B: randarea hărții cunoașterii.
- * SVG propriu (layout PRECOMPUTAT cu dagre — nimic calculat aici), pan/zoom
- * prin pointer events, noduri-cerc cu 4 stări, lentile (BAC / Nota-țintă /
- * Test mâine), sheet jos la tap pe nod. Zero LLM, zero fetch suplimentar
- * (focusul se scrie prin /api/focus).
+ * MapView — ETAPA 71 FAZA B + ETAPA 72 P1: randarea hărții cunoașterii.
+ *
+ * ETAPA 72 (cauza crash-ului de tab, dovedită): versiunea inițială făcea
+ * setState per pointermove/wheel → re-render COMPLET al SVG-ului (139 noduri,
+ * ~700 elemente) la fiecare pixel de pan. Acum:
+ *  a) pan/zoom = transform pe UN <g> rădăcină, scris prin requestAnimationFrame
+ *     direct pe atribut (ref) — ZERO setState la mișcare;
+ *  b) pulsul: CSS pur, DOAR pe primele 15 noduri disponibile;
+ *  c) graful e memoizat (React.memo) — nodurile nu se re-randează la pan;
+ *  d) error boundary pe pagină — orice eroare → mesaj prietenos, nu ecran negru.
  */
-import { useCallback, useMemo, useRef, useState } from "react";
+import { Component, memo, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,6 +23,7 @@ import type { KnowledgeMap, MapDomain, MapNode } from "@/lib/map/state";
 type Lens = "bac" | "tinta" | "test";
 
 const NODE_R = 26;
+const MAX_PULSE = 15;
 
 export function MapView({ map }: { map: KnowledgeMap }) {
   const router = useRouter();
@@ -48,19 +54,39 @@ export function MapView({ map }: { map: KnowledgeMap }) {
     [lens, map.targetGrade, map.focus]
   );
 
-  // ── pan/zoom (pointer events; layoutul e static) ──────────────────────────
-  const [view, setView] = useState({ tx: 20, ty: 20, scale: 0.8 });
+  // ── pan/zoom — ETAPA 72 P1a: transform pe <g> prin rAF, FĂRĂ setState ─────
+  const viewRef = useRef({ tx: 20, ty: 20, scale: 0.8 });
+  const gRef = useRef<SVGGElement>(null);
+  const rafRef = useRef(0);
+  const applyTransform = useCallback(() => {
+    rafRef.current = 0;
+    const v = viewRef.current;
+    gRef.current?.setAttribute("transform", `translate(${v.tx},${v.ty}) scale(${v.scale})`);
+  }, []);
+  const scheduleTransform = useCallback(() => {
+    if (rafRef.current === 0) rafRef.current = requestAnimationFrame(applyTransform);
+  }, [applyTransform]);
+  useEffect(() => {
+    applyTransform(); // poziția inițială + la schimbarea domeniului
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, [applyTransform, domainKey]);
+
   const dragRef = useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
   const onPointerDown = (e: React.PointerEvent) => {
     (e.target as Element).setPointerCapture?.(e.pointerId);
-    dragRef.current = { x: e.clientX, y: e.clientY, tx: view.tx, ty: view.ty };
+    dragRef.current = { x: e.clientX, y: e.clientY, tx: viewRef.current.tx, ty: viewRef.current.ty };
   };
   const onPointerMove = (e: React.PointerEvent) => {
     if (!dragRef.current) return;
-    setView((v) => ({ ...v, tx: dragRef.current!.tx + e.clientX - dragRef.current!.x, ty: dragRef.current!.ty + e.clientY - dragRef.current!.y }));
+    viewRef.current.tx = dragRef.current.tx + e.clientX - dragRef.current.x;
+    viewRef.current.ty = dragRef.current.ty + e.clientY - dragRef.current.y;
+    scheduleTransform();
   };
   const onPointerUp = () => { dragRef.current = null; };
-  const zoom = (f: number) => setView((v) => ({ ...v, scale: Math.min(2.5, Math.max(0.25, v.scale * f)) }));
+  const zoom = (f: number) => {
+    viewRef.current.scale = Math.min(2.5, Math.max(0.25, viewRef.current.scale * f));
+    scheduleTransform();
+  };
   const onWheel = (e: React.WheelEvent) => zoom(e.deltaY < 0 ? 1.12 : 0.89);
 
   // ── focus „test mâine" ────────────────────────────────────────────────────
@@ -161,30 +187,14 @@ export function MapView({ map }: { map: KnowledgeMap }) {
         onWheel={onWheel}
       >
         <svg className="w-full h-full" role="img" aria-label={`Harta conceptelor: ${domain.label}`}>
-          <g transform={`translate(${view.tx},${view.ty}) scale(${view.scale})`}>
-            {/* muchiile (prerechizit → dependent) */}
-            {domain.edges.map((e, i) => {
-              const a = domain.nodes.find((n) => n.id === e.to);
-              const b = domain.nodes.find((n) => n.id === e.from);
-              if (!a || !b) return null;
-              return (
-                <line
-                  key={i}
-                  x1={a.x} y1={a.y} x2={b.x} y2={b.y}
-                  stroke="currentColor" strokeWidth={1.2} opacity={0.16}
-                />
-              );
-            })}
-            {domain.nodes.map((n) => (
-              <MapNodeCircle
-                key={n.id}
-                node={n}
-                domainKey={domain.key}
-                opacity={nodeOpacity(n)}
-                selected={selected?.id === n.id}
-                onSelect={() => setSelected(n)}
-              />
-            ))}
+          {/* ETAPA 72 P1c: graful e memoizat — pan-ul nu îl re-randează */}
+          <g ref={gRef}>
+            <DomainGraph
+              domain={domain}
+              nodeOpacity={nodeOpacity}
+              selectedId={selected?.id ?? null}
+              onSelect={setSelected}
+            />
           </g>
         </svg>
         {/* zoom */}
@@ -229,9 +239,52 @@ function LensChip({ children, active, onClick, disabled }: {
   );
 }
 
-/** nodul-cerc cu cele 4 stări (B2) */
-function MapNodeCircle({ node, domainKey, opacity, selected, onSelect }: {
-  node: MapNode; domainKey: string; opacity: number; selected: boolean; onSelect: () => void;
+/** ETAPA 72 P1c: graful unui domeniu, memoizat — se re-randează DOAR la
+ *  schimbarea domeniului/lentilei/selecției, niciodată la pan/zoom. */
+const DomainGraph = memo(function DomainGraph({ domain, nodeOpacity, selectedId, onSelect }: {
+  domain: MapDomain;
+  nodeOpacity: (n: MapNode) => number;
+  selectedId: string | null;
+  onSelect: (n: MapNode) => void;
+}) {
+  const byId = new Map(domain.nodes.map((n) => [n.id, n]));
+  // P1b: pulsul DOAR pe primele MAX_PULSE noduri disponibile
+  const pulseIds = new Set(
+    domain.nodes.filter((n) => n.status === "disponibil").slice(0, MAX_PULSE).map((n) => n.id)
+  );
+  return (
+    <>
+      {/* muchiile (prerechizit → dependent) */}
+      {domain.edges.map((e, i) => {
+        const a = byId.get(e.to);
+        const b = byId.get(e.from);
+        if (!a || !b) return null;
+        return (
+          <line
+            key={i}
+            x1={a.x} y1={a.y} x2={b.x} y2={b.y}
+            stroke="currentColor" strokeWidth={1.2} opacity={0.16}
+          />
+        );
+      })}
+      {domain.nodes.map((n) => (
+        <MapNodeCircle
+          key={n.id}
+          node={n}
+          domainKey={domain.key}
+          opacity={nodeOpacity(n)}
+          selected={selectedId === n.id}
+          pulse={pulseIds.has(n.id)}
+          onSelect={onSelect}
+        />
+      ))}
+    </>
+  );
+});
+
+/** nodul-cerc cu cele 4 stări (B2), memoizat per nod (P1c) */
+const MapNodeCircle = memo(function MapNodeCircle({ node, domainKey, opacity, selected, pulse, onSelect }: {
+  node: MapNode; domainKey: string; opacity: number; selected: boolean; pulse: boolean; onSelect: (n: MapNode) => void;
 }) {
   const color = `var(--domain-${domainKey})`;
   const bg = `var(--domain-${domainKey}-bg)`;
@@ -239,12 +292,19 @@ function MapNodeCircle({ node, domainKey, opacity, selected, onSelect }: {
     <g
       transform={`translate(${node.x},${node.y})`}
       opacity={node.status === "blocat" ? Math.min(opacity, 0.45) : opacity}
-      onClick={onSelect}
+      onClick={() => onSelect(node)}
       onPointerDown={(e) => e.stopPropagation()}
       className="cursor-pointer"
     >
       {node.status === "disponibil" && (
-        <circle r={NODE_R + 6} fill="none" stroke={color} strokeWidth={2} className="map-pulse" />
+        <circle
+          r={NODE_R + 6}
+          fill="none"
+          stroke={color}
+          strokeWidth={2}
+          className={pulse ? "map-pulse" : undefined}
+          opacity={pulse ? undefined : 0.7}
+        />
       )}
       <circle
         r={NODE_R}
@@ -275,6 +335,38 @@ function MapNodeCircle({ node, domainKey, opacity, selected, onSelect }: {
       </text>
     </g>
   );
+});
+
+/** ETAPA 72 P1d: orice eroare pe hartă → mesaj prietenos + reload,
+ *  NICIODATĂ ecran negru. */
+export class MapErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
+  state = { error: null as Error | null };
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+  componentDidCatch(error: Error) {
+    console.error("[harta] eroare prinsă de boundary:", error.message);
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="flex-1 flex flex-col items-center justify-center gap-3 px-6 py-16 text-center">
+          <p className="text-3xl">🗺️</p>
+          <p className="font-semibold">Harta a întâmpinat o problemă.</p>
+          <p className="text-sm text-muted-foreground max-w-sm">
+            Nimic din progresul tău nu s-a pierdut — reîncarcă pagina și mergem mai departe.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="rounded-xl bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium"
+          >
+            Reîncarcă harta
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
 }
 
 /** sheet-ul de jos (B3) */
