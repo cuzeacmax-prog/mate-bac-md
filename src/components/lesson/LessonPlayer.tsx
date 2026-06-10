@@ -67,6 +67,35 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
   useEffect(() => {
     preloadSounds();
   }, []);
+  // ETAPA 70 G3: ritualul de final — mastery la început vs la final (delta reală)
+  const initialMasteryRef = useRef<number | null>(null);
+  const [ritual, setRitual] = useState<{
+    masteryBefore: number;
+    masteryAfter: number;
+    streak: number;
+    next: { slug: string; name: string } | null;
+  } | null>(null);
+  useEffect(() => {
+    fetch(`/api/lesson/ritual?concept=${encodeURIComponent(conceptSlug)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d) initialMasteryRef.current = d.mastery; })
+      .catch(() => { /* delta devine necunoscută, nu blocăm lecția */ });
+  }, [conceptSlug]);
+  useEffect(() => {
+    if (!finished) return;
+    fetch(`/api/lesson/ritual?concept=${encodeURIComponent(conceptSlug)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (!d) return;
+        setRitual({
+          masteryBefore: initialMasteryRef.current ?? d.mastery,
+          masteryAfter: d.mastery,
+          streak: d.streak,
+          next: d.next,
+        });
+      })
+      .catch(() => { /* ecranul rămâne fără cifre, nu gol */ });
+  }, [finished, conceptSlug]);
   const startedRef = useRef(false);
 
   // ── streamul lecției ──────────────────────────────────────────────────────
@@ -255,15 +284,18 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
     );
   }
 
-  // ── celebrarea finală ─────────────────────────────────────────────────────
+  // ── ETAPA 70 G3: ritualul de final — ecran dedicat ────────────────────────
   if (finished) {
     const quizResults = Object.values(quizStates).filter(Boolean) as NonNullable<QuizState>[];
     const correctCount = quizResults.filter((q) => q.correct).length;
+    const recapBlock = [...blocks].reverse().find((b) => b.tip === "recap");
+    const delta = ritual ? ritual.masteryAfter - ritual.masteryBefore : null;
+    const shownStreak = ritual?.streak ?? streak;
     return (
-      <div className="relative flex-1 flex items-center justify-center px-6">
+      <div className="relative flex-1 overflow-y-auto px-6 py-8">
         <AnimatedBackdrop intensity="bold" />
         <motion.div
-          className="text-center space-y-5 max-w-sm"
+          className="text-center space-y-4 max-w-sm mx-auto"
           variants={celebrate}
           initial="hidden"
           animate="visible"
@@ -278,14 +310,65 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
           </motion.div>
           <h2 className="text-xl font-bold">Lecție terminată!</h2>
           {quizResults.length > 0 && (
-            <p className="text-muted-foreground">
-              {correctCount} din {quizResults.length} întrebări corecte — progresul tău s-a actualizat.
+            <p className="text-sm text-muted-foreground">
+              {correctCount} din {quizResults.length} întrebări corecte.
             </p>
           )}
+
+          {/* recap — ce ai învățat */}
+          {recapBlock && recapBlock.tip === "recap" && (
+            <div className="rounded-2xl bg-success-bg border border-success/30 p-4 text-left space-y-1.5">
+              <p className="text-xs font-semibold text-success-foreground uppercase">Ce ai învățat</p>
+              {recapBlock.puncte.map((p, i) => (
+                <p key={i} className="text-sm flex gap-2">
+                  <span className="text-success shrink-0">✓</span>
+                  <MathText text={p} />
+                </p>
+              ))}
+            </div>
+          )}
+
+          {/* delta mastery — animată, doar cifre reale */}
+          {ritual && (
+            <div className="rounded-2xl border bg-card p-4 space-y-2">
+              <p className="text-xs font-semibold text-primary uppercase">Progresul pe concept</p>
+              <div className="h-2.5 bg-muted rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-primary rounded-full"
+                  initial={{ width: `${ritual.masteryBefore * 100}%` }}
+                  animate={{ width: `${ritual.masteryAfter * 100}%` }}
+                  transition={{ duration: 0.9, ease: "easeOut", delay: 0.3 }}
+                />
+              </div>
+              <p className="text-sm font-medium">
+                {Math.round(ritual.masteryAfter * 100)}%
+                {delta !== null && delta > 0.0005 && (
+                  <motion.span
+                    className="text-success ml-2"
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.1 }}
+                  >
+                    +{Math.round(delta * 100)}%
+                  </motion.span>
+                )}
+              </p>
+            </div>
+          )}
+
           <div className="rounded-2xl bg-primary/5 border border-primary/20 p-4 flex items-center justify-center gap-3">
             <span className="text-3xl">🔥</span>
-            <p className="font-bold">Streak: {streak} {streak === 1 ? "zi" : "zile"}</p>
+            <p className="font-bold">Streak: {shownStreak} {shownStreak === 1 ? "zi" : "zile"}</p>
           </div>
+
+          {/* mâine te așteaptă: următorul concept de pe frontieră */}
+          {ritual?.next && (
+            <div className="rounded-2xl border bg-card p-4 text-left">
+              <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Mâine te așteaptă</p>
+              <p className="font-medium text-sm"><MathText text={ritual.next.name} /></p>
+            </div>
+          )}
+
           <motion.button
             whileTap={buttonTap}
             onClick={onExitToChat}

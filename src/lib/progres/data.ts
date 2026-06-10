@@ -40,6 +40,8 @@ export interface ProgressData {
   recent: Array<{ at: string; label: string; correct: boolean | null }>;
   /** DOAR dacă există diagnostic terminat — interval, nu cifră falsă */
   prediction: { value: number; low: number; high: number } | null;
+  /** ETAPA 70 G2: „Unde greșești des" — top 3 concepte după greșeli, cu link spre lecție */
+  frequentMistakes: Array<{ slug: string; name: string; module: string | null; wrongCount: number }>;
 }
 
 const MODULE_ORDER = [
@@ -65,7 +67,7 @@ export async function getProgressData(
       .select('exercise_id, exercise_raw(module)'),
     service
       .from('exercise_attempts')
-      .select('exercise_id, is_correct, session_type, attempted_at')
+      .select('exercise_id, is_correct, session_type, attempted_at, metadata')
       .eq('user_id', userId)
       .order('attempted_at', { ascending: false })
       .limit(500),
@@ -131,6 +133,56 @@ export async function getProgressData(
     correct: a.is_correct as boolean | null,
   }));
 
+  // ── ETAPA 70 G2: „Unde greșești des" — top 3 concepte după greșeli ────────
+  // Conceptul vine din taxonomia persistată la evaluare (metadata.concept_slug);
+  // rândurile vechi fără taxonomie se rezolvă prin linkurile exercițiului.
+  const wrongByConcept = new Map<string, number>();
+  const unresolvedWrongIds: string[] = [];
+  for (const a of allAttempts) {
+    if (a.is_correct !== false) continue;
+    const slug = (a.metadata as { concept_slug?: string } | null)?.concept_slug;
+    if (slug) wrongByConcept.set(slug, (wrongByConcept.get(slug) ?? 0) + 1);
+    else if (!String(a.exercise_id).startsWith('quiz:')) unresolvedWrongIds.push(a.exercise_id as string);
+  }
+  if (unresolvedWrongIds.length > 0) {
+    const { data: links } = await service
+      .from('exercise_concept_link')
+      .select('exercise_id, rank, concepts(slug)')
+      .in('exercise_id', [...new Set(unresolvedWrongIds)])
+      .eq('rank', 1);
+    const slugByEx = new Map(
+      (links ?? []).map((l) => [l.exercise_id as string, (l.concepts as unknown as { slug: string } | null)?.slug])
+    );
+    for (const exId of unresolvedWrongIds) {
+      const slug = slugByEx.get(exId);
+      if (slug) wrongByConcept.set(slug, (wrongByConcept.get(slug) ?? 0) + 1);
+    }
+  }
+  const topWrongSlugs = [...wrongByConcept.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3);
+  let frequentMistakes: ProgressData['frequentMistakes'] = [];
+  if (topWrongSlugs.length > 0) {
+    const { data: conceptRows } = await service
+      .from('concepts')
+      .select('slug, name')
+      .in('slug', topWrongSlugs.map(([s]) => s));
+    const { data: memRows } = await service
+      .from('concept_family_membership')
+      .select('module, concepts(slug)')
+      .limit(2000);
+    const moduleBySlug = new Map(
+      (memRows ?? []).map((m) => [(m.concepts as unknown as { slug: string } | null)?.slug, m.module as string])
+    );
+    const nameBySlug = new Map((conceptRows ?? []).map((c) => [c.slug as string, c.name as string]));
+    frequentMistakes = topWrongSlugs
+      .filter(([slug]) => nameBySlug.has(slug))
+      .map(([slug, wrongCount]) => ({
+        slug,
+        name: nameBySlug.get(slug)!,
+        module: moduleBySlug.get(slug) ?? null,
+        wrongCount,
+      }));
+  }
+
   const streak = await computeStreak(service, userId, chisinauToday());
 
   const predictionValue = diag.data?.initial_bac_prediction as number | null | undefined;
@@ -156,5 +208,6 @@ export async function getProgressData(
     exercisesCorrect: allAttempts.filter((a) => a.is_correct === true).length,
     recent,
     prediction,
+    frequentMistakes,
   };
 }

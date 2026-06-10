@@ -78,6 +78,32 @@ export default async function ProgresPage() {
       {/* harta */}
       <ProgressMap domains={data.domains} />
 
+      {/* ETAPA 70 G2: unde greșești des — top 3, cu link spre lecție */}
+      {data.frequentMistakes.length > 0 && (
+        <div className="rounded-2xl border bg-card p-5">
+          <h2 className="font-semibold mb-3">Unde greșești des</h2>
+          <ul className="space-y-2.5">
+            {data.frequentMistakes.map((m) => (
+              <li key={m.slug} className="flex items-center justify-between gap-3 text-sm">
+                <span className="min-w-0">
+                  <span className="font-medium">{m.name}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {" "}· {m.wrongCount} {m.wrongCount === 1 ? "greșeală" : "greșeli"}
+                    {m.module ? ` · ${m.module}` : ""}
+                  </span>
+                </span>
+                <Link
+                  href={`/app/chat?concept=${encodeURIComponent(m.slug)}`}
+                  className="shrink-0 rounded-lg bg-primary/10 text-primary px-3 py-1.5 text-xs font-medium"
+                >
+                  Reia lecția →
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* ultimele activități */}
       {data.recent.length > 0 && (
         <div className="rounded-2xl border bg-card p-5">

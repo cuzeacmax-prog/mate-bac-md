@@ -150,6 +150,8 @@ export async function processQuizAnswer(
       lesson_quiz: true,
       attempt,
       helped,
+      // ETAPA 70 G2: taxonomia greșelii — conceptul lecției
+      ...(correct === false && lesson.concept ? { concept_slug: lesson.concept } : {}),
     },
   });
   if (attErr) console.error('[lesson/mistake] attempt insert failed:', attErr.message);

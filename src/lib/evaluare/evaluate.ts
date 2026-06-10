@@ -145,6 +145,29 @@ export async function evaluateAttempt(
     };
   }
 
+  // ── ETAPA 70 G2: taxonomia greșelilor — greșeala persistă concept+modul ──
+  let mistakeTaxonomy: { concept_slug: string | null; module: string | null } | null = null;
+  if (evaluation.correct === false) {
+    try {
+      const [{ data: exRow }, { data: linkRow }] = await Promise.all([
+        service.from("exercise_raw").select("module").eq("id", exercise.id).maybeSingle(),
+        service
+          .from("exercise_concept_link")
+          .select("rank, concepts(slug)")
+          .eq("exercise_id", exercise.id)
+          .order("rank", { ascending: true })
+          .limit(1)
+          .maybeSingle(),
+      ]);
+      mistakeTaxonomy = {
+        concept_slug: (linkRow?.concepts as unknown as { slug: string } | null)?.slug ?? null,
+        module: (exRow?.module as string | null) ?? null,
+      };
+    } catch (taxErr) {
+      console.error("[evaluare] taxonomy lookup failed:", taxErr instanceof Error ? taxErr.message : taxErr);
+    }
+  }
+
   // ── Persistă încercarea (audit + selecția exercițiului următor) ───────────
   const { error: insErr } = await service.from("exercise_attempts").insert({
     user_id: userId,
@@ -160,6 +183,8 @@ export async function evaluateAttempt(
       motiv: evaluation.motiv,
       // ETAPA 70 D: câmpul helped în evidență — reușita cu ajutor e marcată
       helped: params.helped ?? false,
+      // ETAPA 70 G2: taxonomia greșelii (doar la is_correct=false)
+      ...(mistakeTaxonomy ? mistakeTaxonomy : {}),
     },
   });
   if (insErr) console.error("[evaluare] attempt insert failed:", insErr.message);
