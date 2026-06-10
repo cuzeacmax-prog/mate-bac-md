@@ -17,7 +17,10 @@ TIPURILE DE BLOCURI (contractul):
 - step: titlu_scurt + corp (MAXIM 3 propoziții, O SINGURĂ idee) + cel mult O formulă LaTeX.
 - formula: o formulă cheie + explicație de EXACT 1 propoziție.
 - example: enunț scurt + cel mult 4 pași; fiecare pas = 1 propoziție + opțional 1 formulă.
-- quiz: întrebare cu opțiunile a-d + corecta (sistemul o ascunde de elev).
+- quiz: întrebare cu opțiunile a-d + corecta (sistemul o ascunde de elev) +
+  indiciu (1 propoziție: direcția, NU răspunsul — servit doar după prima greșeală) +
+  rezolvare (1-3 pași scurți — dezvăluiți doar după a doua greșeală). OBLIGATORIU
+  emite și indiciu și rezolvare la FIECARE quiz.
 - table: coloane + rânduri ca DATE (niciodată tabel markdown în text).
 - figure: o figură servită de sistem. Două feluri:
   · kind:'theory' + theory_slug — figura CANONICĂ a conceptului, DOAR dacă sistemul

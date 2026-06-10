@@ -77,6 +77,10 @@ export const QuizBlockSchema = z.object({
   }),
   /** NU pleacă NICIODATĂ la client — stripat în server înainte de streaming */
   corecta: z.enum(['a', 'b', 'c', 'd']),
+  /** ETAPA 70 C: indiciu țintit la prima greșeală (servit DOAR atunci) */
+  indiciu: propozitii(1).and(z.string().max(160)).optional(),
+  /** ETAPA 70 C: rezolvarea pas-cu-pas, dezvăluită la a doua greșeală */
+  rezolvare: z.array(propozitii(1).and(z.string().max(200))).min(1).max(3).optional(),
 });
 
 export const TableBlockSchema = z.object({
@@ -137,6 +141,8 @@ export const LessonBlockModelSchema = z.discriminatedUnion('tip', [
     intrebare: z.string(),
     optiuni: z.object({ a: z.string(), b: z.string(), c: z.string(), d: z.string() }),
     corecta: z.enum(['a', 'b', 'c', 'd']),
+    indiciu: z.string().optional(),
+    rezolvare: z.array(z.string()).optional(),
   }),
   z.object({
     tip: z.literal('table'),
@@ -202,9 +208,12 @@ export function parseLessonBlock(raw: unknown):
   return { ok: false, error: issues };
 }
 
-/** quiz-ul către client: fără `corecta`, cu un id pentru verificarea pe server */
+/** quiz-ul către client: fără `corecta`/`indiciu`/`rezolvare` (se servesc DOAR
+ *  de mașina de stări la greșeală), cu un id pentru verificarea pe server */
 export function stripQuizAnswer(block: QuizBlock, quizId: string): LessonBlockClient {
-  const rest: Omit<QuizBlock, 'corecta'> & { corecta?: string } = { ...block };
+  const rest: Omit<QuizBlock, 'corecta'> & { corecta?: string; indiciu?: string; rezolvare?: string[] } = { ...block };
   delete rest.corecta;
+  delete rest.indiciu;
+  delete rest.rezolvare;
   return { ...rest, quiz_id: quizId } as LessonBlockClient;
 }

@@ -53,13 +53,15 @@ async function resolveSlugs(
 /**
  * Scrie evidență pentru o listă de concepte (prin slug).
  * @param correct true/false → EMA spre 1/0; null → doar urmă de expunere (mastery neschimbat).
+ * @param weight ETAPA 70 D: ponderea pasului EMA (1 = plin; 0.5 = reușită CU ajutor).
  */
 export async function recordConceptEvidence(
   service: SupabaseClient,
   userId: string,
   conceptSlugs: string[],
   correct: boolean | null,
-  source: EvidenceSource
+  source: EvidenceSource,
+  weight = 1
 ): Promise<{ written: number; skipped: string[] }> {
   const concepts = await resolveSlugs(service, conceptSlugs);
   const skipped = conceptSlugs.filter((s) => !concepts.some((c) => c.slug === s));
@@ -79,7 +81,7 @@ export async function recordConceptEvidence(
 
     const old = (existing?.mastery as number | undefined) ?? 0;
     const target = correct === null ? old : correct ? 1 : 0;
-    const next = correct === null ? old : old + MASTERY_ALPHA * (target - old);
+    const next = correct === null ? old : old + MASTERY_ALPHA * weight * (target - old);
     const sources = new Set<string>((existing?.source as string[] | undefined) ?? []);
     sources.add(source);
 

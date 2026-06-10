@@ -29,7 +29,19 @@ interface Props {
   onExitToChat: () => void;
 }
 
-type QuizState = { selected: string; correct: boolean; corecta: string } | null;
+/** ETAPA 70 FAZA C: starea mașinii de greșeli per quiz */
+type QuizState = {
+  status: "retry" | "solved" | "failed";
+  wrongOptions: string[];
+  selected?: string;
+  correct?: boolean;
+  corecta?: string;
+  indiciu?: string;
+  microRecap?: LessonBlockClient | null;
+  rezolvare?: string[] | null;
+  similar?: { exercise_id: string; statement: string; has_figure: boolean } | null;
+  redemption?: { correct: boolean | null; motiv?: string } | null;
+} | null;
 
 const LETTERS = ["a", "b", "c", "d"] as const;
 
@@ -92,9 +104,14 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
   const progress = total > 0 ? Math.min((idx + (finished ? 1 : 0)) / total, 1) : 0;
   const currentQuizState =
     current?.tip === "quiz" ? quizStates[(current as { quiz_id: string }).quiz_id] ?? null : null;
+  // quiz-ul se închide: rezolvat SAU eșuat cu răscumpărarea încheiată/indisponibilă
+  const quizClosed =
+    currentQuizState?.status === "solved" ||
+    (currentQuizState?.status === "failed" &&
+      (!currentQuizState.similar || currentQuizState.redemption !== undefined && currentQuizState.redemption !== null));
   const canAdvance =
     current !== undefined &&
-    (current.tip !== "quiz" || currentQuizState !== null);
+    (current.tip !== "quiz" || quizClosed);
 
   const advance = useCallback(() => {
     if (idx + 1 < blocks.length) setIdx(idx + 1);
@@ -114,11 +131,39 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
         });
         const data = await resp.json();
         if (!resp.ok) throw new Error(data.error ?? `HTTP ${resp.status}`);
-        setQuizStates((prev) => ({
-          ...prev,
-          [quizId]: { selected: letter, correct: data.correct, corecta: data.corecta },
-        }));
-        setTimeout(advance, 1400);
+        setQuizStates((prev) => {
+          const old = prev[quizId];
+          const wrongOptions = old?.wrongOptions ?? [];
+          if (data.correct) {
+            return {
+              ...prev,
+              [quizId]: { status: "solved", wrongOptions, selected: letter, correct: true, corecta: data.corecta },
+            };
+          }
+          if (data.attempt === 1) {
+            // greșeala 1: indiciu țintit, elevul reîncearcă
+            return {
+              ...prev,
+              [quizId]: { status: "retry", wrongOptions: [...wrongOptions, letter], selected: letter, correct: false, indiciu: data.indiciu },
+            };
+          }
+          // greșeala 2: micro-recap + rezolvarea + similar pentru răscumpărare
+          return {
+            ...prev,
+            [quizId]: {
+              status: "failed",
+              wrongOptions: [...wrongOptions, letter],
+              selected: letter,
+              correct: false,
+              corecta: data.corecta,
+              microRecap: data.microRecap ?? null,
+              rezolvare: data.rezolvare ?? null,
+              similar: data.similar ?? null,
+              redemption: null,
+            },
+          };
+        });
+        if (data.correct) setTimeout(advance, 1400);
       } catch (err) {
         console.error("[LessonPlayer] quiz failed:", err instanceof Error ? err.message : err);
       } finally {
@@ -126,6 +171,33 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
       }
     },
     [messageId, pendingQuiz, advance]
+  );
+
+  // ETAPA 70 C: răspunsul pe exercițiul similar (răscumpărarea)
+  const submitRedemption = useCallback(
+    async (quizId: string, exerciseId: string, answer: string) => {
+      if (pendingQuiz || !messageId || !answer.trim()) return;
+      setPendingQuiz(true);
+      try {
+        const resp = await fetch("/api/lesson/redeem", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messageId, quizId, exerciseId, answer }),
+        });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data.error ?? `HTTP ${resp.status}`);
+        setQuizStates((prev) => {
+          const old = prev[quizId];
+          if (!old) return prev;
+          return { ...prev, [quizId]: { ...old, redemption: { correct: data.correct, motiv: data.motiv } } };
+        });
+      } catch (err) {
+        console.error("[LessonPlayer] redeem failed:", err instanceof Error ? err.message : err);
+      } finally {
+        setPendingQuiz(false);
+      }
+    },
+    [messageId, pendingQuiz]
   );
 
   // ── loading inițial ───────────────────────────────────────────────────────
@@ -216,6 +288,8 @@ export function LessonPlayer({ conceptSlug, streak, onFallback, onExitToChat }: 
               quizState={currentQuizState}
               pendingQuiz={pendingQuiz}
               onAnswer={answerQuiz}
+              onRedeem={submitRedemption}
+              onContinue={advance}
             />
           </motion.div>
         </AnimatePresence>
@@ -242,11 +316,15 @@ function BlockCard({
   quizState,
   pendingQuiz,
   onAnswer,
+  onRedeem,
+  onContinue,
 }: {
   block: LessonBlockClient;
   quizState: QuizState;
   pendingQuiz: boolean;
   onAnswer: (quizId: string, letter: string) => void;
+  onRedeem: (quizId: string, exerciseId: string, answer: string) => void;
+  onContinue: () => void;
 }) {
   switch (block.tip) {
     case "intro":
@@ -301,6 +379,7 @@ function BlockCard({
       );
     case "quiz": {
       const quizId = (block as { quiz_id: string }).quiz_id;
+      const answerable = !quizState || quizState.status === "retry";
       return (
         <div className="space-y-4">
           <div className="rounded-2xl bg-primary/5 border border-primary/20 p-5">
@@ -310,19 +389,22 @@ function BlockCard({
           <div className="grid grid-cols-1 gap-3">
             {LETTERS.map((letter) => {
               const text = block.optiuni[letter];
+              const wrong = quizState?.wrongOptions.includes(letter) ?? false;
               let variant = "border-border bg-card hover:border-primary/60 hover:bg-primary/5";
-              if (quizState) {
+              if (wrong) variant = "border-danger-foreground/30 bg-danger-bg text-danger-foreground opacity-80";
+              if (quizState && quizState.status !== "retry") {
                 if (letter === quizState.corecta) variant = "border-success/50 bg-success-bg text-success-foreground";
-                else if (letter === quizState.selected) variant = "border-danger-foreground/30 bg-danger-bg text-danger-foreground";
+                else if (wrong) variant = "border-danger-foreground/30 bg-danger-bg text-danger-foreground";
                 else variant = "border-border bg-card opacity-60";
               }
+              const clickable = answerable && !wrong;
               return (
                 <motion.button
                   key={letter}
-                  onClick={() => !quizState && onAnswer(quizId, letter)}
-                  disabled={!!quizState || pendingQuiz}
+                  onClick={() => clickable && onAnswer(quizId, letter)}
+                  disabled={!clickable || pendingQuiz}
                   className={`w-full rounded-2xl border-2 p-4 text-left flex items-center gap-3 transition-all ${variant} disabled:cursor-default`}
-                  whileTap={!quizState ? buttonTap : {}}
+                  whileTap={clickable ? buttonTap : {}}
                 >
                   <span className="rounded-full bg-muted/80 px-2.5 py-1 text-sm font-bold uppercase shrink-0">
                     {letter}
@@ -332,19 +414,86 @@ function BlockCard({
               );
             })}
           </div>
+
           <AnimatePresence>
-            {quizState && (
+            {quizState?.status === "solved" && (
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className={`rounded-xl px-4 py-3 text-center text-sm font-medium ${
-                  quizState.correct ? "bg-success-bg text-success-foreground" : "bg-danger-bg text-danger-foreground"
-                }`}
+                className="rounded-xl px-4 py-3 text-center text-sm font-medium bg-success-bg text-success-foreground"
               >
-                {quizState.correct
-                  ? "✓ Corect! Mergem mai departe…"
-                  : `Răspunsul corect: ${quizState.corecta.toUpperCase()}. Continuăm…`}
+                ✓ Corect! Mergem mai departe…
+              </motion.div>
+            )}
+
+            {/* greșeala 1: indiciu țintit + reîncearcă */}
+            {quizState?.status === "retry" && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="rounded-xl px-4 py-3 text-sm bg-secondary text-secondary-foreground space-y-1"
+              >
+                <p className="font-semibold">💡 Indiciu:</p>
+                <p><MathText text={quizState.indiciu ?? ""} /></p>
+                <p className="text-xs opacity-80">Mai încearcă o dată — alege alt răspuns.</p>
+              </motion.div>
+            )}
+
+            {/* greșeala 2: micro-recap + rezolvare + răscumpărare */}
+            {quizState?.status === "failed" && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-3"
+              >
+                {quizState.microRecap && (quizState.microRecap.tip === "step" || quizState.microRecap.tip === "formula") && (
+                  <div className="rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm space-y-1">
+                    <p className="text-xs font-semibold text-primary uppercase">Recapitulare scurtă</p>
+                    {quizState.microRecap.tip === "step" ? (
+                      <>
+                        <p className="font-medium"><MathText text={quizState.microRecap.titlu_scurt} /></p>
+                        <p><MathText text={quizState.microRecap.corp} /></p>
+                        {quizState.microRecap.formula && (
+                          <div className="text-center overflow-x-auto"><MathText text={`$$${quizState.microRecap.formula}$$`} /></div>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-center overflow-x-auto"><MathText text={`$$${quizState.microRecap.latex}$$`} /></div>
+                        <p><MathText text={quizState.microRecap.explicatie} /></p>
+                      </>
+                    )}
+                  </div>
+                )}
+                <div className="rounded-xl bg-danger-bg text-danger-foreground px-4 py-3 text-sm space-y-2">
+                  <p className="font-semibold">Răspunsul corect: {quizState.corecta?.toUpperCase()}</p>
+                  {quizState.rezolvare && (
+                    <ol className="list-decimal ml-5 space-y-1">
+                      {quizState.rezolvare.map((r, i) => (
+                        <li key={i}><MathText text={r} /></li>
+                      ))}
+                    </ol>
+                  )}
+                </div>
+                {quizState.similar ? (
+                  <RedemptionCard
+                    quizId={quizId}
+                    similar={quizState.similar}
+                    redemption={quizState.redemption ?? null}
+                    pending={pendingQuiz}
+                    onRedeem={onRedeem}
+                    onContinue={onContinue}
+                  />
+                ) : (
+                  <div className="rounded-xl border px-4 py-3 text-sm text-muted-foreground space-y-2">
+                    <p>Nu am un exercițiu similar disponibil pentru acest concept — mergem mai departe.</p>
+                    <button onClick={onContinue} className="w-full rounded-xl bg-primary text-primary-foreground py-2.5 font-medium">
+                      Continuă →
+                    </button>
+                  </div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
@@ -400,6 +549,71 @@ function BlockCard({
     default:
       return null;
   }
+}
+
+/** ETAPA 70 C: răscumpărarea — exercițiu similar după 2 greșeli; mastery urcă DOAR aici */
+function RedemptionCard({
+  quizId,
+  similar,
+  redemption,
+  pending,
+  onRedeem,
+  onContinue,
+}: {
+  quizId: string;
+  similar: { exercise_id: string; statement: string; has_figure: boolean };
+  redemption: { correct: boolean | null; motiv?: string } | null;
+  pending: boolean;
+  onRedeem: (quizId: string, exerciseId: string, answer: string) => void;
+  onContinue: () => void;
+}) {
+  const [answer, setAnswer] = useState("");
+  return (
+    <div className="rounded-xl border-2 border-primary/30 bg-card px-4 py-3 text-sm space-y-3">
+      <p className="text-xs font-semibold text-primary uppercase">Răscumpărare: un exercițiu similar</p>
+      <p className="leading-relaxed"><MathText text={similar.statement} /></p>
+      {similar.has_figure && <LayeredFigure exerciseId={similar.exercise_id} />}
+      {redemption ? (
+        <div className="space-y-2">
+          <div
+            className={`rounded-lg px-3 py-2 font-medium ${
+              redemption.correct === true
+                ? "bg-success-bg text-success-foreground"
+                : redemption.correct === false
+                  ? "bg-danger-bg text-danger-foreground"
+                  : "bg-muted text-muted-foreground"
+            }`}
+          >
+            {redemption.correct === true
+              ? "✓ Corect! Progresul tău urcă — exact pentru asta a fost exercițiul."
+              : redemption.correct === false
+                ? "Încă nu e corect — dar ai văzut rezolvarea, data viitoare iese."
+                : "Nu am un verdict sigur pentru răspunsul ăsta."}
+            {redemption.motiv && <span className="block text-xs opacity-80 mt-1">{redemption.motiv}</span>}
+          </div>
+          <button onClick={onContinue} className="w-full rounded-xl bg-primary text-primary-foreground py-2.5 font-medium">
+            Continuă →
+          </button>
+        </div>
+      ) : (
+        <div className="flex gap-2">
+          <input
+            value={answer}
+            onChange={(e) => setAnswer(e.target.value)}
+            placeholder="Răspunsul tău"
+            className="flex-1 rounded-xl border px-3 py-2.5 bg-background focus:outline-none focus:ring-2 focus:ring-primary/40"
+          />
+          <button
+            onClick={() => onRedeem(quizId, similar.exercise_id, answer)}
+            disabled={pending || !answer.trim()}
+            className="rounded-xl bg-primary text-primary-foreground px-4 py-2.5 font-medium disabled:opacity-50"
+          >
+            {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Trimite"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }
 
 /** figura canonică de teorie — SVG determinist din /api/figura-teorie */
