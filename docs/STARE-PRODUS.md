@@ -1,4 +1,54 @@
-# STARE PRODUS — după maratoanele ETAPELE 62–69 (10 iunie 2026)
+# STARE PRODUS — după maratoanele ETAPELE 62–70 (10 iunie 2026)
+
+## ETAPA 70 — experiența energic-modernă
+
+**Live (toate cu acceptanțe exit 0):**
+- **Design system v1**: primar indigo-violet electric + accent UNIC lime electric,
+  fundal alb-cald; EXCEPȚIA SACRĂ `--math-fg` monocrom (KaTeX + figuri) — energia
+  e în ramă, nu în matematică. Poarta `etapa70-contrast.ts`: 11/11 perechi AA/AAA.
+  Mișcare: 3 viteze + spring-uri standard (`src/lib/motion`), `prefers-reduced-motion`
+  global (MotionConfig). AnimatedBackdrop (GPU-only) pe azi/onboarding/simulare/lecție.
+- **Figuri de teorie**: registru cu **45 concepte** (frontiere reale + servibile),
+  generatoare SVG deterministe, antet REVIZUIRE UMANĂ — previzualizare la
+  `/api/figura-teorie/{slug}`. Blocul `figure` are `kind: theory|exercise`;
+  lecția LIVE emite figura canonică după intro (dovedit în acceptanță + smoke 67).
+- **Plot validat**: bloc `plot {expr, domain, puncte_marcate}` — mathjs cu whitelist
+  de noduri (9/9 expresii malițioase respinse explicit), randare SVG server-side;
+  expr invalid → blocul se pierde logat, lecția continuă.
+- **Mașina de stări la greșeală** (quiz lecție): greșeala 1 → indiciu țintit (fără
+  corecta!) + reîncearcă; greșeala 2 → micro-recap + rezolvare pas-cu-pas →
+  exercițiu SIMILAR servibil (determinist, anti-falsificare) pentru RĂSCUMPĂRARE
+  prin `/api/lesson/redeem`; mastery urcă plin DOAR la corect-din-prima și la
+  răscumpărare; EMA exactă pe toate tranzițiile (acceptanță).
+- **Chips de ajutor** în chat-ul ancorat: Încep / Indiciu 1-3 / Rezolvarea — mesaje
+  din cota existentă; reușita cu chip → pas EMA ÎNJUMĂTĂȚIT (2:1 exact, assert),
+  rezolvarea arătată → zero mastery (capitulare onestă); `helped:boolean` în evidență.
+- **Chat îngrădit în lecție**: `/api/lesson/ask` — gard de temă în prompt, off-topic
+  → refuz blând cu trimitere la „Azi"; răspuns ca max 3 blocuri validate.
+- **Sunete discrete**: 4 momente (corect/greșit-blând/lecție/streak), WAV sintetizate
+  determinist, Web Audio, toggle persistat în player, default ON volum jos.
+- **Convertor Unicode→LaTeX**: 327 diagnostic_exercises → **301 complet, 22 parțial
+  (marcate), 4 fără notație**; original păstrat în `original_etapa70`, proveniență
+  `converted_etapa70`; MathText le randează de-acum.
+- **Taxonomia greșelilor**: greșeala persistă concept+modul; /app/progres are
+  „Unde greșești des" (top 3 cu link spre lecție).
+- **Ritual de final de lecție**: recap + delta mastery REALĂ animată
+  (`/api/lesson/ritual`) + streak + „Mâine te așteaptă" (frontiera).
+
+**MARCAT (limite cunoscute ETAPA 70):**
+1. Cele **22 conversii parțiale** au notații rămase în afara $...$ — marcate în DB,
+   de revizuit manual (sau extins convertorul).
+2. **Registrul de figuri de teorie e în AȘTEPTAREA revizuirii lui Maxim** — 45
+   figuri legitime la teorie, dar curățenia finală e decizie umană (antetul
+   fișierului `src/lib/lesson/theory-figures/registry.ts` explică cum).
+3. **FAZA 0**: rapoartele ETAPA67/68/69 ca fișiere separate nu există — starea
+   e în acest document + mesajele de commit (asumat).
+4. Gaura `source='exam'`: mecanismul scria corect; evidența era ștearsă de
+   reset-urile acceptanței 60 re-rulate, iar assert-ul era sărit tăcut când
+   itemul nu avea concept. Assert întărit: fail fără concepte + verificare pe
+   TOATE conceptele itemilor.
+5. Mascota: NU (amânată post-lansare, decizie convenită).
+
 
 ## ETAPA 68 — dashboard progres (/app/progres, în nav)
 
