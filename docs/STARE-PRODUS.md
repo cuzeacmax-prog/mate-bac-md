@@ -1,4 +1,43 @@
-# STARE PRODUS — după maratoanele ETAPELE 62–70 (10 iunie 2026)
+# STARE PRODUS — după maratoanele ETAPELE 62–71 (10 iunie 2026)
+
+## ETAPA 71 — harta cunoașterii, lentile, manipulative, plăți (mock)
+
+**Live (toate cu acceptanțe exit 0):**
+- **Bornele** (`src/lib/map/milestones.ts`, REVIZUIRE UMANĂ): 139 concepte / 7
+  domenii, propuse din semnale (clasa 10→baza; liceu ≥3 servibile→solid; restul→
+  performanță); poarta `verify:milestones` (120 slug-uri, 51 cu conținut au bornă).
+- **7 culori de domeniu** în tokens (main/bg/fg, light+dark), contrast 32/32 AA;
+  curg prin: tab-urile hărții, cardurile Azi, accentul lecției (+manipulative),
+  secțiunile Progres. Matematica rămâne `--math-fg`.
+- **Harta cunoașterii /app/harta**: layout dagre PRECOMPUTAT (JSON static per
+  domeniu, 139 noduri/183 muchii + servable + prereq-uri), SVG propriu cu
+  pan/zoom, 4 stări din sursele existente (blocat/disponibil-pulsând/în lucru%/
+  stăpânit✓), sheet cu bornă+„Cere întâi"+Învață, lentile BAC / Nota-țintă /
+  Test-mâine (user_focus 36h → harta+azi+daily se filtrează; banner+anulare).
+- **8 manipulative deterministe** (zaruri, monede, urnă, persoane, cărți,
+  dreapta numerică, bare-fracții, Venn) — bloc `manipulative` în contract,
+  params STRING JSON validat pe schema kind-ului; lecția live de probabilitate
+  invocă urna cu numerele exacte din exercițiu.
+- **Plăți: adaptor + mock COMPLET**: interfața PaymentProvider; MockProvider cu
+  HMAC; subscriptions = starea (trialing|active|past_due|canceled, perioadă,
+  provider_ref); planul 199 lei/lună în system_config; trialul din onboarding
+  LEAGAT de subscriptions (până acum flagul era ignorat de server!); webhook cu
+  semnătură obligatorie + idempotent pe event_id; /app/abonament cu istoric;
+  un singur adevăr al tier-ului (profiles sincronizat din subscriptions).
+
+**MARCAT (ETAPA 71):**
+1. **Acceptanța 69 e FLAKY** (pre-existent, nu regresie): seed-ul per attempt
+   alege exerciții diferite; răspunsurile oficiale multi-parte cad pe judecătorul
+   Haiku, care ocazional nu confirmă (1 eșec / 3 rulări azi). De stabilizat:
+   filtrare la mono-parte în test sau seed fix.
+2. **Bornele și registrul de figuri așteaptă revizuirea lui Maxim** (antete
+   REVIZUIRE UMANĂ în ambele fișiere).
+3. **Modulul VII** rămâne orfan deliberat (ETAPA 61) — nu apare pe hartă.
+4. **Providerul real (Hub.md/MAIB)** nu există încă — mock-ul acoperă fluxul;
+   adaptorul real se montează pe aceeași interfață când vin credențialele.
+5. Layout-urile hărții se regenerează manual (`scripts/etapa71/build-map-layouts`)
+   când se schimbă graful/conținutul servibil — nu e încă în CI/cron.
+
 
 ## ETAPA 70 — experiența energic-modernă
 
