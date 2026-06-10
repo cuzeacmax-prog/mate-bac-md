@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Manrope, Geist_Mono } from "next/font/google";
 import "./globals.css";
 // ETAPA 66 FAZA E2: katex.min.css NU mai e global — se importă doar în
 // layout-urile rutelor care randează matematică (/app, /onboarding, /admin).
 import { PosthogProvider } from "@/components/analytics/PosthogProvider";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// ETAPA 73: Manrope variabil — tokenul --font-sans îl referă EXPLICIT în
+// globals.css (defectul vechi: --font-sans se referea pe sine → serif de sistem)
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
 });
 
@@ -30,7 +32,9 @@ export default function RootLayout({
   return (
     <html
       lang="ro"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      // ETAPA 73: dark = tema implicită și SINGURA în v1 (clasa activează
+      // variantele dark: existente; tokens din :root sunt deja dark)
+      className={`${manrope.variable} ${geistMono.variable} dark h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
           <MotionProvider>

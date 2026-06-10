@@ -19,34 +19,37 @@ const NAV_ITEMS = [
 export function Sidebar() {
   const pathname = usePathname();
 
+  // ETAPA 73: sidebar glass — starea activă luminoasă (pill cu accent),
+  // hover pe glass, fără borduri gri opace
   return (
-    <aside className="hidden md:flex flex-col w-56 border-r bg-background shrink-0">
-      <nav className="flex flex-col gap-1 p-3 pt-4">
+    <aside className="hidden md:flex flex-col w-56 shrink-0 glass-1 border-y-0 border-l-0">
+      <nav className="flex flex-col gap-1.5 p-3 pt-4">
         {NAV_ITEMS.map(({ href, label, icon: Icon, disabled }) => {
           if (disabled) {
             return (
               <button
                 key={href}
                 disabled
-                className="flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground opacity-50 cursor-not-allowed w-full text-left"
+                className="flex items-center gap-3 rounded-full px-4 py-2 text-sm font-medium text-muted-foreground opacity-40 cursor-not-allowed w-full text-left"
               >
                 <Icon className="h-4 w-4 shrink-0" />
                 {label}
-                <span className="text-xs bg-slate-200 text-slate-600 rounded-full px-2 py-0.5 ml-auto">
+                <span className="text-[10px] glass-1 text-muted-foreground rounded-full px-2 py-0.5 ml-auto">
                   Curând
                 </span>
               </button>
             );
           }
+          const active = pathname === href;
           return (
             <Link
               key={href}
               href={href}
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                pathname === href
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                "flex items-center gap-3 rounded-full px-4 py-2 text-sm font-semibold transition-colors",
+                active
+                  ? "bg-primary text-primary-foreground shadow-[0_0_18px_-4px_var(--primary)]"
+                  : "text-muted-foreground hover:text-foreground hover:bg-[var(--glass-2)]"
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />

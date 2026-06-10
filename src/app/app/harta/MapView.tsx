@@ -160,12 +160,10 @@ export function MapView({ map }: { map: KnowledgeMap }) {
           <button
             key={d.key}
             onClick={() => { setDomainKey(d.key); setSelected(null); }}
-            className={`shrink-0 rounded-xl px-3 py-2 text-xs font-medium border-2 transition-colors ${
-              d.key === domainKey ? "text-white" : ""
-            }`}
+            className="shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold border-2 transition-colors"
             style={
               d.key === domainKey
-                ? { background: `var(--domain-${d.key})`, borderColor: `var(--domain-${d.key})` }
+                ? { background: `var(--domain-${d.key})`, borderColor: `var(--domain-${d.key})`, color: "var(--primary-foreground)" }
                 : { background: `var(--domain-${d.key}-bg)`, borderColor: "transparent", color: `var(--domain-${d.key}-fg)` }
             }
           >
