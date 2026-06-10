@@ -63,13 +63,17 @@ async function main() {
   });
   console.log(`răspund: ${correctGiven} cu răspunsul oficial, ${attempt.items.length - correctGiven} greșit deliberat`);
 
-  // mastery înainte pe primul concept (răspuns corect)
-  const firstConcept = attempt.items[0].concept_slug;
+  // mastery înainte pe TOATE conceptele itemilor — assertul pe source='exam'
+  // nu mai poate fi sărit tăcut (ETAPA 70 FAZA 0b)
+  const conceptSlugs = [...new Set(attempt.items.map((i) => i.concept_slug).filter((s): s is string => !!s))];
+  if (conceptSlugs.length === 0) fail('niciun item nu are concept legat — evidența exam nu ar avea unde să se scrie');
+  console.log(`concepte legate de itemii simulării: ${conceptSlugs.length} (${conceptSlugs.join(', ')})`);
   const masteryOf = async (slug: string) => {
     const { data: c } = await svc.from('concepts').select('id').eq('slug', slug).single();
     const { data: m } = await svc.from('concept_mastery').select('mastery, source').eq('user_id', user.id).eq('concept_id', c!.id).maybeSingle();
     return { mastery: (m?.mastery as number | undefined) ?? 0, source: (m?.source as string[] | undefined) ?? [] };
   };
+  const firstConcept = attempt.items[0].concept_slug;
   const before = firstConcept ? await masteryOf(firstConcept) : null;
 
   const result = await submitExamAttempt(svc, user.id, attempt.id, answers);
@@ -85,8 +89,14 @@ async function main() {
     const after = await masteryOf(firstConcept);
     console.log(`  mastery '${firstConcept}': ${before.mastery.toFixed(4)} → ${after.mastery.toFixed(4)}; surse=${after.source.join(',')}`);
     if (after.mastery <= before.mastery && before.mastery < 1) fail('mastery nu a crescut după răspuns corect la examen');
-    if (!after.source.includes('exam')) fail("sursa 'exam' lipsește din concept_mastery");
   }
+  // TOATE conceptele itemilor evaluați trebuie să poarte sursa 'exam' —
+  // itemii primesc evidență și la corect și la greșit (target 1/0)
+  for (const slug of conceptSlugs) {
+    const after = await masteryOf(slug);
+    if (!after.source.includes('exam')) fail(`sursa 'exam' lipsește din concept_mastery pentru '${slug}' (surse: ${after.source.join(',') || 'niciuna'})`);
+  }
+  console.log(`  source='exam' prezent pe toate cele ${conceptSlugs.length} concepte ✓`);
 
   // attempt-ul finalizat persistat
   const { data: closed } = await svc.from('mock_bac_attempts').select('is_completed, total_score').eq('id', attempt.id).single();
