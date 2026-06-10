@@ -112,7 +112,7 @@ export default async function ProgresPage() {
             {data.recent.map((r, i) => (
               <li key={i} className="flex items-center justify-between text-sm">
                 <span className="flex items-center gap-2">
-                  <span className={r.correct === true ? "text-green-600" : r.correct === false ? "text-red-500" : "text-muted-foreground"}>
+                  <span className={r.correct === true ? "text-success" : r.correct === false ? "text-danger-foreground" : "text-muted-foreground"}>
                     {r.correct === true ? "✓" : r.correct === false ? "✗" : "•"}
                   </span>
                   {r.label}
@@ -131,7 +131,7 @@ export default async function ProgresPage() {
 
 function StatCard({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
-    <div className="rounded-2xl border bg-card p-4">
+    <div className="glass-1 rounded-2xl p-4">
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className="text-xl font-bold mt-0.5">{value}</p>
       {hint && <p className="text-[10px] text-muted-foreground">{hint}</p>}

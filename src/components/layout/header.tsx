@@ -35,7 +35,7 @@ export function Header({ userEmail, userName, messagesUsed, isPremium, isAdmin, 
   const showCounter = !isPremium && !isAdmin && messagesUsed !== undefined;
 
   return (
-    <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 glass-1 border-x-0 border-t-0">
       <div className="flex h-14 items-center justify-between px-4">
         <Link href="/app" className="flex items-center gap-2 font-semibold">
           <BookOpen className="h-5 w-5 text-primary" />
@@ -46,7 +46,7 @@ export function Header({ userEmail, userName, messagesUsed, isPremium, isAdmin, 
           {typeof streak === "number" && streak > 0 && (
             <Link
               href="/app/azi"
-              className="flex items-center gap-1 text-sm font-semibold text-orange-600"
+              className="flex items-center gap-1 text-sm font-semibold text-foreground"
               title={`Streak: ${streak} ${streak === 1 ? "zi" : "zile"} la rând`}
             >
               <span aria-hidden>🔥</span>

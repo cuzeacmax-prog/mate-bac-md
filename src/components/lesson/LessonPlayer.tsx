@@ -14,6 +14,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { MathText } from "@/components/MathText";
+import { StatementText } from "@/components/StatementText";
 import { LessonTable } from "@/components/lesson/LessonTable";
 import { LayeredFigure } from "@/components/lesson/LayeredFigure";
 import { AnimatedBackdrop } from "@/components/motion/AnimatedBackdrop";
@@ -519,7 +520,7 @@ function BlockCard({
   switch (block.tip) {
     case "intro":
       return (
-        <div className="rounded-2xl bg-primary/5 border border-primary/20 p-6 space-y-3">
+        <div className="glass-2 rounded-3xl p-6 space-y-3">
           <h1 className="text-xl font-bold"><MathText text={block.titlu} /></h1>
           <p className="text-base leading-relaxed"><MathText text={block.ideea_mare} /></p>
         </div>
@@ -540,7 +541,8 @@ function BlockCard({
       );
     case "formula":
       return (
-        <div className="rounded-2xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 p-6 space-y-3 text-center">
+        // formula pe suprafață SOLIDĂ închisă (REGULA SACRĂ — niciodată glass)
+        <div className="rounded-2xl bg-[var(--math-surface)] border border-border p-6 space-y-3 text-center">
           <div className="text-lg overflow-x-auto"><MathText text={`$$${block.latex}$$`} /></div>
           <p className="text-sm text-muted-foreground"><MathText text={block.explicatie} /></p>
         </div>
@@ -823,7 +825,7 @@ function RedemptionCard({
   return (
     <div className="rounded-xl border-2 border-primary/30 bg-card px-4 py-3 text-sm space-y-3">
       <p className="text-xs font-semibold text-primary uppercase">Răscumpărare: un exercițiu similar</p>
-      <p className="leading-relaxed"><MathText text={similar.statement} /></p>
+      <p className="leading-relaxed"><StatementText text={similar.statement} /></p>
       {similar.has_figure && <LayeredFigure exerciseId={similar.exercise_id} />}
       {redemption ? (
         <div className="space-y-2">

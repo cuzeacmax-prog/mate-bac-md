@@ -165,8 +165,15 @@
   color: var(--math-fg);
   font-size: 1.05em;
 }
+/* figurile = „foaie de hârtie": fundal alb dedicat, linii întunecate —
+ * lizibilitate maximă pe tema dark (figurile persistate au stroke închis) */
+.figura-bac {
+  background: oklch(0.985 0.003 95);
+  border-radius: 12px;
+  padding: 0.5rem;
+}
 .figura-bac svg {
-  color: var(--math-fg);
+  color: oklch(0.16 0.01 260);
 }
 /* formulele display pe suprafață SOLIDĂ închisă (nu glass) */
 .katex-display {

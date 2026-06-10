@@ -214,9 +214,9 @@ export default function DiagnosticPage() {
                   let variant: string = 'border-border bg-card hover:border-primary/60 hover:bg-primary/5';
                   if (answerState !== 'idle') {
                     if (letter === correctLetter) {
-                      variant = 'border-green-400 bg-green-50 text-green-800';
+                      variant = 'border-success/50 bg-success-bg text-success-foreground';
                     } else if (letter !== correctLetter && answerState === 'wrong') {
-                      variant = 'border-red-300 bg-red-50 text-red-700 opacity-70';
+                      variant = 'border-danger-foreground/30 bg-danger-bg text-danger-foreground opacity-70';
                     }
                   }
 

@@ -9,13 +9,13 @@ export function ModeToggle() {
 
   return (
     <div
-      className="inline-flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1 relative"
+      className="inline-flex items-center glass-1 rounded-full p-1 relative"
       role="group"
       aria-label="Mod chat"
     >
       {/* Sliding indicator */}
       <motion.div
-        className="absolute top-1 bottom-1 bg-white dark:bg-gray-700 rounded-md shadow-sm pointer-events-none"
+        className="absolute top-1 bottom-1 bg-[var(--glass-3)] border border-[var(--glass-3-border)] rounded-full pointer-events-none"
         initial={false}
         animate={{ left: mode === 'study' ? 4 : '50%' }}
         style={{ width: 'calc(50% - 4px)' }}
@@ -26,10 +26,8 @@ export function ModeToggle() {
         onClick={() => setMode('study')}
         aria-pressed={mode === 'study'}
         className={[
-          'relative z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
-          mode === 'study'
-            ? 'text-gray-900 dark:text-white font-semibold'
-            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200',
+          'relative z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+          mode === 'study' ? 'text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground',
         ].join(' ')}
       >
         <GraduationCap className="w-4 h-4 shrink-0" aria-hidden="true" />
@@ -40,10 +38,8 @@ export function ModeToggle() {
         onClick={() => setMode('solve')}
         aria-pressed={mode === 'solve'}
         className={[
-          'relative z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
-          mode === 'solve'
-            ? 'text-gray-900 dark:text-white font-semibold'
-            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200',
+          'relative z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+          mode === 'solve' ? 'text-foreground font-semibold' : 'text-muted-foreground hover:text-foreground',
         ].join(' ')}
       >
         <Zap className="w-4 h-4 shrink-0" aria-hidden="true" />

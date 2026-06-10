@@ -7,7 +7,7 @@
  */
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { MathText } from "@/components/MathText";
+import { StatementText } from "@/components/StatementText";
 import type { DailyExercise } from "@/lib/daily/daily";
 
 interface Props {
@@ -57,22 +57,22 @@ export function DailyCard({ exercises: initial, completed: initialCompleted, str
   const attemptedCount = exercises.filter((e) => e.attempted).length;
 
   return (
-    <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-5 space-y-4">
+    <div className="glass-2 rounded-3xl p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-semibold">Provocarea zilei</h2>
+          <h2 className="font-bold">Provocarea zilei</h2>
           <p className="text-xs text-muted-foreground">
             {attemptedCount}/{exercises.length} rezolvate · aceleași exerciții toată ziua
           </p>
         </div>
-        <div className="flex items-center gap-1 text-orange-600 font-bold" title="Zile la rând cu daily-ul completat">
+        <div className="flex items-center gap-1 font-bold" title="Zile la rând cu daily-ul completat">
           <span aria-hidden>🔥</span>
           {streak}
         </div>
       </div>
 
       {completed && (
-        <div className="rounded-xl bg-green-100 text-green-800 px-4 py-3 text-sm font-medium">
+        <div className="rounded-xl bg-success-bg text-success-foreground px-4 py-3 text-sm font-medium">
           ✓ Daily-ul de azi e completat — streak-ul tău: {streak} {streak === 1 ? "zi" : "zile"}. Revino mâine!
         </div>
       )}
@@ -82,31 +82,31 @@ export function DailyCard({ exercises: initial, completed: initialCompleted, str
           const result = results[ex.exercise_id];
           const done = ex.attempted;
           return (
-            <div key={ex.exercise_id} className="rounded-xl border bg-card p-4 space-y-3">
+            <div key={ex.exercise_id} className="rounded-2xl bg-card border border-border p-4 space-y-3">
               <div className="flex items-start justify-between gap-2">
                 <p className="text-xs font-medium text-muted-foreground">
                   {i + 1}. {ex.concept_name}
                   {ex.tier === "sursa-oficiala" && (
-                    <span className="ml-2 rounded-full bg-amber-100 text-amber-800 px-2 py-0.5">
+                    <span className="ml-2 rounded-full bg-secondary text-secondary-foreground px-2 py-0.5">
                       din culegerea oficială BAC
                     </span>
                   )}
                 </p>
                 {done && (
-                  <span className={`text-xs font-semibold ${ex.correct ? "text-green-600" : "text-red-600"}`}>
+                  <span className={`text-xs font-semibold ${ex.correct ? "text-success" : "text-danger-foreground"}`}>
                     {ex.correct ? "✓ corect" : "✗ greșit"}
                   </span>
                 )}
               </div>
               <div className="text-sm leading-relaxed">
-                <MathText text={ex.statement} />
+                <StatementText text={ex.statement} />
               </div>
               {ex.has_figure && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={`/api/figura/${ex.exercise_id}`}
                   alt="Figura exercițiului"
-                  className="max-w-full rounded-lg border bg-white"
+                  className="max-w-full figura-bac"
                 />
               )}
               {!done ? (

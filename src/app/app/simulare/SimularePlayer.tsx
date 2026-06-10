@@ -11,6 +11,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Loader2, Flag } from "lucide-react";
 import { MathText } from "@/components/MathText";
+import { StatementText } from "@/components/StatementText";
 import { LayeredFigure } from "@/components/lesson/LayeredFigure";
 import { AnimatedBackdrop } from "@/components/motion/AnimatedBackdrop";
 import { buttonTap } from "@/lib/motion/motion";
@@ -95,12 +96,12 @@ export function SimularePlayer({ audit }: {
     return (
       <div className="relative max-w-2xl mx-auto px-6 py-10 space-y-5">
         <AnimatedBackdrop />
-        <h1 className="text-2xl font-semibold">Simulare BAC — variantă parțială</h1>
-        <div className="rounded-2xl border bg-card p-5 space-y-3 text-sm leading-relaxed">
+        <h1 className="text-2xl font-bold">Simulare BAC — variantă parțială</h1>
+        <div className="glass-2 rounded-3xl p-5 space-y-3 text-sm leading-relaxed">
           <p><strong>{plannedCount} exerciții</strong> din culegerea oficială, cu răspuns verificabil · <strong>90 de minute</strong>, cronometru pe server.</p>
           <p>Acoperă onest: {coveredModules.join(", ")}.</p>
           {audit.gaps.length > 0 && (
-            <p className="text-amber-700 bg-amber-50 rounded-lg px-3 py-2">
+            <p className="text-secondary-foreground bg-secondary rounded-lg px-3 py-2">
               ⚠ Simulare PARȚIALĂ: {audit.gaps.join(", ")} {audit.gaps.length === 1 ? "nu are" : "nu au"} încă
               exerciții cu răspuns verificabil în bibliotecă — nu inventăm subiecte.
             </p>
@@ -193,7 +194,7 @@ export function SimularePlayer({ audit }: {
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium">Exercițiul {idx + 1} din {attempt.items.length} · {item.module}</p>
-        <p className={`font-mono font-bold ${remaining < 5 * 60_000 ? "text-red-600" : ""}`}>
+        <p className={`font-mono font-bold ${remaining < 5 * 60_000 ? "text-danger-foreground" : ""}`}>
           {String(mm).padStart(2, "0")}:{String(ss).padStart(2, "0")}
         </p>
       </div>
@@ -206,7 +207,7 @@ export function SimularePlayer({ audit }: {
             onClick={() => setIdx(i)}
             className={`w-8 h-8 rounded-lg border text-xs font-semibold transition-colors ${
               i === idx ? "border-primary bg-primary text-primary-foreground"
-              : flagged.has(it.exercise_id) ? "border-amber-400 bg-amber-50 text-amber-800"
+              : flagged.has(it.exercise_id) ? "border-[var(--domain-iv)] bg-[var(--domain-iv-bg)] text-[var(--domain-iv-fg)]"
               : answers[it.exercise_id]?.trim() ? "border-success/40 bg-success-bg text-success-foreground"
               : "border-border bg-card"
             }`}
@@ -217,7 +218,7 @@ export function SimularePlayer({ audit }: {
       </div>
 
       <div className="rounded-2xl border bg-card p-5 space-y-4">
-        <p className="leading-relaxed"><MathText text={item.statement} /></p>
+        <p className="leading-relaxed"><StatementText text={item.statement} /></p>
         {item.has_figure && <LayeredFigure exerciseId={item.exercise_id} />}
         <input
           value={answers[item.exercise_id] ?? ""}
@@ -227,7 +228,7 @@ export function SimularePlayer({ audit }: {
         />
         <button
           onClick={() => setFlagged((prev) => { const n = new Set(prev); if (n.has(item.exercise_id)) n.delete(item.exercise_id); else n.add(item.exercise_id); return n; })}
-          className={`flex items-center gap-1.5 text-xs font-medium ${flagged.has(item.exercise_id) ? "text-amber-600" : "text-muted-foreground"}`}
+          className={`flex items-center gap-1.5 text-xs font-medium ${flagged.has(item.exercise_id) ? "text-[var(--domain-iv)]" : "text-muted-foreground"}`}
         >
           <Flag className="h-3.5 w-3.5" />
           {flagged.has(item.exercise_id) ? "Marcat — revin" : "Marchează «revin»"}

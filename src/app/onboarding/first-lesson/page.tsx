@@ -108,9 +108,9 @@ export default function FirstLessonPage() {
               animate={{ opacity: 1 }}
             >
               {/* Concept */}
-              <div className="rounded-2xl bg-blue-50 border border-blue-100 p-5">
-                <p className="text-xs font-semibold text-blue-600 uppercase mb-2">Conceptul</p>
-                <p className="text-sm leading-relaxed text-blue-900"><MathText text={lesson.concept} /></p>
+              <div className="glass-2 rounded-2xl p-5">
+                <p className="text-xs font-semibold text-primary uppercase mb-2">Conceptul</p>
+                <p className="text-sm leading-relaxed"><MathText text={lesson.concept} /></p>
               </div>
 
               {/* Example */}
@@ -169,11 +169,11 @@ export default function FirstLessonPage() {
               animate={{ opacity: 1, y: 0 }}
             >
               {/* Result banner */}
-              <div className={`rounded-2xl p-5 text-center ${
-                isCorrect ? 'bg-green-50 border border-green-200' : 'bg-amber-50 border border-amber-200'
+              <div className={`rounded-2xl p-5 text-center border ${
+                isCorrect ? 'bg-success-bg border-success/40' : 'bg-secondary border-border'
               }`}>
                 <div className="text-4xl mb-2">{isCorrect ? '🎉' : '💡'}</div>
-                <p className={`font-bold text-lg ${isCorrect ? 'text-green-800' : 'text-amber-800'}`}>
+                <p className={`font-bold text-lg ${isCorrect ? 'text-success-foreground' : 'text-secondary-foreground'}`}>
                   {isCorrect ? 'Corect! Ai înțeles conceptul.' : 'Aproape! Hai să vedem unde.'}
                 </p>
               </div>

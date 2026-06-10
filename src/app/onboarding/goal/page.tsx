@@ -5,11 +5,12 @@ import { motion } from 'framer-motion';
 import { useOnboardingStore } from '@/lib/stores/onboarding-store';
 import { track, Events } from '@/lib/analytics/posthog-client';
 
+// ETAPA 73: carduri glass cu accentul de domeniu pe hover (tokens, nu palete ad-hoc)
 const GOALS = [
-  { score: 7, label: '7', desc: 'Promovez lejer', emoji: '✅', color: 'border-green-200 bg-green-50 hover:border-green-400' },
-  { score: 8, label: '8', desc: 'Notă bună', emoji: '📚', color: 'border-blue-200 bg-blue-50 hover:border-blue-400' },
-  { score: 9, label: '9', desc: 'Notă foarte bună', emoji: '🎯', color: 'border-violet-200 bg-violet-50 hover:border-violet-400' },
-  { score: 10, label: '10', desc: 'Performanță maximă', emoji: '🏆', color: 'border-amber-200 bg-amber-50 hover:border-amber-400' },
+  { score: 7, label: '7', desc: 'Promovez lejer', emoji: '✅', hoverVar: '--domain-vi' },
+  { score: 8, label: '8', desc: 'Notă bună', emoji: '📚', hoverVar: '--domain-ii' },
+  { score: 9, label: '9', desc: 'Notă foarte bună', emoji: '🎯', hoverVar: '--domain-i' },
+  { score: 10, label: '10', desc: 'Performanță maximă', emoji: '🏆', hoverVar: '--domain-iv' },
 ];
 
 export default function GoalPage() {
@@ -39,11 +40,12 @@ export default function GoalPage() {
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          {GOALS.map(({ score, label, desc, emoji, color }) => (
+          {GOALS.map(({ score, label, desc, emoji, hoverVar }) => (
             <motion.button
               key={score}
               onClick={() => handleSelect(score)}
-              className={`rounded-2xl border-2 p-6 text-center transition-all duration-150 active:scale-95 ${color}`}
+              className="glass-2 rounded-3xl p-6 text-center transition-all duration-150 active:scale-95 hover:border-[var(--goal-hover)]"
+              style={{ "--goal-hover": `var(${hoverVar})` } as React.CSSProperties}
               whileTap={{ scale: 0.96 }}
             >
               <div className="text-3xl mb-2">{emoji}</div>

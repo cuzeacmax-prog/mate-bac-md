@@ -48,12 +48,7 @@ export const MessageBubble = React.memo(function MessageBubble({
             <p className="text-sm whitespace-pre-wrap break-words">{content}</p>
             {/* ETAPA 63: feedback discret corect/greșit sub încercarea elevului */}
             {metadata?.attempt && metadata.attempt.correct !== null && (
-              <p
-                className={cn(
-                  "text-xs mt-1.5 font-medium",
-                  metadata.attempt.correct ? "text-green-200" : "text-red-200"
-                )}
-              >
+              <p className="text-xs mt-1.5 font-semibold text-primary-foreground/85">
                 {metadata.attempt.correct
                   ? "✓ Corect — progresul tău s-a actualizat"
                   : "✗ Nu e răspunsul corect — mai încearcă"}

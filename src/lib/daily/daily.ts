@@ -12,6 +12,7 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { getActiveFocus } from '@/lib/map/focus';
+import { hasUnrenderableMarkdown } from '@/lib/content/markdown-table';
 
 export interface DailyExercise {
   exercise_id: string;
@@ -196,6 +197,12 @@ export async function getOrCreateDailyChallenge(
   for (const ch of chosen) {
     const row = (exRows ?? []).find((r) => r.id === ch.exercise_id);
     if (!row) continue;
+    // ETAPA 73 D1: enunț cu markdown nerandabil → NU intră în daily (marcat),
+    // nu se afișează stricat cu pipe-uri brute
+    if (hasUnrenderableMarkdown(row.statement as string)) {
+      console.error(`[daily] exercițiu exclus (markdown nerandabil): ${ch.exercise_id}`);
+      continue;
+    }
     exercises.push({
       exercise_id: ch.exercise_id,
       concept_slug: ch.concept.slug,
