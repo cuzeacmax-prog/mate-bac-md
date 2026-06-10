@@ -15,6 +15,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export const MASTERY_ALPHA = 0.3;
+/** ETAPA 70 D: reușita CU ajutor (indiciu/chips) = pas EMA înjumătățit */
+export const HELPED_WEIGHT = 0.5;
 
 export type EvidenceSource = 'diagnostic' | 'chat' | 'exercise' | 'exam';
 

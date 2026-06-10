@@ -18,6 +18,13 @@ import { verifyMath, type VerificationResult } from "@/lib/chat/math-verifier";
 import { getConceptAnchor, buildConceptSystemAddendum, type ConceptAnchor } from "@/lib/concepts/anchor";
 import { recordConceptEvidence } from "@/lib/mastery/evidence";
 import { pickCurrentExercise, evaluateAttempt, type AttemptEvaluation } from "@/lib/evaluare/evaluate";
+import {
+  buildHelpInstruction,
+  recordHelpUsage,
+  getHelpKindsUsed,
+  helpWeight,
+  type HelpKind,
+} from "@/lib/evaluare/help";
 import { buildConversationHistory, type ConversationHistory } from "@/lib/chat/history";
 import { checkCostGuard, maybeWriteDailyCostAlert, KILL_SWITCH_MESSAGE } from "@/lib/cost/guard";
 
@@ -83,7 +90,14 @@ export async function POST(req: NextRequest) {
   }
 
   // ── Parse body ──────────────────────────────────────────────────
-  let body: { message: string; conversationId?: string; mode?: string; concept?: string };
+  let body: {
+    message: string;
+    conversationId?: string;
+    mode?: string;
+    concept?: string;
+    /** ETAPA 70 D: chip de ajutor pe exercițiul activ (mesaj din cota normală) */
+    help?: { kind?: string; level?: number };
+  };
   try {
     body = await req.json();
   } catch (err) {
@@ -92,6 +106,11 @@ export async function POST(req: NextRequest) {
   }
 
   const { message, conversationId, mode, concept: conceptSlug } = body;
+  const helpKind: HelpKind | null =
+    body.help?.kind === 'start' || body.help?.kind === 'hint' || body.help?.kind === 'solution'
+      ? body.help.kind
+      : null;
+  const helpLevel = Math.min(Math.max(Number(body.help?.level) || 1, 1), 3);
   const chatMode: 'study' | 'solve' = mode === 'solve' ? 'solve' : 'study';
   if (!message?.trim()) {
     return NextResponse.json({ error: "Mesaj gol" }, { status: 400 });
@@ -223,8 +242,25 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // ── ETAPA 70 D: chip de ajutor — instrucțiune fermă + folosirea persistată ──
+  // Cererea de ajutor NU e o încercare de răspuns (evaluarea 63 se sare).
+  let helpInstruction = "";
+  if (helpKind && conceptAnchor && conceptAnchor.exercises.length > 0) {
+    try {
+      const service = createServiceClient();
+      const exercise = await pickCurrentExercise(service, user.id, convId, conceptAnchor);
+      if (exercise) {
+        await recordHelpUsage(service, user.id, convId, exercise.id, helpKind, helpLevel);
+        helpInstruction = buildHelpInstruction(helpKind, helpLevel, exercise.statement);
+      }
+    } catch (err) {
+      console.error("[chat/route] help handling failed:", err instanceof Error ? err.message : err);
+    }
+  }
+
   // Bloc 3: metodele detectate + exercițiul similar din bibliotecă (per mesaj)
   let dynamicAddendum = "";
+  if (helpInstruction) dynamicAddendum += helpInstruction;
   const methodInstruction = buildMultiMethodInstruction(relevantMethods);
   if (methodInstruction) {
     dynamicAddendum += `\n\n${methodInstruction}`;
@@ -246,19 +282,24 @@ export async function POST(req: NextRequest) {
   // ── ETAPA 63: evaluarea încercării rulează CONCURENT cu stream-ul ─────
   // (Nivel A determinist pe linkuri strict-bijectiv, altfel judecător Haiku
   //  izolat — vede DOAR enunț + răspuns elev + răspuns oficial.)
-  let attemptPromise: Promise<AttemptEvaluation | null> | null = null;
-  if (conceptAnchor && conceptAnchor.exercises.length > 0) {
+  // ETAPA 70 D: reușita după un chip de ajutor are pas EMA înjumătățit
+  // (rezolvarea arătată → zero); cererile de ajutor NU se evaluează.
+  let attemptPromise: Promise<{ evaluation: AttemptEvaluation | null; weight: number } | null> | null = null;
+  if (!helpKind && conceptAnchor && conceptAnchor.exercises.length > 0) {
     const anchorForEval = conceptAnchor;
     attemptPromise = (async () => {
       const service = createServiceClient();
       const exercise = await pickCurrentExercise(service, user.id, convId, anchorForEval);
       if (!exercise) return null;
-      return evaluateAttempt(service, {
+      const helpKinds = await getHelpKindsUsed(service, user.id, convId, exercise.id);
+      const evaluation = await evaluateAttempt(service, {
         userId: user.id,
         conversationId: convId,
         message,
         exercise,
+        helped: helpKinds.length > 0,
       });
+      return { evaluation, weight: helpWeight(helpKinds) };
     })().catch((err) => {
       console.error("[chat/route] attempt evaluation failed:", err instanceof Error ? err.message : err);
       return null;
@@ -538,10 +579,11 @@ export async function POST(req: NextRequest) {
           // ── ETAPA 63: verdictul încercării — eveniment separat, după done ──
           if (attemptPromise) {
             try {
-              const evaluation = await Promise.race([
+              const attemptResult = await Promise.race([
                 attemptPromise,
                 new Promise<null>((resolve) => setTimeout(() => resolve(null), 8000)),
               ]);
+              const evaluation = attemptResult?.evaluation ?? null;
               if (evaluation) {
                 console.log(`[chat/route] attempt evaluated: method=${evaluation.method} correct=${evaluation.correct} confidence=${evaluation.confidence.toFixed(2)}`);
                 controller.enqueue(
@@ -551,6 +593,7 @@ export async function POST(req: NextRequest) {
                         correct: evaluation.correct,
                         method: evaluation.method,
                         confidence: evaluation.confidence,
+                        helped: attemptResult ? attemptResult.weight < 1 : false,
                       },
                     })}\n\n`
                   )
@@ -658,18 +701,22 @@ export async function POST(req: NextRequest) {
       // ── ETAPA 66 F3: alerta de cost zilnic (o dată pe zi, best-effort) ──
       void maybeWriteDailyCostAlert(service);
 
-      // ── ETAPA 60 (PAS 5) + ETAPA 63: evidență pentru sesiunea ancorată ──
+      // ── ETAPA 60 (PAS 5) + ETAPA 63 + ETAPA 70 D: evidență pentru sesiunea ancorată ──
       // Cu verdict de încredere (determinist sau judecător ≥ 0.8) → EMA se mișcă;
       // fără verdict → correct=null = doar urmă de expunere (mastery neatins).
+      // Reușita CU ajutor → pas înjumătățit; după rezolvarea arătată → zero.
       if (anchoredConceptSlug) {
         try {
-          const evaluation = attemptPromise ? await attemptPromise : null;
+          const attemptResult = attemptPromise ? await attemptPromise : null;
+          const evaluation = attemptResult?.evaluation ?? null;
+          const weight = evaluation?.correct === true ? (attemptResult?.weight ?? 1) : 1;
           await recordConceptEvidence(
             service,
             user.id,
             [anchoredConceptSlug],
             evaluation?.correct ?? null,
-            "chat"
+            "chat",
+            weight
           );
         } catch (err) {
           console.error("[chat/route] chat evidence failed:", err instanceof Error ? err.message : err);

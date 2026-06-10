@@ -40,6 +40,22 @@ export function ChatView({ conversationId, initialMessages, conceptSlug }: Props
     await sendMessage(text);
   }
 
+  // ETAPA 70 D: chips de ajutor sub exercițiul activ (doar în sesiunea ancorată);
+  // fiecare chip = un mesaj din cota existentă
+  const [hintLevel, setHintLevel] = useState(0);
+  async function sendHelp(kind: "start" | "hint" | "solution") {
+    if (isStreaming) return;
+    if (kind === "start") {
+      await sendMessage("Nu știu cum să încep.", { help: { kind } });
+    } else if (kind === "hint") {
+      const level = Math.min(hintLevel + 1, 3);
+      setHintLevel(level);
+      await sendMessage(`Dă-mi un indiciu (${level}/3).`, { help: { kind, level } });
+    } else {
+      await sendMessage("Arată-mi rezolvarea completă.", { help: { kind } });
+    }
+  }
+
   return (
     <div className="flex flex-col h-full flex-1 min-w-0">
       {/* Mode toggle header */}
@@ -60,6 +76,20 @@ export function ChatView({ conversationId, initialMessages, conceptSlug }: Props
         </div>
       )}
 
+      {conceptSlug && (
+        <div className="px-4 pb-1.5 flex flex-wrap gap-2 justify-center shrink-0">
+          <HelpChip onClick={() => sendHelp("start")} disabled={isStreaming}>
+            Nu știu cum să încep
+          </HelpChip>
+          <HelpChip onClick={() => sendHelp("hint")} disabled={isStreaming || hintLevel >= 3}>
+            💡 Dă-mi un indiciu {hintLevel > 0 ? `(${Math.min(hintLevel + 1, 3)}/3)` : "(1/3)"}
+          </HelpChip>
+          <HelpChip onClick={() => sendHelp("solution")} disabled={isStreaming}>
+            Arată-mi rezolvarea
+          </HelpChip>
+        </div>
+      )}
+
       <ChatInput
         value={inputValue}
         onChange={setInputValue}
@@ -71,6 +101,26 @@ export function ChatView({ conversationId, initialMessages, conceptSlug }: Props
         <RateLimitModal onClose={() => setShowRateLimitModal(false)} />
       )}
     </div>
+  );
+}
+
+function HelpChip({
+  children,
+  onClick,
+  disabled,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+  disabled: boolean;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className="rounded-full border border-primary/30 bg-primary/5 text-primary px-3.5 py-1.5 text-xs font-medium hover:bg-primary/10 active:scale-95 transition disabled:opacity-40 disabled:cursor-default"
+    >
+      {children}
+    </button>
   );
 }
 

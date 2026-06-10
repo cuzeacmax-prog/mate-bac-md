@@ -94,6 +94,8 @@ export async function evaluateAttempt(
     sessionType?: 'chat_ancorat' | 'daily_challenge' | 'mock_bac';
     /** true = mesajul E un răspuns prin construcție (câmp dedicat), sare detecția */
     assumeAttempt?: boolean;
+    /** ETAPA 70 D: elevul a folosit un chip de ajutor pe acest exercițiu */
+    helped?: boolean;
   }
 ): Promise<AttemptEvaluation | null> {
   const { userId, conversationId, message, exercise } = params;
@@ -156,6 +158,8 @@ export async function evaluateAttempt(
       method: evaluation.method,
       confidence: evaluation.confidence,
       motiv: evaluation.motiv,
+      // ETAPA 70 D: câmpul helped în evidență — reușita cu ajutor e marcată
+      helped: params.helped ?? false,
     },
   });
   if (insErr) console.error("[evaluare] attempt insert failed:", insErr.message);

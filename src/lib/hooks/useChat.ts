@@ -28,7 +28,8 @@ export function useChat({
   const [convId, setConvId] = useState<string | undefined>(initialConvId);
 
   const sendMessage = useCallback(
-    async (text: string) => {
+    /** ETAPA 70 D: opts.help — chip de ajutor pe exercițiul activ */
+    async (text: string, opts?: { help?: { kind: 'start' | 'hint' | 'solution'; level?: number } }) => {
       if (!text.trim() || isStreaming) return;
 
       const userMsg: ChatMessage = {
@@ -45,7 +46,13 @@ export function useChat({
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: text, conversationId: convId, mode, concept: conceptSlug }),
+          body: JSON.stringify({
+            message: text,
+            conversationId: convId,
+            mode,
+            concept: conceptSlug,
+            ...(opts?.help ? { help: opts.help } : {}),
+          }),
         });
 
         if (res.status === 429) {

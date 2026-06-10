@@ -15,13 +15,10 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { getConceptAnchor } from '@/lib/concepts/anchor';
-import { recordConceptEvidence } from '@/lib/mastery/evidence';
+import { recordConceptEvidence, HELPED_WEIGHT } from '@/lib/mastery/evidence';
 import { evaluateAttempt } from '@/lib/evaluare/evaluate';
 import { hashSeed, pickDeterministic } from '@/lib/daily/daily';
 import type { LessonBlock, QuizBlock } from '@/lib/lesson/blocks';
-
-/** ponderea EMA pentru reușita CU ajutor (indiciu/chips) — FAZA D: exact 1/2 */
-export const HELPED_WEIGHT = 0.5;
 
 export interface SimilarExercise {
   exercise_id: string;
