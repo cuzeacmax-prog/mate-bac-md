@@ -21,6 +21,7 @@ import { SPRING, buttonTap, progressFill, celebrate } from "@/lib/motion/motion"
 import { playFeedback } from "@/lib/motion/feedback";
 import { MASTERY_THRESHOLD } from "@/lib/progres/data";
 import { playSound, preloadSounds, soundsEnabled, setSoundsEnabled } from "@/lib/sound/sounds";
+import { markValueMoment } from "@/lib/pwa/value-moments";
 import type { LessonBlockClient } from "@/lib/lesson/blocks";
 import { BreathingOrb } from "@/components/motion/BreathingOrb";
 
@@ -218,6 +219,8 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
       playSound("complete");
       // ETAPA 74 A4: explozie de particule brand + orbii din fundal se intensifică
       playFeedback("lectie-completa");
+      // ETAPA 78 A: moment de valoare — abia de-acum promptul PWA are voie să apară
+      markValueMoment("lectie");
       if (streak > 0) setTimeout(() => playSound("streak"), 800);
     }
     // altfel: așteptăm următorul bloc din stream (butonul arată spinner)

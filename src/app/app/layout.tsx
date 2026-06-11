@@ -8,6 +8,7 @@ import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
 import { LivingBackdrop } from "@/components/motion/LivingBackdrop";
 import { MotionProvider } from "@/components/motion/MotionProvider";
+import { PwaSetup } from "@/components/pwa/PwaSetup";
 
 export default async function AppLayout({
   children,
@@ -65,6 +66,8 @@ export default async function AppLayout({
     <div className="flex flex-col h-screen">
       {/* ETAPA 74 A1: fundalul viu pe TOATE ecranele elevului */}
       <LivingBackdrop />
+      {/* ETAPA 78 A: SW + prompt instalare discret (după momentul de valoare) */}
+      <PwaSetup />
       <Header
         userEmail={profile?.email ?? user.email ?? null}
         userName={profile?.full_name ?? null}

@@ -10,6 +10,7 @@ import { useRef, useState } from "react";
 import { StatementText } from "@/components/StatementText";
 import { playFeedback } from "@/lib/motion/feedback";
 import type { DailyExercise } from "@/lib/daily/daily";
+import { markValueMoment } from "@/lib/pwa/value-moments";
 import { BreathingOrb } from "@/components/motion/BreathingOrb";
 
 interface Props {
@@ -53,6 +54,8 @@ export function DailyCard({ exercises: initial, completed: initialCompleted, str
         playFeedback(data.correct ? "corect" : "gresit", cardRefs.current[exerciseId]);
       }
       setExercises(data.exercises);
+      // ETAPA 78 A: daily abia terminat = moment de valoare (al 3-lea deschide promptul PWA)
+      if (data.completed && !completed) markValueMoment("daily");
       setCompleted(data.completed);
       setStreak(data.streak);
     } catch (err) {
