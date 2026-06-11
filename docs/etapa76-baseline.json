@@ -1,0 +1,76 @@
+{
+  "base": "http://localhost:3000",
+  "runs": 3,
+  "results": {
+    "landing-desktop": {
+      "ttfb": 268,
+      "lcp": 1528,
+      "tbt": 11,
+      "jsKb": 864,
+      "reqs": 20
+    },
+    "azi-desktop": {
+      "ttfb": 757,
+      "lcp": 1208,
+      "tbt": 92,
+      "jsKb": 1245,
+      "reqs": 32
+    },
+    "harta-desktop": {
+      "ttfb": 429,
+      "lcp": 816,
+      "tbt": 61,
+      "jsKb": 1391,
+      "reqs": 30
+    },
+    "lesson-desktop": {
+      "ttfb": 519,
+      "lcp": 2548,
+      "tbt": 40,
+      "jsKb": 1591,
+      "reqs": 80
+    },
+    "progres-desktop": {
+      "ttfb": 651,
+      "lcp": 1004,
+      "tbt": 77,
+      "jsKb": 1379,
+      "reqs": 81
+    },
+    "landing-mobil": {
+      "ttfb": 197,
+      "lcp": 1328,
+      "tbt": 430,
+      "jsKb": 864,
+      "reqs": 20
+    },
+    "azi-mobil": {
+      "ttfb": 538,
+      "lcp": 1612,
+      "tbt": 898,
+      "jsKb": 1245,
+      "reqs": 28
+    },
+    "harta-mobil": {
+      "ttfb": 387,
+      "lcp": 1100,
+      "tbt": 824,
+      "jsKb": 1391,
+      "reqs": 25
+    },
+    "lesson-mobil": {
+      "ttfb": 447,
+      "lcp": 1220,
+      "tbt": 860,
+      "jsKb": 1591,
+      "reqs": 70
+    },
+    "progres-mobil": {
+      "ttfb": 518,
+      "lcp": 1252,
+      "tbt": 825,
+      "jsKb": 1379,
+      "reqs": 44
+    }
+  }
+}
