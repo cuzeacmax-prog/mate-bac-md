@@ -75,15 +75,19 @@ async function main() {
   await new Promise((r) => setTimeout(r, 2500));
 
   await svc.from('profiles').update({ subscription_status: 'free' }).eq('id', user.id);
+  // ETAPA 75 C: mesajele premium se rutează pe dificultate — simple →
+  // chat_simple (Haiku), hard → chat_hard (Sonnet); chat_premium rămâne doar
+  // pentru compat. Testul de CACHE acceptă oricare din task-urile premium.
   const { data: rows } = await svc
     .from('api_usage_log')
     .select('task_name, tokens_input, tokens_output, cached_input_tokens, cost_usd, created_at')
-    .eq('task_name', 'chat_premium')
+    .in('task_name', ['chat_premium', 'chat_simple', 'chat_hard'])
+    .eq('endpoint', '/api/chat')
     .gte('created_at', testStart)
     .order('created_at');
-  if ((rows?.length ?? 0) < 3) fail(`așteptam 3 rânduri chat_premium, găsite ${rows?.length}`);
+  if ((rows?.length ?? 0) < 3) fail(`așteptam 3 rânduri de chat premium-rutate, găsite ${rows?.length}`);
 
-  console.log('\n── rândurile chat_premium ──');
+  console.log('\n── rândurile de chat (premium, rutate pe dificultate) ──');
   for (const [i, r] of rows!.entries()) {
     const pct = r.tokens_input ? Math.round(((r.cached_input_tokens ?? 0) / r.tokens_input) * 100) : 0;
     console.log(`  msg${i + 1}: input=${r.tokens_input} cached=${r.cached_input_tokens} (${pct}%) cost=$${Number(r.cost_usd).toFixed(6)}`);

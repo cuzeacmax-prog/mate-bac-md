@@ -81,29 +81,36 @@ async function main() {
   if (dry) return;
 
   let done = 0, failed = 0, bytes = 0, cost = 0;
-  for (const [key, speech] of work) {
-    try {
-      const resp = await fetch('https://api.openai.com/v1/audio/speech', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${openaiKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'tts-1', voice: VOICE, input: speech, response_format: 'mp3', speed: TTS_SPEED }),
-      });
-      if (!resp.ok) throw new Error(`OpenAI ${resp.status}: ${(await resp.text()).slice(0, 120)}`);
-      const audio = await resp.arrayBuffer();
-      const { error: upErr } = await svc.storage
-        .from(TTS_BUCKET)
-        .upload(key, Buffer.from(audio), { contentType: 'audio/mpeg', upsert: true });
-      if (upErr) throw new Error(`upload: ${upErr.message}`);
-      bytes += audio.byteLength;
-      cost += speech.length * TTS_PRICE_PER_CHAR;
-      done++;
-      if (done % 100 === 0) console.log(`  …${done}/${work.size}`);
-    } catch (err) {
-      failed++;
-      console.error(`  ✗ ${key.slice(0, 12)}: ${err instanceof Error ? err.message.slice(0, 120) : err}`);
-      if (failed > 25) throw new Error('prea multe eșecuri — opresc');
-    }
-  }
+  // serial era ~25s/fișier (6h pe tot corpusul) — paralelizăm moderat
+  const { default: pLimit } = await import('p-limit');
+  const limit = pLimit(8);
+  await Promise.all(
+    [...work.entries()].map(([key, speech]) =>
+      limit(async () => {
+        try {
+          const resp = await fetch('https://api.openai.com/v1/audio/speech', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${openaiKey}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model: 'tts-1', voice: VOICE, input: speech, response_format: 'mp3', speed: TTS_SPEED }),
+          });
+          if (!resp.ok) throw new Error(`OpenAI ${resp.status}: ${(await resp.text()).slice(0, 120)}`);
+          const audio = await resp.arrayBuffer();
+          const { error: upErr } = await svc.storage
+            .from(TTS_BUCKET)
+            .upload(key, Buffer.from(audio), { contentType: 'audio/mpeg', upsert: true });
+          if (upErr) throw new Error(`upload: ${upErr.message}`);
+          bytes += audio.byteLength;
+          cost += speech.length * TTS_PRICE_PER_CHAR;
+          done++;
+          if (done % 100 === 0) console.log(`  …${done}/${work.size}`);
+        } catch (err) {
+          failed++;
+          console.error(`  ✗ ${key.slice(0, 12)}: ${err instanceof Error ? err.message.slice(0, 120) : err}`);
+        }
+      })
+    )
+  );
+  if (failed > work.size / 4) throw new Error(`prea multe eșecuri: ${failed}`);
   // log agregat (o linie per batch, nu per fișier)
   await svc.from('api_usage_log').insert({
     user_id: null, task_name: 'tts', model: 'tts-1', endpoint: 'build:tts-pregen',
