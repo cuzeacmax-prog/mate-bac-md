@@ -24,7 +24,7 @@ import {
   stripQuizAnswer,
   type LessonBlock,
 } from '@/lib/lesson/blocks';
-import { LESSON_SYSTEM_PROMPT, buildLessonUserMessage, buildRetryMessage } from '@/lib/lesson/prompt';
+import { LESSON_SYSTEM_PROMPT, buildLessonConceptBlock, buildLessonUserMessage, buildRetryMessage } from '@/lib/lesson/prompt';
 import { getTheoryFigure } from '@/lib/lesson/theory-figures/registry';
 import { renderPlotSVG } from '@/lib/lesson/plot';
 import { renderManipulative } from '@/lib/lesson/manipulatives';
@@ -97,21 +97,27 @@ export async function POST(req: NextRequest) {
     conversation_id: convId, role: 'user', content: `Începe lecția: ${anchor.name}`,
   });
 
-  const systemBlocks: SystemBlock[] = [
-    // contractul + regulile de limbaj = PREFIX STATIC (cache cross-lecții)
-    { text: LESSON_SYSTEM_PROMPT, cache: true },
-  ];
   // ETAPA 70 B3: figura canonică de teorie, dacă registrul o are
   const theoryEntry = getTheoryFigure(anchor.slug);
-  const userMessage = buildLessonUserMessage({
-    conceptName: anchor.name,
-    gradeLevel,
-    theory: anchor.theory,
-    exercises: anchor.exercises.map((e) => ({
-      id: e.id, statement: e.statement, official_answer: e.official_answer, has_figure: e.has_figure,
-    })),
-    theoryFigure: theoryEntry ? { slug: anchor.slug, descriere: theoryEntry.descriere } : null,
-  });
+  // ETAPA 75 FAZA A: contextul conceptului = al DOILEA bloc cache-uit
+  // (semi-static per concept) — prefixul cumulat trece de minimul Haiku (2048),
+  // re-cererea + lecțiile repetate pe concept citesc din cache.
+  const systemBlocks: SystemBlock[] = [
+    { text: LESSON_SYSTEM_PROMPT, cache: true },
+    {
+      text: buildLessonConceptBlock({
+        conceptName: anchor.name,
+        gradeLevel,
+        theory: anchor.theory,
+        exercises: anchor.exercises.map((e) => ({
+          id: e.id, statement: e.statement, official_answer: e.official_answer, has_figure: e.has_figure,
+        })),
+        theoryFigure: theoryEntry ? { slug: anchor.slug, descriere: theoryEntry.descriere } : null,
+      }),
+      cache: true,
+    },
+  ];
+  const userMessage = buildLessonUserMessage({ conceptName: anchor.name, gradeLevel });
 
   const encoder = new TextEncoder();
   const stream = new ReadableStream({

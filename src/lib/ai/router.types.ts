@@ -12,6 +12,15 @@ export interface ModelConfig {
 export interface AiMessage {
   role: "user" | "assistant";
   content: string;
+  /**
+   * ETAPA 75 FAZA A: breakpoint de cache PE MESAJ (cache incremental al
+   * conversației) — se pune pe ULTIMUL mesaj din istoricul anterior: prefixul
+   * system+istoric crește turn cu turn și se recitește din cache. Necesar pe
+   * Haiku, unde minimul cacheabil e 4096 tokeni (system-ul singur nu ajunge
+   * întotdeauna); pe Sonnet (minim 1024) aduce istoricul în cache, nu doar
+   * system-ul.
+   */
+  cache?: boolean;
 }
 
 /**

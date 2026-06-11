@@ -1,12 +1,14 @@
 /**
  * prompt.ts — ETAPA 67: promptul lecției structurate.
  *
- * FAZA B: contractul de blocuri intră în PREFIXUL STATIC (breakpoint de cache
- * din ETAPA 66 — prefixul crește peste minimul Haiku de 4096 împreună cu
- * regulile, deci și free-tier începe să cache-uiască).
- * FAZA E: regulile de limbaj sunt CONTRACT verificabil (limitele din schemă
- * le impun mecanic), nu rugăminți: o idee per pas, max 1 formulă per step,
- * ÎNTÂI exemplul concret APOI generalizarea, vocabular dozat pe clasă.
+ * ETAPA 75 FAZA A (defectul de cache dovedit): minimul cacheabil pe Haiku e
+ * 2048 tokeni; contractul singur are ~1100 → cache_control era IGNORAT tăcut
+ * (cached_input_tokens=0 pe toate lecțiile free). Acum contextul conceptului
+ * (teoria + exercițiile — semi-static per concept, identic cross-useri) e al
+ * DOILEA bloc system cache-uit: prefixul cumulat trece de minim, iar re-cererea
+ * blocurilor respinse + lecțiile repetate pe același concept citesc din cache.
+ * FAZA E (67): regulile de limbaj sunt CONTRACT verificabil (limitele din
+ * schemă le impun mecanic), nu rugăminți.
  */
 
 export const LESSON_SYSTEM_PROMPT = `Ești Profesor Maxim — predai matematică pentru BAC (Republica Moldova), în română.
@@ -70,8 +72,12 @@ export interface LessonRequestContext {
   theoryFigure?: { slug: string; descriere: string } | null;
 }
 
-/** mesajul user pentru generarea lecției (context dinamic, necacheat) */
-export function buildLessonUserMessage(ctx: LessonRequestContext): string {
+/**
+ * ETAPA 75 FAZA A: contextul CONCEPTULUI (teorie + exerciții + figura canonică
+ * + instrucțiunea vizuală) — SEMI-STATIC: identic pentru orice user pe același
+ * concept → al doilea bloc system cu cache:true (prefix cumulat > minimul Haiku).
+ */
+export function buildLessonConceptBlock(ctx: LessonRequestContext): string {
   const exercisesBlock = ctx.exercises.length
     ? ctx.exercises
         .map(
@@ -89,14 +95,19 @@ export function buildLessonUserMessage(ctx: LessonRequestContext): string {
   const visualHint = /probabilitat|eveniment|combinat|permut|aranjament|fract|multim|statistic/i.test(ctx.conceptName)
     ? `\nCONCEPT VIZUAL: emite OBLIGATORIU cel puțin un bloc manipulative (urna/zaruri/monede/persoane/carti/venn/bare-fractii/dreapta-numerica) cu numerele EXACTE din exemplul folosit — imediat după exemplul pe care îl ilustrează.`
     : '';
-  return `Generează lecția structurată pentru conceptul: ${ctx.conceptName}
-Clasa elevului: ${ctx.gradeLevel ?? 12}
+  return `CONCEPTUL LECȚIEI: ${ctx.conceptName}
 ${theoryFigureLine}${visualHint}
 TEORIA DE REFERINȚĂ (sursa de adevăr — extrage, nu contrazice):
 ${ctx.theory || '(fără teorie în graf — folosește doar exercițiile)'}
 
 EXERCIȚIILE SERVIBILE (folosește-le în example/quiz; figura doar cu id-ul dat):
 ${exercisesBlock}`;
+}
+
+/** mesajul user — DOAR partea per-elev (dinamică, necacheată) */
+export function buildLessonUserMessage(ctx: Pick<LessonRequestContext, 'conceptName' | 'gradeLevel'>): string {
+  return `Generează lecția structurată pentru conceptul: ${ctx.conceptName}
+Clasa elevului: ${ctx.gradeLevel ?? 12}`;
 }
 
 /**

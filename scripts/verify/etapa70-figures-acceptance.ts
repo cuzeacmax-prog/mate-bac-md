@@ -12,7 +12,7 @@
 import { THEORY_FIGURES } from '../../src/lib/lesson/theory-figures/registry';
 import { validatePlotExpr, renderPlotSVG } from '../../src/lib/lesson/plot';
 import { parseLessonBlock, LessonBlockModelSchema, type LessonBlock } from '../../src/lib/lesson/blocks';
-import { LESSON_SYSTEM_PROMPT, buildLessonUserMessage } from '../../src/lib/lesson/prompt';
+import { LESSON_SYSTEM_PROMPT, buildLessonConceptBlock, buildLessonUserMessage } from '../../src/lib/lesson/prompt';
 import { callAIStreamArray } from '../../src/lib/ai/router';
 import { getConceptAnchor } from '../../src/lib/concepts/anchor';
 import { createServiceClient } from '../../src/lib/supabase/service';
@@ -70,7 +70,8 @@ async function main() {
   const svc = createServiceClient();
   const anchor = await getConceptAnchor(svc, CONCEPT);
   if (!anchor) fail('ancora conceptului lipsește');
-  const userMessage = buildLessonUserMessage({
+  // ETAPA 75 A: structura de producție — contextul conceptului e bloc system cache-uit
+  const conceptBlock = buildLessonConceptBlock({
     conceptName: anchor.name,
     gradeLevel: 12,
     theory: anchor.theory,
@@ -79,8 +80,9 @@ async function main() {
     })),
     theoryFigure: { slug: CONCEPT, descriere: THEORY_FIGURES[CONCEPT].descriere },
   });
+  const userMessage = buildLessonUserMessage({ conceptName: anchor.name, gradeLevel: 12 });
   const result = await callAIStreamArray('chat_free', [{ role: 'user', content: userMessage }], {
-    system: [{ text: LESSON_SYSTEM_PROMPT, cache: true }],
+    system: [{ text: LESSON_SYSTEM_PROMPT, cache: true }, { text: conceptBlock, cache: true }],
     elementSchema: LessonBlockModelSchema,
     schemaName: 'lectie_blocuri',
   });

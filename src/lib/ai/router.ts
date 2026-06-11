@@ -15,8 +15,19 @@ function buildPrompt(
   system: string | SystemBlock[] | undefined,
   messages: AiMessage[]
 ): { system?: string; messages: ModelMessage[] } {
+  // ETAPA 75 FAZA A: mesajele cu cache:true devin breakpoint-uri cache_control
+  // (cache incremental al conversației — prefixul crește turn cu turn)
+  const chatMessages: ModelMessage[] = messages.map((m) =>
+    m.cache
+      ? ({
+          role: m.role,
+          content: m.content,
+          providerOptions: { anthropic: { cacheControl: { type: "ephemeral" as const } } },
+        } as ModelMessage)
+      : ({ role: m.role, content: m.content } as ModelMessage)
+  );
   if (system === undefined || typeof system === "string") {
-    return { system, messages: messages as ModelMessage[] };
+    return { system, messages: chatMessages };
   }
   const systemMessages: ModelMessage[] = system
     .filter((b) => b.text.trim().length > 0)
@@ -29,7 +40,7 @@ function buildPrompt(
           }
         : { role: "system" as const, content: b.text }
     );
-  return { messages: [...systemMessages, ...(messages as ModelMessage[])] };
+  return { messages: [...systemMessages, ...chatMessages] };
 }
 
 const configCache = new Map<string, { config: ModelConfig; expires: number }>();

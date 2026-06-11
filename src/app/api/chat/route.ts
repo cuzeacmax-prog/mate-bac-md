@@ -4,7 +4,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { STUDY_SYSTEM_PROMPT, SOLVE_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
 import { callAIStream, callAIStreamWithTools, getTaskPricing } from "@/lib/ai/router";
 import { computeLlmCost } from "@/lib/ai/usage-log";
-import type { SystemBlock } from "@/lib/ai/router.types";
+import type { AiMessage, SystemBlock } from "@/lib/ai/router.types";
 import { generateEmbeddingForQuery } from "@/lib/embeddings/gemini";
 import {
   findRelevantMethods,
@@ -258,7 +258,10 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Bloc 3: metodele detectate + exercițiul similar din bibliotecă (per mesaj)
+  // Contextul PER-MESAJ (metode + RAG + rezumat). ETAPA 75 FAZA A: NU mai e
+  // bloc system — un bloc dinamic între system și istoric SPĂRGEA prefixul de
+  // cache (orice breakpoint pe istoric devenea inutil). Acum intră în mesajul
+  // user curent, iar prefixul system+istoric rămâne stabil și cache-uibil.
   let dynamicAddendum = "";
   if (helpInstruction) dynamicAddendum += helpInstruction;
   const methodInstruction = buildMultiMethodInstruction(relevantMethods);
@@ -272,12 +275,23 @@ export async function POST(req: NextRequest) {
   if (historySummary) {
     dynamicAddendum += `\n\n---\nREZUMATUL conversației de până acum (mesajele mai vechi, comprimate):\n${historySummary}`;
   }
+  // mesajul user trimis modelului: contextul per-mesaj + mesajul elevului
+  // (în DB se persistă DOAR mesajul elevului — neschimbat)
+  const userTurnContent = dynamicAddendum
+    ? `[CONTEXT PENTRU ACEST MESAJ — de la sistem]\n${dynamicAddendum}\n\n[MESAJUL ELEVULUI]\n${message}`
+    : message;
 
   const systemBlocks: SystemBlock[] = [
     { text: basePrompt, cache: true },
     ...(anchorAddendum ? [{ text: anchorAddendum, cache: true }] : []),
-    ...(dynamicAddendum ? [{ text: dynamicAddendum }] : []),
   ];
+
+  // ETAPA 75 FAZA A: cache incremental al conversației — breakpoint pe ULTIMUL
+  // mesaj din istoric: prefixul system+istoric se scrie la mesajul N și se
+  // CITEȘTE la mesajul N+1 (minimul Haiku de 4096 e depășit de system singur).
+  const historyMessages: AiMessage[] = priorMessages.map((m, i) =>
+    i === priorMessages.length - 1 ? { ...m, cache: true } : m
+  );
 
   // ── ETAPA 63: evaluarea încercării rulează CONCURENT cu stream-ul ─────
   // (Nivel A determinist pe linkuri strict-bijectiv, altfel judecător Haiku
@@ -422,7 +436,7 @@ export async function POST(req: NextRequest) {
 
               const exResult = await callAIStreamWithTools(
                 taskName,
-                [...priorMessages, { role: "user", content: ex.text }],
+                [...historyMessages, { role: "user", content: ex.text }],
                 {
                   system: [
                     { text: basePrompt, cache: true },
@@ -490,8 +504,8 @@ export async function POST(req: NextRequest) {
             const svgOutputs: string[] = [];
 
             const result = toolsAvailable
-              ? await callAIStreamWithTools(taskName, [...priorMessages, { role: "user", content: message }], { system: systemBlocks, tools: toolsToUse, maxToolSteps: 3 })
-              : await callAIStream(taskName, [...priorMessages, { role: "user", content: message }], { system: systemBlocks });
+              ? await callAIStreamWithTools(taskName, [...historyMessages, { role: "user", content: userTurnContent }], { system: systemBlocks, tools: toolsToUse, maxToolSteps: 3 })
+              : await callAIStream(taskName, [...historyMessages, { role: "user", content: userTurnContent }], { system: systemBlocks });
 
             let chunkCount = 0;
 
