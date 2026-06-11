@@ -3,10 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import {} from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 import { track, Events } from '@/lib/analytics/posthog-client';
+import { BreathingOrb } from "@/components/motion/BreathingOrb";
 
 export default function AuthPage() {
   const router = useRouter();
@@ -60,7 +61,7 @@ export default function AuthPage() {
           disabled={loading}
         >
           {loading ? (
-            <Loader2 className="h-5 w-5 animate-spin" />
+            <BreathingOrb size="sm" />
           ) : (
             <>
               {/* Google Icon */}

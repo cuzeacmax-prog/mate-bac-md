@@ -9,12 +9,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Loader2, Flag } from "lucide-react";
+import {Flag } from "lucide-react";
 import { MathText } from "@/components/MathText";
 import { StatementText } from "@/components/StatementText";
 import { LayeredFigure } from "@/components/lesson/LayeredFigure";
 import { buttonTap } from "@/lib/motion/motion";
 import type { ExamAttempt, ExamResult } from "@/lib/simulare/exam";
+import { BreathingOrb } from "@/components/motion/BreathingOrb";
 
 type Phase = "intro" | "running" | "submitting" | "result" | "expired";
 
@@ -118,7 +119,7 @@ export function SimularePlayer({ audit }: {
     return (
       <div className="flex-1 flex items-center justify-center py-24">
         <div className="text-center space-y-3">
-          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
+          <BreathingOrb size="md" />
           <p className="text-sm text-muted-foreground">Se evaluează răspunsurile…</p>
         </div>
       </div>

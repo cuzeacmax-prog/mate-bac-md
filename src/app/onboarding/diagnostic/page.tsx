@@ -3,12 +3,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import {} from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { MathText } from '@/components/MathText';
 import { useOnboardingStore } from '@/lib/stores/onboarding-store';
 import { shouldStop } from '@/lib/diagnostic/adaptive';
 import { track, Events } from '@/lib/analytics/posthog-client';
+import { BreathingOrb } from "@/components/motion/BreathingOrb";
 
 type AnswerState = 'idle' | 'correct' | 'wrong';
 
@@ -154,7 +155,7 @@ export default function DiagnosticPage() {
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <Loader2 className="h-10 w-10 animate-spin text-primary mx-auto" />
+          <BreathingOrb size="lg" />
           <p className="text-muted-foreground">Se calculează predicția...</p>
         </div>
       </div>
@@ -183,7 +184,7 @@ export default function DiagnosticPage() {
       <div className="flex-1 flex flex-col justify-center gap-6">
         {loading ? (
           <div className="flex justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <BreathingOrb size="md" />
           </div>
         ) : exercise ? (
           <AnimatePresence mode="wait">

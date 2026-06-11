@@ -2,7 +2,8 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Volume2, Pause, Play, Loader2 } from 'lucide-react';
+import { Volume2, Pause, Play,} from 'lucide-react';
+import { BreathingOrb } from "@/components/motion/BreathingOrb";
 
 interface Props {
   text: string;
@@ -97,7 +98,7 @@ export function VoicePlayer({ text, voice = 'nova' }: Props) {
       title={label}
       aria-label={label}
     >
-      {status === 'loading' && <Loader2 className="w-3 h-3 animate-spin" aria-hidden="true" />}
+      {status === 'loading' && <BreathingOrb size="sm" />}
       {status === 'playing' && <Pause  className="w-3 h-3" aria-hidden="true" />}
       {status === 'paused'  && <Play   className="w-3 h-3" aria-hidden="true" />}
       {(status === 'idle' || status === 'error') && <Volume2 className="w-3 h-3" aria-hidden="true" />}

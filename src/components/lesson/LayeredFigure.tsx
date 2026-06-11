@@ -9,7 +9,8 @@
  * figura apare ÎNTREAGĂ (cazul MARCAT, nu forțat).
  */
 import { useEffect, useRef, useState } from "react";
-import { Loader2 } from "lucide-react";
+import {} from "lucide-react";
+import { BreathingOrb } from "@/components/motion/BreathingOrb";
 
 interface Props {
   exerciseId: string;
@@ -62,7 +63,7 @@ export function LayeredFigure({ exerciseId, layerMax }: Props) {
   if (!svg) {
     return (
       <div className="flex justify-center py-8">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <BreathingOrb size="sm" />
       </div>
     );
   }

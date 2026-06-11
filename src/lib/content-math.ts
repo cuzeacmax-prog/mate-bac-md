@@ -241,7 +241,7 @@ export function delimitBareMath(text: string): string {
       continue;
     }
     // pe segmentele TEXT: scoatem \textbf/\textit și delimităm rulajele \cmd
-    let t = seg.value.replace(/\\text(?:bf|it|rm)?\{([^{}]*)\}/g, "$1");
+    const t = seg.value.replace(/\\text(?:bf|it|rm)?\{([^{}]*)\}/g, "$1");
     let res = "";
     i = 0;
     while (i < t.length) {

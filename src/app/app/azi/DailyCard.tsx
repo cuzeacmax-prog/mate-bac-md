@@ -6,10 +6,11 @@
  * răspunsurile pleacă spre POST /api/daily/attempt (evaluarea ETAPA 63).
  */
 import { useRef, useState } from "react";
-import { Loader2 } from "lucide-react";
+
 import { StatementText } from "@/components/StatementText";
 import { playFeedback } from "@/lib/motion/feedback";
 import type { DailyExercise } from "@/lib/daily/daily";
+import { BreathingOrb } from "@/components/motion/BreathingOrb";
 
 interface Props {
   exercises: DailyExercise[];
@@ -137,7 +138,7 @@ export function DailyCard({ exercises: initial, completed: initialCompleted, str
                     disabled={pending !== null || !(answers[ex.exercise_id] ?? "").trim()}
                     className="rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm font-medium disabled:opacity-50"
                   >
-                    {pending === ex.exercise_id ? <Loader2 className="h-4 w-4 animate-spin" /> : "Verifică"}
+                    {pending === ex.exercise_id ? <BreathingOrb size="sm" /> : "Verifică"}
                   </button>
                 </div>
               ) : (

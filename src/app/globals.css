@@ -328,6 +328,44 @@
   pointer-events: none;
 }
 
+/* ── ETAPA 77 D3: loader-ul DE BRAND — orbul care respiră ───────────────────
+ * + skeleton-uri pe tokens (nu gri default). */
+@keyframes orb-breathe {
+  0%, 100% { transform: scale(0.85); opacity: 0.55; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+.breathing-orb {
+  display: inline-block;
+  filter: blur(1px);
+  animation: orb-breathe 1.6s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.9; }
+}
+.skeleton-brand {
+  background: var(--glass-2);
+  border-radius: 10px;
+  animation: skeleton-pulse 1.8s ease-in-out infinite;
+}
+/* ── ETAPA 77 D1: tranzițiile între pagini (template.tsx) ─────────────────── */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page-enter { animation: page-enter 0.22s ease-out both; }
+/* stagger pe liste/grile: primele 8 elemente intră decalat cu 40ms */
+.stagger-children > * { animation: page-enter 0.22s ease-out both; }
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 40ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 80ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 120ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 160ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 200ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 240ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 280ms; }
+
 /* ── ETAPA 77 A1: FOCUS MODE în lecție ──────────────────────────────────────
  * Player-ul setează body[data-focus-lesson] → sidebar-ul aplicației și lista
  * de conversații DISPAR; lecția e o scenă centrată, nu un bilețel în colț. */
@@ -510,6 +548,7 @@ body[data-focus-lesson="1"] aside {
 @media (prefers-reduced-motion: reduce) {
   .living-orb, .living-glyph, .empty-orb,
   .map-pulse, .star-twinkle, .quest-edge, .sky-nebula-in,
+  .breathing-orb, .skeleton-brand, .page-enter, .stagger-children > *,
   .fx-ring, .fx-spark, .fx-shake, .fx-streak-pop, .fx-node-wave,
   .btn-living:hover,
   .progress-shimmer::after {

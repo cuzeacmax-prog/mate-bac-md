@@ -12,7 +12,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2 } from "lucide-react";
+import {} from "lucide-react";
 import { MathText } from "@/components/MathText";
 import { StatementText } from "@/components/StatementText";
 import { LessonTable } from "@/components/lesson/LessonTable";
@@ -22,6 +22,7 @@ import { playFeedback } from "@/lib/motion/feedback";
 import { MASTERY_THRESHOLD } from "@/lib/progres/data";
 import { playSound, preloadSounds, soundsEnabled, setSoundsEnabled } from "@/lib/sound/sounds";
 import type { LessonBlockClient } from "@/lib/lesson/blocks";
+import { BreathingOrb } from "@/components/motion/BreathingOrb";
 
 interface Props {
   conceptSlug: string;
@@ -335,7 +336,7 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
   if (blocks.length === 0) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center gap-3 text-muted-foreground">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <BreathingOrb size="lg" />
         <p className="text-sm">Pregătesc lecția…</p>
       </div>
     );
@@ -549,7 +550,7 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
             disabled={askPending || !askInput.trim()}
             className="rounded-xl border border-primary/40 text-primary px-3.5 py-2 text-sm font-medium disabled:opacity-40"
           >
-            {askPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Întreabă"}
+            {askPending ? <BreathingOrb size="sm" /> : "Întreabă"}
           </button>
         </div>
 
@@ -559,7 +560,7 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
             disabled={!canAdvance && streamDone}
             className="btn-living w-full h-13 rounded-2xl bg-primary text-primary-foreground py-3.5 font-semibold disabled:opacity-50"
           >
-            {idx + 1 < blocks.length || streamDone ? "Continuă →" : <Loader2 className="h-5 w-5 animate-spin mx-auto" />}
+            {idx + 1 < blocks.length || streamDone ? "Continuă →" : <BreathingOrb size="sm" />}
           </button>
         )}
       </div>
@@ -942,7 +943,7 @@ function RedemptionCard({
             disabled={pending || !answer.trim()}
             className="rounded-xl bg-primary text-primary-foreground px-4 py-2.5 font-medium disabled:opacity-50"
           >
-            {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Trimite"}
+            {pending ? <BreathingOrb size="sm" /> : "Trimite"}
           </button>
         </div>
       )}
@@ -970,7 +971,7 @@ function TheoryFigure({ slug }: { slug: string }) {
   if (!svg) {
     return (
       <div className="flex justify-center py-8">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <BreathingOrb size="sm" />
       </div>
     );
   }

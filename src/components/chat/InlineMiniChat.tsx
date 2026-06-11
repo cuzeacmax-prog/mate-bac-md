@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Minus, X, Send, Loader2 } from 'lucide-react';
+import { Minus, X, Send,} from 'lucide-react';
 import { type Interaction, useInteractionsStore } from '@/lib/stores/interactions-store';
 import { MessageRenderer } from '@/app/app/chat/_components/MessageRenderer';
 import { MathText } from '@/components/MathText';
+import { BreathingOrb } from "@/components/motion/BreathingOrb";
 
 interface Props {
   interaction: Interaction;
@@ -168,7 +169,7 @@ export function InlineMiniChat({ interaction, messageId }: Props) {
                 className="flex items-center gap-2 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-white text-sm rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-blue-400"
               >
                 {isLoading
-                  ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ? <BreathingOrb size="sm" />
                   : <Send className="w-3.5 h-3.5" />}
                 Întreabă profesorul
               </button>

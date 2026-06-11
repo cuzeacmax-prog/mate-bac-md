@@ -125,7 +125,7 @@ export default async function AziPage() {
           răspunsuri la diagnostic.
         </p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4 stagger-children">
           {rows.map((r) => {
             const prereqs = prereqNames.get(r.concept_id) ?? [];
             // ETAPA 71 D: conceptul își poartă culoarea domeniului
