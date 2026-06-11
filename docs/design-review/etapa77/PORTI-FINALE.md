@@ -17,6 +17,10 @@ Maxim a reîncărcat creditul → cele 7 porți blocate au fost RE-RULATE secven
 încă 429) și embeddings 970/1268 (cota zilnică Gemini — mâine ~10:00, ÎNAINTEA
 oricărei baterii). Secțiunile de mai jos păstrează raportul inițial al incidentului.
 
+**Update (aceeași zi, după reîncărcarea OpenAI):** TTS top-up COMPLET — 246 fișiere
+generate în 3 treceri idempotente ($0.92 real), hit-rate la servire pe corpusul
+canonic+servibil: **100%**. Singurul rest: embeddings 970/1268 pe cota Gemini de mâine.
+
 ## EȘECURI (7) — toate cu cauză externă sau documentată, ZERO regresii de cod
 
 ### 1 cauză comună pentru 6 eșecuri: creditul API Anthropic s-a EPUIZAT în timpul bateriei
