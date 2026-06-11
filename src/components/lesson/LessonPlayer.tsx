@@ -134,6 +134,11 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
   // StrictMode se abortează ÎNAINTE să plece request-ul → zero apeluri LLM duble).
   useEffect(() => {
     const ac = new AbortController();
+    // ETAPA 74 C (defect prins de QA-crawl): navigarea HARD în altă parte în
+    // timpul streamului omora fetch-ul cu „network error" → console.error +
+    // onFallback, deși e o plecare normală. pagehide → abort = ieșire tăcută.
+    const onPageHide = () => ac.abort();
+    window.addEventListener("pagehide", onPageHide);
     const timer = setTimeout(async () => {
       try {
         const resp = await fetch("/api/lesson/start", {
@@ -174,6 +179,7 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
     }, 150);
     return () => {
       clearTimeout(timer);
+      window.removeEventListener("pagehide", onPageHide);
       ac.abort();
     };
   }, [conceptSlug, onFallback]);
