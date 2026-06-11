@@ -12,7 +12,8 @@ const NAV_ITEMS = [
   { href: "/app",           label: "Chat",       icon: MessageSquare, disabled: false },
   { href: "/app/practice",  label: "Exerciții",  icon: Dumbbell,      disabled: true  },
   { href: "/app/simulare",  label: "Simulare",   icon: ClipboardList, disabled: false },
-  { href: "/app/photo",     label: "Foto",        icon: Camera,        disabled: true  },
+  // ETAPA 77 F: foto→rezolvare se naște — „Curând" moare
+  { href: "/app/foto",      label: "Foto",        icon: Camera,        disabled: false },
   { href: "/app/progres",   label: "Progres",    icon: BarChart2,     disabled: false },
 ] as const;
 
