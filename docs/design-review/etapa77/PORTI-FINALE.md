@@ -2,6 +2,21 @@
 
 Rulare: 2026-06-11, secvențial, guard-test ULTIMUL. Log brut: `porti-finale-log.txt`.
 
+## REZOLVAT după reîncărcarea creditului Anthropic (aceeași zi)
+
+Maxim a reîncărcat creditul → cele 7 porți blocate au fost RE-RULATE secvențial
+(guard-test ultimul) și au trecut TOATE:
+
+```
+✅ etapa69  ✅ etapa70-ask  ✅ etapa70-figures  ✅ etapa71-manipulative
+✅ etapa75-cache-proof (cached=4374, -70%)  ✅ etapa77-visual-live (B3)
+✅ etapa66-guard-test (503 politicos + downgrade pe buget, config restaurat: verificat)
+```
+
+**Bilanț final: 29/31 porți verzi.** Rămase (cotă, nu credit): TTS top-up (OpenAI
+încă 429) și embeddings 970/1268 (cota zilnică Gemini — mâine ~10:00, ÎNAINTEA
+oricărei baterii). Secțiunile de mai jos păstrează raportul inițial al incidentului.
+
 ## EȘECURI (7) — toate cu cauză externă sau documentată, ZERO regresii de cod
 
 ### 1 cauză comună pentru 6 eșecuri: creditul API Anthropic s-a EPUIZAT în timpul bateriei
