@@ -47,6 +47,14 @@ Pe conținutul SERVIT (servabile, lecții canonice ×79, provocări, simulare): 
 Lecțiile regenerate nu au TTS pre-generat; la cerere va folosi același pipeline cu cache
 după reîncărcare. Re-rulare: `npx tsx --env-file=.env.local scripts/etapa75/pregen-tts.ts`.
 
+### 4. Embeddings: rămas 970/1268 — cota zilnică Gemini consumată DE BATERIE
+
+Re-rularea `embed-exercises.ts` după miezul nopții PT a picat tot cu
+`429 Quota exceeded: embed_content_free_tier_requests, limit: 1000` — fiecare mesaj
+de chat din acceptanțe face un `generateEmbeddingForQuery`, deci bateria însăși a ars
+cota zilei. **Lecție operațională:** completarea embeddings se rulează PRIMA, imediat
+după resetul cotei (~10:00 Chișinău), înaintea oricărei baterii de acceptanțe.
+
 ## VERZI (24)
 
 - 22 porți acceptanță 60–75 deterministe/DB/UI: 60, 63, 64, 66-cache, 66-diet,
