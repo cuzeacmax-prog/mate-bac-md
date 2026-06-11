@@ -104,3 +104,26 @@ iconuri, starea activă luminoasă cu accent + pill indicator).
 - **Micro-viață**: `.btn-living` (gradient animat lent pe hover, pe butonul
   primar), `.progress-shimmer` (bara de progres a lecției), empty-state-urile
   primesc `.empty-orb` + glife (chat gol).
+
+## 9. ETAPA 76 — cerul Skyrim pe hartă
+
+Referința aprobată: ecranul de skill-uri din Skyrim (constelații pe nebuloasă).
+- **Cerul** (`SkyBackdrop`, static sub SVG — nu se re-randează la pan):
+  nebuloasă din gradiente radiale în culoarea domeniului ACTIV (cross-fade
+  0.7s la comutare), zgomot feTurbulence 5%, 110 stele deterministe (1-2px,
+  ~18% cu `star-twinkle` desincronizat), sigiliul domeniului (`.sky-seal`,
+  36vh, opacity 0.07 — fade-ul are keyframes PROPRII care se opresc la 0.07;
+  defect dovedit: clasa generică de fade îl ducea la opacity 1).
+- **Nodurile = stele**: halo radial-gradient, raze de difracție (4) pe
+  stăpânite, mărimi pe importanță (3 trepte după exercițiile servibile:
+  r 22/28/34).
+- **Drumul de quest** (`.quest-edge`): lanțul ultimul-stăpânit → recomandat →
+  următoarele 2 (frontier_concepts, determinist) — dash animat care CURGE în
+  direcția înaintării; restul muchiilor stinse (0.15). Nodul recomandat =
+  halo dublu pulsând + eticheta „⭐ Următorul". Pan automat blând la deschidere
+  (o dată), tween rAF — NU CSS pe transformul SVG (perf 72 sacru).
+- **Clase**: layout v2 per domeniu×clasă (dagre BT, fundament jos; ranker ales
+  scriptat după minimul de încrucișări — 42→23 total); selector 9-12 cu
+  dezactivare onestă; portaluri cross-grade pe prerechizite (🌀 + breadcrumb).
+- **Vederea**: fit-to-view cu clamp jos la scale 0.45 (constelațiile înalte nu
+  devin puncte); fit animat la comutarea domeniului/clasei.
