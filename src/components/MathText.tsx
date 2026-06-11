@@ -12,7 +12,7 @@
  *    per expresie, fără crash).
  */
 import katex from "katex";
-import { segmentDelimitedMath } from "@/lib/content-math";
+import { segmentDelimitedMath, delimitBareMath } from "@/lib/content-math";
 // ETAPA 74 B2: macro-urile partajate (MathText + MessageRenderer + randare-audit)
 import { KATEX_MACROS, tabularToArray } from "@/lib/content/katex-macros";
 
@@ -23,7 +23,9 @@ interface Props {
 
 export function MathText({ text, className }: Props) {
   if (!text) return null;
-  const segments = segmentDelimitedMath(text);
+  // ETAPA 77 A3: LaTeX-ul fără delimitatori (clasa „\int... brut") se
+  // delimitează automat la randare — conținutul-sursă rămâne neatins (R5)
+  const segments = segmentDelimitedMath(delimitBareMath(text));
   return (
     <span className={className ?? "whitespace-pre-wrap"}>
       {segments.map((seg, i) => {

@@ -210,6 +210,57 @@ export function truncateOutsideMath(text: string, max: number): string {
   return out;
 }
 
+/**
+ * ETAPA 77 A3 — clasă de leak dovedită: enunțuri/teorii cu LaTeX FĂRĂ
+ * delimitatori (`\int_{0}^{1}...` ca text brut). Fix la nivel de RENDERER
+ * (conținutul NU se rescrie — R5): rulajele care încep cu o comandă LaTeX se
+ * delimitează automat cu $...$ (consumeMathRun e conservator: prima vorbă de
+ * proză oprește rulajul). \textbf/\textit din citările bibliografice devin
+ * text simplu (nu sunt math).
+ */
+export function delimitBareMath(text: string): string {
+  if (!text || !text.includes("\\")) return text;
+  // CAZUL ÎNTREG-LATEX (clasa celor 35): enunțul e o singură expresie care
+  // începe cu \comandă, fără diacritice și fără cuvinte de proză (≥6 litere
+  // care nu sunt comenzi) → se înfășoară CA ÎNTREG. (Defect dovedit: rularea
+  // pe bucăți rupea expresia la cuvinte scurte ca „tgx".)
+  const trimmed = text.trim();
+  if (trimmed.startsWith("\\") && !trimmed.includes("$") && !RO_DIACRITICS.test(trimmed)) {
+    const withoutCommands = trimmed.replace(/\\[a-zA-Z]+/g, " ");
+    if (!/[a-zA-Z]{6,}/.test(withoutCommands)) {
+      return `$${trimmed}$`;
+    }
+  }
+  // citările: \textbf{BAC, 2000} → BAC, 2000 (în afara delimitatorilor)
+  let out = "";
+  let i = 0;
+  const segs = segmentDelimitedMath(text);
+  for (const seg of segs) {
+    if (seg.type === "math") {
+      out += seg.raw ?? `$${seg.value}$`;
+      continue;
+    }
+    // pe segmentele TEXT: scoatem \textbf/\textit și delimităm rulajele \cmd
+    let t = seg.value.replace(/\\text(?:bf|it|rm)?\{([^{}]*)\}/g, "$1");
+    let res = "";
+    i = 0;
+    while (i < t.length) {
+      if (t[i] === "\\" && isLetter(t[i + 1])) {
+        const end = consumeMathRun(t, i);
+        if (end > i + 2) {
+          res += `$${t.slice(i, end).trim()}$`;
+          i = end;
+          continue;
+        }
+      }
+      res += t[i];
+      i++;
+    }
+    out += res;
+  }
+  return out;
+}
+
 /** Segmentează un text (proză) în bucăți text/math. */
 export function segmentMath(text: string): MathSegment[] {
   if (!text) return [];

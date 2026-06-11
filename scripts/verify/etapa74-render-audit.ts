@@ -21,7 +21,7 @@ import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import katex from 'katex';
 import { createServiceClient } from '../../src/lib/supabase/service';
-import { segmentDelimitedMath } from '../../src/lib/content-math';
+import { segmentDelimitedMath, delimitBareMath } from '../../src/lib/content-math';
 import { extractMarkdownTable } from '../../src/lib/content/markdown-table';
 import { KATEX_MACROS, tabularToArray } from '../../src/lib/content/katex-macros';
 import { THEORY_FIGURES } from '../../src/lib/lesson/theory-figures/registry';
@@ -41,12 +41,17 @@ const LEAK_CLASSES: Array<{ name: string; re: RegExp }> = [
   { name: '$-ramas', re: /\$/ },
   // ≥2 ampersanzi pe aceeași linie = aliniere de mediu scursă ca text
   { name: '&-multiplu', re: /^[^\n]*&[^&\n]*&/m },
+  // ETAPA 77 A3 (leak dovedit de owner: „^(m+1)" brut în lecție): notație
+  // matematică ÎN AFARA delimitatorilor — exponent/indice/comandă vizibile
+  { name: 'caret-brut', re: /[A-Za-z0-9)\]]\^[A-Za-z0-9({[+\-]/ },
+  { name: 'indice-brut', re: /[A-Za-z]_[A-Za-z0-9({]/ },
+  { name: 'comanda-bruta', re: /\\[a-zA-Z]{2,}/ },
 ];
 
 /** ce VEDE elevul după MathText: text + fallback-urile formulelor eșuate */
 function mathTextVisible(text: string): string {
   let out = '';
-  for (const seg of segmentDelimitedMath(text)) {
+  for (const seg of segmentDelimitedMath(delimitBareMath(text))) {
     if (seg.type === 'text') {
       out += seg.value;
     } else {
@@ -149,6 +154,47 @@ async function main() {
       seen.add(ex.exercise_id);
       audit('provocari', ex.exercise_id, ex.statement ?? '');
     }
+  }
+
+  // ── 5) ETAPA 77 A3: blocurile lecțiilor CANONICE (toate câmpurile-text) ───
+  const { data: canonLessons } = await svc
+    .from('lesson_canonical')
+    .select('id, blocks, concepts(slug)');
+  for (const l of canonLessons ?? []) {
+    const slug = (l.concepts as unknown as { slug: string } | null)?.slug ?? (l.id as string);
+    const texts: string[] = [];
+    for (const b of (l.blocks as Array<Record<string, unknown>>) ?? []) {
+      switch (b.tip) {
+        case 'intro': texts.push(String(b.titlu ?? ''), String(b.ideea_mare ?? '')); break;
+        case 'step':
+          texts.push(String(b.titlu_scurt ?? ''), String(b.corp ?? ''));
+          if (b.formula) texts.push(`$$${b.formula}$$`); // player-ul așa o randează
+          break;
+        case 'formula': texts.push(`$$${b.latex}$$`, String(b.explicatie ?? '')); break;
+        case 'example':
+          texts.push(String(b.enunt ?? ''));
+          for (const p of (b.pasi as Array<{ text: string; formula?: string }>) ?? []) {
+            texts.push(p.text);
+            if (p.formula) texts.push(`$$${p.formula}$$`);
+          }
+          break;
+        case 'quiz': {
+          const opt = (b.optiuni as Record<string, string>) ?? {};
+          texts.push(String(b.intrebare ?? ''), opt.a ?? '', opt.b ?? '', opt.c ?? '', opt.d ?? '', String(b.indiciu ?? ''));
+          for (const r of (b.rezolvare as string[]) ?? []) texts.push(r);
+          break;
+        }
+        case 'table': {
+          texts.push(String(b.titlu ?? ''));
+          for (const c of (b.coloane as string[]) ?? []) texts.push(c);
+          for (const row of (b.randuri as string[][]) ?? []) texts.push(...row);
+          break;
+        }
+        case 'recap': texts.push(...(((b.puncte as string[]) ?? []))); break;
+        default: if (b.legenda) texts.push(String(b.legenda));
+      }
+    }
+    audit('lectii-canonice', slug, texts.join('\n'));
   }
 
   // ── 4) itemii de simulare (pool-ul strict-bijectiv) ───────────────────────

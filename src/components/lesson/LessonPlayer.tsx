@@ -81,6 +81,14 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
   useEffect(() => {
     preloadSounds();
   }, []);
+  // ETAPA 77 A1: FOCUS MODE — cât player-ul e montat, sidebar-urile dispar
+  // (CSS pe body[data-focus-lesson]); ieșirile rămân: „ieși în chat" + harta
+  useEffect(() => {
+    document.body.dataset.focusLesson = "1";
+    return () => {
+      delete document.body.dataset.focusLesson;
+    };
+  }, []);
   // ETAPA 74 A4: țintele feedback-ului din registru (cardul blocului curent,
   // flacăra de streak și cardul de mastery din ritual)
   const blockHostRef = useRef<HTMLDivElement>(null);
@@ -441,7 +449,7 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
   return (
     <div className="relative flex-1 flex flex-col min-w-0" style={accentStyle}>
       {/* bara de progres (estetica diagnosticului) */}
-      <div className="px-4 pt-3 pb-2 shrink-0">
+      <div className="px-4 pt-3 pb-2 shrink-0 max-w-[700px] mx-auto w-full">
         <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
           <span>
             Lecție · pasul {idx + 1}{streamDone ? ` din ${total}` : ""}
@@ -481,7 +489,7 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 py-4 flex flex-col justify-center max-w-lg mx-auto w-full">
+      <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col justify-center max-w-[700px] mx-auto w-full">
         <AnimatePresence mode="wait">
           <motion.div
             key={idx}
@@ -504,7 +512,7 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
         </AnimatePresence>
       </div>
 
-      <div className="px-4 pb-5 max-w-lg mx-auto w-full shrink-0 space-y-3">
+      <div className="px-4 pb-5 max-w-[700px] mx-auto w-full shrink-0 space-y-3">
         {/* ETAPA 70 E: răspunsul la întrebarea elevului — blocuri, nu zid de text */}
         <AnimatePresence>
           {askAnswer && (
@@ -578,9 +586,9 @@ function BlockCard({
   switch (block.tip) {
     case "intro":
       return (
-        <div className="glass-2 rounded-3xl p-6 space-y-3">
-          <h1 className="text-xl font-bold"><MathText text={block.titlu} /></h1>
-          <p className="text-base leading-relaxed"><MathText text={block.ideea_mare} /></p>
+        <div className="glass-2 rounded-3xl p-8 space-y-4">
+          <h1 className="text-2xl font-bold"><MathText text={block.titlu} /></h1>
+          <p className="text-[17px] leading-8"><MathText text={block.ideea_mare} /></p>
         </div>
       );
     case "step":
@@ -589,7 +597,7 @@ function BlockCard({
           <p className="text-xs font-semibold text-primary uppercase tracking-wide">
             <MathText text={block.titlu_scurt} />
           </p>
-          <p className="leading-relaxed"><MathText text={block.corp} /></p>
+          <p className="text-[17px] leading-8"><MathText text={block.corp} /></p>
           {block.formula && (
             <div className="rounded-xl bg-muted/60 px-4 py-3 text-center overflow-x-auto">
               <MathText text={`$$${block.formula}$$`} />
@@ -609,7 +617,7 @@ function BlockCard({
       return (
         <div className="glass-solid rounded-2xl p-6 space-y-4">
           <p className="text-xs font-semibold text-muted-foreground uppercase">Exemplu</p>
-          <p className="font-medium leading-relaxed"><MathText text={block.enunt} /></p>
+          <p className="text-[16px] font-medium leading-relaxed"><MathText text={block.enunt} /></p>
           <ol className="space-y-2.5">
             {block.pasi.map((p, i) => (
               <li key={i} className="flex gap-3">
@@ -768,7 +776,7 @@ function BlockCard({
       return (
         <div className="glass-solid rounded-2xl p-5 space-y-3">
           <div
-            className="figura-bac mx-auto max-w-full [&_svg]:max-w-full [&_svg]:h-auto"
+            className="figura-bac w-full [&_svg]:w-full [&_svg]:h-auto"
             // SVG-ul e randat EXCLUSIV pe server (renderPlotSVG, expr validat) — trusted
             dangerouslySetInnerHTML={{ __html: (block as { svg?: string }).svg ?? "" }}
           />
@@ -781,7 +789,7 @@ function BlockCard({
       return (
         <div className="glass-solid rounded-2xl p-5 space-y-3">
           <div
-            className="figura-bac mx-auto max-w-full [&_svg]:max-w-full [&_svg]:h-auto"
+            className="figura-bac w-full [&_svg]:w-full [&_svg]:h-auto"
             // SVG randat EXCLUSIV pe server (renderManipulative, params validați) — trusted
             dangerouslySetInnerHTML={{ __html: (block as { svg?: string }).svg ?? "" }}
           />
@@ -835,7 +843,7 @@ function AskAnswerBlock({ block }: { block: LessonBlockClient }) {
       return (
         <div className="text-sm space-y-1">
           <p className="font-semibold"><MathText text={block.titlu_scurt} /></p>
-          <p className="leading-relaxed"><MathText text={block.corp} /></p>
+          <p className="text-[17px] leading-8"><MathText text={block.corp} /></p>
           {block.formula && (
             <div className="text-center overflow-x-auto"><MathText text={`$$${block.formula}$$`} /></div>
           )}
@@ -867,7 +875,7 @@ function AskAnswerBlock({ block }: { block: LessonBlockClient }) {
     case "plot":
       return (
         <div
-          className="figura-bac mx-auto max-w-full [&_svg]:max-w-full [&_svg]:h-auto"
+          className="figura-bac w-full [&_svg]:w-full [&_svg]:h-auto"
           // SVG randat exclusiv pe server (renderPlotSVG, expr validat) — trusted
           dangerouslySetInnerHTML={{ __html: (block as { svg?: string }).svg ?? "" }}
         />
@@ -968,7 +976,7 @@ function TheoryFigure({ slug }: { slug: string }) {
   }
   return (
     <div
-      className="figura-bac mx-auto max-w-full [&_svg]:max-w-full [&_svg]:h-auto"
+      className="figura-bac w-full [&_svg]:w-full [&_svg]:h-auto"
       // SVG-ul vine exclusiv din registrul theory-figures (cod determinist) — trusted
       dangerouslySetInnerHTML={{ __html: svg }}
     />

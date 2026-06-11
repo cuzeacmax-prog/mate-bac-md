@@ -328,6 +328,13 @@
   pointer-events: none;
 }
 
+/* ── ETAPA 77 A1: FOCUS MODE în lecție ──────────────────────────────────────
+ * Player-ul setează body[data-focus-lesson] → sidebar-ul aplicației și lista
+ * de conversații DISPAR; lecția e o scenă centrată, nu un bilețel în colț. */
+body[data-focus-lesson="1"] aside {
+  display: none;
+}
+
 /* ── ETAPA 76 A: CERUL SKYRIM pe hartă ──────────────────────────────────────
  * nebuloasă cross-fade + zgomot subtil + stele cu twinkle + sigiliul domeniului.
  * Toate DOAR transform/opacity — perf-ul hărții (72) e sacru. */

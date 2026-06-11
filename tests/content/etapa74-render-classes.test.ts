@@ -7,7 +7,7 @@
  *  - detectorul de exerciții ne-autonome (fraze + structură).
  */
 import { describe, it, expect } from 'vitest';
-import { segmentDelimitedMath, isSuspectMath } from '@/lib/content-math';
+import { segmentDelimitedMath, isSuspectMath, delimitBareMath } from '@/lib/content-math';
 import { tabularToArray } from '@/lib/content/katex-macros';
 import { selfContainedIssues } from '@/lib/content/self-contained';
 
@@ -83,3 +83,24 @@ describe('selfContainedIssues (ETAPA 74 B3)', () => {
     expect(selfContainedIssues('Folosind rezultatul de la exercițiul precedent, calculați suma.', false)).toContain('referinta-externa');
   });
 });
+
+describe('delimitBareMath (ETAPA 77 A3 — LaTeX fără delimitatori)', () => {
+  it('enunțul integral-LaTeX se înfășoară CA ÎNTREG (nu pe bucăți — defectul tgx)', () => {
+    const raw = '\int_{\frac{\pi}{6}}^{\frac{\pi}{4}}\left(tgx+ctgx\right)^{-1}dx';
+    expect(delimitBareMath(raw)).toBe(`$${raw}$`);
+  });
+  it('citarea \textbf devine text simplu, integrala bare se delimitează', () => {
+    const out = delimitBareMath('Calculați \int_0^1 x\,dx. (\textbf{BAC, 2000})');
+    expect(out).toContain('$\int_0^1');
+    expect(out).toContain('(BAC, 2000)');
+    expect(out).not.toContain('\textbf');
+  });
+  it('proza simplă rămâne neatinsă', () => {
+    expect(delimitBareMath('Aria pătratului cu latura 5.')).toBe('Aria pătratului cu latura 5.');
+  });
+  it('matematica DEJA delimitată nu se re-înfășoară', () => {
+    const t = 'Avem $x^2 + 1$ și atât.';
+    expect(delimitBareMath(t)).toBe(t);
+  });
+});
+
