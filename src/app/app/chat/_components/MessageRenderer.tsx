@@ -6,6 +6,7 @@ import remarkMath from "remark-math";
 import remarkGfm from "remark-gfm"; // ETAPA 67 D2: tabele markdown în chatul liber
 import rehypeKatex from "rehype-katex";
 import type { Components } from "react-markdown";
+import { KATEX_MACROS } from "@/lib/content/katex-macros";
 
 // Limbajele viz din mesaje sunt servite din bibliotecă (SVG static), nu randate client-side.
 // Componentele TikZRenderer/GeoGebraEmbed/ThreeRenderer au fost șterse în ETAPA 59 (cod mort).
@@ -52,12 +53,8 @@ const KATEX_OPTIONS = {
   throwOnError: false,
   strict: false,
   trust: false,
-  macros: {
-    "\\R": "\\mathbb{R}",
-    "\\N": "\\mathbb{N}",
-    "\\Z": "\\mathbb{Z}",
-    "\\Q": "\\mathbb{Q}",
-  },
+  // ETAPA 74 B2: aceleași macro-uri ca MathText (modul partajat)
+  macros: KATEX_MACROS,
 };
 
 // Componentele de override sunt la NIVEL DE MODUL (referințe stabile) —

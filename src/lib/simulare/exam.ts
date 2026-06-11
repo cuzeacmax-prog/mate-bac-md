@@ -51,11 +51,12 @@ export interface ExamResult {
 async function loadPool(service: SupabaseClient): Promise<ExamItem[]> {
   const { data: links } = await service
     .from('exercise_answer_link')
-    .select('exercise_id, exercise_raw(id, module, statement)')
+    .select('exercise_id, exercise_raw(id, module, statement, self_contained)')
     .eq('match_confidence', 'strict-bijectiv');
   const ids = (links ?? [])
-    .map((l) => l.exercise_raw as unknown as { id: string; module: string | null; statement: string } | null)
-    .filter((e): e is { id: string; module: string | null; statement: string } => !!e?.module);
+    .map((l) => l.exercise_raw as unknown as { id: string; module: string | null; statement: string; self_contained: boolean } | null)
+    // ETAPA 74 B3: exercițiile ne-autonome nu intră în simulare
+    .filter((e): e is { id: string; module: string | null; statement: string; self_contained: boolean } => !!e?.module && e.self_contained !== false);
 
   const exIds = ids.map((e) => e.id);
   const [{ data: figs }, { data: concepts }] = await Promise.all([

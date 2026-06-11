@@ -13,14 +13,8 @@
  */
 import katex from "katex";
 import { segmentDelimitedMath } from "@/lib/content-math";
-
-// Aceleași macro-uri ca în MessageRenderer (chat) — o singură convenție de notație.
-const KATEX_MACROS = {
-  "\\R": "\\mathbb{R}",
-  "\\N": "\\mathbb{N}",
-  "\\Z": "\\mathbb{Z}",
-  "\\Q": "\\mathbb{Q}",
-};
+// ETAPA 74 B2: macro-urile partajate (MathText + MessageRenderer + randare-audit)
+import { KATEX_MACROS, tabularToArray } from "@/lib/content/katex-macros";
 
 interface Props {
   text: string;
@@ -35,7 +29,8 @@ export function MathText({ text, className }: Props) {
       {segments.map((seg, i) => {
         if (seg.type === "text") return <span key={i}>{seg.value}</span>;
         try {
-          const html = katex.renderToString(seg.value, {
+          // tabular (LaTeX de paginare) → array (KaTeX îl știe) — ETAPA 74 B2
+          const html = katex.renderToString(tabularToArray(seg.value), {
             displayMode: seg.display,
             throwOnError: true,
             strict: false,

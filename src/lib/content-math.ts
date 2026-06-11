@@ -113,31 +113,61 @@ function segmentPlain(text: string): MathSegment[] {
 }
 
 /**
- * ETAPA 72 P3a: o „formulă" suspectă e aproape sigur TEXT ÎNGHIȚIT de
- * delimitatori nebalansați: peste 200 de caractere sau cu diacritice românești
- * înăuntru. Se randează ca text brut, nu se extinde formula.
+ * ETAPA 72 P3a → ETAPA 74 B2: o „formulă" suspectă e aproape sigur TEXT
+ * ÎNGHIȚIT de delimitatori nebalansați. Heuristica veche (peste 200 de
+ * caractere SAU orice diacritice) avea FALSE POSITIVES de clasă, dovedite de
+ * randare-audit: formulele display cu \text{dacă...} (diacritice LEGITIME) și
+ * mediile array/tabular lungi cădeau pe text brut → scurgeri \begin{ / \hline
+ * / $$ în ecran. Acum:
+ *  - diacriticele contează DOAR în afara grupurilor \text{...};
+ *  - lungimea contează doar fără mediu \begin{...} și cu densitate mică de
+ *    comenzi (proza înghițită n-are comenzi; matematica reală are multe).
  */
 const SUSPECT_MATH_LEN = 200;
 const RO_DIACRITICS = /[ăâîșțĂÂÎȘȚ]/;
+const TEXT_GROUP_RE = /\\(?:text|textbf|textit|textrm|mbox|operatorname)\s*\{[^{}]*\}/g;
 export function isSuspectMath(value: string): boolean {
-  return value.length > SUSPECT_MATH_LEN || RO_DIACRITICS.test(value);
+  // diacriticele din \text{...} sunt proză LEGITIMĂ în math — nu suspecte
+  if (RO_DIACRITICS.test(value.replace(TEXT_GROUP_RE, ''))) return true;
+  if (value.length <= SUSPECT_MATH_LEN) return false;
+  // mediile (array/cases/aligned/tabular) sunt structură math, oricât de lungi
+  if (/\\begin\{/.test(value)) return false;
+  // proza înghițită are densitate mică de comenzi; formulele lungi reale, mare
+  const commands = (value.match(/\\[a-zA-Z]+/g) ?? []).length;
+  return commands < value.length / 60;
 }
 
 /**
- * Segmentează STRICT pe delimitatori expliciți ($$...$$, \[...\], $...$, \(...\)).
+ * ETAPA 74 B2: delimitatorii expliciti + mediile \begin{env}...\end{env}
+ * NEDELIMITATE (clasa dovedită de randare-audit: enunțuri din culegere cu
+ * array/tabular direct în text). Grupuri:
+ *  1=$$..$$  2=\[..\]  3=numele mediului bare  4=$..$  5=\(..\)
+ */
+const DELIM_RE_SRC =
+  "\\$\\$([\\s\\S]+?)\\$\\$|\\\\\\[([\\s\\S]+?)\\\\\\]|\\\\begin\\{([a-zA-Z*]+)\\}[\\s\\S]*?\\\\end\\{\\3\\}|\\$([^$\\n]+?)\\$|\\\\\\(([\\s\\S]+?)\\\\\\)";
+
+/** valorile + display-ul unui match al DELIM_RE_SRC */
+function delimMatch(m: RegExpExecArray): { val: string; display: boolean } {
+  if (m[3] != null) return { val: m[0].trim(), display: true }; // mediul bare, întreg
+  const display = m[1] != null || m[2] != null;
+  return { val: (m[1] ?? m[2] ?? m[4] ?? m[5] ?? "").trim(), display };
+}
+
+/**
+ * Segmentează STRICT pe delimitatori expliciți ($$...$$, \[...\], $...$, \(...\))
+ * + medii \begin{...}...\end{...} de sine stătătoare (ETAPA 74 B2).
  * Pentru afișările către elev (ETAPA 62): doar matematica delimitată se randează,
- * textul românesc (și orice LaTeX nedelimitat) rămâne text brut.
+ * textul românesc (și orice alt LaTeX nedelimitat) rămâne text brut.
  * ETAPA 72 P3a (defensiv): match-ul suspect (text înghițit) → TEXT BRUT.
  */
 export function segmentDelimitedMath(text: string): MathSegment[] {
   if (!text) return [];
   const out: MathSegment[] = [];
-  const re = /\$\$([\s\S]+?)\$\$|\\\[([\s\S]+?)\\\]|\$([^$\n]+?)\$|\\\(([\s\S]+?)\\\)/g;
+  const re = new RegExp(DELIM_RE_SRC, "g");
   let last = 0; let m: RegExpExecArray | null;
   while ((m = re.exec(text)) !== null) {
     if (m.index > last) out.push({ type: "text", value: text.slice(last, m.index), display: false });
-    const display = m[1] != null || m[2] != null;
-    const val = (m[1] ?? m[2] ?? m[3] ?? m[4] ?? "").trim();
+    const { val, display } = delimMatch(m);
     if (isSuspectMath(val)) {
       // delimitatori nebalansați au înghițit proză — nu extindem formula
       out.push({ type: "text", value: m[0], display: false });
@@ -184,13 +214,12 @@ export function truncateOutsideMath(text: string, max: number): string {
 export function segmentMath(text: string): MathSegment[] {
   if (!text) return [];
   const out: MathSegment[] = [];
-  // Delimitatori expliciți întâi.
-  const re = /\$\$([\s\S]+?)\$\$|\\\[([\s\S]+?)\\\]|\$([^$\n]+?)\$|\\\(([\s\S]+?)\\\)/g;
+  // Delimitatori expliciți (+ medii bare, ETAPA 74 B2) întâi.
+  const re = new RegExp(DELIM_RE_SRC, "g");
   let last = 0; let m: RegExpExecArray | null;
   while ((m = re.exec(text)) !== null) {
     if (m.index > last) out.push(...segmentPlain(text.slice(last, m.index)));
-    const display = m[1] != null || m[2] != null;
-    const val = (m[1] ?? m[2] ?? m[3] ?? m[4] ?? "").trim();
+    const { val, display } = delimMatch(m);
     out.push({ type: "math", value: val, display });
     last = m.index + m[0].length;
   }
