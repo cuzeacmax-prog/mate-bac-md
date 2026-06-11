@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { STUDY_SYSTEM_PROMPT, SOLVE_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
-import { callAIStream, callAIStreamWithTools, getTaskPricing } from "@/lib/ai/router";
+import { callAI, callAIStream, callAIStreamWithTools, getTaskPricing } from "@/lib/ai/router";
 import { computeLlmCost } from "@/lib/ai/usage-log";
 import type { AiMessage, SystemBlock } from "@/lib/ai/router.types";
 import { generateEmbeddingForQuery } from "@/lib/embeddings/gemini";
@@ -27,6 +27,7 @@ import {
 } from "@/lib/evaluare/help";
 import { buildConversationHistory, type ConversationHistory } from "@/lib/chat/history";
 import { checkCostGuard, maybeWriteDailyCostAlert, KILL_SWITCH_MESSAGE } from "@/lib/cost/guard";
+import { classifyDifficulty, routeChatTask } from "@/lib/ai/difficulty";
 
 const FREE_MONTHLY_LIMIT = 30;
 const IS_DEV = process.env.NODE_ENV === "development";
@@ -55,21 +56,73 @@ function serverError(label: string, err: unknown): NextResponse {
   );
 }
 
-async function lookupLibrary(message: string): Promise<{ match: RagMatch | null; embedding: number[] | null }> {
-  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) return { match: null, embedding: null };
+/** ETAPA 75 E: match și pe exercițiile SERVIBILE (embeddings persistate pe exercise_raw) */
+interface ServableMatch {
+  id: string;
+  statement: string;
+  similarity: number;
+}
+
+async function lookupLibrary(
+  message: string
+): Promise<{ match: RagMatch | null; servable: ServableMatch | null; embedding: number[] | null }> {
+  if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) return { match: null, servable: null, embedding: null };
   try {
     const embedding = await generateEmbeddingForQuery(message);
     const service = createServiceClient();
-    const { data } = await service.rpc("match_exercises", {
-      query_embedding: embedding,
-      match_threshold: RAG_CONTEXT_THRESHOLD,
-      match_count: 1,
-    });
-    const match = data && data.length > 0 ? (data[0] as RagMatch) : null;
-    return { match, embedding };
+    // ETAPA 75 D+E: biblioteca rezolvată (solved_exercises) ∥ pool-ul servibil
+    // (exercise_raw cu embeddings persistate — zero re-embedding pe bibliotecă)
+    const [solvedRes, servableRes] = await Promise.all([
+      service.rpc("match_exercises", {
+        query_embedding: embedding,
+        match_threshold: RAG_CONTEXT_THRESHOLD,
+        match_count: 1,
+      }),
+      service.rpc("match_servable_exercises", {
+        query_embedding: embedding,
+        match_threshold: RAG_CONTEXT_THRESHOLD,
+        match_count: 1,
+      }),
+    ]);
+    const match = solvedRes.data && solvedRes.data.length > 0 ? (solvedRes.data[0] as RagMatch) : null;
+    const servable =
+      servableRes.data && servableRes.data.length > 0 ? (servableRes.data[0] as ServableMatch) : null;
+    return { match, servable, embedding };
   } catch {
-    return { match: null, embedding: null };
+    return { match: null, servable: null, embedding: null };
   }
+}
+
+/**
+ * ETAPA 75 D: compune răspunsul VERIFICAT pentru un exercițiu servibil —
+ * metoda + rezultatul CAS + răspunsul oficial, EXTRASE, nu re-rezolvate.
+ */
+async function buildVerifiedAnswer(exerciseId: string, statement: string): Promise<string | null> {
+  const service = createServiceClient();
+  const [{ data: ver }, { data: ans }] = await Promise.all([
+    service
+      .from("exercise_verification")
+      .select("subpart, method, computed_latex")
+      .eq("exercise_id", exerciseId)
+      .eq("verified", true),
+    service
+      .from("exercise_answer_link")
+      .select("exercise_answers(answer_text)")
+      .eq("exercise_id", exerciseId)
+      .eq("match_confidence", "strict-bijectiv")
+      .maybeSingle(),
+  ]);
+  const answerRow = ans?.exercise_answers as unknown as { answer_text: string } | { answer_text: string }[] | null;
+  const official = (Array.isArray(answerRow) ? answerRow[0] : answerRow)?.answer_text ?? null;
+  if ((!ver || ver.length === 0) && !official) return null; // fără conținut verificat → flux normal
+  const parts = [`**Exercițiul din culegere:**\n> ${statement}`];
+  for (const v of ver ?? []) {
+    parts.push(
+      `**Rezolvarea verificată${v.subpart ? ` (${v.subpart})` : ""}** — metoda: ${v.method}\n$$${v.computed_latex}$$`
+    );
+  }
+  if (official) parts.push(`**Răspunsul oficial din culegere:** ${official}`);
+  return parts.join("\n\n");
 }
 
 // findRelevantMethods este importat din @/lib/rag/solution-methods
@@ -139,11 +192,11 @@ export async function POST(req: NextRequest) {
   const isPremium =
     status === "premium" || status.startsWith("family") || status === "admin";
 
-  // ── Task name based on tier ─────────────────────────────────────
-  const tierTask =
-    status === "admin" ? "chat_admin"
-    : status === "premium" || status.startsWith("family") ? "chat_premium"
-    : "chat_free";
+  // ── ETAPA 75 C: rutarea pe DIFICULTATE, nu doar pe tier ──────────
+  // clasificator determinist (zero LLM): simple → Haiku, hard → Sonnet
+  // (și pe free — aprobat); gardul de buget din 66 rămâne arbitrul.
+  const difficulty = classifyDifficulty(message, conceptSlug);
+  const tierTask = routeChatTask(difficulty.level, status);
 
   // ── ETAPA 66 F1: gardul de cost (kill-switch + buget lunar per tier) ──
   const guard = await checkCostGuard(createServiceClient(), user.id, tierTask, status);
@@ -153,8 +206,11 @@ export async function POST(req: NextRequest) {
   const taskName = guard.effectiveTask;
   const budgetNotice = guard.notice;
 
-  const { match: ragMatch, embedding: queryEmbedding } = libraryResult;
-  const isDirectMatch = ragMatch !== null && ragMatch.similarity >= RAG_DIRECT_THRESHOLD;
+  const { match: ragMatch, servable: servableMatch, embedding: queryEmbedding } = libraryResult;
+  // ETAPA 75 D: „biblioteca răspunde prima" — direct și pe pool-ul servibil
+  const servableDirect = servableMatch !== null && servableMatch.similarity >= RAG_DIRECT_THRESHOLD;
+  const isDirectMatch =
+    (ragMatch !== null && ragMatch.similarity >= RAG_DIRECT_THRESHOLD) || servableDirect;
   const isContextMatch = ragMatch !== null && ragMatch.similarity >= RAG_CONTEXT_THRESHOLD && !isDirectMatch;
 
   // ── Rate limit ∥ metode BAC MD (independente între ele) ─────────
@@ -373,12 +429,61 @@ export async function POST(req: NextRequest) {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: budgetNotice })}\n\n`));
       }
 
-      // ── Direct library match — no AI call ───────────────────────
-      if (isDirectMatch && ragMatch) {
-        console.log(`[chat/route] RAG direct match (similarity=${ragMatch.similarity.toFixed(3)}) — skipping AI`);
-        assistantText = ragMatch.solution;
+      // ── ETAPA 75 D: BIBLIOTECA RĂSPUNDE PRIMA ───────────────────────────
+      // Peste prag: rezolvarea VERIFICATĂ din bibliotecă (metoda + rezultatul
+      // CAS + răspunsul oficial), cu etichetă; Haiku doar LEAGĂ narativ
+      // (max 2 paragrafe scurte) — nu re-rezolvă. Sub prag → fluxul normal.
+      if (isDirectMatch) {
+        // preferă sursa cu similaritatea mai mare; servibilul cade pe solved la lipsă de conținut
+        let verified: string | null = null;
+        let matchedSim = 0;
+        if (
+          servableDirect &&
+          servableMatch &&
+          (!ragMatch || servableMatch.similarity >= ragMatch.similarity)
+        ) {
+          verified = await buildVerifiedAnswer(servableMatch.id, servableMatch.statement);
+          matchedSim = servableMatch.similarity;
+        }
+        if (!verified && ragMatch && ragMatch.similarity >= RAG_DIRECT_THRESHOLD) {
+          verified = ragMatch.solution;
+          matchedSim = ragMatch.similarity;
+        }
+        if (!verified && servableMatch) {
+          // servibil fără conținut verificat exploatabil → fluxul normal ar fi
+          // mai bun, dar păstrăm comportamentul determinist: enunț + trimitere
+          verified = `**Exercițiul din culegere:**\n> ${servableMatch.statement}`;
+          matchedSim = servableMatch.similarity;
+        }
+        console.log(`[chat/route] bibliotecă-întâi (similaritate=${matchedSim.toFixed(3)}) — fără re-rezolvare`);
+
+        // legătura narativă: 1 apel Haiku scurt (chat_simple); eșecul ei nu
+        // blochează răspunsul verificat
+        let liaison = "";
+        try {
+          const l = await callAI(
+            "chat_simple",
+            [
+              {
+                role: "user",
+                content: `Mesajul elevului:\n${message}\n\nRezolvarea VERIFICATĂ din bibliotecă (nu o modifica):\n${verified}`,
+              },
+            ],
+            {
+              system:
+                "Ești Profesor Maxim. Scrie MAXIM 2 paragrafe scurte în română care leagă mesajul elevului de rezolvarea verificată primită: confirmă că exercițiul există în bibliotecă și spune-i cum să citească rezolvarea. NU re-rezolva, NU recalcula, NU repeta rezolvarea. Matematica doar între $...$.",
+              userId: user.id,
+              endpoint: "/api/chat#liaison",
+            }
+          );
+          liaison = l.text.trim();
+        } catch (err) {
+          console.error("[chat/route] liaison failed (servim doar verificatul):", err instanceof Error ? err.message : err);
+        }
+
+        assistantText = `✅ **Rezolvare verificată din bibliotecă**\n\n${liaison ? `${liaison}\n\n---\n\n` : ""}${verified}`;
         controller.enqueue(
-          encoder.encode(`data: ${JSON.stringify({ text: ragMatch.solution, source: "library" })}\n\n`)
+          encoder.encode(`data: ${JSON.stringify({ text: assistantText, source: "library" })}\n\n`)
         );
         controller.enqueue(
           encoder.encode(
@@ -689,6 +794,8 @@ export async function POST(req: NextRequest) {
             latency_ms_ttfb: ttfbMs,
             cost_usd: cost,
             endpoint: "/api/chat",
+            // ETAPA 75 C3: decizia de rutare se loghează (audit + distribuție)
+            routed_difficulty: `${difficulty.level}:${difficulty.score}`,
           });
           if (logErr) {
             console.error("[chat/route] api_usage_log insert error:", JSON.stringify(logErr, null, 2));
