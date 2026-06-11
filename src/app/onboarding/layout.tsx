@@ -23,7 +23,10 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
   const progress = stepIndex >= 0 ? ((stepIndex + 1) / STEPS.length) * 100 : 0;
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-background">
+    // FĂRĂ bg-background aici (body îl are deja): un fundal opac pe rădăcină
+    // acoperea LivingBackdrop (-z-10 pictează SUB fundalul părintelui) —
+    // defect dovedit de bucla vizuală ETAPA 74 runda 1
+    <div className="relative min-h-screen flex flex-col">
       <LivingBackdrop />
       {/* Progress bar */}
       <div className="fixed top-0 inset-x-0 z-50 h-1 bg-muted">
