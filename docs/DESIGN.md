@@ -1,7 +1,10 @@
-# DESIGN „GLASS DARK" — sursa unică de adevăr (ETAPA 73)
+# DESIGN „GLASS DARK" — sursa unică de adevăr (ETAPA 73 → 74)
 
 Identitate vizuală v2, pe referința aprobată de Maxim (stil gizmo.ai):
 dark + panouri glass + orb-uri gradient + controale pilulă.
+ETAPA 74 a PRESCRIS arta tehnică-cu-tehnică (după respingerea „dark mode plat"):
+fundal viu pe 3 straturi, glass real cu inner glow, hartă luminoasă,
+registru central de animații per eveniment, micro-viață.
 **REGULA SACRĂ: matematica = lizibilitate maximă.** Frumusețea e în ramă,
 claritatea în conținut: text aproape-alb pe închis, KaTeX moștenește culoarea,
 formulele la 1.05em, contrast AA pe TOATE perechile (poartă scriptată),
@@ -72,3 +75,32 @@ pan/zoom pe hartă prin rAF + ref (ETAPA 72 — NU se atinge).
 `GlassPanel` (nivel 1-3), `PillButton` (primar/secundar/ghost),
 `PillTab`, `StatCard` (cifră+etichetă pe glass), `Sidebar` v2 (glass,
 iconuri, starea activă luminoasă cu accent + pill indicator).
+
+## 8. ETAPA 74 — arta prescrisă
+
+- **Fundalul viu** (`LivingBackdrop`, în layout-urile /app și /onboarding,
+  fixed -z-10): (1) bază = gradient radial dublu static (violet 8% stânga-sus,
+  indigo 6% dreapta-jos); (2) 3 orburi 42-55vw, radial-gradient
+  (violet→roz / lime→teal prin `--orb-1..4`), blur 80px, opacity 0.25-0.35,
+  drift 42-58s; (3) 10 glife matematice (∫ π Σ √ ∞ θ ± Δ ∂ lim) la
+  opacity 0.04-0.07, 40-120px, drift 50-90s pe 4 trasee desincronizate.
+  Toate DOAR transform/opacity. ATENȚIE (defect dovedit): NICIUN fundal opac
+  (`bg-background`) pe un strămoș al backdrop-ului — îl acoperă (-z pictează
+  sub fundalul părintelui). Reduced-motion → totul static.
+- **Glass real**: `.glass-1/2/3` cu blur 16/20/24px + inner glow
+  (`inset 0 1px 0 alb ~10%`); hover spre accent DOAR cu `.glass-hover`.
+  **`.glass-solid`** = suprafață opacă (--card) cu rama glass — OBLIGATORIE
+  sub carduri cu matematică (REGULA SACRĂ: zero blur sub formule).
+- **Harta luminează**: noduri r=30 cu radial-gradient pe culoarea domeniului
+  + halo (radial-gradient, NU filter blur — perf 72), disponibil = halo
+  pulsând (max 15), muchii cu gradient de la nodul-sursă (w=1.5), spălare
+  de culoare a domeniului (6-8%) sub cluster, etichete 12px alb 70% pe pill
+  (`--map-label-fg/bg`).
+- **Registrul de feedback** (`src/lib/motion/feedback.ts`): evenimentele
+  corect / greșit / indiciu / lectie-completa / streak / concept-stapanit →
+  O SINGURĂ definiție per eveniment; componentele cheamă `playFeedback()`,
+  NICIODATĂ animații ad-hoc. Lecția completă emite `mate:backdrop-boost`
+  (orbii se intensifică 2s). Reduced-motion → doar schimbări de culoare.
+- **Micro-viață**: `.btn-living` (gradient animat lent pe hover, pe butonul
+  primar), `.progress-shimmer` (bara de progres a lecției), empty-state-urile
+  primesc `.empty-orb` + glife (chat gol).

@@ -92,7 +92,9 @@ async function main() {
   if (path) {
     const target = join(OUT, 'lectie-feedback.webm');
     renameSync(path, target);
-    try { readdirSync(videoDir).length === 0 && (await import('node:fs')).rmdirSync(videoDir); } catch { /* lăsăm tmp */ }
+    try {
+      if (readdirSync(videoDir).length === 0) (await import('node:fs')).rmdirSync(videoDir);
+    } catch { /* lăsăm tmp */ }
     console.log(`✅ screencast: ${target}`);
   }
   console.log(`feedback surprins: corect=${sawCorrect} greșit=${sawWrong}`);
