@@ -132,15 +132,20 @@ async function main() {
     const anchor = await getConceptAnchor(svc, slug, 4);
     if (!anchor) { failures.push(`${slug}: concept inexistent`); failed++; continue; }
 
-    // idempotent: sare conceptele cu lecție existentă
+    // idempotent: sare conceptele cu lecție existentă; REGEN_BEFORE=<ISO> =
+    // regenerare RELUABILĂ (doar versiunile generate înainte de cutoff —
+    // ETAPA 77 B2: mandatul de vizual cere regenerarea celor vechi)
     const { data: existing } = await svc
       .from('lesson_canonical')
-      .select('id, version')
+      .select('id, version, generated_at')
       .eq('concept_id', anchor.id)
       .order('version', { ascending: false })
       .limit(1)
       .maybeSingle();
-    if (existing && process.env.FORCE !== '1') { skipped++; continue; }
+    const regenBefore = process.env.REGEN_BEFORE;
+    const needsRegen =
+      !!existing && !!regenBefore && String(existing.generated_at) < regenBefore;
+    if (existing && process.env.FORCE !== '1' && !needsRegen) { skipped++; continue; }
 
     const theoryEntry = getTheoryFigure(anchor.slug);
     const conceptBlock = buildLessonConceptBlock({
@@ -152,9 +157,18 @@ async function main() {
       })),
       theoryFigure: theoryEntry ? { slug: anchor.slug, descriere: theoryEntry.descriere } : null,
     });
+    // ETAPA 77 B1: vizual DISPONIBIL? → mandatul intră în poarta de validare
+    const PLOTTABLE_RE = /funcți|integral|primitiv|derivat|polinom|grafic|subgrafic|rotaț|arie/i;
+    const MANIP_RE = /probabilit|eveniment|combinat|permut|aranjament|fract|multim|statistic/i;
+    const visualExpected =
+      !!theoryEntry ||
+      anchor.exercises.some((e) => e.has_figure) ||
+      PLOTTABLE_RE.test(anchor.name) ||
+      MANIP_RE.test(anchor.name);
     const ctx = {
       servableExerciseIds: new Set(anchor.exercises.map((e) => e.id)),
       theorySlug: theoryEntry ? anchor.slug : null,
+      visualExpected,
     };
 
     const generate = async (extraNote: string) => {
@@ -167,7 +181,12 @@ async function main() {
           { type: 'text', text: conceptBlock },
         ],
         messages: [
-          { role: 'user', content: `Generează lecția CANONICĂ pentru conceptul: ${anchor.name}\nClasa: ${anchor.grade_level ?? 12}${extraNote}` },
+          {
+            role: 'user',
+            content: `Generează lecția CANONICĂ pentru conceptul: ${anchor.name}\nClasa: ${anchor.grade_level ?? 12}${
+              visualExpected ? '\nVIZUAL OBLIGATORIU: acest concept permite un vizual (figură/plot/manipulativ) — lecția fără el va fi RESPINSĂ.' : ''
+            }${extraNote}`,
+          },
         ],
         thinking: { type: 'adaptive' },
         // DECIZIE DOVEDITĂ EMPIRIC: effort 'max' supragândea (30K+ tokeni de

@@ -30,6 +30,12 @@ export interface CanonicalValidationContext {
   servableExerciseIds: Set<string>;
   /** slug-ul figurii de teorie anunțate (null = nu există în registru) */
   theorySlug: string | null;
+  /**
+   * ETAPA 77 B1 — MANDAT DE VIZUAL: conceptul ARE vizual disponibil
+   * (figură de teorie / exercițiu cu figură / plotabil / manipulabil) →
+   * lecția FĂRĂ niciun bloc vizual e respinsă la generare.
+   */
+  visualExpected?: boolean;
 }
 
 /**
@@ -87,6 +93,12 @@ export function validateCanonicalBlocks(
   if (count('example') < 1) errors.push('exemplu rezolvat lipsă (cerut ≥1, din exercițiile servibile)');
   const quizzes = count('quiz');
   if (quizzes < 2 || quizzes > 3) errors.push(`quiz-uri: ${quizzes} (cerut 2-3)`);
+  // ETAPA 77 B1: mandat de vizual — unde conceptul o permite, lecția TREBUIE
+  // să arate, nu doar să povestească
+  if (ctx.visualExpected) {
+    const visuals = count('figure') + count('plot') + count('manipulative');
+    if (visuals < 1) errors.push('MANDAT DE VIZUAL încălcat: concept cu vizual disponibil, lecție fără niciun bloc figure/plot/manipulative');
+  }
 
   if (errors.length > 0) return { ok: false, errors };
   return { ok: true, blocks };

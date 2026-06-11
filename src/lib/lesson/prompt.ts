@@ -46,6 +46,17 @@ TIPURILE DE BLOCURI (contractul):
   {"tip":"manipulative","kind":"urna","params":"{\\"bile\\":[{\\"culoare\\":\\"rosii\\",\\"n\\":3},{\\"culoare\\":\\"albe\\",\\"n\\":2}],\\"extrase\\":[\\"rosii\\"]}","legenda":"3 bile roșii și 2 albe; extragem una."}
 - recap: MAXIM 3 puncte, câte 1 propoziție.
 
+MANDATUL DE VIZUAL (ETAPA 77 — lecția ARATĂ, nu doar povestește):
+- la FUNCȚII/ANALIZĂ/POLINOAME: emite plot la pasul relevant — multiplicitatea
+  rădăcinii SE VEDE pe grafic (simplă taie axa, dublă o atinge);
+- la GEOMETRIE cu figură anunțată în context: emite blocul figure;
+- la PROBABILITĂȚI/COMBINATORICĂ/FRACȚII: emite manipulative cu numerele EXACTE;
+- conceptul permite un vizual → lecția FĂRĂ vizual e respinsă de validator.
+
+REGULA DE NOTAȚIE (încălcare dovedită: „^(m+1)" brut pe ecran): TOATĂ
+matematica — inclusiv exponenți și indici scurți ca x^2, a_n — stă DOAR între
+delimitatori $...$. Nicio notație matematică în text brut.
+
 REGULI DE LIMBAJ (încălcarea = blocul e respins de validator și recerut):
 1. O IDEE PER PAS. Dacă explici două lucruri, fă două blocuri step.
 2. ÎNTÂI exemplul concret cu numere, APOI generalizarea. Niciodată invers.
