@@ -1,0 +1,65 @@
+── etapa60-acceptance ──
+✅ Acceptare cap-coadă: evidență → mastery → frontieră → exerciții verificate → figură. User păstrat ca artefact de audit.
+── etapa63-acceptance ──
+✅ ETAPA 63 acceptată: determinist corect/greșit + judecător, EMA exactă, prag confidence respectat, încercări persistate.
+── etapa64-acceptance ──
+✅ ETAPA 64 acceptată: tier-uri servibile, geometrie cu figură servită din sursă oficială, frontiera numără servable.
+── etapa66-cache-test ──
+✅ FAZA B dovedită: cached_input_tokens > 0 pe mesajele 2-3 din aceeași conversație.
+── etapa66-diet-test ──
+✅ FAZA D dovedită: rezumat persistat, istoric comprimat, rezumare incrementală.
+── etapa66-tts-cache-test ──
+✅ FAZA C dovedită: runda 2 integral din cache, cost 0 pe hit.
+── etapa67-language-test ──
+✅ FAZA E dovedită: limitele țin (validator), distribuția raportată, peretele vechi cuantificat.
+── etapa67-lesson-smoke ──
+✅ FAZA B smoke: blocuri validate streamate, corecta doar pe server, quiz determinist mișcă mastery.
+── etapa68-acceptance ──
+✅ ETAPA 68 acceptată: fiecare cifră de pe pagină = DB-ul, predicția doar ca interval cu diagnostic.
+── etapa69-acceptance ──
+✗ EȘEC: scor: 3 ≠ 5 (răspunsurile oficiale trebuiau să fie corecte)
+── etapa70-ask-acceptance ──
+✗ EȘEC: întrebarea în temă nu a produs blocuri valide
+── etapa70-figures-acceptance ──
+✗ EȘEC: lecția NU conține blocul figure kind=theory deși registrul îl are
+── etapa70-g-acceptance ──
+✅ ETAPA 70 FAZA G acceptată: conversie persistată cu original, taxonomie pe greșeli + top 3 în progres, ritualul are date reale.
+── etapa70-help-acceptance ──
+✅ ETAPA 70 FAZA D acceptată: 2:1 exact, capitularea nu mișcă mastery, helped persistat în evidență.
+── etapa70-mistake-acceptance ──
+   (lecția sintetică rămâne ca artefact de audit)
+── etapa71-manipulative-acceptance ──
+✗ EȘEC: lecția de probabilitate NU a invocat niciun manipulativ
+── etapa71-map-acceptance ──
+✅ ETAPA 71 FAZA B acceptată: stările hărții = derivarea din mastery (toate 4 prezente), lentila test-mâine filtrează daily-ul.
+── etapa71-payments-acceptance ──
+✅ ETAPA 71 FAZA E acceptată: ciclul complet trial→active→past_due→retry→cancel→expirat→free, semnătura falsă respinsă, idempotență dovedită, istoric păstrat.
+── etapa72-latex-acceptance ──
+✅ ETAPA 72 P3 acceptată: formula nu mai înghite textul, info-ul e bloc separat, 169 body-uri marcate pentru revizuire.
+── etapa72-messages-acceptance ──
+✅ ETAPA 72 P2 acceptată: mesajele reale + bombele se randează; boundary-ul per mesaj e plasa de siguranță.
+── etapa73-markdown-acceptance ──
+✅ ETAPA 73 D2: raport complet — tabelele valide se randează nativ, nerandabilele sunt detectate (daily le exclude).
+── etapa74-render-audit ──
+✗ 14 texte cu scurgeri de randare (per sursă mai sus).
+── etapa74-qa-crawl ──
+✅ ZERO erori de consolă / request-uri eșuate pe toate fluxurile parcurse.
+── etapa72-map-stress ──
+✅ ETAPA 72 P1 acceptată: 60s pan/zoom + 2 lentile + 1 domenii — pagina VIE, heap 7.0 → 6.5 → 6.9 MB, zero crash/pageerror.
+── etapa75-canonical-validate ──
+✅ toate referințele există în pool-ul servibil; structura respectată.
+── etapa75-canonical-acceptance ──
+   cost/lecție servită: înainte $0.0267 → după $0.0000 (doar evaluările)
+── etapa75-routing-acceptance ──
+✅ C3 acceptată: 10/10 etichetate + mapare task-uri + distribuția raportată.
+── etapa75-cache-proof ──
+✗ EȘEC: conversationId lipsește din stream
+── etapa77-visual-live ──
+✗ EȘEC: lecția live pe concept de analiză NU a emis niciun bloc vizual
+── etapa66-guard-test ──
+✗ EȘEC: userul premium peste buget NU a fost downgradat la chat_free
+── contrast ──
+✅ toate perechile trec pragurile WCAG.
+── visual-gate ──
+✅ Poarta vizuală: randările corecte trec; fiecare clasă de defect de randare e PRINSĂ și auto-reparată.
+BATERIE-GATA
