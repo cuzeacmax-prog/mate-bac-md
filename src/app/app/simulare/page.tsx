@@ -7,6 +7,8 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { auditExamPool } from "@/lib/simulare/exam";
 import { SimularePlayer } from "./SimularePlayer";
 
+export const metadata = { title: "Simulare BAC · Profesor Maxim" };
+
 export const dynamic = "force-dynamic";
 
 export default async function SimularePage() {

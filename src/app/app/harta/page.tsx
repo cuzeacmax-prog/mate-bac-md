@@ -8,6 +8,8 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { getKnowledgeMap } from "@/lib/map/state";
 import { MapView, MapErrorBoundary } from "./MapView";
 
+export const metadata = { title: "Harta cunoașterii · Profesor Maxim" };
+
 export const dynamic = "force-dynamic";
 
 export default async function HartaPage({

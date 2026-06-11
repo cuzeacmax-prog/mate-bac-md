@@ -7,6 +7,8 @@ import { chisinauToday, computeStreak } from "@/lib/daily/daily";
 import { domainKeyForSlug } from "@/lib/map/layouts";
 import type { ChatMessage } from "./_components/ChatMessages";
 
+export const metadata = { title: "Lecție și chat · Profesor Maxim" };
+
 export const dynamic = "force-dynamic";
 
 /**

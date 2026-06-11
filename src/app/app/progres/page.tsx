@@ -9,6 +9,8 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { getProgressData } from "@/lib/progres/data";
 import { ProgressMap } from "./ProgressMap";
 
+export const metadata = { title: "Progres · Profesor Maxim" };
+
 export const dynamic = "force-dynamic";
 
 export default async function ProgresPage() {

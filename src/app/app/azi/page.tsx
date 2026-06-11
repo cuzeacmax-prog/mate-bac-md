@@ -11,6 +11,8 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { chisinauToday, computeStreak, getOrCreateDailyChallenge } from "@/lib/daily/daily";
 import { DailyCard } from "./DailyCard";
 
+export const metadata = { title: "Azi · Profesor Maxim" };
+
 export const dynamic = "force-dynamic";
 
 interface FrontierRow {
@@ -45,8 +47,11 @@ export default async function AziPage() {
 
   if (!evidenceCount) {
     return (
-      <div className="relative max-w-2xl mx-auto px-6 py-16 text-center space-y-4">
-        <h1 className="text-2xl font-semibold">Ce înveți azi</h1>
+      <div className="relative max-w-2xl mx-auto px-6 py-16 text-center space-y-4 overflow-hidden">
+        {/* ETAPA 77 E: empty-state cu viață — orb + glifă, nu text mort */}
+        <div aria-hidden className="empty-orb -top-24 left-1/2 -translate-x-1/2 absolute" />
+        <span aria-hidden className="living-glyph living-glyph-1 absolute left-[10%] top-[15%]" style={{ fontSize: 88, opacity: 0.06 }}>Σ</span>
+        <h1 className="text-2xl font-semibold relative">Ce înveți azi</h1>
         <p className="text-muted-foreground">
           Încă nu știm de unde să începem — fă întâi diagnosticul scurt (5–8 întrebări),
           ca să-ți găsim frontiera de învățare pe graful de concepte.

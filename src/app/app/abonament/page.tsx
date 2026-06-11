@@ -8,6 +8,8 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { refreshSubscription, getPlanConfig } from "@/lib/payments/state";
 import { AbonamentActions } from "./AbonamentActions";
 
+export const metadata = { title: "Abonament · Profesor Maxim" };
+
 export const dynamic = "force-dynamic";
 
 export default async function AbonamentPage() {
