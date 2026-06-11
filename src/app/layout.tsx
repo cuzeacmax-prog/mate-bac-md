@@ -4,7 +4,6 @@ import "./globals.css";
 // ETAPA 66 FAZA E2: katex.min.css NU mai e global — se importă doar în
 // layout-urile rutelor care randează matematică (/app, /onboarding, /admin).
 import { PosthogProvider } from "@/components/analytics/PosthogProvider";
-import { MotionProvider } from "@/components/motion/MotionProvider";
 
 // ETAPA 73: Manrope variabil — tokenul --font-sans îl referă EXPLICIT în
 // globals.css (defectul vechi: --font-sans se referea pe sine → serif de sistem)
@@ -37,9 +36,11 @@ export default function RootLayout({
       className={`${manrope.variable} ${geistMono.variable} dark h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-          <MotionProvider>
+          {/* ETAPA 76 E: MotionProvider NU mai e global — framer-motion (132KB)
+              intra în bundle-ul landing-ului fără să fie folosit acolo */}
+          <>
             <PosthogProvider>{children}</PosthogProvider>
-          </MotionProvider>
+          </>
         </body>
     </html>
   );

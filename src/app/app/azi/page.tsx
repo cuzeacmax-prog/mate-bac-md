@@ -33,11 +33,15 @@ export default async function AziPage() {
 
   const service = createServiceClient();
 
-  // are vreo evidență? (fără diagnostic → empty state)
-  const { count: evidenceCount } = await service
-    .from("concept_mastery")
-    .select("concept_id", { count: "exact", head: true })
-    .eq("user_id", user.id);
+  // ETAPA 76 E (cauza #2: TTFB 757ms din lanț de query-uri): evidența și
+  // profilul sunt independente → paralel
+  const [{ count: evidenceCount }, { data: profileRow }] = await Promise.all([
+    service
+      .from("concept_mastery")
+      .select("concept_id", { count: "exact", head: true })
+      .eq("user_id", user.id),
+    supabase.from("user_profiles").select("grade_level").eq("id", user.id).maybeSingle(),
+  ]);
 
   if (!evidenceCount) {
     return (
@@ -57,25 +61,16 @@ export default async function AziPage() {
     );
   }
 
-  const { data: profileRow } = await supabase
-    .from("user_profiles")
-    .select("grade_level")
-    .eq("id", user.id)
-    .maybeSingle();
   const grade = profileRow?.grade_level ?? 12;
 
-  // ETAPA 14: daily challenge determinist (seed user+dată) + streak (zero LLM)
+  // ETAPA 14 + 76 E: daily ∥ streak ∥ frontiera — toate independente
   const today = chisinauToday();
-  const [daily, streak] = await Promise.all([
+  const [daily, streak, frontierRes] = await Promise.all([
     getOrCreateDailyChallenge(service, user.id, grade, today),
     computeStreak(service, user.id, today),
+    service.rpc("frontier_concepts", { p_user_id: user.id, p_grade: grade, p_limit: 5 }),
   ]);
-
-  const { data: frontier, error } = await service.rpc("frontier_concepts", {
-    p_user_id: user.id,
-    p_grade: grade,
-    p_limit: 5,
-  });
+  const { data: frontier, error } = frontierRes;
   if (error) {
     console.error("[azi] frontier_concepts error:", error.message);
   }

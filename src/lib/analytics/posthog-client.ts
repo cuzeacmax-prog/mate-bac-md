@@ -1,50 +1,74 @@
-import posthog from 'posthog-js';
+/**
+ * posthog-client.ts — ETAPA 76 FAZA E (cauza #1 dovedită de baseline):
+ * posthog-js (188KB) intra SINCRON în bundle-ul comun al tuturor rutelor,
+ * inclusiv landing → TBT mobil ~850ms. Acum: dynamic import LA IDLE
+ * (requestIdleCallback), cu coadă pentru evenimentele emise înainte de
+ * încărcare — nimic nu se pierde, nimic nu blochează hidratarea.
+ */
+import type { PostHog } from 'posthog-js';
 
-let initialized = false;
+let ph: PostHog | null = null;
+let loading = false;
+const queue: Array<(p: PostHog) => void> = [];
 
-export function initPosthog() {
-  if (typeof window === 'undefined' || initialized) return;
+function withPosthog(fn: (p: PostHog) => void) {
+  if (ph) fn(ph);
+  else queue.push(fn);
+}
 
+async function load() {
   const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
   if (!key) {
     console.warn('[Posthog] Missing NEXT_PUBLIC_POSTHOG_KEY');
     return;
   }
-
+  const { default: posthog } = await import('posthog-js');
   posthog.init(key, {
     api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://eu.posthog.com',
     capture_pageview: false,
     capture_pageleave: true,
     persistence: 'localStorage',
     autocapture: false,
-    loaded: (ph) => {
+    loaded: (p) => {
       if (process.env.NODE_ENV === 'development') {
-        ph.debug();
+        p.debug();
       }
     },
   });
+  ph = posthog;
+  for (const fn of queue.splice(0)) fn(posthog);
+}
 
-  initialized = true;
+export function initPosthog() {
+  if (typeof window === 'undefined' || loading) return;
+  loading = true;
+  // analytics nu are voie să concureze cu hidratarea — pornește la idle
+  if ('requestIdleCallback' in window) {
+    (window as Window & { requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => void })
+      .requestIdleCallback(() => void load(), { timeout: 4000 });
+  } else {
+    setTimeout(() => void load(), 2500);
+  }
 }
 
 export function identify(userId: string, properties?: Record<string, unknown>) {
-  if (typeof window === 'undefined' || !initialized) return;
-  posthog.identify(userId, properties);
+  if (typeof window === 'undefined') return;
+  withPosthog((p) => p.identify(userId, properties));
 }
 
 export function track(eventName: string, properties?: Record<string, unknown>) {
-  if (typeof window === 'undefined' || !initialized) return;
-  posthog.capture(eventName, properties);
+  if (typeof window === 'undefined') return;
+  withPosthog((p) => p.capture(eventName, properties));
 }
 
 export function trackPageView(pathname: string) {
-  if (typeof window === 'undefined' || !initialized) return;
-  posthog.capture('$pageview', { $pathname: pathname });
+  if (typeof window === 'undefined') return;
+  withPosthog((p) => p.capture('$pageview', { $pathname: pathname }));
 }
 
 export function reset() {
-  if (typeof window === 'undefined' || !initialized) return;
-  posthog.reset();
+  if (typeof window === 'undefined') return;
+  withPosthog((p) => p.reset());
 }
 
 // Event names — type-safe

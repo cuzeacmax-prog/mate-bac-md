@@ -3,6 +3,7 @@
 import 'katex/dist/katex.min.css'; // ETAPA 66 E2: diagnostic + first-lesson randează math
 import { usePathname } from 'next/navigation';
 import { LivingBackdrop } from '@/components/motion/LivingBackdrop';
+import { MotionProvider } from '@/components/motion/MotionProvider';
 
 const STEPS = [
   '/onboarding/welcome',
@@ -26,6 +27,7 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
     // FĂRĂ bg-background aici (body îl are deja): un fundal opac pe rădăcină
     // acoperea LivingBackdrop (-z-10 pictează SUB fundalul părintelui) —
     // defect dovedit de bucla vizuală ETAPA 74 runda 1
+    <MotionProvider>
     <div className="relative min-h-screen flex flex-col">
       <LivingBackdrop />
       {/* Progress bar */}
@@ -40,5 +42,6 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
         {children}
       </main>
     </div>
+    </MotionProvider>
   );
 }

@@ -7,6 +7,7 @@ import { chisinauToday, computeStreak } from "@/lib/daily/daily";
 import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
 import { LivingBackdrop } from "@/components/motion/LivingBackdrop";
+import { MotionProvider } from "@/components/motion/MotionProvider";
 
 export default async function AppLayout({
   children,
@@ -22,51 +23,45 @@ export default async function AppLayout({
     redirect("/auth/login");
   }
 
-  const { data: profile } = (await supabase
-    .from("profiles")
-    .select("full_name, email, subscription_status")
-    .eq("id", user.id)
-    .single()) as unknown as {
-    data: {
-      full_name: string | null;
-      email: string | null;
-      subscription_status: string | null;
-    } | null;
-    error: unknown;
-  };
-
-  const isAdmin = profile?.subscription_status === "admin";
-  const isPremium =
-    profile?.subscription_status === "premium" ||
-    (profile?.subscription_status ?? "").startsWith("family");
-
   // Citim contorul real din rate_limits (sursa de adevăr), nu din profiles
   const periodStart = new Date();
   periodStart.setDate(1);
   periodStart.setHours(0, 0, 0, 0);
 
-  const { data: rateRow } = (await supabase
-    .from("rate_limits")
-    .select("message_count")
-    .eq("user_id", user.id)
-    .eq("period_type", "monthly")
-    .gte("period_start", periodStart.toISOString())
-    .maybeSingle()) as unknown as {
-    data: { message_count: number | null } | null;
-    error: unknown;
-  };
-
-  const messagesUsed = rateRow?.message_count ?? 0;
-
-  // ETAPA 14: streak-ul calculat server-side din streak_log (zero LLM)
-  let streak = 0;
-  try {
-    streak = await computeStreak(createServiceClient(), user.id, chisinauToday());
-  } catch (err) {
-    console.error("[app/layout] streak failed:", err instanceof Error ? err.message : err);
-  }
+  // ETAPA 76 E (cauza #2 din baseline: TTFB — lanț de query-uri secvențiale):
+  // cele 3 interogări sunt independente → un singur round-trip logic
+  const [profileRes, rateRes, streakRes] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("full_name, email, subscription_status")
+      .eq("id", user.id)
+      .single(),
+    supabase
+      .from("rate_limits")
+      .select("message_count")
+      .eq("user_id", user.id)
+      .eq("period_type", "monthly")
+      .gte("period_start", periodStart.toISOString())
+      .maybeSingle(),
+    computeStreak(createServiceClient(), user.id, chisinauToday()).catch((err) => {
+      console.error("[app/layout] streak failed:", err instanceof Error ? err.message : err);
+      return 0;
+    }),
+  ]);
+  const profile = profileRes.data as {
+    full_name: string | null;
+    email: string | null;
+    subscription_status: string | null;
+  } | null;
+  const isAdmin = profile?.subscription_status === "admin";
+  const isPremium =
+    profile?.subscription_status === "premium" ||
+    (profile?.subscription_status ?? "").startsWith("family");
+  const messagesUsed = (rateRes.data as { message_count: number | null } | null)?.message_count ?? 0;
+  const streak = streakRes;
 
   return (
+    <MotionProvider>
     <div className="flex flex-col h-screen">
       {/* ETAPA 74 A1: fundalul viu pe TOATE ecranele elevului */}
       <LivingBackdrop />
@@ -83,5 +78,6 @@ export default async function AppLayout({
         <main className="flex-1 overflow-auto">{children}</main>
       </div>
     </div>
+    </MotionProvider>
   );
 }
