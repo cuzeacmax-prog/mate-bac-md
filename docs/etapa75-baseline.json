@@ -1,0 +1,186 @@
+{
+  "since": "2026-05-28T07:49:37.508Z",
+  "days": 14,
+  "taskAgg": {
+    "chat_free | claude-haiku-4-5-20251001": {
+      "calls": 62,
+      "avgIn": 6327,
+      "avgOut": 1663,
+      "avgCached": 0,
+      "pctCallsCached": 0,
+      "avgCost": 0.014772516129032263,
+      "totalCost": 0.9158960000000004
+    },
+    "embedding | gemini-embedding-001": {
+      "calls": 66,
+      "avgIn": 32,
+      "avgOut": 0,
+      "avgCached": 0,
+      "pctCallsCached": 0,
+      "avgCost": 0,
+      "totalCost": 0
+    },
+    "verify_math | claude-haiku-4-5-20251001": {
+      "calls": 64,
+      "avgIn": 1151,
+      "avgOut": 70,
+      "avgCached": 0,
+      "pctCallsCached": 0,
+      "avgCost": 0.0015012031250000002,
+      "totalCost": 0.09607700000000001
+    },
+    "chat_premium | claude-sonnet-4-6": {
+      "calls": 16,
+      "avgIn": 4264,
+      "avgOut": 673,
+      "avgCached": 1941,
+      "pctCallsCached": 63,
+      "avgCost": 0.0180771875,
+      "totalCost": 0.289235
+    },
+    "tts | tts-1": {
+      "calls": 13,
+      "avgIn": 98,
+      "avgOut": 0,
+      "avgCached": 0,
+      "pctCallsCached": 0,
+      "avgCost": 0.0014653846153846154,
+      "totalCost": 0.01905
+    },
+    "tts | tts-cache": {
+      "calls": 31,
+      "avgIn": 91,
+      "avgOut": 0,
+      "avgCached": 0,
+      "pctCallsCached": 0,
+      "avgCost": 0,
+      "totalCost": 0
+    },
+    "summarize_history | claude-haiku-4-5-20251001": {
+      "calls": 10,
+      "avgIn": 1199,
+      "avgOut": 295,
+      "avgCached": 0,
+      "pctCallsCached": 0,
+      "avgCost": 0.0026758999999999997,
+      "totalCost": 0.026758999999999998
+    },
+    "judge_answer | claude-haiku-4-5-20251001": {
+      "calls": 38,
+      "avgIn": 592,
+      "avgOut": 63,
+      "avgCached": 0,
+      "pctCallsCached": 0,
+      "avgCost": 0.0009059736842105265,
+      "totalCost": 0.034427000000000006
+    },
+    "chat_admin | claude-haiku-4-5-20251001": {
+      "calls": 1,
+      "avgIn": 4251,
+      "avgOut": 102,
+      "avgCached": 0,
+      "pctCallsCached": 0,
+      "avgCost": 0.004761,
+      "totalCost": 0.004761
+    }
+  },
+  "routeAgg": {
+    "/api/chat [chat_free]": {
+      "calls": 49,
+      "avgIn": 5606,
+      "avgOut": 1076,
+      "avgCached": 0,
+      "pctCallsCached": 0,
+      "avgCost": 0.011148183673469387,
+      "totalCost": 0.546261
+    },
+    "embeddings/query [embedding]": {
+      "calls": 66,
+      "avgIn": 32,
+      "avgOut": 0,
+      "avgCached": 0,
+      "pctCallsCached": 0,
+      "avgCost": 0,
+      "totalCost": 0
+    },
+    "task:verify_math [verify_math]": {
+      "calls": 64,
+      "avgIn": 1151,
+      "avgOut": 70,
+      "avgCached": 0,
+      "pctCallsCached": 0,
+      "avgCost": 0.0015012031250000002,
+      "totalCost": 0.09607700000000001
+    },
+    "/api/chat [chat_premium]": {
+      "calls": 16,
+      "avgIn": 4264,
+      "avgOut": 673,
+      "avgCached": 1941,
+      "pctCallsCached": 63,
+      "avgCost": 0.0180771875,
+      "totalCost": 0.289235
+    },
+    "/api/voice/synthesize [tts]": {
+      "calls": 44,
+      "avgIn": 93,
+      "avgOut": 0,
+      "avgCached": 0,
+      "pctCallsCached": 0,
+      "avgCost": 0.00043295454545454545,
+      "totalCost": 0.01905
+    },
+    "/api/chat#summary [summarize_history]": {
+      "calls": 10,
+      "avgIn": 1199,
+      "avgOut": 295,
+      "avgCached": 0,
+      "pctCallsCached": 0,
+      "avgCost": 0.0026758999999999997,
+      "totalCost": 0.026758999999999998
+    },
+    "task:judge_answer [judge_answer]": {
+      "calls": 38,
+      "avgIn": 592,
+      "avgOut": 63,
+      "avgCached": 0,
+      "pctCallsCached": 0,
+      "avgCost": 0.0009059736842105265,
+      "totalCost": 0.034427000000000006
+    },
+    "/api/lesson/start [chat_free]": {
+      "calls": 13,
+      "avgIn": 9043,
+      "avgOut": 3878,
+      "avgCached": 0,
+      "pctCallsCached": 0,
+      "avgCost": 0.02843346153846154,
+      "totalCost": 0.369635
+    },
+    "/api/lesson/start [chat_admin]": {
+      "calls": 1,
+      "avgIn": 4251,
+      "avgOut": 102,
+      "avgCached": 0,
+      "pctCallsCached": 0,
+      "avgCost": 0.004761,
+      "totalCost": 0.004761
+    }
+  },
+  "unit": {
+    "chatFreeMsg": 0.011148183673469387,
+    "chatPremiumMsg": 0.0180771875,
+    "lessonServed": 0.026742571428571428,
+    "judge": 0.0009059736842105265,
+    "verify": 0.0015012031250000002,
+    "summarize": 0.0026758999999999997,
+    "tts": 0.00043295454545454545
+  },
+  "profiles": {
+    "ușor (free)": 0.2318915634378153,
+    "mediu (free)": 0.8116163603814731,
+    "intens (free)": 2.616903014451714,
+    "mediu (premium)": 1.0887765134426977,
+    "intens (premium)": 3.656253588431306
+  }
+}
