@@ -6,6 +6,7 @@ import { createServiceClient } from "@/lib/supabase/service";
 import { chisinauToday, computeStreak } from "@/lib/daily/daily";
 import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
+import { LivingBackdrop } from "@/components/motion/LivingBackdrop";
 
 export default async function AppLayout({
   children,
@@ -67,6 +68,8 @@ export default async function AppLayout({
 
   return (
     <div className="flex flex-col h-screen">
+      {/* ETAPA 74 A1: fundalul viu pe TOATE ecranele elevului */}
+      <LivingBackdrop />
       <Header
         userEmail={profile?.email ?? user.email ?? null}
         userName={profile?.full_name ?? null}

@@ -30,9 +30,10 @@ export function PillButton({
 }) {
   const styles =
     variant === "primary"
-      ? "bg-primary text-primary-foreground hover:opacity-90"
+      ? // ETAPA 74 A5: gradientul viu, animat lent pe hover (.btn-living)
+        "btn-living bg-primary text-primary-foreground"
       : variant === "secondary"
-        ? "glass-2 text-foreground hover:bg-[var(--glass-3)]"
+        ? "glass-2 glass-hover text-foreground hover:bg-[var(--glass-3)]"
         : "text-muted-foreground hover:text-foreground hover:bg-[var(--glass-1)]";
   return (
     <button

@@ -5,7 +5,6 @@
  */
 import Link from "next/link";
 import { MathText } from "@/components/MathText";
-import { AnimatedBackdrop } from "@/components/motion/AnimatedBackdrop";
 import { domainKeyForSlug } from "@/lib/map/layouts";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
@@ -43,7 +42,6 @@ export default async function AziPage() {
   if (!evidenceCount) {
     return (
       <div className="relative max-w-2xl mx-auto px-6 py-16 text-center space-y-4">
-        <AnimatedBackdrop />
         <h1 className="text-2xl font-semibold">Ce înveți azi</h1>
         <p className="text-muted-foreground">
           Încă nu știm de unde să începem — fă întâi diagnosticul scurt (5–8 întrebări),
@@ -106,7 +104,6 @@ export default async function AziPage() {
 
   return (
     <div className="relative max-w-2xl mx-auto px-6 py-10 space-y-6">
-      <AnimatedBackdrop />
       <div className="flex items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Ce înveți azi</h1>
@@ -141,7 +138,7 @@ export default async function AziPage() {
             return (
               <div
                 key={r.concept_id}
-                className="rounded-2xl border bg-card p-5 space-y-3 border-l-4"
+                className="glass-solid rounded-2xl p-5 space-y-3 border-l-4"
                 style={dk ? { borderLeftColor: `var(--domain-${dk})` } : undefined}
               >
                 <div className="flex items-start justify-between gap-3">

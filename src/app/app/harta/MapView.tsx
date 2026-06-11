@@ -22,7 +22,8 @@ import type { KnowledgeMap, MapDomain, MapNode } from "@/lib/map/state";
 
 type Lens = "bac" | "tinta" | "test";
 
-const NODE_R = 26;
+// ETAPA 74 A3: noduri mai mari (min 28px), cu radial-gradient + halo luminos
+const NODE_R = 30;
 const MAX_PULSE = 15;
 
 export function MapView({ map }: { map: KnowledgeMap }) {
@@ -177,7 +178,7 @@ export function MapView({ map }: { map: KnowledgeMap }) {
 
       {/* harta SVG */}
       <div
-        className="flex-1 min-h-0 mx-4 mb-4 rounded-2xl border bg-card overflow-hidden relative touch-none"
+        className="flex-1 min-h-0 mx-4 mb-4 glass-1 rounded-2xl overflow-hidden relative touch-none"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -202,7 +203,7 @@ export function MapView({ map }: { map: KnowledgeMap }) {
         </div>
         {/* legenda */}
         <div className="absolute top-3 left-3 rounded-xl bg-background/85 backdrop-blur px-3 py-2 text-[10px] text-muted-foreground space-y-0.5">
-          <p>🔒 blocat · inel pulsând = disponibil</p>
+          <p>🔒 blocat · halo pulsând = disponibil</p>
           <p>% = în lucru · plin ✓ = stăpânit</p>
         </div>
       </div>
@@ -238,7 +239,10 @@ function LensChip({ children, active, onClick, disabled }: {
 }
 
 /** ETAPA 72 P1c: graful unui domeniu, memoizat — se re-randează DOAR la
- *  schimbarea domeniului/lentilei/selecției, niciodată la pan/zoom. */
+ *  schimbarea domeniului/lentilei/selecției, niciodată la pan/zoom.
+ *  ETAPA 74 A3: nodurile LUMINEAZĂ — radial-gradient + halo (gradient radial,
+ *  NU filter blur — filtrul pe 139 noduri ar ucide perf-ul din 72), muchii cu
+ *  gradient de la nodul-sursă, spălare de culoare în spatele clusterului. */
 const DomainGraph = memo(function DomainGraph({ domain, nodeOpacity, selectedId, onSelect }: {
   domain: MapDomain;
   nodeOpacity: (n: MapNode) => number;
@@ -250,18 +254,72 @@ const DomainGraph = memo(function DomainGraph({ domain, nodeOpacity, selectedId,
   const pulseIds = new Set(
     domain.nodes.filter((n) => n.status === "disponibil").slice(0, MAX_PULSE).map((n) => n.id)
   );
+  const color = `var(--domain-${domain.key})`;
+  // spălarea domeniului: centrul + raza clusterului (bounding box-ul nodurilor)
+  const xs = domain.nodes.map((n) => n.x);
+  const ys = domain.nodes.map((n) => n.y);
+  const cx = (Math.min(...xs) + Math.max(...xs)) / 2;
+  const cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+  const washR = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) * 0.75 + 160;
   return (
     <>
-      {/* muchiile (prerechizit → dependent) */}
+      <defs>
+        {/* nodul plin (stăpânit): centru luminos → culoarea domeniului */}
+        <radialGradient id={`node-full-${domain.key}`}>
+          <stop offset="0%" stopColor={`var(--domain-${domain.key}-fg)`} />
+          <stop offset="45%" stopColor={color} />
+          <stop offset="100%" stopColor={color} />
+        </radialGradient>
+        {/* nodul moale (disponibil / în lucru): fundalul tentat al domeniului */}
+        <radialGradient id={`node-soft-${domain.key}`}>
+          <stop offset="0%" stopColor={`var(--domain-${domain.key}-bg)`} stopOpacity={1} />
+          <stop offset="78%" stopColor={`var(--domain-${domain.key}-bg)`} stopOpacity={1} />
+          <stop offset="100%" stopColor={color} stopOpacity={0.55} />
+        </radialGradient>
+        {/* haloul exterior — discul de „glow" din spatele nodului */}
+        <radialGradient id={`halo-${domain.key}`}>
+          <stop offset="0%" stopColor={color} stopOpacity={0.5} />
+          <stop offset="55%" stopColor={color} stopOpacity={0.22} />
+          <stop offset="100%" stopColor={color} stopOpacity={0} />
+        </radialGradient>
+        {/* spălarea de culoare a domeniului (6-8%) în spatele clusterului */}
+        <radialGradient id={`wash-${domain.key}`}>
+          <stop offset="0%" stopColor={color} stopOpacity={0.08} />
+          <stop offset="70%" stopColor={color} stopOpacity={0.05} />
+          <stop offset="100%" stopColor={color} stopOpacity={0} />
+        </radialGradient>
+        {/* muchiile: gradient de la nodul-sursă (vizibil) spre dependent (stins) */}
+        {domain.edges.map((e, i) => {
+          const a = byId.get(e.from);
+          const b = byId.get(e.to);
+          if (!a || !b || (a.x === b.x && a.y === b.y)) return null;
+          return (
+            <linearGradient
+              key={i}
+              id={`edge-${domain.key}-${i}`}
+              gradientUnits="userSpaceOnUse"
+              x1={a.x} y1={a.y} x2={b.x} y2={b.y}
+            >
+              <stop offset="0%" stopColor={color} stopOpacity={0.45} />
+              <stop offset="100%" stopColor={color} stopOpacity={0.1} />
+            </linearGradient>
+          );
+        })}
+      </defs>
+
+      <circle cx={cx} cy={cy} r={washR} fill={`url(#wash-${domain.key})`} pointerEvents="none" />
+
+      {/* muchiile (prerechizit → dependent) — vizibile, width 1.5 */}
       {domain.edges.map((e, i) => {
-        const a = byId.get(e.to);
-        const b = byId.get(e.from);
+        const a = byId.get(e.from);
+        const b = byId.get(e.to);
         if (!a || !b) return null;
         return (
           <line
             key={i}
             x1={a.x} y1={a.y} x2={b.x} y2={b.y}
-            stroke="currentColor" strokeWidth={1.2} opacity={0.16}
+            stroke={a.x === b.x && a.y === b.y ? color : `url(#edge-${domain.key}-${i})`}
+            strokeWidth={1.5}
           />
         );
       })}
@@ -280,12 +338,15 @@ const DomainGraph = memo(function DomainGraph({ domain, nodeOpacity, selectedId,
   );
 });
 
-/** nodul-cerc cu cele 4 stări (B2), memoizat per nod (P1c) */
+/** nodul-cerc cu cele 4 stări (B2), memoizat per nod (P1c).
+ *  ETAPA 74 A3: halo luminos (disponibil pulsează), gradient radial pe nod,
+ *  lacăt MIC pe blocat, eticheta 12px alb 70% pe pill. */
 const MapNodeCircle = memo(function MapNodeCircle({ node, domainKey, opacity, selected, pulse, onSelect }: {
   node: MapNode; domainKey: string; opacity: number; selected: boolean; pulse: boolean; onSelect: (n: MapNode) => void;
 }) {
   const color = `var(--domain-${domainKey})`;
-  const bg = `var(--domain-${domainKey}-bg)`;
+  const label = node.name.length > 24 ? `${node.name.slice(0, 23)}…` : node.name;
+  const pillW = label.length * 6.6 + 16;
   return (
     <g
       transform={`translate(${node.x},${node.y})`}
@@ -294,25 +355,36 @@ const MapNodeCircle = memo(function MapNodeCircle({ node, domainKey, opacity, se
       onPointerDown={(e) => e.stopPropagation()}
       className="cursor-pointer"
     >
-      {node.status === "disponibil" && (
+      {/* haloul: nodurile chiar LUMINEAZĂ pe dark; disponibil = halo pulsând */}
+      {node.status !== "blocat" && (
         <circle
-          r={NODE_R + 6}
-          fill="none"
-          stroke={color}
-          strokeWidth={2}
-          className={pulse ? "map-pulse" : undefined}
-          opacity={pulse ? undefined : 0.7}
+          r={NODE_R * 1.9}
+          fill={`url(#halo-${domainKey})`}
+          className={node.status === "disponibil" && pulse ? "map-pulse" : undefined}
+          opacity={node.status === "stapanit" ? 1 : node.status === "disponibil" ? 0.9 : 0.7}
+          pointerEvents="none"
         />
+      )}
+      {/* unda radială „concept stăpânit" — la selectarea unui nod stăpânit */}
+      {selected && node.status === "stapanit" && (
+        <circle r={NODE_R} fill="none" stroke={color} strokeWidth={2.5} className="fx-node-wave" />
       )}
       <circle
         r={NODE_R}
-        fill={node.status === "stapanit" ? color : node.status === "in-lucru" ? bg : "var(--card)"}
+        fill={
+          node.status === "stapanit"
+            ? `url(#node-full-${domainKey})`
+            : node.status === "blocat"
+              ? "var(--card)"
+              : `url(#node-soft-${domainKey})`
+        }
         stroke={selected ? "var(--ring)" : color}
         strokeWidth={selected ? 3.5 : node.status === "blocat" ? 1 : 2}
         strokeDasharray={node.status === "blocat" ? "4 4" : undefined}
+        strokeOpacity={node.status === "blocat" ? 0.6 : 1}
       />
       {node.status === "stapanit" && (
-        <text textAnchor="middle" dy={6} fontSize={18} fill="var(--primary-foreground)" stroke="none">✓</text>
+        <text textAnchor="middle" dy={7} fontSize={20} fontWeight={700} fill="var(--primary-foreground)" stroke="none">✓</text>
       )}
       {node.status === "in-lucru" && (
         <text textAnchor="middle" dy={5} fontSize={13} fontWeight={700} fill={`var(--domain-${domainKey}-fg)`} stroke="none">
@@ -320,16 +392,27 @@ const MapNodeCircle = memo(function MapNodeCircle({ node, domainKey, opacity, se
         </text>
       )}
       {node.status === "blocat" && (
-        <text textAnchor="middle" dy={5} fontSize={14} stroke="none">🔒</text>
+        <text textAnchor="middle" dy={4} fontSize={11} opacity={0.8} stroke="none">🔒</text>
       )}
+      {/* eticheta: 12px, alb 70%, pe pill subtil — lizibilă peste muchii */}
+      <rect
+        x={-pillW / 2}
+        y={NODE_R + 7}
+        width={pillW}
+        height={18}
+        rx={9}
+        fill="var(--map-label-bg)"
+        stroke="none"
+        pointerEvents="none"
+      />
       <text
         textAnchor="middle"
-        y={NODE_R + 16}
-        fontSize={11}
-        fill="var(--foreground)"
+        y={NODE_R + 20}
+        fontSize={12}
+        fill="var(--map-label-fg)"
         stroke="none"
       >
-        {node.name.length > 24 ? `${node.name.slice(0, 23)}…` : node.name}
+        {label}
       </text>
     </g>
   );

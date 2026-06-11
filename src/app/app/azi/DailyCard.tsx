@@ -5,9 +5,10 @@
  * Primește provocarea construită server-side (determinist, zero LLM pe pagină);
  * răspunsurile pleacă spre POST /api/daily/attempt (evaluarea ETAPA 63).
  */
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { StatementText } from "@/components/StatementText";
+import { playFeedback } from "@/lib/motion/feedback";
 import type { DailyExercise } from "@/lib/daily/daily";
 
 interface Props {
@@ -29,6 +30,8 @@ export function DailyCard({ exercises: initial, completed: initialCompleted, str
   const [results, setResults] = useState<Record<string, AttemptResult>>({});
   const [pending, setPending] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // ETAPA 74 A4: ținta feedback-ului din registru, per card de exercițiu
+  const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   async function submit(exerciseId: string) {
     const answer = (answers[exerciseId] ?? "").trim();
@@ -44,6 +47,10 @@ export function DailyCard({ exercises: initial, completed: initialCompleted, str
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
       setResults((prev) => ({ ...prev, [exerciseId]: { correct: data.correct, method: data.method } }));
+      // ETAPA 74 A4: feedback din REGISTRU (verdict null = fără efect)
+      if (data.correct !== null) {
+        playFeedback(data.correct ? "corect" : "gresit", cardRefs.current[exerciseId]);
+      }
       setExercises(data.exercises);
       setCompleted(data.completed);
       setStreak(data.streak);
@@ -82,7 +89,11 @@ export function DailyCard({ exercises: initial, completed: initialCompleted, str
           const result = results[ex.exercise_id];
           const done = ex.attempted;
           return (
-            <div key={ex.exercise_id} className="rounded-2xl bg-card border border-border p-4 space-y-3">
+            <div
+              key={ex.exercise_id}
+              ref={(el) => { cardRefs.current[ex.exercise_id] = el; }}
+              className="glass-solid rounded-2xl p-4 space-y-3"
+            >
               <div className="flex items-start justify-between gap-2">
                 <p className="text-xs font-medium text-muted-foreground">
                   {i + 1}. {ex.concept_name}

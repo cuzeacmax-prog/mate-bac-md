@@ -53,10 +53,26 @@ export function ChatMessages({ messages, streamingContent, isStreaming }: Props)
   }, [messages, streamingContent]);
 
   if (messages.length === 0 && !isStreaming) {
+    // ETAPA 74 A5: empty-state cu viață — orb + glife plutitoare, nu text mort
     return (
-      <div className="flex-1 flex flex-col items-center justify-center gap-3 text-muted-foreground px-4 text-center">
+      <div className="relative flex-1 flex flex-col items-center justify-center gap-3 text-muted-foreground px-4 text-center overflow-hidden">
+        <div aria-hidden className="empty-orb -top-20 left-1/2 -translate-x-1/2" />
+        <span
+          aria-hidden
+          className="living-glyph living-glyph-2 left-[12%] top-[18%]"
+          style={{ fontSize: 96, opacity: 0.06 }}
+        >
+          ∫
+        </span>
+        <span
+          aria-hidden
+          className="living-glyph living-glyph-3 right-[14%] bottom-[20%]"
+          style={{ fontSize: 72, opacity: 0.055 }}
+        >
+          π
+        </span>
         <p className="text-2xl">🎯</p>
-        <p className="font-medium">Bun venit! Sunt Profesor Maxim.</p>
+        <p className="font-medium text-foreground">Bun venit! Sunt Profesor Maxim.</p>
         <p className="text-sm max-w-sm">
           Pune-mi orice întrebare despre matematica BAC — de la algebră și analiză
           până la geometrie și statistică.

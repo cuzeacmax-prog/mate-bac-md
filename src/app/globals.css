@@ -112,10 +112,16 @@
   --glass-2-border: rgba(255, 255, 255, 0.12);
   --glass-3: rgba(255, 255, 255, 0.11);
   --glass-3-border: rgba(255, 255, 255, 0.16);
-  /* orbul gradient (AnimatedBackdrop v2): violet → roz → lime */
+  /* orbii gradient (LivingBackdrop, ETAPA 74 A1): violet → roz / lime → teal */
   --orb-1: oklch(0.55 0.25 295);
   --orb-2: oklch(0.65 0.24 350);
   --orb-3: oklch(0.85 0.20 130);
+  --orb-4: oklch(0.72 0.12 200);
+  /* ETAPA 74 A3: etichetele nodurilor de pe hartă — pill subtil, alb 70% */
+  --map-label-fg: oklch(1 0 0 / 0.72);
+  --map-label-bg: oklch(0.13 0.02 260 / 0.62);
+  /* ETAPA 74 A4: ambra indiciului (pulsația chip-ului) */
+  --hint-amber: oklch(0.78 0.14 80);
   /* cele 7 culori de DOMENIU — recalibrate pentru dark (ETAPA 71 → 73) */
   --domain-i: oklch(0.68 0.16 290);
   --domain-i-bg: oklch(0.27 0.06 290);
@@ -182,49 +188,145 @@
   padding: 0.6rem 0.9rem;
 }
 
-/* ── ETAPA 73: glass — 3 niveluri de elevație (docs/DESIGN.md §1) ──────────
- * Se folosesc DOAR aceste clase (bg+blur+bordură împreună). */
+/* ── ETAPA 73 → 74 A2: glass REAL — 3 niveluri de elevație ──────────────────
+ * Se folosesc DOAR aceste clase (bg+blur+bordură împreună).
+ * ETAPA 74: blur 16-24px + INNER GLOW subtil sus (linia 1px alb ~10%);
+ * bordura se aprinde spre accent pe hover DOAR cu .glass-hover. */
 .glass-1 {
   background: var(--glass-1);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--glass-1-border);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.09);
+  transition: border-color 0.28s ease;
 }
 .glass-2 {
   background: var(--glass-2);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-2-border);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.10);
+  transition: border-color 0.28s ease;
 }
 .glass-3 {
   background: var(--glass-3);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--glass-3-border);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+  transition: border-color 0.28s ease;
+}
+.glass-hover:hover {
+  border-color: color-mix(in oklab, var(--primary) 55%, transparent);
+}
+/* suprafață SOLIDĂ cu rama glass (bordură translucidă + inner glow) —
+ * pentru cardurile care conțin MATEMATICĂ (REGULA SACRĂ: zero blur sub formule) */
+.glass-solid {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.07);
+  transition: border-color 0.28s ease;
 }
 
-/* ── ETAPA 70: fundalul animat (AnimatedBackdrop) ───────────────────────────
- * DOAR transform + opacity (compozitate pe GPU, zero layout thrash). */
-@keyframes backdrop-drift-1 {
+/* ── ETAPA 74 A1: FUNDALUL VIU (LivingBackdrop) — 3 straturi ────────────────
+ * (1) baza: gradient radial dublu STATIC (violet 8% stânga-sus, indigo 6%
+ *     dreapta-jos) peste cărbunele-albăstrui;
+ * (2) orburile: drift LENT continuu 40-60s, DOAR transform/opacity (GPU);
+ * (3) glifele matematice: opacity 0.04-0.07, drift 50-90s desincronizat. */
+.living-base {
+  background:
+    radial-gradient(70vw 70vh at 0% 0%, oklch(0.45 0.20 295 / 0.08), transparent 62%),
+    radial-gradient(60vw 60vh at 100% 100%, oklch(0.45 0.16 270 / 0.06), transparent 62%);
+}
+@keyframes orb-drift-1 {
   0%   { transform: translate3d(0, 0, 0) scale(1); }
-  33%  { transform: translate3d(6%, -8%, 0) scale(1.12); }
-  66%  { transform: translate3d(-5%, 6%, 0) scale(0.94); }
+  33%  { transform: translate3d(4%, -5%, 0) scale(1.05); }
+  66%  { transform: translate3d(-4%, 4%, 0) scale(0.96); }
   100% { transform: translate3d(0, 0, 0) scale(1); }
 }
-@keyframes backdrop-drift-2 {
+@keyframes orb-drift-2 {
   0%   { transform: translate3d(0, 0, 0) scale(1); }
-  40%  { transform: translate3d(-7%, 5%, 0) scale(1.08); }
-  75%  { transform: translate3d(4%, -6%, 0) scale(0.96); }
+  40%  { transform: translate3d(-5%, 4%, 0) scale(1.04); }
+  75%  { transform: translate3d(3%, -4%, 0) scale(0.95); }
   100% { transform: translate3d(0, 0, 0) scale(1); }
 }
-@keyframes backdrop-drift-3 {
+@keyframes orb-drift-3 {
   0%   { transform: translate3d(0, 0, 0) scale(1); }
-  50%  { transform: translate3d(5%, 7%, 0) scale(1.15); }
+  50%  { transform: translate3d(5%, 5%, 0) scale(1.05); }
   100% { transform: translate3d(0, 0, 0) scale(1); }
 }
-.backdrop-blob-1 { animation: backdrop-drift-1 26s ease-in-out infinite; }
-.backdrop-blob-2 { animation: backdrop-drift-2 32s ease-in-out infinite; }
-.backdrop-blob-3 { animation: backdrop-drift-3 38s ease-in-out infinite; }
+.living-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  will-change: transform;
+  transition: opacity 0.6s ease;
+}
+.living-orb-1 {
+  width: 55vw; height: 55vw; left: -14vw; top: -20vw; opacity: 0.32;
+  background: radial-gradient(circle at 38% 38%, var(--orb-1), var(--orb-2) 55%, transparent 76%);
+  animation: orb-drift-1 48s ease-in-out infinite;
+}
+.living-orb-2 {
+  width: 46vw; height: 46vw; right: -12vw; top: 28%; opacity: 0.26;
+  background: radial-gradient(circle at 60% 40%, var(--orb-3), var(--orb-4) 55%, transparent 76%);
+  animation: orb-drift-2 58s ease-in-out infinite;
+}
+.living-orb-3 {
+  width: 42vw; height: 42vw; left: 18%; bottom: -16vw; opacity: 0.28;
+  background: radial-gradient(circle at 50% 45%, var(--orb-2), var(--orb-1) 58%, transparent 78%);
+  animation: orb-drift-3 42s ease-in-out infinite;
+}
+/* lecție completă → orbii se intensifică 2s (clasa pusă de LivingBackdrop) */
+.living-backdrop.boost .living-orb-1 { opacity: 0.5; }
+.living-backdrop.boost .living-orb-2 { opacity: 0.42; }
+.living-backdrop.boost .living-orb-3 { opacity: 0.45; }
+
+@keyframes glyph-drift-1 {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50%  { transform: translate3d(4vw, -6vh, 0) rotate(8deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+}
+@keyframes glyph-drift-2 {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50%  { transform: translate3d(-5vw, 4vh, 0) rotate(-10deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+}
+@keyframes glyph-drift-3 {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  33%  { transform: translate3d(3vw, 5vh, 0) rotate(6deg); }
+  66%  { transform: translate3d(-3vw, -4vh, 0) rotate(-6deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+}
+@keyframes glyph-drift-4 {
+  0%   { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50%  { transform: translate3d(-4vw, -5vh, 0) rotate(12deg); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+}
+.living-glyph {
+  position: absolute;
+  color: oklch(0.95 0.01 260);
+  font-weight: 400;
+  line-height: 1;
+  user-select: none;
+  will-change: transform;
+}
+.living-glyph-1 { animation: glyph-drift-1 var(--glyph-dur, 60s) ease-in-out infinite; }
+.living-glyph-2 { animation: glyph-drift-2 var(--glyph-dur, 70s) ease-in-out infinite; }
+.living-glyph-3 { animation: glyph-drift-3 var(--glyph-dur, 80s) ease-in-out infinite; }
+.living-glyph-4 { animation: glyph-drift-4 var(--glyph-dur, 90s) ease-in-out infinite; }
+
+/* orbul mic al empty-state-urilor (A5) — un singur orb + o glifă plutitoare */
+.empty-orb {
+  position: absolute;
+  width: 22rem; height: 22rem;
+  border-radius: 9999px;
+  filter: blur(70px);
+  opacity: 0.3;
+  background: radial-gradient(circle at 40% 40%, var(--orb-1), var(--orb-2) 55%, transparent 78%);
+  animation: orb-drift-2 50s ease-in-out infinite;
+  pointer-events: none;
+}
 
 /* ── ETAPA 71 B2: inelul pulsând al nodurilor disponibile pe hartă ────────── */
 @keyframes map-pulse {
@@ -238,12 +340,112 @@
   transform-box: fill-box;
 }
 
-/* prefers-reduced-motion: totul degradează la static/fade simplu */
+/* ── ETAPA 74 A4: efectele registrului de feedback (src/lib/motion/feedback.ts)
+ * Clasele de aici se aplică DOAR prin playFeedback() / registru — nu ad-hoc. */
+.fx-host { position: relative; }
+@keyframes fx-ring {
+  from { transform: scale(0.55); opacity: 0.9; }
+  to   { transform: scale(1.6);  opacity: 0; }
+}
+.fx-ring {
+  position: absolute; inset: -4px;
+  border-radius: inherit;
+  border: 2px solid var(--success);
+  animation: fx-ring 0.6s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes fx-spark {
+  from { transform: translate(0, 0) scale(1); opacity: 1; }
+  to   { transform: translate(var(--fx-dx), var(--fx-dy)) scale(0.3); opacity: 0; }
+}
+.fx-spark {
+  position: absolute;
+  border-radius: 9999px;
+  animation: fx-spark var(--fx-dur, 600ms) ease-out forwards;
+  pointer-events: none;
+}
+/* greșit: 3 oscilații orizontale în 300ms — blând, nu punitiv */
+@keyframes fx-shake {
+  0%, 100% { transform: translateX(0); }
+  16% { transform: translateX(-7px); }
+  33% { transform: translateX(7px); }
+  50% { transform: translateX(-4px); }
+  66% { transform: translateX(4px); }
+  83% { transform: translateX(-2px); }
+}
+.fx-shake { animation: fx-shake 0.3s ease-in-out; }
+@keyframes fx-flash-danger {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  35% { box-shadow: 0 0 0 2px oklch(0.62 0.16 25 / 0.2), 0 0 26px -6px oklch(0.62 0.16 25 / 0.3); }
+}
+.fx-flash-danger { animation: fx-flash-danger 0.5s ease-out; }
+@keyframes fx-glow-success {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  40% { box-shadow: 0 0 30px -4px color-mix(in oklab, var(--success) 55%, transparent); }
+}
+.fx-glow-success { animation: fx-glow-success 0.7s ease-out; }
+@keyframes fx-pulse-amber {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  50% { box-shadow: 0 0 0 3px color-mix(in oklab, var(--hint-amber) 40%, transparent); }
+}
+.fx-pulse-amber { animation: fx-pulse-amber 0.8s ease-in-out 2; }
+/* streak: flacăra crește cu „spring" (overshoot) */
+@keyframes fx-streak-pop {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.4); }
+  70%  { transform: scale(0.95); }
+  100% { transform: scale(1.15); }
+}
+.fx-streak-pop {
+  animation: fx-streak-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  display: inline-block;
+}
+/* concept stăpânit: unda radială a nodului (hartă + ritual) */
+@keyframes fx-node-wave {
+  from { transform: scale(1); opacity: 0.8; }
+  to   { transform: scale(2.4); opacity: 0; }
+}
+.fx-node-wave {
+  animation: fx-node-wave 1s ease-out forwards;
+  transform-origin: center;
+  transform-box: fill-box;
+  pointer-events: none;
+}
+
+/* ── ETAPA 74 A5: micro-viață ───────────────────────────────────────────────
+ * butonul primar: gradient animat LENT pe hover; bara de progres: shimmer. */
+@keyframes btn-living-pan {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.btn-living {
+  background-image: linear-gradient(110deg, var(--primary), oklch(0.62 0.22 330), var(--primary));
+  background-size: 220% 100%;
+  background-position: 0% 50%;
+}
+.btn-living:hover { animation: btn-living-pan 3.2s ease-in-out infinite; }
+@keyframes progress-shimmer {
+  from { transform: translateX(-110%); }
+  to   { transform: translateX(380%); }
+}
+.progress-shimmer { position: relative; overflow: hidden; }
+.progress-shimmer::after {
+  content: "";
+  position: absolute; top: 0; bottom: 0; left: 0;
+  width: 32%;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+  animation: progress-shimmer 2.6s ease-in-out infinite;
+}
+
+/* prefers-reduced-motion: mișcarea dispare, rămân DOAR schimbările de culoare */
 @media (prefers-reduced-motion: reduce) {
-  .backdrop-blob-1, .backdrop-blob-2, .backdrop-blob-3 {
+  .living-orb, .living-glyph, .empty-orb,
+  .map-pulse,
+  .fx-ring, .fx-spark, .fx-shake, .fx-streak-pop, .fx-node-wave,
+  .btn-living:hover,
+  .progress-shimmer::after {
     animation: none;
   }
-  .map-pulse {
-    animation: none;
-  }
+  .fx-ring, .fx-spark, .fx-node-wave { display: none; }
 }

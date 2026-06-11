@@ -2,7 +2,7 @@
 
 import 'katex/dist/katex.min.css'; // ETAPA 66 E2: diagnostic + first-lesson randează math
 import { usePathname } from 'next/navigation';
-import { AnimatedBackdrop } from '@/components/motion/AnimatedBackdrop';
+import { LivingBackdrop } from '@/components/motion/LivingBackdrop';
 
 const STEPS = [
   '/onboarding/welcome',
@@ -24,7 +24,7 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
 
   return (
     <div className="relative min-h-screen flex flex-col bg-background">
-      <AnimatedBackdrop />
+      <LivingBackdrop />
       {/* Progress bar */}
       <div className="fixed top-0 inset-x-0 z-50 h-1 bg-muted">
         <div

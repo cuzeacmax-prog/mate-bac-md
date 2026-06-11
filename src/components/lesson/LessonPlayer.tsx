@@ -17,8 +17,9 @@ import { MathText } from "@/components/MathText";
 import { StatementText } from "@/components/StatementText";
 import { LessonTable } from "@/components/lesson/LessonTable";
 import { LayeredFigure } from "@/components/lesson/LayeredFigure";
-import { AnimatedBackdrop } from "@/components/motion/AnimatedBackdrop";
 import { SPRING, buttonTap, progressFill, celebrate } from "@/lib/motion/motion";
+import { playFeedback } from "@/lib/motion/feedback";
+import { MASTERY_THRESHOLD } from "@/lib/progres/data";
 import { playSound, preloadSounds, soundsEnabled, setSoundsEnabled } from "@/lib/sound/sounds";
 import type { LessonBlockClient } from "@/lib/lesson/blocks";
 
@@ -78,6 +79,11 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
   useEffect(() => {
     preloadSounds();
   }, []);
+  // ETAPA 74 A4: țintele feedback-ului din registru (cardul blocului curent,
+  // flacăra de streak și cardul de mastery din ritual)
+  const blockHostRef = useRef<HTMLDivElement>(null);
+  const flameRef = useRef<HTMLSpanElement>(null);
+  const masteryCardRef = useRef<HTMLDivElement>(null);
   // ETAPA 70 G3: ritualul de final — mastery la început vs la final (delta reală)
   const initialMasteryRef = useRef<number | null>(null);
   const [ritual, setRitual] = useState<{
@@ -107,6 +113,17 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
       })
       .catch(() => { /* ecranul rămâne fără cifre, nu gol */ });
   }, [finished, conceptSlug]);
+  // ETAPA 74 A4: pe ritual — flacăra crește cu spring (+scântei); dacă lecția
+  // a trecut conceptul peste prag → unda radială „concept stăpânit"
+  useEffect(() => {
+    if (!ritual) return;
+    const t1 = window.setTimeout(() => playFeedback("streak", flameRef.current), 900);
+    const crossed = ritual.masteryBefore < MASTERY_THRESHOLD && ritual.masteryAfter >= MASTERY_THRESHOLD;
+    const t2 = crossed
+      ? window.setTimeout(() => playFeedback("concept-stapanit", masteryCardRef.current), 1500)
+      : 0;
+    return () => { window.clearTimeout(t1); window.clearTimeout(t2); };
+  }, [ritual]);
 
   // ── streamul lecției ──────────────────────────────────────────────────────
   // ETAPA 73 (defect dovedit de bucla vizuală): vechiul guard startedRef bloca
@@ -181,6 +198,8 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
       setFinished(true);
       // ETAPA 70 F: momentele 3+4 — lecția completă, apoi scânteia de streak
       playSound("complete");
+      // ETAPA 74 A4: explozie de particule brand + orbii din fundal se intensifică
+      playFeedback("lectie-completa");
       if (streak > 0) setTimeout(() => playSound("streak"), 800);
     }
     // altfel: așteptăm următorul bloc din stream (butonul arată spinner)
@@ -199,6 +218,8 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
         const data = await resp.json();
         if (!resp.ok) throw new Error(data.error ?? `HTTP ${resp.status}`);
         playSound(data.correct ? "correct" : "wrong");
+        // ETAPA 74 A4: feedback din REGISTRU — burst verde pe corect, shake pe greșit
+        playFeedback(data.correct ? "corect" : "gresit", blockHostRef.current);
         setQuizStates((prev) => {
           const old = prev[quizId];
           const wrongOptions = old?.wrongOptions ?? [];
@@ -312,7 +333,6 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
     const shownStreak = ritual?.streak ?? streak;
     return (
       <div className="relative flex-1 overflow-y-auto px-6 py-8">
-        <AnimatedBackdrop intensity="bold" />
         <motion.div
           className="text-center space-y-4 max-w-sm mx-auto"
           variants={celebrate}
@@ -349,7 +369,7 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
 
           {/* delta mastery — animată, doar cifre reale */}
           {ritual && (
-            <div className="rounded-2xl border bg-card p-4 space-y-2">
+            <div ref={masteryCardRef} className="glass-solid rounded-2xl p-4 space-y-2">
               <p className="text-xs font-semibold text-primary uppercase">Progresul pe concept</p>
               <div className="h-2.5 bg-muted rounded-full overflow-hidden">
                 <motion.div
@@ -376,13 +396,13 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
           )}
 
           <div className="rounded-2xl bg-primary/5 border border-primary/20 p-4 flex items-center justify-center gap-3">
-            <span className="text-3xl">🔥</span>
+            <span ref={flameRef} className="text-3xl">🔥</span>
             <p className="font-bold">Streak: {shownStreak} {shownStreak === 1 ? "zi" : "zile"}</p>
           </div>
 
           {/* mâine te așteaptă: următorul concept de pe frontieră */}
           {ritual?.next && (
-            <div className="rounded-2xl border bg-card p-4 text-left">
+            <div className="glass-solid rounded-2xl p-4 text-left">
               <p className="text-xs font-semibold text-muted-foreground uppercase mb-1">Mâine te așteaptă</p>
               <p className="font-medium text-sm"><MathText text={ritual.next.name} /></p>
             </div>
@@ -403,7 +423,6 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
   // ── player-ul: un bloc odată ──────────────────────────────────────────────
   return (
     <div className="relative flex-1 flex flex-col min-w-0" style={accentStyle}>
-      {current.tip === "intro" && <AnimatedBackdrop />}
       {/* bara de progres (estetica diagnosticului) */}
       <div className="px-4 pt-3 pb-2 shrink-0">
         <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
@@ -423,7 +442,7 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
             </button>
           </span>
         </div>
-        <div className="h-2 bg-muted rounded-full overflow-hidden">
+        <div className="progress-shimmer h-2 bg-muted rounded-full overflow-hidden">
           <motion.div
             className="h-full rounded-full"
             style={{ background: "var(--lesson-accent, var(--primary))" }}
@@ -437,6 +456,8 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
         <AnimatePresence mode="wait">
           <motion.div
             key={idx}
+            ref={blockHostRef}
+            className="relative rounded-3xl"
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
@@ -499,7 +520,7 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
           <button
             onClick={advance}
             disabled={!canAdvance && streamDone}
-            className="w-full h-13 rounded-2xl bg-primary text-primary-foreground py-3.5 font-semibold disabled:opacity-50"
+            className="btn-living w-full h-13 rounded-2xl bg-primary text-primary-foreground py-3.5 font-semibold disabled:opacity-50"
           >
             {idx + 1 < blocks.length || streamDone ? "Continuă →" : <Loader2 className="h-5 w-5 animate-spin mx-auto" />}
           </button>
@@ -535,7 +556,7 @@ function BlockCard({
       );
     case "step":
       return (
-        <div className="rounded-2xl bg-card border p-6 space-y-3">
+        <div className="glass-solid rounded-2xl p-6 space-y-3">
           <p className="text-xs font-semibold text-primary uppercase tracking-wide">
             <MathText text={block.titlu_scurt} />
           </p>
@@ -557,7 +578,7 @@ function BlockCard({
       );
     case "example":
       return (
-        <div className="rounded-2xl bg-card border p-6 space-y-4">
+        <div className="glass-solid rounded-2xl p-6 space-y-4">
           <p className="text-xs font-semibold text-muted-foreground uppercase">Exemplu</p>
           <p className="font-medium leading-relaxed"><MathText text={block.enunt} /></p>
           <ol className="space-y-2.5">
@@ -629,16 +650,11 @@ function BlockCard({
 
             {/* greșeala 1: indiciu țintit + reîncearcă */}
             {quizState?.status === "retry" && (
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="rounded-xl px-4 py-3 text-sm bg-secondary text-secondary-foreground space-y-1"
-              >
+              <HintChip key={quizState.wrongOptions.length}>
                 <p className="font-semibold">💡 Indiciu:</p>
                 <p><MathText text={quizState.indiciu ?? ""} /></p>
                 <p className="text-xs opacity-80">Mai încearcă o dată — alege alt răspuns.</p>
-              </motion.div>
+              </HintChip>
             )}
 
             {/* greșeala 2: micro-recap + rezolvare + răscumpărare */}
@@ -702,13 +718,13 @@ function BlockCard({
     }
     case "table":
       return (
-        <div className="rounded-2xl bg-card border p-5">
+        <div className="glass-solid rounded-2xl p-5">
           <LessonTable titlu={block.titlu} coloane={block.coloane} randuri={block.randuri} />
         </div>
       );
     case "figure":
       return (
-        <div className="rounded-2xl bg-card border p-5 space-y-3">
+        <div className="glass-solid rounded-2xl p-5 space-y-3">
           {block.kind === "theory" && block.theory_slug ? (
             <TheoryFigure slug={block.theory_slug} />
           ) : block.exercise_id ? (
@@ -721,7 +737,7 @@ function BlockCard({
       );
     case "plot":
       return (
-        <div className="rounded-2xl bg-card border p-5 space-y-3">
+        <div className="glass-solid rounded-2xl p-5 space-y-3">
           <div
             className="figura-bac mx-auto max-w-full [&_svg]:max-w-full [&_svg]:h-auto"
             // SVG-ul e randat EXCLUSIV pe server (renderPlotSVG, expr validat) — trusted
@@ -734,7 +750,7 @@ function BlockCard({
       );
     case "manipulative":
       return (
-        <div className="rounded-2xl bg-card border p-5 space-y-3">
+        <div className="glass-solid rounded-2xl p-5 space-y-3">
           <div
             className="figura-bac mx-auto max-w-full [&_svg]:max-w-full [&_svg]:h-auto"
             // SVG randat EXCLUSIV pe server (renderManipulative, params validați) — trusted
@@ -762,6 +778,25 @@ function BlockCard({
     default:
       return null;
   }
+}
+
+/** ETAPA 74 A4: chip-ul de indiciu — la montare pulsează ambru (din registru) */
+function HintChip({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    playFeedback("indiciu", ref.current);
+  }, []);
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      className="rounded-xl px-4 py-3 text-sm bg-secondary text-secondary-foreground space-y-1"
+    >
+      {children}
+    </motion.div>
+  );
 }
 
 /** ETAPA 70 E: un bloc din răspunsul îngrădit (doar step/formula/example/table/plot) */

@@ -13,7 +13,6 @@ import { Loader2, Flag } from "lucide-react";
 import { MathText } from "@/components/MathText";
 import { StatementText } from "@/components/StatementText";
 import { LayeredFigure } from "@/components/lesson/LayeredFigure";
-import { AnimatedBackdrop } from "@/components/motion/AnimatedBackdrop";
 import { buttonTap } from "@/lib/motion/motion";
 import type { ExamAttempt, ExamResult } from "@/lib/simulare/exam";
 
@@ -95,7 +94,6 @@ export function SimularePlayer({ audit }: {
   if (phase === "intro") {
     return (
       <div className="relative max-w-2xl mx-auto px-6 py-10 space-y-5">
-        <AnimatedBackdrop />
         <h1 className="text-2xl font-bold">Simulare BAC — variantă parțială</h1>
         <div className="glass-2 rounded-3xl p-5 space-y-3 text-sm leading-relaxed">
           <p><strong>{plannedCount} exerciții</strong> din culegerea oficială, cu răspuns verificabil · <strong>90 de minute</strong>, cronometru pe server.</p>
