@@ -417,10 +417,18 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
             </div>
           )}
 
+          {/* ETAPA 76 F1: înapoi pe hartă, cu pan animat pe nodul abia avansat */}
+          <motion.a
+            whileTap={buttonTap}
+            href={`/app/harta?tinta=${encodeURIComponent(conceptSlug)}`}
+            className="btn-living block w-full text-center rounded-xl bg-primary text-primary-foreground px-5 py-3 font-medium"
+          >
+            Continuă călătoria →
+          </motion.a>
           <motion.button
             whileTap={buttonTap}
             onClick={onExitToChat}
-            className="w-full rounded-xl bg-primary text-primary-foreground px-5 py-3 font-medium"
+            className="w-full rounded-xl glass-2 text-foreground px-5 py-3 font-medium"
           >
             Pune o întrebare în chat →
           </motion.button>
@@ -454,6 +462,10 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
             >
               {soundOn ? "🔊" : "🔇"}
             </button>
+            {/* ETAPA 76 F3: breadcrumb discret spre hartă */}
+            <a href={`/app/harta?tinta=${encodeURIComponent(conceptSlug)}`} className="underline underline-offset-2">
+              Vezi pe hartă
+            </a>
             <button onClick={onExitToChat} className="underline underline-offset-2">
               chat liber
             </button>

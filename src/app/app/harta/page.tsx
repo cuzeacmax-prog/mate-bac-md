@@ -10,7 +10,11 @@ import { MapView, MapErrorBoundary } from "./MapView";
 
 export const dynamic = "force-dynamic";
 
-export default async function HartaPage() {
+export default async function HartaPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tinta?: string }>;
+}) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null; // proxy-ul redirectează
@@ -22,10 +26,12 @@ export default async function HartaPage() {
     .maybeSingle();
   const grade = (profileRow?.grade_level as number | null) ?? 12;
 
+  // ETAPA 76 F1: ?tinta=<slug> — venirea din lecție face pan animat pe nod
+  const { tinta } = await searchParams;
   const map = await getKnowledgeMap(createServiceClient(), user.id, grade);
   return (
     <MapErrorBoundary>
-      <MapView map={map} />
+      <MapView map={map} tinta={tinta ?? null} />
     </MapErrorBoundary>
   );
 }

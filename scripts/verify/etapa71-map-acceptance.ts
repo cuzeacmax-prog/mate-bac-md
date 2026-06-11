@@ -44,7 +44,7 @@ async function main() {
 
   // ── 1) stările hărții vs derivarea independentă ───────────────────────────
   const map = await getKnowledgeMap(svc, user.id, 12);
-  const allNodes = map.domains.flatMap((d) => d.nodes);
+  const allNodes = map.domains.flatMap((d) => Object.values(d.grades).flatMap((g) => g.nodes)); // ETAPA 76: felii pe clasă
   console.log(`domenii: ${map.domains.length}, noduri totale: ${allNodes.length}`);
   if (allNodes.length < 20) fail('sub 20 de noduri pe hartă');
 
@@ -73,9 +73,14 @@ async function main() {
   for (const s of ['blocat', 'disponibil', 'in-lucru', 'stapanit']) {
     if (!seenStates.has(s)) fail(`starea '${s}' lipsește din test`);
   }
-  const perDomain = map.domains.map((d) =>
-    `${d.module}: ${d.nodes.length} (b=${d.counts.blocat}, d=${d.counts.disponibil}, l=${d.counts['in-lucru']}, s=${d.counts.stapanit})`
-  );
+  // ETAPA 76: agregăm peste feliile de clasă
+  const perDomain = map.domains.map((d) => {
+    const slices = Object.values(d.grades);
+    const sum = (k: 'blocat' | 'disponibil' | 'in-lucru' | 'stapanit') =>
+      slices.reduce((a, g) => a + g.counts[k], 0);
+    const total = slices.reduce((a, g) => a + g.nodes.length, 0);
+    return `${d.module}: ${total} (b=${sum('blocat')}, d=${sum('disponibil')}, l=${sum('in-lucru')}, s=${sum('stapanit')})`;
+  });
   for (const line of perDomain) console.log(`  ${line}`);
   console.log('✓ toate cele 4 stări prezente');
 
@@ -83,7 +88,7 @@ async function main() {
   // focus = conceptele servibile de pe frontieră din Modulul V (piramide)
   const domV = map.domains.find((d) => d.module === 'Modulul V');
   if (!domV) fail('Modulul V lipsește de pe hartă');
-  const focusConcepts = domV.nodes.filter((n) => n.servable > 0);
+  const focusConcepts = Object.values(domV.grades).flatMap((g) => g.nodes).filter((n) => n.servable > 0);
   if (focusConcepts.length === 0) fail('Modulul V nu are concepte servibile');
   await svc.from('user_focus').upsert(
     {

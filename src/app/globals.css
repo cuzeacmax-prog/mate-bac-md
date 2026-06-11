@@ -328,6 +328,67 @@
   pointer-events: none;
 }
 
+/* ── ETAPA 76 A: CERUL SKYRIM pe hartă ──────────────────────────────────────
+ * nebuloasă cross-fade + zgomot subtil + stele cu twinkle + sigiliul domeniului.
+ * Toate DOAR transform/opacity — perf-ul hărții (72) e sacru. */
+.sky-nebula {
+  position: absolute;
+  inset: 0;
+}
+@keyframes sky-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.sky-nebula-in { animation: sky-fade-in 0.7s ease both; }
+.sky-nebula-out { opacity: 0; transition: opacity 0.7s ease; }
+.sky-noise {
+  /* feTurbulence tileable, inline — zgomotul de 4-6% al nebuloasei */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  opacity: 0.05;
+}
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.85; }
+}
+.star-twinkle { animation: star-twinkle 3s ease-in-out infinite; }
+.sky-seal {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  transform: translate(-50%, -50%);
+  font-size: 36vh;
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0.07;
+  user-select: none;
+  pointer-events: none;
+  transition: opacity 0.7s ease;
+}
+/* fade-ul sigiliului are keyframes PROPRII care se opresc la 0.07 — defect
+ * runda 1: clasa generică sky-fade-in îl ducea la opacity 1 (watermark țipător) */
+@keyframes seal-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 0.07; }
+}
+.sky-seal-in { animation: seal-fade-in 0.7s ease both; }
+.sky-seal-out { opacity: 0; }
+
+/* ── ETAPA 76 B: DRUMUL recomandat (questul) ────────────────────────────────
+ * dash-ul curge în direcția înaintării (stroke-dashoffset descrescător). */
+@keyframes quest-flow {
+  from { stroke-dashoffset: 64; }
+  to   { stroke-dashoffset: 0; }
+}
+.quest-edge {
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 7 9;
+  stroke-opacity: 0.95;
+  filter: drop-shadow(0 0 4px currentColor);
+  animation: quest-flow 1.6s linear infinite;
+}
+
 /* ── ETAPA 71 B2: inelul pulsând al nodurilor disponibile pe hartă ────────── */
 @keyframes map-pulse {
   0%   { opacity: 0.9; transform: scale(1); }
@@ -441,7 +502,7 @@
 /* prefers-reduced-motion: mișcarea dispare, rămân DOAR schimbările de culoare */
 @media (prefers-reduced-motion: reduce) {
   .living-orb, .living-glyph, .empty-orb,
-  .map-pulse,
+  .map-pulse, .star-twinkle, .quest-edge, .sky-nebula-in,
   .fx-ring, .fx-spark, .fx-shake, .fx-streak-pop, .fx-node-wave,
   .btn-living:hover,
   .progress-shimmer::after {

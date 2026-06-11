@@ -1,73 +1,83 @@
 {
  "module": "Modulul VIII",
  "label": "Polinoame",
- "width": 516,
- "height": 120,
- "nodes": [
-  {
-   "id": "79243908-9616-40f8-bd19-9cf7201e614e",
-   "slug": "g12-radacina-polinomului",
-   "name": "rădăcina polinomului",
-   "grade": 12,
-   "x": 90,
-   "y": 60,
-   "servable": 0,
-   "prereqs": [
+ "grades": {
+  "12": {
+   "width": 596,
+   "height": 148,
+   "nodes": [
     {
-     "id": "07c6ea11-8d21-47de-a652-f43e4c5c42ab",
-     "slug": "g9-radacina-unui-polinom",
-     "name": "rădăcina unui polinom"
+     "id": "79243908-9616-40f8-bd19-9cf7201e614e",
+     "slug": "g12-radacina-polinomului",
+     "name": "rădăcina polinomului",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "07c6ea11-8d21-47de-a652-f43e4c5c42ab",
+       "slug": "g9-radacina-unui-polinom",
+       "name": "rădăcina unui polinom",
+       "grade": 9
+      },
+      {
+       "id": "42532acf-4e27-4311-b2e4-ff23c78bc9dd",
+       "slug": "g9-teorema-lui-b-zout",
+       "name": "teorema lui Bézout",
+       "grade": 9
+      }
+     ]
     },
     {
-     "id": "42532acf-4e27-4311-b2e4-ff23c78bc9dd",
-     "slug": "g9-teorema-lui-b-zout",
-     "name": "teorema lui Bézout"
-    }
-   ]
-  },
-  {
-   "id": "877d7bee-6cc9-4160-8756-6e22505f7ecf",
-   "slug": "g12-impartirea-polinoamelor",
-   "name": "împărțirea polinoamelor",
-   "grade": 12,
-   "x": 258,
-   "y": 60,
-   "servable": 0,
-   "prereqs": [
-    {
-     "id": "397ee0b7-478b-4fbb-9a47-35f6ac89bb6e",
-     "slug": "g9-impartirea-polinoamelor",
-     "name": "împărțirea polinoamelor"
+     "id": "877d7bee-6cc9-4160-8756-6e22505f7ecf",
+     "slug": "g12-impartirea-polinoamelor",
+     "name": "împărțirea polinoamelor",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "397ee0b7-478b-4fbb-9a47-35f6ac89bb6e",
+       "slug": "g9-impartirea-polinoamelor",
+       "name": "împărțirea polinoamelor",
+       "grade": 9
+      },
+      {
+       "id": "98c52e04-afd2-4de3-af88-4a8311826cf0",
+       "slug": "g9-impartirea-polinomului-la-binomul-x",
+       "name": "împărțirea polinomului la binomul X − α",
+       "grade": 9
+      }
+     ]
     },
     {
-     "id": "98c52e04-afd2-4de3-af88-4a8311826cf0",
-     "slug": "g9-impartirea-polinomului-la-binomul-x",
-     "name": "împărțirea polinomului la binomul X − α"
+     "id": "ddfea3ca-4762-462d-a75a-cdeb4f4fe72e",
+     "slug": "g12-polinom",
+     "name": "polinom",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "dc3c0791-c772-4ae4-9cea-ee15f7e27d88",
+       "slug": "g9-polinom",
+       "name": "polinom",
+       "grade": 9
+      },
+      {
+       "id": "f861c77d-e718-4a99-aa99-f9359058d07f",
+       "slug": "g9-inmultirea-polinoamelor",
+       "name": "înmulțirea polinoamelor",
+       "grade": 9
+      }
+     ]
     }
-   ]
-  },
-  {
-   "id": "ddfea3ca-4762-462d-a75a-cdeb4f4fe72e",
-   "slug": "g12-polinom",
-   "name": "polinom",
-   "grade": 12,
-   "x": 426,
-   "y": 60,
-   "servable": 0,
-   "prereqs": [
-    {
-     "id": "dc3c0791-c772-4ae4-9cea-ee15f7e27d88",
-     "slug": "g9-polinom",
-     "name": "polinom"
-    },
-    {
-     "id": "f861c77d-e718-4a99-aa99-f9359058d07f",
-     "slug": "g9-inmultirea-polinoamelor",
-     "name": "înmulțirea polinoamelor"
-    }
-   ]
+   ],
+   "edges": []
   }
- ],
- "edges": [],
- "generated": "2026-06-10"
+ },
+ "generated": "2026-06-11"
 }
