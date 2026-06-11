@@ -49,8 +49,18 @@ async function main() {
     .filter((c) => !!c && !c.startsWith('Începe lecția') && c.length > 15)
     .slice(0, 60);
   let beforeDirect = 0, beforeContext = 0, afterDirect = 0, afterContext = 0;
+  let quotaBlocked = 0;
   for (const text of sample) {
-    const emb = await generateEmbeddingForQuery(text.slice(0, 4000));
+    let emb: number[];
+    try {
+      emb = await generateEmbeddingForQuery(text.slice(0, 4000));
+    } catch {
+      quotaBlocked++;
+      if (quotaBlocked > 3) {
+        fail('cota zilnică de embeddings e epuizată — re-rulează scriptul după resetarea cotei (miezul nopții PT)');
+      }
+      continue;
+    }
     const [solved, servable] = await Promise.all([
       svc.rpc('match_exercises', { query_embedding: emb, match_threshold: CONTEXT, match_count: 1 }),
       svc.rpc('match_servable_exercises', { query_embedding: emb, match_threshold: CONTEXT, match_count: 1 }),
