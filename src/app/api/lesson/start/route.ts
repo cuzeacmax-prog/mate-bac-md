@@ -25,6 +25,7 @@ import {
   type LessonBlock,
 } from '@/lib/lesson/blocks';
 import { LESSON_SYSTEM_PROMPT, buildLessonConceptBlock, buildLessonUserMessage, buildRetryMessage } from '@/lib/lesson/prompt';
+import { getCanonicalLesson } from '@/lib/lesson/canonical';
 import { getTheoryFigure } from '@/lib/lesson/theory-figures/registry';
 import { renderPlotSVG } from '@/lib/lesson/plot';
 import { renderManipulative } from '@/lib/lesson/manipulatives';
@@ -96,6 +97,98 @@ export async function POST(req: NextRequest) {
   await supabase.from('messages').insert({
     conversation_id: convId, role: 'user', content: `Începe lecția: ${anchor.name}`,
   });
+
+  // ── ETAPA 75 FAZA B3: lecția CANONICĂ se servește FĂRĂ LLM ───────────────
+  // Scheletul lecției = blocuri persistate (generate o dată, revizuite de
+  // profesor); LIVE rămân doar evaluarea quiz-urilor, remedierea, chatul
+  // îngrădit. Personalizarea intro-ului = template DETERMINIST (zero cost).
+  // Concept fără canonică → generarea live de mai jos (fallback intact).
+  const canonical = await getCanonicalLesson(service, anchor.id);
+  if (canonical) {
+    const { data: prof } = await supabase
+      .from('profiles').select('full_name').eq('id', user.id).maybeSingle();
+    const firstName = (prof?.full_name as string | null)?.trim().split(/\s+/)[0] ?? null;
+
+    const encoder = new TextEncoder();
+    const canonicalStream = new ReadableStream({
+      async start(controller) {
+        const send = (obj: unknown) =>
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(obj)}\n\n`));
+        send({ ping: true });
+        // badge-ul „verificată de profesor" DOAR la status aprobat (B4)
+        send({ canonical: { status: canonical.status } });
+        try {
+          const serverBlocks: LessonBlock[] = [];
+          let quizCount = 0;
+          for (const raw of canonical.blocks) {
+            let block = raw;
+            // personalizare deterministă: salutul în intro (nu se persistă)
+            if (block.tip === 'intro' && firstName) {
+              block = { ...block, ideea_mare: `Salut, ${firstName}! ${block.ideea_mare}` };
+            }
+            if (block.tip === 'plot') {
+              const r = renderPlotSVG(block.expr, block.domain, block.puncte_marcate);
+              if (!r.ok) { console.error('[lesson/canonic] plot respins:', r.error); continue; }
+              serverBlocks.push(block);
+              send({ block: { ...block, svg: r.svg } });
+              continue;
+            }
+            if (block.tip === 'manipulative') {
+              const r = renderManipulative(block.kind, block.params);
+              if (!r.ok) { console.error('[lesson/canonic] manipulative respins:', r.error); continue; }
+              serverBlocks.push(block);
+              send({ block: { ...block, svg: r.svg } });
+              continue;
+            }
+            serverBlocks.push(block);
+            if (block.tip === 'quiz') {
+              quizCount++;
+              send({ block: stripQuizAnswer(block, `q${quizCount}`) });
+            } else {
+              send({ block });
+            }
+          }
+          // persistă lecția COMPLETĂ (cu corecta) — sursa verificării quiz-urilor
+          const { data: saved, error: saveErr } = await service
+            .from('messages')
+            .insert({
+              conversation_id: convId,
+              role: 'assistant',
+              content: JSON.stringify({ lesson: true, concept: anchor.slug, blocks: serverBlocks }),
+            })
+            .select('id')
+            .single();
+          if (saveErr) console.error('[lesson/canonic] save failed:', saveErr.message);
+          send({
+            done: true,
+            conversationId: convId,
+            messageId: saved?.id ?? null,
+            blocks: serverBlocks.length,
+            invalidCount: 0,
+          });
+        } catch (err) {
+          console.error('[lesson/canonic] FALLBACK la markdown:', err instanceof Error ? err.message : err);
+          send({ fallback: true, reason: 'servirea canonică a eșuat' });
+        } finally {
+          controller.close();
+          if (!isPremium) {
+            try {
+              await supabase.rpc('increment_rate_limit', { p_user_id: user.id, p_action_type: 'message' });
+            } catch { /* identic cu /api/chat */ }
+          }
+          // ZERO apeluri LLM pe schelet — nimic de logat în api_usage_log
+        }
+      },
+    });
+    return new NextResponse(canonicalStream, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        Connection: 'keep-alive',
+        'X-Conversation-Id': convId,
+      },
+    });
+  }
 
   // ETAPA 70 B3: figura canonică de teorie, dacă registrul o are
   const theoryEntry = getTheoryFigure(anchor.slug);

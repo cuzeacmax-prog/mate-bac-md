@@ -61,6 +61,8 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
     : ({ "--lesson-accent": "var(--primary)" } as React.CSSProperties);
   const [blocks, setBlocks] = useState<LessonBlockClient[]>([]);
   const [streamDone, setStreamDone] = useState(false);
+  // ETAPA 75 B4: badge-ul „Lecție verificată de profesor" — DOAR la aprobate
+  const [canonicalStatus, setCanonicalStatus] = useState<string | null>(null);
   const [messageId, setMessageId] = useState<string | null>(null);
   const [idx, setIdx] = useState(0);
   const [quizStates, setQuizStates] = useState<Record<string, QuizState>>({});
@@ -159,10 +161,11 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
           buffer = lines.pop() ?? "";
           for (const line of lines) {
             if (!line.startsWith("data: ")) continue;
-            let ev: { block?: LessonBlockClient; done?: boolean; fallback?: boolean; messageId?: string; error?: string };
+            let ev: { block?: LessonBlockClient; done?: boolean; fallback?: boolean; messageId?: string; error?: string; canonical?: { status: string } };
             try { ev = JSON.parse(line.slice(6)); } catch { continue; }
             if (ac.signal.aborted) return;
             if (ev.fallback || ev.error) throw new Error(ev.error ?? "fallback");
+            if (ev.canonical) setCanonicalStatus(ev.canonical.status);
             if (ev.block) setBlocks((prev) => [...prev, ev.block!]);
             if (ev.done) {
               setMessageId(ev.messageId ?? null);
@@ -432,7 +435,15 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
       {/* bara de progres (estetica diagnosticului) */}
       <div className="px-4 pt-3 pb-2 shrink-0">
         <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
-          <span>Lecție · pasul {idx + 1}{streamDone ? ` din ${total}` : ""}</span>
+          <span>
+            Lecție · pasul {idx + 1}{streamDone ? ` din ${total}` : ""}
+            {/* badge-ul apare DOAR la lecțiile aprobate de profesor — niciodată implicit */}
+            {canonicalStatus === "aprobat-profesor" && (
+              <span className="ml-2 rounded-full bg-success-bg text-success-foreground px-2 py-0.5 text-[10px] font-semibold">
+                ✓ Lecție verificată de profesor
+              </span>
+            )}
+          </span>
           <span className="flex items-center gap-3">
             {/* ETAPA 70 F: toggle-ul de sunete, vizibil în player */}
             <button

@@ -57,6 +57,9 @@ export default async function AdminLayout({
         <Link href="/admin/continut" className="text-sm text-gray-600 hover:text-gray-900">
           Conținut
         </Link>
+        <Link href="/admin/lectii" className="text-sm text-gray-600 hover:text-gray-900">
+          Lecții
+        </Link>
         <Link href="/admin/figuri" className="text-sm text-gray-600 hover:text-gray-900">
           Figuri
         </Link>
