@@ -51,15 +51,18 @@ export function NotifSettings({ initialPrefs }: { initialPrefs: Prefs }) {
   const [subscribed, setSubscribed] = useState<boolean | null>(null);
   const [busy, setBusy] = useState(false);
   const [explain, setExplain] = useState(false);
-  const supported = typeof window !== "undefined" && pushSupported();
+  // detectat DOAR în efect: la randare serverul și clientul trebuie să spună
+  // același lucru, altfel hidratarea crapă (React #418, prins de qa-crawl)
+  const [supported, setSupported] = useState<boolean | null>(null);
 
   useEffect(() => {
+    const sup = pushSupported();
     let cancelled = false;
-    const check = pushSupported()
-      ? getCurrentSubscription().then((s) => Boolean(s))
-      : Promise.resolve(false);
+    const check = sup ? getCurrentSubscription().then((s) => Boolean(s)) : Promise.resolve(false);
     check.then((v) => {
-      if (!cancelled) setSubscribed(v);
+      if (cancelled) return;
+      setSupported(sup);
+      setSubscribed(v);
     });
     return () => {
       cancelled = true;
@@ -106,15 +109,17 @@ export function NotifSettings({ initialPrefs }: { initialPrefs: Prefs }) {
             <div>
               <p className="font-semibold text-sm">Notificări pe acest dispozitiv</p>
               <p className="text-xs text-muted-foreground">
-                {supported
-                  ? subscribed
-                    ? "Active — le poți opri oricând."
-                    : "Oprite."
-                  : "Browserul acesta nu suportă notificări push."}
+                {supported === null
+                  ? "Se verifică…"
+                  : supported
+                    ? subscribed
+                      ? "Active — le poți opri oricând."
+                      : "Oprite."
+                    : "Browserul acesta nu suportă notificări push."}
               </p>
             </div>
           </div>
-          {supported && subscribed !== null && (
+          {supported === true && subscribed !== null && (
             subscribed ? (
               <button
                 onClick={disablePush}

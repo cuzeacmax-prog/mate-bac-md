@@ -1,0 +1,484 @@
+=== etapa14-acceptance ===
+user de audit: 0426b9c2-b591-480e-aa3f-e6a0864099a9
+
+[1] determinism D1 ✓ — aceleași 3 exerciții la recitire
+    toate exercițiile din daily sunt SERVIBILE ✓
+
+[2] completare zile consecutive:
+  2026-06-01: 3 exerciții — g12-piramida(sursa-oficiala), g12-trunchi-de-piramida(sursa-oficiala,figură), g12-conul-circular-drept(sursa-oficiala)
+  2026-06-02: 3 exerciții — g12-piramida(sursa-oficiala,figură), g12-trunchi-de-piramida(sursa-oficiala), g12-conul-circular-drept(sursa-oficiala)
+    streak(D1)=1 ✓, streak(D2)=2 ✓
+
+[3] D3 sărită, completare D4:
+  2026-06-04: 3 exerciții — g12-piramida(sursa-oficiala), g12-trunchi-de-piramida(sursa-oficiala), g12-conul-circular-drept(sursa-oficiala)
+    streak(D4)=1 ✓ — seria s-a rupt corect
+
+── streak_log: 2026-06-01, 2026-06-02, 2026-06-04 ──
+
+✅ ETAPA 14 acceptată: daily determinist + servibil, streak 2 pe zile consecutive, rupt la zi sărită, streak_log corect.
+RESULT PASS etapa14-acceptance
+=== etapa60-acceptance ===
+user de test refolosit (mastery resetat): 0426b9c2-b591-480e-aa3f-e6a0864099a9
+  răspuns CORECT pe 'primitive' → 3 concepte actualizate
+  răspuns CORECT pe 'primitive' → 3 concepte actualizate
+  răspuns GREȘIT pe 'integrale' → 2 concepte actualizate
+  răspuns CORECT pe 'geometrie_3d' → 3 concepte actualizate
+  răspuns GREȘIT pe 'probabilitati' → 3 concepte actualizate
+  răspuns CORECT pe 'combinatorica' → 3 concepte actualizate
+
+── concept_mastery (rândurile create) ──
+  g12-primitiva-a-unei-functii: mastery=0.510 evidente=2 surse=diagnostic
+  g12-integrala-nedefinita: mastery=0.510 evidente=2 surse=diagnostic
+  g12-tabelul-integralelor-nedefinite-uzuale: mastery=0.510 evidente=2 surse=diagnostic
+  g10-permutari: mastery=0.300 evidente=1 surse=diagnostic
+  g12-volumul-unui-corp-geometric: mastery=0.300 evidente=1 surse=diagnostic
+  g12-volumul-piramidei: mastery=0.300 evidente=1 surse=diagnostic
+  g12-volumul-prismei: mastery=0.300 evidente=1 surse=diagnostic
+  g10-combinari: mastery=0.300 evidente=1 surse=diagnostic
+  g10-aranjamente: mastery=0.300 evidente=1 surse=diagnostic
+  g12-formula-leibniz-newton: mastery=0.000 evidente=1 surse=diagnostic
+  g12-formula-probabilitatii-reuniunii-evenimentelor: mastery=0.000 evidente=1 surse=diagnostic
+  g12-evenimente-independente: mastery=0.000 evidente=1 surse=diagnostic
+  g12-integrala-definita: mastery=0.000 evidente=1 surse=diagnostic
+  g12-probabilitatea-clasica-a-unui-eveniment: mastery=0.000 evidente=1 surse=diagnostic
+
+── frontiera (top 5) ──
+  g12-piramida (g12) mastery=0.00 exerciții_verificate=0 servibile=15 prereq 1/1
+  g12-trunchi-de-piramida (g12) mastery=0.00 exerciții_verificate=0 servibile=12 prereq 1/1
+  g12-conul-circular-drept (g12) mastery=0.00 exerciții_verificate=0 servibile=7 prereq 1/1
+  g12-prisma (g12) mastery=0.00 exerciții_verificate=0 servibile=3 prereq 1/1
+  g12-trunchiul-de-con-circular-drept (g12) mastery=0.00 exerciții_verificate=0 servibile=3 prereq 1/1
+
+── exerciții servite pe 'g12-piramida' (servibile: verificat + sursă-oficială) ──
+  [f6eb97ce-4912-442d-8b52-a4d70407e86e] Modulul V tier=sursa-oficiala figură=DA → /api/figura/f6eb97ce-4912-442d-8b52-a4d70407e86e
+    Baza piramidei $VABCD$ este trapezul isoscel $ABCD$, în care $AB \parallel CD$, $AB = 4\,cm$, $CD = …
+  [b08ffab7-a52c-4be1-801a-54d4677696d5] Modulul V tier=sursa-oficiala figură=nu
+    Baza piramidei $VABC$ este triunghiul echilateral $ABC$. Fața $VAB$, unde $VA = VB$, este perpendicu…
+
+── figuri legate de exercițiile servite: 1 ──
+  b47-033-f6eb97ce (auto-acceptat) → exercise f6eb97ce-4912-442d-8b52-a4d70407e86e
+
+✅ Acceptare cap-coadă: evidență → mastery → frontieră → exerciții verificate → figură. User păstrat ca artefact de audit.
+RESULT PASS etapa60-acceptance
+=== etapa63-acceptance ===
+user de audit: 0426b9c2-b591-480e-aa3f-e6a0864099a9
+
+exercițiu determinist: 4431b809-da7a-4961-8cfc-ab485883742a
+  enunț: Un con circular drept are raza bazei egală cu $5\,cm$ și înălțimea de $12\,cm$. Să se afle…
+  răspuns oficial: 13\,cm
+  concept: g12-conul-circular-drept
+
+[1] CORECTĂ-DETERMINIST (răspuns elev: "13")
+    mastery ÎNAINTE=0.000000 → DUPĂ=0.300000 (așteptat EMA=0.300000)
+    evidence_count 0 → 1
+
+[2] GREȘITĂ-DETERMINIST (răspuns elev: "99999")
+    mastery ÎNAINTE=0.300000 → DUPĂ=0.210000 (așteptat EMA=0.210000)
+    evidence_count 1 → 2
+
+exercițiu judecător: df5834f2-0c3b-4e3e-87dd-ba5d5815acc8
+  enunț: Precizați în fiecare caz care dintre următoarele funcții $F: R \to R$ reprezintă o primiti…
+  concept: g12-integrala-nedefinita
+
+[3] JUDECĂTOR (răspuns elev: "12345"): correct=false confidence=0.95 motiv="Răspuns nevalid: '12345' nu este o primitivă. Lipsește analiza funcțiilor."
+    mastery ÎNAINTE=0.510000 → DUPĂ=0.357000 (așteptat EMA=0.357000)
+
+── exercise_attempts persistate: 3 ──
+  4431b809-da7a-4961-8cfc-ab485883742a corect=true metoda=determinist conf=1 răspuns="13"
+  4431b809-da7a-4961-8cfc-ab485883742a corect=false metoda=determinist conf=1 răspuns="99999"
+  df5834f2-0c3b-4e3e-87dd-ba5d5815acc8 corect=false metoda=judecator conf=0.95 răspuns="12345"
+
+✅ ETAPA 63 acceptată: determinist corect/greșit + judecător, EMA exactă, prag confidence respectat, încercări persistate.
+RESULT PASS etapa63-acceptance
+=== etapa64-acceptance ===
+exercise_servable: verificat=345, sursa-oficiala=77, total=422
+
+concept GEOMETRIE: g12-volumul-piramidei
+  exercițiu servit: f6eb97ce-4912-442d-8b52-a4d70407e86e tier=sursa-oficiala figură=DA
+  enunț: Baza piramidei $VABCD$ este trapezul isoscel $ABCD$, în care $AB \parallel CD$, $AB = 4\,cm$, $CD = 2\,cm$, ia…
+  răspuns oficial (pentru profesor): $L = 16 \text{ cm}$, $l = 4 \text{ cm}$, $h = 2\sqrt{7} \text{ cm}$, $V = 224\sq
+  intro: etichetă „din culegerea oficială BAC" ✓, referință /api/figura ✓
+  figura: b47-033-f6eb97ce (auto-acceptat) → SVG 4297 bytes — răspunsul GET /api/figura/f6eb97ce-4912-442d-8b52-a4d70407e86e ar fi image/svg+xml
+
+frontier_concepts: 50 rânduri; 7 concepte câștigă conținut prin sursă-oficială
+
+✅ ETAPA 64 acceptată: tier-uri servibile, geometrie cu figură servită din sursă oficială, frontiera numără servable.
+RESULT PASS etapa64-acceptance
+=== etapa68-acceptance ===
+user de audit: 0426b9c2-b591-480e-aa3f-e6a0864099a9
+
+pagina: 7 domenii, 131 concepte pe hartă
+  ✓ concepte pe hartă (total) = 131
+  ✓ concepte stăpânite = 0
+  ✓ concepte în lucru = 16
+  ✓ exerciții încercate = 111
+  ✓ exerciții corecte = 57
+  ✓ streak = 0
+  ✓ fără diagnostic terminat → fără predicție (onest)
+  ✓ ultimele activități: 5 (sortate desc)
+
+✅ ETAPA 68 acceptată: fiecare cifră de pe pagină = DB-ul, predicția doar ca interval cu diagnostic.
+RESULT PASS etapa68-acceptance
+=== etapa69-acceptance ===
+user de audit: 0426b9c2-b591-480e-aa3f-e6a0864099a9
+
+── structura dictată de pool ──
+  Modulul I: disponibile=4, cotă=1, alese=1
+  Modulul II: disponibile=20, cotă=2, alese=2
+  Modulul III: disponibile=2, cotă=1, alese=1
+  Modulul IV: disponibile=11, cotă=1, alese=1
+  Modulul V: disponibile=29, cotă=2, alese=2
+  Modulul VI: disponibile=12, cotă=1, alese=1
+  Modulul VII: disponibile=12, cotă=1, alese=1
+  Modulul VIII: disponibile=0, cotă=1, alese=0
+  GAPS (marcate, nu fabricate): Modulul VIII
+
+attempt: 054ccac0-3d74-4424-a022-4d3ec664b5ed, 9 exerciții, started_at=2026-06-12T11:56:25.413
+răspund: 5 cu răspunsul oficial, 4 greșit deliberat
+concepte legate de itemii simulării: 4 (g12-integrala-nedefinita, g12-modul-dominanta-seriei-statistice, g12-piramida, g12-volumul-conului-circular-drept)
+
+rezultat: 5/9 corecte, 0 fără verdict, expirat=false
+  Modulul I: 1/1
+  Modulul II: 1/2
+  Modulul III: 0/1
+  Modulul IV: 1/1
+  Modulul V: 1/2
+  Modulul VI: 0/1
+  Modulul VII: 1/1
+  notă estimată: 5.5–6.5 (acoperă 7 module)
+  mastery 'g12-integrala-nedefinita': 0.3570 → 0.5499; surse=diagnostic,chat,exam
+  source='exam' prezent pe toate cele 4 concepte ✓
+
+expirarea forțată: submit respins, attempt închis cu expired:true ✓
+
+✅ ETAPA 69 acceptată: structura din pool cu gaps marcate, scor exact, mastery+source=exam, expirare server-side.
+RESULT PASS etapa69-acceptance
+=== etapa70-ask-acceptance ===
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+[1] în temă: 3 blocuri (step, step, example)
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+[2] off-topic: 1 blocuri (step)
+    refuz: [{"tip":"step","titlu_scurt":"Refuz blând","corp":"Acum suntem la **piramidă** — hai să terminăm întâi această temă. Subiectul tău îl găsești în pagina «Azi» după lecție, în secțiunea de știri generale."}]…
+
+✅ ETAPA 70 FAZA E acceptată: răspuns în temă ca blocuri ≤3, off-topic refuzat blând cu trimitere la „Azi".
+RESULT PASS etapa70-ask-acceptance
+=== etapa70-figures-acceptance ===
+── registrul figurilor de teorie: 45 concepte (REVIZUIRE UMANĂ) ──
+  g12-integrala-definita → Aria de sub graficul lui f pe [a,b] — sensul integralei definite
+  g12-interpretarea-geometrica-a-integralei-definite → Aria de sub grafic = integrala definită (interpretarea geometrică)
+  g12-aria-subgraficului-unei-functii → Subgraficul lui f pe [a,b], hașurat, cu y=f(x), a, b
+  g12-formula-leibniz-newton → Aria de sub grafic între a și b — ce calculează F(b)−F(a)
+  g12-proprietatile-integralei-definite → Aria de sub grafic pe [a,b] — suportul vizual al proprietăților
+  g12-functie-integrabila-in-sens-riemann → Sume Riemann: dreptunghiuri sub grafic care aproximează aria
+  g12-teorema-de-medie-pentru-integrala-definita → Dreptunghiul de înălțime f(c) cu aceeași arie ca subgraficul
+  g12-aria-multimii-delimitate-de-graficele-a-doua-functii → Banda dintre y=f(x) și y=g(x) între intersecțiile a și b
+  g12-primitiva-a-unei-functii → Familia primitivelor F(x)+C — curbe paralele pe verticală
+  g12-integrala-nedefinita → Integrala nedefinită = familia F(x)+C
+  g12-proprietatile-integralei-nedefinite → Familia primitivelor — suportul vizual al proprietăților
+  g12-metoda-schimbarii-de-variabila-in-calculul-primitivelor → Familia primitivelor (metoda schimbării de variabilă)
+  g12-metoda-integrarii-prin-parti-integrala-nedefinita → Familia primitivelor (integrarea prin părți, nedefinită)
+  g12-metoda-substitutiei-pentru-integrala-definita → Aria de sub grafic pe [a,b] (substituția păstrează aria)
+  g12-metoda-integrarii-prin-parti-pentru-integrala-definita → Aria de sub grafic pe [a,b] (integrarea prin părți, definită)
+  g12-volumul-corpului-de-rotatie → Graficul lui f rotit în jurul lui Ox — corpul de rotație cu secțiuni
+  g12-aria-suprafetei-de-rotatie → Suprafața generată de graficul lui f rotit în jurul lui Ox
+  g12-piramida → Piramidă patrulateră VABCD cu înălțimea VO și apotema VM
+  g12-volumul-piramidei → Piramidă cu înălțimea VO marcată (V = A·h/3)
+  g12-trunchi-de-piramida → Trunchi de piramidă cu bazele paralele și înălțimea OO₁
+  g12-volumul-trunchiului-de-piramida → Trunchi de piramidă cu înălțimea marcată
+  g12-conul-circular-drept → Con circular drept: vârf V, rază r, înălțime h, generatoare G
+  g12-volumul-conului-circular-drept → Con circular drept cu r și h (V = πr²h/3)
+  g12-aria-laterala-a-conului-circular-drept → Con circular drept cu generatoarea G (Aₗ = πrG)
+  g12-aria-totala-a-conului-circular-drept → Con circular drept cu r și G (Aₜ = πr(r+G))
+  g12-trunchiul-de-con-circular-drept → Trunchi de con: razele R și r, înălțimea h, generatoarea G
+  g12-aria-laterala-a-trunchiului-de-con-circular-drept → Trunchi de con cu generatoarea G (Aₗ = πG(R+r))
+  g12-prisma → Prismă triunghiulară dreaptă ABCA₁B₁C₁ cu înălțimea h
+  g12-prisma-dreapta → Prismă dreaptă cu muchiile laterale perpendiculare pe bază
+  g12-volumul-prismei → Prismă dreaptă cu înălțimea marcată (V = A·h)
+  g12-paralelipiped → Paralelipiped dreptunghic ABCDA₁B₁C₁D₁ cu dimensiunile a,b,c
+  g12-paralelipiped-dreptunghic → Paralelipiped dreptunghic cu diagonala d (d² = a²+b²+c²)
+  g12-volumul-paralelipipedului-dreptunghic → Paralelipiped dreptunghic cu a,b,c (V = a·b·c)
+  g12-cilindrul-circular-drept → Cilindru circular drept: raza r, înălțimea h
+  g12-volumul-unui-corp-geometric → Prismă, cilindru, con — formulele de volum alături
+  g10-cerc → Cerc cu centrul O, raza r și un punct M pe cerc
+  g10-aria-discului → Discul hașurat cu raza r (A = πr²)
+  g10-aria-dreptunghiului → Dreptunghi ABCD cu L, l și aria hașurată
+  g10-aria-patratului → Pătrat cu latura a și aria hașurată
+  g10-aria-figurii-plane → Figură compusă: dreptunghi + triunghi + semidisc (A = A₁+A₂+A₃)
+  g10-bisectoarea-triunghiului → Bisectoarea din A și piciorul D pe BC (teorema bisectoarei)
+  g10-centrul-cercului-circumscris → Cercul circumscris cu centrul O (intersecția mediatoarelor) și raza R
+  g10-centrul-de-greutate-al-triunghiului → Medianele și centrul de greutate G
+  g10-asemanarea-figurilor → Două triunghiuri asemenea △ABC ~ △A₁B₁C₁
+  g10-congruenta-triunghiurilor → Două triunghiuri congruente △ABC ≡ △A₁B₁C₁
+  toate cele 45 figuri randează SVG valid ✓
+
+── plot validat ──
+  ✓ 'x^2 - 3*x + 1' pe [-2,4] → SVG 3720 chars
+  ✓ 'sin(x)' pe [0,6.283] → SVG 3650 chars
+  ✓ 'sqrt(x) + ln(x)' pe [0.1,9] → SVG 3350 chars
+  ✓ '(x^2 - 1)/(x - 2)' pe [-4,6] → SVG 3391 chars
+  ✓ respins: 'constructor' (simbol interzis: constructor)
+  ✓ respins: 'x.constructor' (nod interzis: AccessorNode)
+  ✓ respins: 'import("fs")' (funcție interzisă: import)
+  ✓ respins: 'f(x) = x^2' (nod interzis: FunctionAssignmentNode)
+  ✓ respins: 'y + 2' (simbol interzis: y)
+  ✓ respins: 'simplify("x")' (funcție interzisă: simplify)
+  ✓ respins: 'x; 2' (nod interzis: BlockNode)
+  ✓ respins: 'det([1,2])' (funcție interzisă: det)
+  ✓ respins: 'x == 2 ? 1 : 0' (nod interzis: ConditionalNode)
+
+── lecție live pe 'g12-piramida' (modelul trebuie să CEARĂ figura canonică) ──
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+  (bloc respins de validator: pasi.0.text: maxim 1 propoziție; pasi.1.text: maxim 1 propoziție)
+  (bloc respins de validator: pasi.0.text: maxim 1 propoziție; pasi.0.text: Too big: expected string to have <=200 characters)
+  (bloc respins de validator: puncte.2: Too big: expected string to have <=160 characters)
+  blocuri valide: 14 (intro → figure → step → step → quiz → step → example → quiz → step → example → quiz → figure → step → quiz)
+  ✓ figure kind=theory theory_slug=g12-piramida — figura servibilă (1998 chars SVG)
+
+✅ ETAPA 70 FAZA B acceptată: registru ≥30 revizuibil, plot validat+respins, lecția cere figura canonică.
+RESULT PASS etapa70-figures-acceptance
+=== etapa70-g-acceptance ===
+[G1] convertite: complet=301, partial=22, cu original păstrat=323
+     exemplu: Mulțimea soluțiilor ecuației $3x - 9 = 0$ este:
+[G2] taxonomia greșelii: concept_slug=g12-conul-circular-drept, module=Modulul VI
+     Unde greșești des (top 3):
+       conul circular drept — 7 greșeli (Modulul VI) → /app/chat?concept=g12-conul-circular-drept
+       volumul conului circular drept — 7 greșeli (Modulul VI) → /app/chat?concept=g12-volumul-conului-circular-drept
+       piramidă — 7 greșeli (Modulul V) → /app/chat?concept=g12-piramida
+[G3] ritual: mastery=0.210, streak=0, next=g12-piramida
+
+✅ ETAPA 70 FAZA G acceptată: conversie persistată cu original, taxonomie pe greșeli + top 3 în progres, ritualul are date reale.
+RESULT PASS etapa70-g-acceptance
+=== etapa70-help-acceptance ===
+user de audit: 0426b9c2-b591-480e-aa3f-e6a0864099a9
+  [A] corect fără ajutor: ajutor=niciunul, weight=1, ΔEMA=0.300000
+  [B] corect cu indiciu: ajutor=hint, weight=0.5, ΔEMA=0.150000
+  [C] corect după rezolvarea arătată: ajutor=solution, weight=0, ΔEMA=0.000000
+
+raport ΔA:ΔB = 0.300000:0.150000 = exact 2:1 ✓; ΔC = 0 ✓
+metadata.helped=true pe încercarea cu indiciu ✓
+
+✅ ETAPA 70 FAZA D acceptată: 2:1 exact, capitularea nu mișcă mastery, helped persistat în evidență.
+RESULT PASS etapa70-help-acceptance
+=== etapa70-mistake-acceptance ===
+user de audit: 0426b9c2-b591-480e-aa3f-e6a0864099a9
+lecție sintetică: message=64f87ac5-a4b4-4816-942a-28e3f15ae0b7 conv=593fff07-1bc4-48da-a3b1-95e3b887cf05
+similar determinist: f6eb97ce-4912-442d-8b52-a4d70407e86e (răspuns oficial: $L = 16 \text{ cm}$, $l = 4 \text{ cm}$,…)
+
+[1] greșit(1): mastery 0.300000 → 0.210000 (așteptat 0.210000), attempt=1, masteryMoved=down
+    indiciu: „Piramida ocupă a treia parte din prisma cu aceeași bază și înălțime."
+[2] greșit(2): mastery 0.210000 → 0.147000 (așteptat 0.147000), attempt=2
+    micro-recap: „Volumul", rezolvare: 2 pași, similar: f6eb97ce-4912-442d-8b52-a4d70407e86e
+[3] similar-corect: mastery 0.147000 → 0.402900 (așteptat 0.402900), masteryMoved=up-full
+[4] corect după indiciu: mastery 0.282030 → 0.389726 (așteptat ÎNJUMĂTĂȚIT 0.389726), masteryMoved=up-halved
+
+✅ ETAPA 70 FAZA C acceptată: greșit→greșit→similar-corect cu EMA exact; indiciul nu scapă corecta; ajutorul înjumătățește exact pasul.
+   (lecția sintetică rămâne ca artefact de audit)
+RESULT PASS etapa70-mistake-acceptance
+=== etapa71-manipulative-acceptance ===
+── pozitive (verificare structurală pe SVG) ──
+  ✓ zaruri{n:2,fete:[3,5]}: 2 zaruri, 8 pipsuri (3+5)
+  ✓ persoane{n:4,evidentiati:[1,3],ordonat}: 4 persoane, pozițiile 1 și 3 accentuate
+  ✓ urna{rosii:3,albe:2,extrase:[rosii]}: 5 bile + 1 extrasă, legendă
+  ✓ bare-fractii{8,3}: 8 celule, 3 evidențiate, eticheta 3/8
+  ✓ dreapta-numerica{-2..8, punct 3, interval [0,5]}
+  ✓ venn{A,B,zone:[AB]}: 2 cercuri, intersecția accentuată
+
+── negative (params ilegale respinse) ──
+  ✓ respins zaruri (n peste limită): n: Too big: expected number to be <=4; (rădăcină): fete trebuie să aibă exact n valori
+  ✓ respins zaruri (față ilegală 9): fete.0: Too big: expected number to be <=6
+  ✓ respins urna (peste 20 de bile): bile.0.n: Too big: expected number to be <=20; (rădăcină): maxim 20 de bile în urnă
+  ✓ respins persoane (evidențiat peste n): (rădăcină): evidențiații trebuie să fie ≤ n
+
+manipulative funcționale: 8/8
+  ✓ toate cele 8 kinds randează SVG valid cu params minime
+
+── lecție live pe 'g12-probabilitatea-clasica-a-unui-eveniment' ──
+AI SDK Warning: System messages in the prompt or messages fields can be a security risk because they may enable prompt injection attacks. Use the system option instead when possible. Set allowSystemInMessages to true to suppress this warning, or false to throw an error.
+  blocuri: intro → step → formula → example → manipulative → step → step → step → quiz → example → manipulative → quiz → example → manipulative → quiz → recap
+  manipulative invocat: kind=urna params={"bile":[{"culoare":"alba","n":10},{"culoare":"neagra","n":3},{"culoare":"rosie","n":2}],"extrase":[ → SVG 3591 chars
+  manipulative invocat: kind=zaruri params={"n":1,"fete":[1,2,3,4,5,6]} → RESPINS: fete: Too big: expected array to have <=4 items; (rădăcină): fete trebuie să aibă exact n valori
+  manipulative invocat: kind=monede params={"n":2,"rezultate":["S","S"]} → SVG 831 chars
+
+✅ ETAPA 71 FAZA C acceptată: 6 pozitive structurale + 4 negative + 8/8 smoke + lecția live invocă manipulative valide.
+RESULT PASS etapa71-manipulative-acceptance
+=== etapa71-map-acceptance ===
+user de audit: 0426b9c2-b591-480e-aa3f-e6a0864099a9
+domenii: 7, noduri totale: 139
+✓ 139 noduri verificate, stările identice cu derivarea independentă
+  Modulul I: 25 (b=22, d=0, l=3, s=0)
+  Modulul II: 13 (b=13, d=0, l=0, s=0)
+  Modulul III: 15 (b=12, d=0, l=3, s=0)
+  Modulul IV: 33 (b=30, d=2, l=1, s=0)
+  Modulul V: 21 (b=13, d=3, l=4, s=1)
+  Modulul VI: 29 (b=22, d=4, l=3, s=0)
+  Modulul VIII: 3 (b=0, d=3, l=0, s=0)
+✓ toate cele 4 stări prezente
+✓ daily cu focus (2026-07-01): 3 exerciții, toate din focus (g12-piramida, g12-trunchi-de-piramida, g12-prisma)
+✓ focus curățat după test
+
+✅ ETAPA 71 FAZA B acceptată: stările hărții = derivarea din mastery (toate 4 prezente), lentila test-mâine filtrează daily-ul.
+RESULT PASS etapa71-map-acceptance
+=== etapa71-payments-acceptance ===
+user de audit: 0426b9c2-b591-480e-aa3f-e6a0864099a9
+  [trial pornit] subscriptions.status=trialing cancel_at_end=false profiles=premium
+  [plată reușită] subscriptions.status=active cancel_at_end=false profiles=premium
+  [semnătură falsă] respinsă ✓
+  [duplicat] idempotent — o singură încercare persistată ✓
+  [plată eșuată] subscriptions.status=past_due cancel_at_end=false profiles=premium
+  [retry reușit] subscriptions.status=active cancel_at_end=false profiles=premium
+  [anulare cerută] subscriptions.status=active cancel_at_end=true profiles=premium
+  [perioadă încheiată] subscriptions.status=canceled cancel_at_end=true profiles=free
+  [istoric] 4 încercări păstrate ✓
+  [grație depășită] subscriptions.status=canceled cancel_at_end=true profiles=free
+
+✅ ETAPA 71 FAZA E acceptată: ciclul complet trial→active→past_due→retry→cancel→expirat→free, semnătura falsă respinsă, idempotență dovedită, istoric păstrat.
+RESULT PASS etapa71-payments-acceptance
+=== etapa72-latex-acceptance ===
+intro: 854 chars
+segmente: 1 math, 2 text
+✓ nicio formulă nu conține proză/diacritice/mesajul de info
+✓ formula x₀/y₀ apare ÎNTREAGĂ ca math în intro
+✓ mesajul „nu am exerciții" e bloc separat și e TEXT
+✓ tăierea la mijloc de formulă nu mai lasă delimitatori deschiși
+checker: 169 body-uri marcate cu probleme LaTeX din 1528 cu conținut
+
+✅ ETAPA 72 P3 acceptată: formula nu mai înghite textul, info-ul e bloc separat, 169 body-uri marcate pentru revizuire.
+RESULT PASS etapa72-latex-acceptance
+=== etapa72-messages-acceptance ===
+✓ 60/60 mesaje reale (cele mai recente) se randează fără throw
+✓ 4 mesaje-bombă (LaTeX nebalansat, bloc invalid) se randează fără throw
+  (dacă totuși ceva aruncă vreodată: boundary-ul per mesaj — testat în vitest — păstrează conversația)
+
+✅ ETAPA 72 P2 acceptată: mesajele reale + bombele se randează; boundary-ul per mesaj e plasa de siguranță.
+RESULT PASS etapa72-messages-acceptance
+=== etapa73-markdown-acceptance ===
+exerciții servibile: 422
+  cu tabel markdown VALID (acum randat nativ): 4
+  cu markdown NERANDABIL (excluse din daily, marcate): 1
+    899d46df-af96-41c4-b57c-0f2fcb886ff4
+diagnostic: 327 — markdown nerandabil: 0
+bibliotecă (solved_exercises): 8 — markdown nerandabil: 0
+
+✅ ETAPA 73 D2: raport complet — tabelele valide se randează nativ, nerandabilele sunt detectate (daily le exclude).
+RESULT PASS etapa73-markdown-acceptance
+=== etapa74-self-contained ===
+
+══ ETAPA 74 B3 — exerciții ne-autonome: 1/1268 (0 azi servibile) ══
+per modul:  Modulul V: 1
+per clasă:  notatii-externe: 1
+
+eșantioane (max 15):
+  [notatii-externe] Folosind notațiile de mai sus, calculați $A_{lat}$, $A_{tot}$, $V$ pentru un trunchi de piramidă triunghiulară regulată, atunci când se cuno
+
+(dry-run — rulează cu APPLY=1 ca să marchezi self_contained=false)
+RESULT PASS etapa74-self-contained
+=== etapa75-canonical-acceptance ===
+pornesc lecția pe 'g12-piramida' (are canonică, status=generat)…
+  ✓ 13 blocuri din canonică, status=generat, messageId=bec1a7ae
+  ✓ quiz q1 verificat pe server (correct=false)
+  ✓ ZERO apeluri LLM pe schelet (în log: doar 0 rânduri de evaluare, $0.000000)
+
+✅ B5 acceptată: lecția canonică servită fără LLM.
+   cost/lecție servită: înainte $0.0267 → după $0.0000 (doar evaluările)
+RESULT PASS etapa75-canonical-acceptance
+=== etapa75-routing-acceptance ===
+  ✓ [simple:0] (așteptat simple) Cât face 2+2?
+  ✓ [simple:0] (așteptat simple) Ce înseamnă DVA?
+  ✓ [simple:0] (așteptat simple) Cum se calculează aria unui pătrat cu latura 5?
+  ✓ [simple:0] (așteptat simple) x = 7 e corect?
+  ✓ [simple:0] (așteptat simple) Mulțumesc, am înțeles! Mai dă-mi un exercițiu ușor.
+  ✓ [hard:3] (așteptat hard) Demonstrați că șirul $a_n = \frac{n+1}{n}$ este descrescător
+  ✓ [hard:3] (așteptat hard) Calculați $\int_0^1 x e^{x^2} dx$ folosind schimbarea de var
+  ✓ [hard:5] (așteptat hard) a) Determinați domeniul funcției $f(x) = \ln(x^2 - 4)$; b) c
+  ✓ [hard:3] (așteptat hard) Se dă piramida patrulateră regulată VABCD cu latura bazei 12
+  ✓ [hard:4] (așteptat hard) Câte numere de 4 cifre distincte se pot forma cu cifrele 1-7
+✓ 10/10 pe mesajele etichetate manual
+
+✓ maparea tier × dificultate → task corectă (5/5)
+
+distribuția pe 162 mesaje reale (14 zile): simple=160 (99%) · hard=2 (1%)
+
+✅ C3 acceptată: 10/10 etichetate + mapare task-uri + distribuția raportată.
+RESULT PASS etapa75-routing-acceptance
+=== etapa77-foto-acceptance ===
+generez cele 6 poze de test…
+
+══ RAPORT ONEST per poză ══
+  1. tipărit (integrală): PARȚIALĂ (suprapunere 71%, încredere 97%)
+     transcris: 7. Calculați integrala $\int_0^1 (3x^2 + 2x) \, dx$.
+  2. tipărit (volum rotație): CORECTĂ (suprapunere 95%, încredere 99%)
+     transcris: 7. Determinați volumul corpului de rotație generat de funcția $f(x) = -x^2 + 4x$, pentru $x \in [0; 2]$.
+  3. de mână (integrală): CORECTĂ (suprapunere 80%, încredere 95%)
+     transcris: Calculați integrala de la 1 la 2 din $1/x^2$ $dx$
+  4. de mână (arie): CORECTĂ (suprapunere 75%, încredere 99%)
+     transcris: Aflați aria subgraficului funcției $f(x) = x^2$ pe intervalul $[0, 1]$
+  5. înclinat + lumină proastă: PARȚIALĂ (suprapunere 71%, încredere 92%)
+     transcris: 7. Calculați integrala $\int_0^1 (3x^2 + 2x) \, dx$.
+  6. fără matematică (refuz așteptat): ✓ refuz politicos corect
+
+sumar: 3 corecte · 2 parțiale · 0 greșite · refuz non-math: 1/1
+pragul de re-poză: 0.55 (sub el UI-ul cere altă poză — documentat în rută)
+
+✅ F4: fluxul foto e utilizabil; raportul de mai sus e cel real.
+RESULT PASS etapa77-foto-acceptance
+=== etapa78-push-acceptance ===
+STREAK ÎN PERICOL — regulile:
+  ✓ fără abonament push: blocat corect (fara-abonament-push)
+  ✓ abonat + daily nefăcut + streak 2 → decizia: TRIMITE
+  ✓ orele de liniște (22:30): blocat corect (ore-de-liniste)
+  ✓ daily-ul făcut: blocat corect (daily-facut)
+  ✓ streak 0 (nimic de pierdut): blocat corect (streak-sub-2-nimic-de-pierdut)
+  ✓ trimiterea → notifications_log (status: esuat-endpoint, delivered=0, dead=1)
+  ✓ al 2-lea push în aceeași zi: blocat corect (limita-1-pe-zi)
+PROVOCAREA DE DIMINEAȚĂ — regulile:
+  ✓ fără opt-in explicit: blocat corect (fara-opt-in)
+  ✓ opt-in + 08:30 + daily nefăcut → decizia: TRIMITE
+  ✓ în afara ferestrei (12:00): blocat corect (in-afara-ferestrei-de-dimineata)
+
+✅ B3: push-ul e servitor, nu spam — toate regulile dovedite pe userul de audit.
+RESULT PASS etapa78-push-acceptance
+=== etapa78-email-acceptance ===
+C2.1 — randare cu date reale:
+  date reale: lecții=54, încercate=132, corecte=67, streak=2, concepte=[tetraedru, integrală nedefinită, primitivă a unei funcții], next=piramidă
+  ✓ bun-venit.html (subiect: "Bine ai venit! Uite ce urmează", diacritice ✓, unsubscribe ✓)
+  ✓ streak-rupt.html (subiect: "Seria s-a oprit — dar nu s-a pierdut nimic", diacritice ✓, unsubscribe ✓)
+  ✓ raport-saptamanal.html (subiect: "Săptămâna ta în cifre", diacritice ✓, unsubscribe ✓)
+  ✓ raport-saptamanal-parinte.html (subiect: "Raportul săptămânal — progresul la matematică", diacritice ✓, unsubscribe ✓)
+  ✓ raport-reangajare.html (subiect: "O săptămână liniștită — hai înapoi cu 5 minute", diacritice ✓, unsubscribe ✓)
+  ✓ trial-expira.html (subiect: "Trialul tău se încheie în 2 zile", diacritice ✓, unsubscribe ✓)
+  ✓ plata-restanta.html (subiect: "Plata abonamentului nu a reușit", diacritice ✓, unsubscribe ✓)
+C2.2 — garda (RESEND_API_KEY absentă):
+  ✓ trimiterea → notifications_log (status: pending-no-key, to: etapa60-acceptance@test.local) — nimic nu a crăpat
+  ✓ dedupe per tip funcționează (trimis=da, netrimis=nu)
+C2.4 — dezabonarea:
+  ✓ token HMAC: validul trece, falsificatul nu
+  ✓ opt-out (email=false) e respectat de verificarea din cron
+C2.5 — detecția streak-ului rupt:
+  ✓ ieri liber + 3 zile consecutive înainte → serie pierdută = 3
+  ✓ cu activitate ieri → seria nu e ruptă (0)
+
+✅ C2: 7 HTML-uri în docs/email-preview/, garda 'pending-no-key' dovedită, dedupe + dezabonare + detecție streak verificate.
+RESULT PASS etapa78-email-acceptance
+=== etapa78-pilot-acceptance ===
+  ✓ în cohortă: attempts7=132, corecte=67, lecții=54, streak=0, cost=$1.9998, activ7=true
+  ✓ inbox feedback: 0 intrări, toate cu status valid
+  ✓ erori recente: 10 rânduri (katex_error_report, include client-render)
+  ✓ top concepte (7z, pilot): volumul conului circular drept, conul circular drept, primitivă a unei funcții
+  ✓ scos din cohortă: nu mai apare în panou
+
+✅ FAZA D: panoul pilotului citește doar date reale, cohorta e setabilă, inbox-ul are stare.
+RESULT PASS etapa78-pilot-acceptance
+=== etapa78-exercitii-acceptance ===
+  ✓ R5: toate cele 421 exerciții listate sunt servibile (din 422 în view; diferența = enunțuri nerandabile excluse onest)
+  ✓ badge-uri sursă: 345 verificate, 76 din culegerea oficială
+  ✓ figuri: 1 exerciții cu figură aprinsă
+  ✓ filtru domeniu 'i': 106 exerciții, toate din domeniu
+  ✓ filtru clasa 12: 318 exerciții
+  ✓ dificultate (clasificator determinist): 166 accesibile + 255 avansate = 421
+  ✓ căutare insensibilă la diacritice: „primitivă"=„primitiva"=24 rezultate
+  ✓ pre-încărcare: pe 'proprietățile integralei definite' implicitul era 429d7da6…, pin-ul l-a pus pe 5baeb049… primul
+  ✓ pin invalid → ignorat, ancora servește exercițiile implicite
+
+✅ FAZA E: biblioteca servibilă e navigabilă, R5 ținut, click-ul duce la chat-ul ancorat cu exercițiul pre-încărcat.
+RESULT PASS etapa78-exercitii-acceptance
+RESULT DONE

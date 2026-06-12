@@ -199,7 +199,37 @@ async function main() {
     console.log('  (abonamentul e deja activ — checkout-ul nu se oferă; pagina auditată)');
   }
 
-  // ── 6) restul rutelor elevului ────────────────────────────────────────────
+  // ── 6) ETAPA 78 E: biblioteca de exerciții — filtre + click → chat ancorat ─
+  await goto(page, '/app/exercitii', 1800);
+  const firstCard = page.getByTestId('exercitiu-card').first();
+  if (await firstCard.isVisible().catch(() => false)) {
+    await goto(page, '/app/exercitii?domeniu=i&dificultate=accesibil', 1500);
+    await goto(page, '/app/exercitii?q=primitiva', 1500);
+    where = '/app/exercitii → click card (chat ancorat cu exercițiul)';
+    const link = page.locator('a:has([data-testid="exercitiu-card"])').first();
+    const href = await link.getAttribute('href').catch(() => null);
+    if (href?.includes('exercise=')) {
+      await goto(page, href, 2500);
+      const anchored = await page.getByText(/Hai să exersăm|exerciții servibile/).first().isVisible().catch(() => false);
+      if (!anchored) defects.push({ where, kind: 'pageerror', detail: 'chat-ul ancorat cu exercițiul pre-încărcat nu s-a deschis' });
+      else console.log('  ✓ exerciții: filtre + căutare + click → chat ancorat cu exercițiul');
+    } else {
+      defects.push({ where, kind: 'pageerror', detail: `cardul nu duce la chat cu exercise= (href: ${href})` });
+    }
+  } else {
+    defects.push({ where: '/app/exercitii', kind: 'pageerror', detail: 'niciun card de exercițiu vizibil' });
+  }
+
+  // ── 7) ETAPA 78 B: setările notificărilor ─────────────────────────────────
+  await goto(page, '/app/setari', 1500);
+  if (!(await page.getByTestId('push-enable').isVisible().catch(() => false))
+      && !(await page.getByText('Notificări pe acest dispozitiv').isVisible().catch(() => false))) {
+    defects.push({ where: '/app/setari', kind: 'pageerror', detail: 'setările notificărilor nu s-au randat' });
+  } else {
+    console.log('  ✓ setări: pagina notificărilor randată');
+  }
+
+  // ── 8) restul rutelor elevului ────────────────────────────────────────────
   const routes = [
     '/app',
     ...(conv?.id ? [`/app/chat/${conv.id}`] : []),
