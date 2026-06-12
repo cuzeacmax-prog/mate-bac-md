@@ -23,6 +23,7 @@ export type Database = {
           message_id: string | null
           notes: string | null
           rating: string
+          status: string
         }
         Insert: {
           admin_id?: string | null
@@ -32,6 +33,7 @@ export type Database = {
           message_id?: string | null
           notes?: string | null
           rating: string
+          status?: string
         }
         Update: {
           admin_id?: string | null
@@ -41,6 +43,7 @@ export type Database = {
           message_id?: string | null
           notes?: string | null
           rating?: string
+          status?: string
         }
         Relationships: [
           {
@@ -2579,6 +2582,7 @@ export type Database = {
           grade_level: number | null
           id: string
           initial_bac_prediction: number | null
+          is_pilot: boolean
           last_active_at: string | null
           monthly_ai_cost_cents: number | null
           notification_preferences: Json | null
@@ -2614,6 +2618,7 @@ export type Database = {
           grade_level?: number | null
           id: string
           initial_bac_prediction?: number | null
+          is_pilot?: boolean
           last_active_at?: string | null
           monthly_ai_cost_cents?: number | null
           notification_preferences?: Json | null
@@ -2649,6 +2654,7 @@ export type Database = {
           grade_level?: number | null
           id?: string
           initial_bac_prediction?: number | null
+          is_pilot?: boolean
           last_active_at?: string | null
           monthly_ai_cost_cents?: number | null
           notification_preferences?: Json | null
