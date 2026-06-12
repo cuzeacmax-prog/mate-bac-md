@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LogOut, BookOpen } from "lucide-react";
+import { LogOut, BookOpen, Settings } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -77,6 +77,14 @@ export function Header({ userEmail, userName, messagesUsed, isPremium, isAdmin, 
           <span className="text-sm text-muted-foreground hidden sm:block">
             Bună, {displayName}!
           </span>
+          {/* ETAPA 78 B: setările (notificări) */}
+          <Link
+            href="/app/setari"
+            aria-label="Setări"
+            className="text-muted-foreground hover:text-foreground p-1.5"
+          >
+            <Settings className="h-4 w-4" />
+          </Link>
           <Button
             variant="ghost"
             size="sm"

@@ -20,7 +20,6 @@ type BeforeInstallPromptEvent = Event & {
 
 export function PwaSetup() {
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
-  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
@@ -32,21 +31,16 @@ export function PwaSetup() {
     }
     const onPrompt = (e: Event) => {
       e.preventDefault();
+      // discreția se decide AICI, la sosirea promptului, nu într-un efect derivat
+      const standalone = window.matchMedia("(display-mode: standalone)").matches;
+      if (standalone || installDismissedRecently() || !valueMomentReached()) return;
       setDeferred(e as BeforeInstallPromptEvent);
     };
     window.addEventListener("beforeinstallprompt", onPrompt);
     return () => window.removeEventListener("beforeinstallprompt", onPrompt);
   }, []);
 
-  // re-evaluăm vizibilitatea când avem promptul amânat (și la mount)
-  useEffect(() => {
-    if (!deferred) return;
-    const standalone = window.matchMedia("(display-mode: standalone)").matches;
-    if (standalone || installDismissedRecently() || !valueMomentReached()) return;
-    setVisible(true);
-  }, [deferred]);
-
-  if (!visible || !deferred) return null;
+  if (!deferred) return null;
 
   return (
     <div
@@ -60,9 +54,9 @@ export function PwaSetup() {
       </p>
       <button
         onClick={async () => {
-          setVisible(false);
-          await deferred.prompt();
+          const ev = deferred;
           setDeferred(null);
+          await ev.prompt();
         }}
         className="rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm font-semibold shrink-0"
       >
@@ -72,7 +66,7 @@ export function PwaSetup() {
         aria-label="Nu acum"
         onClick={() => {
           dismissInstall();
-          setVisible(false);
+          setDeferred(null);
         }}
         className="text-muted-foreground hover:text-foreground shrink-0"
       >
