@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { NotifSettings } from "./NotifSettings";
+import { ParentEmail } from "./ParentEmail";
 
 /**
  * ETAPA 78 B2 — setările notificărilor: o pagină simplă cu toggle-uri per tip.
@@ -16,7 +17,7 @@ export default async function SetariPage() {
 
   const { data: profile } = await supabase
     .from("user_profiles")
-    .select("notification_preferences")
+    .select("notification_preferences, parent_email")
     .eq("id", user.id)
     .maybeSingle();
   const prefs = (profile?.notification_preferences ?? {}) as {
@@ -41,6 +42,7 @@ export default async function SetariPage() {
           email: prefs.email !== false,
         }}
       />
+      <ParentEmail initial={profile?.parent_email ?? ""} />
     </div>
   );
 }

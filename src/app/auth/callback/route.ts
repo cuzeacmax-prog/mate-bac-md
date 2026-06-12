@@ -1,4 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
+import { sendWelcomeOnce } from "@/lib/notify/email-cron";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -20,6 +22,14 @@ export async function GET(request: NextRequest) {
       // Otherwise decide based on onboarding completion
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        // ETAPA 78 C1: BUN VENIT la prima confirmare a contului — idempotent
+        // (notifications_log), iar un email eșuat nu blochează login-ul
+        try {
+          await sendWelcomeOnce(createServiceClient(), user.id);
+        } catch (err) {
+          console.error("[auth/callback] welcome email failed:", err instanceof Error ? err.message : err);
+        }
+
         const { data: profile } = await supabase
           .from('user_profiles')
           .select('onboarding_completed')

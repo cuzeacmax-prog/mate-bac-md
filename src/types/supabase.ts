@@ -2584,6 +2584,7 @@ export type Database = {
           notification_preferences: Json | null
           onboarding_completed: boolean | null
           onboarding_completed_at: string | null
+          parent_email: string | null
           referral_code: string | null
           referred_by_user_id: string | null
           streak_current: number | null
@@ -2618,6 +2619,7 @@ export type Database = {
           notification_preferences?: Json | null
           onboarding_completed?: boolean | null
           onboarding_completed_at?: string | null
+          parent_email?: string | null
           referral_code?: string | null
           referred_by_user_id?: string | null
           streak_current?: number | null
@@ -2652,6 +2654,7 @@ export type Database = {
           notification_preferences?: Json | null
           onboarding_completed?: boolean | null
           onboarding_completed_at?: string | null
+          parent_email?: string | null
           referral_code?: string | null
           referred_by_user_id?: string | null
           streak_current?: number | null

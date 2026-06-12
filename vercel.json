@@ -1,6 +1,7 @@
 {
   "crons": [
     { "path": "/api/cron/push-streak", "schedule": "30 16 * * *" },
-    { "path": "/api/cron/push-provocare", "schedule": "30 5 * * *" }
+    { "path": "/api/cron/push-provocare", "schedule": "30 5 * * *" },
+    { "path": "/api/cron/email-zilnic", "schedule": "0 15 * * *" }
   ]
 }
