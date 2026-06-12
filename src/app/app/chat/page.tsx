@@ -19,16 +19,17 @@ export const dynamic = "force-dynamic";
 export default async function NewChatPage({
   searchParams,
 }: {
-  searchParams: Promise<{ concept?: string }>;
+  searchParams: Promise<{ concept?: string; exercise?: string }>;
 }) {
-  const { concept: conceptSlug } = await searchParams;
+  // ETAPA 78 E: ?exercise=<id> (din /app/exercitii) pre-încarcă exercițiul ales
+  const { concept: conceptSlug, exercise: exerciseId } = await searchParams;
 
   let initialMessages: ChatMessage[] | undefined;
   let anchorSlug: string | undefined;
 
   if (conceptSlug) {
     const service = createServiceClient();
-    const anchor = await getConceptAnchor(service, conceptSlug);
+    const anchor = await getConceptAnchor(service, conceptSlug, 2, exerciseId);
     if (anchor) {
       anchorSlug = anchor.slug;
       initialMessages = [
@@ -62,6 +63,7 @@ export default async function NewChatPage({
         conceptSlug={anchorSlug}
         streak={streak}
         domainKey={domainKey}
+        exerciseId={anchorSlug ? exerciseId : undefined}
       />
     </>
   );

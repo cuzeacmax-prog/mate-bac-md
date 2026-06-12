@@ -10,6 +10,8 @@ interface UseChatOptions {
   mode?: 'study' | 'solve';
   /** ETAPA 60: sesiune ancorată într-un concept din graf (slug) */
   conceptSlug?: string;
+  /** ETAPA 78 E: exercițiul ales din bibliotecă — pre-încărcat în sesiune */
+  exerciseId?: string;
   onRateLimit?: () => void;
   onConversationCreated?: (id: string) => void;
 }
@@ -19,6 +21,7 @@ export function useChat({
   initialMessages = [],
   mode = 'study',
   conceptSlug,
+  exerciseId,
   onRateLimit,
   onConversationCreated,
 }: UseChatOptions = {}) {
@@ -52,6 +55,7 @@ export function useChat({
             conversationId: convId,
             mode,
             concept: conceptSlug,
+            ...(exerciseId ? { exercise: exerciseId } : {}),
             ...(opts?.help ? { help: opts.help } : {}),
           }),
         });
@@ -174,7 +178,7 @@ export function useChat({
         setStreamingContent("");
       }
     },
-    [convId, mode, conceptSlug, isStreaming, onRateLimit, onConversationCreated]
+    [convId, mode, conceptSlug, exerciseId, isStreaming, onRateLimit, onConversationCreated]
   );
 
   return {

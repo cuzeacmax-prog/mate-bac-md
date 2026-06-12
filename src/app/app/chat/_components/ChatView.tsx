@@ -14,9 +14,11 @@ interface Props {
   initialMessages?: ChatMessage[];
   /** ETAPA 60: sesiune ancorată într-un concept din graf (slug) */
   conceptSlug?: string;
+  /** ETAPA 78 E: exercițiul ales din /app/exercitii — pre-încărcat */
+  exerciseId?: string;
 }
 
-export function ChatView({ conversationId, initialMessages, conceptSlug }: Props) {
+export function ChatView({ conversationId, initialMessages, conceptSlug, exerciseId }: Props) {
   const router = useRouter();
   const [inputValue, setInputValue] = useState("");
   const [showRateLimitModal, setShowRateLimitModal] = useState(false);
@@ -27,6 +29,7 @@ export function ChatView({ conversationId, initialMessages, conceptSlug }: Props
     initialMessages,
     mode,
     conceptSlug,
+    exerciseId,
     onRateLimit: () => setShowRateLimitModal(true),
     onConversationCreated: (id) => {
       router.replace(`/app/chat/${id}`, { scroll: false });

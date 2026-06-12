@@ -19,13 +19,15 @@ interface Props {
   streak: number;
   /** ETAPA 71 D: cheia domeniului — accentul lecției poartă culoarea lui */
   domainKey?: string | null;
+  /** ETAPA 78 E: exercițiu ales din bibliotecă → direct chat-ul ancorat cu el */
+  exerciseId?: string;
 }
 
-export function LessonOrChat({ conceptSlug, initialMessages, streak, domainKey }: Props) {
+export function LessonOrChat({ conceptSlug, initialMessages, streak, domainKey, exerciseId }: Props) {
   const { mode } = useChatModeStore();
   const [forceChat, setForceChat] = useState(false);
 
-  if (conceptSlug && mode === "study" && !forceChat) {
+  if (conceptSlug && mode === "study" && !forceChat && !exerciseId) {
     return (
       <LessonPlayer
         conceptSlug={conceptSlug}
@@ -36,5 +38,5 @@ export function LessonOrChat({ conceptSlug, initialMessages, streak, domainKey }
       />
     );
   }
-  return <ChatView initialMessages={initialMessages} conceptSlug={conceptSlug} />;
+  return <ChatView initialMessages={initialMessages} conceptSlug={conceptSlug} exerciseId={exerciseId} />;
 }

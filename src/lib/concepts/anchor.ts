@@ -39,7 +39,10 @@ const MAX_THEORY_CHARS = 2000;
 export async function getConceptAnchor(
   service: SupabaseClient,
   slug: string,
-  maxExercises = 2
+  maxExercises = 2,
+  /** ETAPA 78 E: exercițiul ales din /app/exercitii — pre-încărcat primul
+   *  (doar dacă e legat de concept ȘI servibil; altfel ignorat onest) */
+  pinExerciseId?: string
 ): Promise<ConceptAnchor | null> {
   const { data: concept, error } = await service
     .from('concepts')
@@ -91,7 +94,11 @@ export async function getConceptAnchor(
     ];
     const verifiedIds = byFigureFirst(servableIds.filter((id) => tierById.get(id) === 'verificat'));
     const officialIds = byFigureFirst(servableIds.filter((id) => tierById.get(id) === 'sursa-oficiala'));
-    const chosen = [...verifiedIds, ...officialIds].slice(0, maxExercises);
+    let chosen = [...verifiedIds, ...officialIds].slice(0, maxExercises);
+    // ETAPA 78 E: exercițiul pin-uit trece primul (dacă e servibil pe acest concept)
+    if (pinExerciseId && servableIds.includes(pinExerciseId)) {
+      chosen = [pinExerciseId, ...chosen.filter((id) => id !== pinExerciseId)].slice(0, maxExercises);
+    }
 
     if (chosen.length > 0) {
       const [{ data: exRows }, { data: answers }] = await Promise.all([

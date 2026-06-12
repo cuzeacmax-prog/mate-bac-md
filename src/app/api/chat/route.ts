@@ -148,6 +148,8 @@ export async function POST(req: NextRequest) {
     conversationId?: string;
     mode?: string;
     concept?: string;
+    /** ETAPA 78 E: exercițiul ales din /app/exercitii — pre-încărcat primul */
+    exercise?: string;
     /** ETAPA 70 D: chip de ajutor pe exercițiul activ (mesaj din cota normală) */
     help?: { kind?: string; level?: number };
   };
@@ -285,7 +287,8 @@ export async function POST(req: NextRequest) {
   let anchorAddendum = "";
   if (conceptSlug) {
     try {
-      const anchor = await getConceptAnchor(createServiceClient(), conceptSlug);
+      const pinExercise = typeof body.exercise === 'string' ? body.exercise : undefined;
+      const anchor = await getConceptAnchor(createServiceClient(), conceptSlug, 2, pinExercise);
       if (anchor) {
         anchorAddendum = buildConceptSystemAddendum(anchor);
         anchoredConceptSlug = anchor.slug;

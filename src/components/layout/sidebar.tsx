@@ -10,7 +10,8 @@ const NAV_ITEMS = [
   { href: "/app/azi",       label: "Azi",        icon: CalendarCheck, disabled: false },
   { href: "/app/harta",     label: "Harta",      icon: Map,           disabled: false },
   { href: "/app",           label: "Chat",       icon: MessageSquare, disabled: false },
-  { href: "/app/practice",  label: "Exerciții",  icon: Dumbbell,      disabled: true  },
+  // ETAPA 78 E: biblioteca servibilă se naște — ultimul „Curând" moare
+  { href: "/app/exercitii", label: "Exerciții",  icon: Dumbbell,      disabled: false },
   { href: "/app/simulare",  label: "Simulare",   icon: ClipboardList, disabled: false },
   // ETAPA 77 F: foto→rezolvare se naște — „Curând" moare
   { href: "/app/foto",      label: "Foto",        icon: Camera,        disabled: false },
