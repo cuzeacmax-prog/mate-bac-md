@@ -18,7 +18,9 @@ interface Exercise {
   topic_id: string;
   difficulty: number;
   prompt: string;
-  options: Record<string, string>;
+  // ETAPA 79 FAZA C: 'free' (v2 oficial, răspuns liber) sau 'mcq' (plasă, variante)
+  item_kind?: 'mcq' | 'free';
+  options: Record<string, string> | null;
 }
 
 const LETTERS = ['a', 'b', 'c', 'd'] as const;
@@ -33,6 +35,8 @@ export default function DiagnosticPage() {
   const [loading, setLoading] = useState(true);
   const [answerState, setAnswerState] = useState<AnswerState>('idle');
   const [correctLetter, setCorrectLetter] = useState<string | null>(null);
+  const [correctAnswer, setCorrectAnswer] = useState<string | null>(null);
+  const [freeInput, setFreeInput] = useState('');
   // Pornirea cronometrării întrebării se setează la încărcarea exercițiului (nu la render).
   const [questionStart, setQuestionStart] = useState<number>(0);
   const [finishing, setFinishing] = useState(false);
@@ -71,6 +75,8 @@ export default function DiagnosticPage() {
     }
 
     setExercise(data.exercise);
+    setFreeInput('');
+    setCorrectAnswer(null);
     setQuestionStart(Date.now());
     setLoading(false);
   }, [handleFinish]);
@@ -108,7 +114,7 @@ export default function DiagnosticPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleAnswer = useCallback(async (letter: string) => {
+  const handleAnswer = useCallback(async (payload: { letter?: string; free?: string }) => {
     if (answerState !== 'idle' || !exercise || !sessionId) return;
 
     const timeSpent = Math.round((Date.now() - questionStart) / 1000);
@@ -119,13 +125,15 @@ export default function DiagnosticPage() {
       body: JSON.stringify({
         sessionId,
         exerciseId: exercise.id,
-        selectedLetter: letter,
+        selectedLetter: payload.letter,
+        freeAnswer: payload.free,
         timeSpentSeconds: timeSpent,
       }),
     });
     const data = await res.json();
 
     setCorrectLetter(data.correctLetter);
+    setCorrectAnswer(data.correctAnswer);
     setAnswerState(data.isCorrect ? 'correct' : 'wrong');
 
     store.addDiagnosticAttempt({
@@ -134,8 +142,8 @@ export default function DiagnosticPage() {
       topic_id: exercise.topic_id,
       is_correct: data.isCorrect,
       time_spent_seconds: timeSpent,
-      selected_letter: letter,
-      correct_letter: data.correctLetter,
+      selected_letter: payload.letter ?? (payload.free ?? '').slice(0, 40),
+      correct_letter: data.correctLetter ?? 'x',
     });
 
     if (data.isFinished) {
@@ -206,37 +214,61 @@ export default function DiagnosticPage() {
                 )}
               </div>
 
-              {/* Answer buttons */}
-              <div className="grid grid-cols-1 gap-3">
-                {LETTERS.map((letter) => {
-                  const optionText = exercise.options[letter];
-                  if (!optionText) return null;
+              {/* Răspuns: liber (v2 oficial) sau variante (plasă) */}
+              {exercise.item_kind === 'free' || !exercise.options ? (
+                <form
+                  onSubmit={(e) => { e.preventDefault(); if (answerState === 'idle' && freeInput.trim()) handleAnswer({ free: freeInput.trim() }); }}
+                  className="space-y-3"
+                >
+                  <input
+                    value={freeInput}
+                    onChange={(e) => setFreeInput(e.target.value)}
+                    disabled={answerState !== 'idle'}
+                    placeholder="Scrie răspunsul (ex. 13, 5\sqrt{3}, 36\pi)…"
+                    className="w-full rounded-2xl border-2 border-border bg-card p-4 text-sm font-medium focus:border-primary/60 focus:outline-none disabled:opacity-70"
+                    autoFocus
+                  />
+                  <motion.button
+                    type="submit"
+                    disabled={answerState !== 'idle' || !freeInput.trim()}
+                    className="w-full rounded-2xl bg-primary text-primary-foreground p-4 font-medium disabled:opacity-50"
+                    whileTap={answerState === 'idle' ? { scale: 0.98 } : {}}
+                  >
+                    Verifică
+                  </motion.button>
+                </form>
+              ) : (
+                <div className="grid grid-cols-1 gap-3">
+                  {LETTERS.map((letter) => {
+                    const optionText = exercise.options?.[letter];
+                    if (!optionText) return null;
 
-                  let variant: string = 'border-border bg-card hover:border-primary/60 hover:bg-primary/5';
-                  if (answerState !== 'idle') {
-                    if (letter === correctLetter) {
-                      variant = 'border-success/50 bg-success-bg text-success-foreground';
-                    } else if (letter !== correctLetter && answerState === 'wrong') {
-                      variant = 'border-danger-foreground/30 bg-danger-bg text-danger-foreground opacity-70';
+                    let variant: string = 'border-border bg-card hover:border-primary/60 hover:bg-primary/5';
+                    if (answerState !== 'idle') {
+                      if (letter === correctLetter) {
+                        variant = 'border-success/50 bg-success-bg text-success-foreground';
+                      } else if (letter !== correctLetter && answerState === 'wrong') {
+                        variant = 'border-danger-foreground/30 bg-danger-bg text-danger-foreground opacity-70';
+                      }
                     }
-                  }
 
-                  return (
-                    <motion.button
-                      key={letter}
-                      onClick={() => handleAnswer(letter)}
-                      disabled={answerState !== 'idle'}
-                      className={`w-full rounded-2xl border-2 p-4 text-left flex items-center gap-3 transition-all duration-150 ${variant} disabled:cursor-default`}
-                      whileTap={answerState === 'idle' ? { scale: 0.98 } : {}}
-                    >
-                      <span className="rounded-full bg-muted/80 px-2.5 py-1 text-sm font-bold shrink-0 uppercase">
-                        {letter}
-                      </span>
-                      <span className="text-sm font-medium"><MathText text={optionText} /></span>
-                    </motion.button>
-                  );
-                })}
-              </div>
+                    return (
+                      <motion.button
+                        key={letter}
+                        onClick={() => handleAnswer({ letter })}
+                        disabled={answerState !== 'idle'}
+                        className={`w-full rounded-2xl border-2 p-4 text-left flex items-center gap-3 transition-all duration-150 ${variant} disabled:cursor-default`}
+                        whileTap={answerState === 'idle' ? { scale: 0.98 } : {}}
+                      >
+                        <span className="rounded-full bg-muted/80 px-2.5 py-1 text-sm font-bold shrink-0 uppercase">
+                          {letter}
+                        </span>
+                        <span className="text-sm font-medium"><MathText text={optionText} /></span>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              )}
 
               {/* Feedback */}
               <AnimatePresence>
@@ -253,7 +285,7 @@ export default function DiagnosticPage() {
                   >
                     {answerState === 'correct'
                       ? '✓ Corect! Se trece la următoarea...'
-                      : `Răspuns corect: ${correctLetter?.toUpperCase()}. Se trece mai departe...`}
+                      : `Răspuns corect: ${correctAnswer ?? correctLetter?.toUpperCase() ?? '—'}. Se trece mai departe...`}
                   </motion.div>
                 )}
               </AnimatePresence>

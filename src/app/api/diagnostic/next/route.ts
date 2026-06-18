@@ -136,13 +136,15 @@ export async function POST(req: Request) {
   const targetDifficulty = nextDifficulty(history);
   const usedIds = history.map((h) => h.exercise_id);
 
-  // Try DB pool first
+  // Try DB pool first. ETAPA 79 FAZA C: doar itemii ACTIVI (generații de pe
+  // topicele acoperite de v2 sunt dezactivați) — serviți v2(free) + plasă(mcq).
   const db = createServiceClient();
   const query = db
     .from('diagnostic_exercises')
-    .select('id, topic_id, difficulty, prompt, distractors, correct_letter')
+    .select('id, topic_id, difficulty, prompt, distractors, item_kind')
     .eq('grade_level', gradeLevel)
-    .eq('difficulty', targetDifficulty);
+    .eq('difficulty', targetDifficulty)
+    .eq('active', true);
 
   const { data: dbExercises } = await query;
 
@@ -157,8 +159,9 @@ export async function POST(req: Request) {
         topic_id: exercise.topic_id,
         difficulty: exercise.difficulty,
         prompt: exercise.prompt,
-        options: exercise.distractors,
-        // correct_letter NOT exposed to client
+        // free (v2 oficial) = răspuns liber; mcq (plasă) = variante. correct_* NU se expune.
+        item_kind: exercise.item_kind ?? 'mcq',
+        options: exercise.item_kind === 'free' ? null : exercise.distractors,
       },
     });
   }

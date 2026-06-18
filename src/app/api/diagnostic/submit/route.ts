@@ -8,6 +8,7 @@ import {
 import type { DiagnosticAttempt } from '@/lib/diagnostic/adaptive';
 import { getConceptSlugsForTopic } from '@/lib/diagnostic/topic-concept-map';
 import { recordConceptEvidence } from '@/lib/mastery/evidence';
+import { compareAnswers } from '@/lib/evaluare/compare';
 
 // Correct letters for fallback exercises (keyed by id)
 const FALLBACK_ANSWERS: Record<string, { correct_letter: string; difficulty: number; topic_id: string }> = {
@@ -42,16 +43,18 @@ export async function POST(req: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { sessionId, exerciseId, selectedLetter, timeSpentSeconds } = await req.json();
+  const { sessionId, exerciseId, selectedLetter, freeAnswer, timeSpentSeconds } = await req.json();
 
   // Get correct answer — try DB first, then fallback map
   const db = createServiceClient();
   let correctLetter: string;
   let difficulty: number;
   let topicId: string;
+  let itemKind = 'mcq';
+  let correctAnswer = '';
 
   if (exerciseId.startsWith('f')) {
-    // Fallback exercise
+    // Fallback exercise (mereu mcq)
     const fb = FALLBACK_ANSWERS[exerciseId];
     if (!fb) return Response.json({ error: 'Unknown exercise' }, { status: 404 });
     correctLetter = fb.correct_letter;
@@ -60,16 +63,26 @@ export async function POST(req: Request) {
   } else {
     const { data: exercise, error } = await db
       .from('diagnostic_exercises')
-      .select('correct_letter, difficulty, topic_id')
+      .select('correct_letter, difficulty, topic_id, item_kind, correct_answer')
       .eq('id', exerciseId)
       .single();
     if (error || !exercise) return Response.json({ error: 'Exercise not found' }, { status: 404 });
     correctLetter = exercise.correct_letter;
     difficulty = exercise.difficulty;
     topicId = exercise.topic_id;
+    itemKind = exercise.item_kind ?? 'mcq';
+    correctAnswer = exercise.correct_answer ?? '';
   }
 
-  const isCorrect = correctLetter === selectedLetter;
+  // ETAPA 79 FAZA C: itemii v2 (free) se notează DETERMINIST cu compareAnswers
+  // (răspunsul oficial ↔ răspunsul liber al elevului). Necomparabil = incorect.
+  let isCorrect: boolean;
+  if (itemKind === 'free') {
+    const v = compareAnswers(correctAnswer, typeof freeAnswer === 'string' ? freeAnswer : '');
+    isCorrect = v.comparable && v.correct;
+  } else {
+    isCorrect = correctLetter === selectedLetter;
+  }
 
   // Fetch session
   const { data: session } = await supabase
@@ -84,8 +97,8 @@ export async function POST(req: Request) {
     topic_id: topicId,
     is_correct: isCorrect,
     time_spent_seconds: timeSpentSeconds ?? 30,
-    selected_letter: selectedLetter,
-    correct_letter: correctLetter,
+    selected_letter: itemKind === 'free' ? String(freeAnswer ?? '').slice(0, 40) : selectedLetter,
+    correct_letter: itemKind === 'free' ? 'x' : correctLetter,
   };
 
   const currentLog: DiagnosticAttempt[] = (session?.exercises_log as DiagnosticAttempt[] | null) ?? [];
@@ -141,7 +154,8 @@ export async function POST(req: Request) {
 
   return Response.json({
     isCorrect,
-    correctLetter,
+    correctLetter: itemKind === 'free' ? null : correctLetter,
+    correctAnswer: itemKind === 'free' ? correctAnswer : null,
     isFinished,
     initialBacPrediction,
     weaknesses,
