@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createServiceClient } from "@/lib/supabase/service";
 import ContentReview, { type ReviewItem } from "./ContentReview";
+import BodyQueue from "./BodyQueue";
 
 export const dynamic = "force-dynamic";
 
@@ -8,13 +9,44 @@ const GRADES = [12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
 type Row = Record<string, unknown>;
 
+function TabBar({ tab, grade }: { tab: string; grade: number }) {
+  const base = "text-xs px-3 py-1.5 rounded border";
+  return (
+    <div className="flex items-center gap-1">
+      <Link href={`/admin/continut?grade=${grade}`} className={`${base} ${tab === "concepte" ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"}`}>Concepte</Link>
+      <Link href={`/admin/continut?tab=bodies`} className={`${base} ${tab === "bodies" ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"}`}>Body-uri (coadă)</Link>
+    </div>
+  );
+}
+
 export default async function ContinutPage({
   searchParams,
 }: {
-  searchParams: Promise<{ grade?: string }>;
+  searchParams: Promise<{ grade?: string; tab?: string }>;
 }) {
   const sp = await searchParams;
   const grade = Number(sp.grade) || 12;
+  const tab = sp.tab === "bodies" ? "bodies" : "concepte";
+
+  // ETAPA 79 FAZA B — coada umană de reparare body-uri LaTeX (decizia 2)
+  if (tab === "bodies") {
+    return (
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Coadă body-uri LaTeX</h1>
+            <p className="text-sm text-gray-500 mt-1">
+              Enunțuri cu erori KaTeX per-formulă — eroarea evidențiată, previzualizare live, editezi inline.
+              Modelul NU rescrie matematica (R5); doar tu corectezi.
+            </p>
+          </div>
+          <TabBar tab={tab} grade={grade} />
+        </div>
+        <BodyQueue />
+      </div>
+    );
+  }
+
   const supabase = createServiceClient();
 
   let items: ReviewItem[] = [];
@@ -67,22 +99,25 @@ export default async function ContinutPage({
             )}
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <label className="text-xs font-medium text-gray-500">Clasă</label>
-          <div className="flex flex-wrap gap-1">
-            {GRADES.map((g) => (
-              <Link
-                key={g}
-                href={`/admin/continut?grade=${g}`}
-                className={`text-xs px-2 py-1 rounded border ${
-                  g === grade
-                    ? "bg-blue-600 text-white border-blue-600"
-                    : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
-                }`}
-              >
-                {g}
-              </Link>
-            ))}
+        <div className="flex items-center gap-3">
+          <TabBar tab={tab} grade={grade} />
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-medium text-gray-500">Clasă</label>
+            <div className="flex flex-wrap gap-1">
+              {GRADES.map((g) => (
+                <Link
+                  key={g}
+                  href={`/admin/continut?grade=${g}`}
+                  className={`text-xs px-2 py-1 rounded border ${
+                    g === grade
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+                  }`}
+                >
+                  {g}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </div>

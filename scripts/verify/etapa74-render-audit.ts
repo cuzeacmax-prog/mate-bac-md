@@ -19,11 +19,9 @@
  */
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import katex from 'katex';
 import { createServiceClient } from '../../src/lib/supabase/service';
-import { segmentDelimitedMath, delimitBareMath } from '../../src/lib/content-math';
-import { extractMarkdownTable } from '../../src/lib/content/markdown-table';
-import { KATEX_MACROS, tabularToArray } from '../../src/lib/content/katex-macros';
+// ETAPA 79: sursă-unică-adevăr a pipeline-ului de randare (extras în body-render.ts)
+import { statementVisible, leakClasses } from '../../src/lib/content/body-render';
 import { THEORY_FIGURES } from '../../src/lib/lesson/theory-figures/registry';
 
 interface Leak {
@@ -31,61 +29,6 @@ interface Leak {
   id: string;
   classes: string[];
   excerpt: string;
-}
-
-const LEAK_CLASSES: Array<{ name: string; re: RegExp }> = [
-  { name: 'begin{', re: /\\begin\{/ },
-  { name: 'display-[', re: /\\\[/ },
-  { name: 'hline', re: /\\hline/ },
-  { name: '|---|', re: /\|\s*:?-{3,}/ },
-  { name: '$-ramas', re: /\$/ },
-  // ≥2 ampersanzi pe aceeași linie = aliniere de mediu scursă ca text
-  { name: '&-multiplu', re: /^[^\n]*&[^&\n]*&/m },
-  // ETAPA 77 A3 (leak dovedit de owner: „^(m+1)" brut în lecție): notație
-  // matematică ÎN AFARA delimitatorilor — exponent/indice/comandă vizibile
-  { name: 'caret-brut', re: /[A-Za-z0-9)\]]\^[A-Za-z0-9({[+\-]/ },
-  { name: 'indice-brut', re: /[A-Za-z]_[A-Za-z0-9({]/ },
-  { name: 'comanda-bruta', re: /\\[a-zA-Z]{2,}/ },
-];
-
-/** ce VEDE elevul după MathText: text + fallback-urile formulelor eșuate */
-function mathTextVisible(text: string): string {
-  let out = '';
-  for (const seg of segmentDelimitedMath(delimitBareMath(text))) {
-    if (seg.type === 'text') {
-      out += seg.value;
-    } else {
-      try {
-        katex.renderToString(tabularToArray(seg.value), {
-          displayMode: seg.display,
-          throwOnError: true,
-          strict: false,
-          trust: false,
-          macros: KATEX_MACROS,
-        });
-        // randat OK → nu apare în textul vizibil brut
-      } catch {
-        out += seg.raw ?? seg.value; // fallback-ul din MathText = potențială scurgere
-      }
-    }
-  }
-  return out;
-}
-
-/** pipeline-ul StatementText: tabelul extras nativ, restul prin MathText */
-function statementVisible(text: string): string {
-  const t = extractMarkdownTable(text);
-  if (!t) return mathTextVisible(text);
-  const parts: string[] = [];
-  if (t.before) parts.push(mathTextVisible(t.before));
-  parts.push(...t.columns.map(mathTextVisible));
-  for (const row of t.rows) parts.push(...row.map(mathTextVisible));
-  if (t.after) parts.push(mathTextVisible(t.after));
-  return parts.join('\n');
-}
-
-function leakClasses(visible: string): string[] {
-  return LEAK_CLASSES.filter((c) => c.re.test(visible)).map((c) => c.name);
 }
 
 async function fetchStatements(
