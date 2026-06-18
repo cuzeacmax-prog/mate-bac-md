@@ -28,17 +28,19 @@ export function normalizeMathExpression(input: string): string {
 
   // comenzi LaTeX uzuale
   s = s.replace(/\\dfrac|\\tfrac|\\frac/g, "\\frac");
-  // \frac{a}{b} → ((a)/(b)) — aplicat repetat pentru fracții imbricate simple
-  for (let i = 0; i < 4 && /\\frac/.test(s); i++) {
+  // INTERLEAVE sqrt ↔ frac repetat: rezolvă √ în numărător/numitor de fracție
+  // (ex. \frac{2+\sqrt{3}}{2}) — fracția nu se reduce până nu cade √-ul interior.
+  for (let i = 0; i < 6 && /\\(frac|sqrt)/.test(s); i++) {
+    s = s.replace(/\\sqrt\[3\]\s*\{([^{}]*)\}/g, "cbrt($1)");
+    s = s.replace(/\\sqrt\s*\{([^{}]*)\}/g, "sqrt($1)");
     s = s.replace(/\\frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}/g, "(($1)/($2))");
   }
-  s = s.replace(/\\sqrt\[3\]\s*\{([^{}]*)\}/g, "cbrt($1)");
-  s = s.replace(/\\sqrt\s*\{([^{}]*)\}/g, "sqrt($1)");
   s = s.replace(/\\cdot|\\times/g, "*");
   s = s.replace(/\\pi/g, "pi");
   s = s.replace(/\\ln/g, "log");
   s = s.replace(/\\left|\\right/g, "");
-  s = s.replace(/\\text\s*\{[^{}]*\}/g, ""); // \text{...} = unități/proză
+  // \text{...} = unități/proză; consumă și exponentul lipit (\text{ cm}^2 → nimic)
+  s = s.replace(/\\text\s*\{[^{}]*\}\s*(\^\s*\{?\s*[0-9]+\s*\}?|[²³])?/g, "");
   s = s.replace(/\\[,;!:]|\\ /g, " "); // spațiere LaTeX → spațiu (separă numărul de unitate)
   s = s.replace(/\\mathrm\s*\{([^{}]*)\}/g, "$1");
 
@@ -61,6 +63,18 @@ export function normalizeMathExpression(input: string): string {
   s = s.replace(/\{/g, "(").replace(/\}/g, ")");
 
   return s.trim();
+}
+
+/**
+ * Evaluează un scalar LaTeX/Unicode la număr (reutilizat de verificarea CAS,
+ * ETAPA 79): aplică `normalizeMathExpression` + mathjs. `null` dacă expresia nu
+ * e un scalar numeric determinist (conține variabile, e neparsabilă etc.).
+ * Marcajele de grade (°, \circ) sunt eliminate înainte de evaluare.
+ */
+export function evalLatexScalar(input: string): number | null {
+  const stripped = input.replace(/\\,?\^?\\?circ|°|\^\{?\\circ\}?/g, "");
+  const node = tryParse(normalizeMathExpression(stripped));
+  return node ? tryEvalNumeric(node) : null;
 }
 
 function tryParse(expr: string): MathNode | null {
