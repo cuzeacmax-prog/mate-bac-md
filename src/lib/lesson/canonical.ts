@@ -12,6 +12,7 @@ import { parseLessonBlock, type LessonBlock } from '@/lib/lesson/blocks';
 import { getTheoryFigure } from '@/lib/lesson/theory-figures/registry';
 import { renderPlotSVG } from '@/lib/lesson/plot';
 import { renderManipulative } from '@/lib/lesson/manipulatives';
+import { concreteExpr } from '@/lib/lesson/interactive';
 
 export interface CanonicalLesson {
   id: string;
@@ -83,6 +84,25 @@ export function validateCanonicalBlocks(
         continue;
       }
     }
+    // ── ETAPA 81: blocurile interactive trebuie să fie randabile/legitime ──
+    if (b.tip === 'parameter_slider') {
+      const mid = (b.range[0] + b.range[1]) / 2;
+      const r = renderPlotSVG(concreteExpr(b.expr_template, b.param, mid), b.domain ?? [-5, 5]);
+      if (!r.ok) { errors.push(`blocul ${i}: parameter_slider nu randează (${r.error})`); continue; }
+    }
+    if (b.tip === 'interactive_manipulative') {
+      const r = renderManipulative(b.kind, b.params as Record<string, unknown>);
+      if (!r.ok) { errors.push(`blocul ${i}: interactive_manipulative invalid: ${r.error}`); continue; }
+    }
+    if (b.tip === 'reveal_figure') {
+      if (b.figure_kind === 'theory') {
+        if (!b.theory_slug || !getTheoryFigure(b.theory_slug) || b.theory_slug !== ctx.theorySlug) {
+          errors.push(`blocul ${i}: reveal_figure theory cu slug nepermis: ${b.theory_slug}`); continue;
+        }
+      } else if (!b.exercise_id || !ctx.servableExerciseIds.has(b.exercise_id)) {
+        errors.push(`blocul ${i}: reveal_figure exercise în afara pool-ului: ${b.exercise_id}`); continue;
+      }
+    }
     blocks.push(b);
   }
 
@@ -96,8 +116,10 @@ export function validateCanonicalBlocks(
   // ETAPA 77 B1: mandat de vizual — unde conceptul o permite, lecția TREBUIE
   // să arate, nu doar să povestească
   if (ctx.visualExpected) {
-    const visuals = count('figure') + count('plot') + count('manipulative');
-    if (visuals < 1) errors.push('MANDAT DE VIZUAL încălcat: concept cu vizual disponibil, lecție fără niciun bloc figure/plot/manipulative');
+    // ETAPA 81: mandatul include blocurile INTERACTIVE (preferate față de cele statice)
+    const visuals = count('figure') + count('plot') + count('manipulative') +
+      count('parameter_slider') + count('progressive_table') + count('reveal_figure') + count('interactive_manipulative');
+    if (visuals < 1) errors.push('MANDAT DE VIZUAL/INTERACTIV încălcat: concept cu vizual disponibil, lecție fără niciun bloc figure/plot/manipulative/slider/progressive_table/reveal_figure/interactive_manipulative');
   }
 
   if (errors.length > 0) return { ok: false, errors };

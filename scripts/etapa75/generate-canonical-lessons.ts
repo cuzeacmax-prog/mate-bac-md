@@ -54,7 +54,27 @@ FORME JSON EXACTE (validatorul respinge ORICE abatere):
    "indiciu":"1 propoziție","rezolvare":["pas 1","pas 2"]} — rezolvare e ARRAY de 1-3 stringuri scurte, NICIODATĂ string simplu
 - {"tip":"figure","kind":"theory","theory_slug":"..."} sau {"tip":"figure","kind":"exercise","exercise_id":"..."}
 - {"tip":"recap","puncte":["...","...","..."]} — max 3 puncte, câte 1 propoziție SUB 150 de caractere
-REGULĂ DE LUNGIME GLOBALĂ: orice propoziție-câmp (explicatie, indiciu, puncte, pasi.text) stă SUB 150 de caractere.`;
+REGULĂ DE LUNGIME GLOBALĂ: orice propoziție-câmp (explicatie, indiciu, puncte, pasi.text) stă SUB 150 de caractere.
+
+MANDAT v2 (ETAPA 81 — OBLIGATORIU; lecția fără interactiv unde conceptul îl permite e RESPINSĂ):
+- conceptul e despre o FUNCȚIE cu parametru → include un parameter_slider;
+  funcție/analiză fără parametru → un plot.
+- conceptul e PROBABILITATE/COMBINATORICĂ → include un interactive_manipulative tactil
+  (kind zaruri/urna/persoane/monede/carti) cu numerele EXACTE din exercițiu.
+- ai un TABEL care se construiește pas cu pas (semn, variație, Viète) → progressive_table
+  în loc de table.
+- GEOMETRIE cu figură anunțată → reveal_figure pe straturi.
+- include cel puțin UN try_step la un pas de calcul cheie.
+FORME JSON ale blocurilor interactive:
+- {"tip":"parameter_slider","expr_template":"a*x^2","param":"a","range":[-3,3,0.5],"observe":"forma parabolei","domain":[-5,5]}
+- {"tip":"progressive_table","coloane":["x","semn"],"randuri":[{"cells":["-∞;1","+"],"reveal_at_step":0,"highlight_cell":1}]}
+- {"tip":"reveal_figure","figure_kind":"theory","theory_slug":"...","layers":[{"step_index":0,"elements":["axe"],"caption":"..."}]}
+- {"tip":"interactive_manipulative","kind":"urna","params":"{\\"bile\\":[{\\"culoare\\":\\"rosu\\",\\"n\\":3}]}","mode":"tactile"}
+- {"tip":"try_step","prompt":"Cât e f(2)?","expected":"5","hint":"Înlocuiește x cu 2."}
+
+VOCABULAR CO-GENERAT (ETAPA 81 C3): la blocurile intro și step, pe lângă textul de bază
+(registrul „punte"), adaugă câmpul "variante":{"comun":"...","barem":"..."} cu ACEEAȘI idee
+în registru comun (zero jargon) și de barem (riguros). Matematica e identică; doar proza diferă.`;
 
 interface TaskConfig { model_name: string; max_tokens: number; price_input_per_1m: number; price_output_per_1m: number }
 

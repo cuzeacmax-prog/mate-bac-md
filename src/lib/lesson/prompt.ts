@@ -46,12 +46,32 @@ TIPURILE DE BLOCURI (contractul):
   {"tip":"manipulative","kind":"urna","params":"{\\"bile\\":[{\\"culoare\\":\\"rosii\\",\\"n\\":3},{\\"culoare\\":\\"albe\\",\\"n\\":2}],\\"extrase\\":[\\"rosii\\"]}","legenda":"3 bile roșii și 2 albe; extragem una."}
 - recap: MAXIM 3 puncte, câte 1 propoziție.
 
-MANDATUL DE VIZUAL (ETAPA 77 — lecția ARATĂ, nu doar povestește):
-- la FUNCȚII/ANALIZĂ/POLINOAME: emite plot la pasul relevant — multiplicitatea
-  rădăcinii SE VEDE pe grafic (simplă taie axa, dublă o atinge);
-- la GEOMETRIE cu figură anunțată în context: emite blocul figure;
-- la PROBABILITĂȚI/COMBINATORICĂ/FRACȚII: emite manipulative cu numerele EXACTE;
-- conceptul permite un vizual → lecția FĂRĂ vizual e respinsă de validator.
+BLOCURI INTERACTIVE (ETAPA 81 — elevul ATINGE, nu doar privește; sistemul le validează):
+- parameter_slider: {expr_template, param, range:[min,max,step], observe, domain?} — elevul
+  TRAGE parametrul și vede graficul re-randat. expr_template conține param (ex. „a*x^2"),
+  observe = ce urmărește („nr. rădăcini", „vârful"). Folosește-l la FUNCȚII cu parametru
+  (efectul lui a pe parabolă, multiplicitate). Tu ceri — motorul desenează.
+- progressive_table: {coloane, randuri:[{cells, reveal_at_step, highlight_cell?}]} — tabel
+  completat CELULĂ-CU-CELULĂ pe pași (tabel de semn, de variație, Viète). highlight_cell =
+  celula activă. Folosește-l ÎN LOC de table acolo unde tabelul se construiește pas cu pas.
+- reveal_figure: {figure_kind, theory_slug?|exercise_id?, layers:[{step_index, elements, caption}]}
+  — figura cu straturi dezvăluite pe pași (întâi axele, apoi graficul, apoi tangenta).
+- interactive_manipulative: {kind, params (STRING JSON), mode:'tactile'} — manipulativ TACTIL
+  (kind ∈ zaruri/monede/urna/persoane/carti): zar aruncabil, urnă din care extragi (P se
+  actualizează), persoane rearanjabile. La PROBABILITATE/COMBINATORICĂ cu acțiune repetată
+  preferă-l manipulativului static, cu numerele EXACTE din problemă.
+- try_step: {prompt, expected, hint} — pasul „încearcă tu": elevul răspunde ÎNAINTE să
+  continue lecția; sistemul verifică determinist; greșit → arată hint, NU blochează.
+  Pune UNUL la un pas de calcul cheie (nu la fiecare). expected = răspunsul scurt verificabil.
+
+MANDATUL DE VIZUAL (ETAPA 77+81 — lecția ARATĂ și SE ATINGE, nu doar povestește):
+- la FUNCȚII cu parametru: parameter_slider (efectul parametrului SE VEDE trăgând);
+  la FUNCȚII/ANALIZĂ/POLINOAME fără parametru: plot (multiplicitatea pe grafic);
+- la TABELE care se construiesc pas cu pas (semn, variație, Viète): progressive_table;
+- la GEOMETRIE cu figură anunțată: reveal_figure pe straturi (sau figure);
+- la PROBABILITĂȚI/COMBINATORICĂ: interactive_manipulative TACTIL cu numerele EXACTE;
+- la un pas de calcul cheie: un try_step ocazional;
+- conceptul permite un vizual/interactiv → lecția FĂRĂ el e respinsă de validator.
 
 REGULA DE NOTAȚIE (încălcare dovedită: „^(m+1)" brut pe ecran): TOATĂ
 matematica — inclusiv exponenți și indici scurți ca x^2, a_n — stă DOAR între
