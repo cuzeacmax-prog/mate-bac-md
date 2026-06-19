@@ -22,6 +22,7 @@ import {
   LessonBlockModelSchema,
   parseLessonBlock,
   stripQuizAnswer,
+  stripTryStepAnswer,
   type LessonBlock,
 } from '@/lib/lesson/blocks';
 import { LESSON_SYSTEM_PROMPT, buildLessonConceptBlock, buildLessonUserMessage, buildRetryMessage } from '@/lib/lesson/prompt';
@@ -120,6 +121,7 @@ export async function POST(req: NextRequest) {
         try {
           const serverBlocks: LessonBlock[] = [];
           let quizCount = 0;
+          let tryCount = 0;
           for (const raw of canonical.blocks) {
             let block = raw;
             // personalizare deterministă: salutul în intro (nu se persistă)
@@ -144,6 +146,9 @@ export async function POST(req: NextRequest) {
             if (block.tip === 'quiz') {
               quizCount++;
               send({ block: stripQuizAnswer(block, `q${quizCount}`) });
+            } else if (block.tip === 'try_step') {
+              tryCount++;
+              send({ block: stripTryStepAnswer(block, `t${tryCount}`) });
             } else {
               send({ block });
             }
@@ -222,6 +227,7 @@ export async function POST(req: NextRequest) {
       const serverBlocks: LessonBlock[] = [];
       const invalid: Array<{ raw: unknown; error: string }> = [];
       let quizCount = 0;
+      let tryCount = 0;
       let inputTokens = 0;
       let outputTokens = 0;
       let cacheRead = 0;
@@ -261,6 +267,9 @@ export async function POST(req: NextRequest) {
         if (block.tip === 'quiz') {
           quizCount++;
           send({ block: stripQuizAnswer(block, `q${quizCount}`) });
+        } else if (block.tip === 'try_step') {
+          tryCount++;
+          send({ block: stripTryStepAnswer(block, `t${tryCount}`) });
         } else {
           send({ block });
         }

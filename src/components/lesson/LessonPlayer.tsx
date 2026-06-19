@@ -17,6 +17,9 @@ import { MathText } from "@/components/MathText";
 import { StatementText } from "@/components/StatementText";
 import { LessonTable } from "@/components/lesson/LessonTable";
 import { LayeredFigure } from "@/components/lesson/LayeredFigure";
+import {
+  RevealFigureView, ProgressiveTableView, InteractiveManipulativeView, ParameterSliderView, TryStepView,
+} from "@/components/lesson/interactive/InteractiveBlocks";
 import { SPRING, buttonTap, progressFill, celebrate } from "@/lib/motion/motion";
 import { playFeedback } from "@/lib/motion/feedback";
 import { MASTERY_THRESHOLD } from "@/lib/progres/data";
@@ -508,6 +511,7 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
               block={current}
               quizState={currentQuizState}
               pendingQuiz={pendingQuiz}
+              messageId={messageId}
               onAnswer={answerQuiz}
               onRedeem={submitRedemption}
               onContinue={advance}
@@ -576,6 +580,7 @@ function BlockCard({
   block,
   quizState,
   pendingQuiz,
+  messageId,
   onAnswer,
   onRedeem,
   onContinue,
@@ -583,6 +588,7 @@ function BlockCard({
   block: LessonBlockClient;
   quizState: QuizState;
   pendingQuiz: boolean;
+  messageId: string | null;
   onAnswer: (quizId: string, letter: string) => void;
   onRedeem: (quizId: string, exerciseId: string, answer: string) => void;
   onContinue: () => void;
@@ -816,6 +822,17 @@ function BlockCard({
           </ul>
         </div>
       );
+    // ── ETAPA 81 — blocuri interactive (componente client deterministe) ──
+    case "reveal_figure":
+      return <RevealFigureView block={block as unknown as Record<string, unknown>} />;
+    case "progressive_table":
+      return <ProgressiveTableView block={block as unknown as Record<string, unknown>} />;
+    case "interactive_manipulative":
+      return <InteractiveManipulativeView block={block as unknown as Record<string, unknown>} />;
+    case "parameter_slider":
+      return <ParameterSliderView block={block as unknown as Record<string, unknown>} />;
+    case "try_step":
+      return <TryStepView block={block as unknown as Record<string, unknown>} messageId={messageId} />;
     default:
       return null;
   }
