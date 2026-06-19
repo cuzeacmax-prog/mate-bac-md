@@ -31,6 +31,12 @@ interface Leak {
   excerpt: string;
 }
 
+/** ETAPA 81: variantele co-generate de vocabular (comun/barem) sunt și ele text VIZIBIL. */
+function pushVariante(texts: string[], b: Record<string, unknown>) {
+  const v = b.variante as Record<string, string> | undefined;
+  if (v) for (const k of ['comun', 'punte', 'barem']) if (v[k]) texts.push(v[k]);
+}
+
 async function fetchStatements(
   svc: ReturnType<typeof createServiceClient>,
   ids: string[]
@@ -108,10 +114,11 @@ async function main() {
     const texts: string[] = [];
     for (const b of (l.blocks as Array<Record<string, unknown>>) ?? []) {
       switch (b.tip) {
-        case 'intro': texts.push(String(b.titlu ?? ''), String(b.ideea_mare ?? '')); break;
+        case 'intro': texts.push(String(b.titlu ?? ''), String(b.ideea_mare ?? '')); pushVariante(texts, b); break;
         case 'step':
           texts.push(String(b.titlu_scurt ?? ''), String(b.corp ?? ''));
           if (b.formula) texts.push(`$$${b.formula}$$`); // player-ul așa o randează
+          pushVariante(texts, b);
           break;
         case 'formula': texts.push(`$$${b.latex}$$`, String(b.explicatie ?? '')); break;
         case 'example':
@@ -134,6 +141,23 @@ async function main() {
           break;
         }
         case 'recap': texts.push(...(((b.puncte as string[]) ?? []))); break;
+        // ── ETAPA 81: blocurile interactive (tot textul VIZIBIL al lor) ──
+        case 'reveal_figure':
+          for (const ly of (b.layers as Array<{ caption?: string; elements?: string[] }>) ?? []) {
+            if (ly.caption) texts.push(ly.caption); else texts.push(...((ly.elements ?? [])));
+          }
+          if (b.legenda) texts.push(String(b.legenda));
+          break;
+        case 'progressive_table':
+          texts.push(String(b.titlu ?? ''));
+          for (const c of (b.coloane as string[]) ?? []) texts.push(c);
+          for (const row of (b.randuri as Array<{ cells: string[] }>) ?? []) texts.push(...(row.cells ?? []));
+          break;
+        case 'parameter_slider':
+          texts.push(String(b.observe ?? ''));
+          if (b.legenda) texts.push(String(b.legenda));
+          break;
+        case 'try_step': texts.push(String(b.prompt ?? ''), String(b.hint ?? '')); break;
         default: if (b.legenda) texts.push(String(b.legenda));
       }
     }

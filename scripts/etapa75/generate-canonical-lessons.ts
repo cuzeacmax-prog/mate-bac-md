@@ -74,7 +74,9 @@ FORME JSON ale blocurilor interactive:
 
 VOCABULAR CO-GENERAT (ETAPA 81 C3): la blocurile intro și step, pe lângă textul de bază
 (registrul „punte"), adaugă câmpul "variante":{"comun":"...","barem":"..."} cu ACEEAȘI idee
-în registru comun (zero jargon) și de barem (riguros). Matematica e identică; doar proza diferă.`;
+în registru comun (zero jargon) și de barem (riguros). Matematica e identică; doar proza diferă.
+ÎN VARIANTE, ca peste tot: ORICE notație matematică (inclusiv x^2, e^x, a_n) stă DOAR între
+$...$ — text brut cu „^" sau „_" face lecția să fie RESPINSĂ.`;
 
 interface TaskConfig { model_name: string; max_tokens: number; price_input_per_1m: number; price_output_per_1m: number }
 
@@ -140,6 +142,14 @@ async function main() {
   console.log(`model: ${cfg.model_name} ($${cfg.price_input_per_1m}/$${cfg.price_output_per_1m} per 1M)`);
 
   let slugs = process.env.CONCEPT ? [process.env.CONCEPT] : await pickTargets(svc);
+  // ETAPA 81: ONLY_EXISTING=1 → regenerează DOAR conceptele care au deja lecție
+  // canonică (cele 87), fără a crea lecții noi pentru alte concepte servibile.
+  if (process.env.ONLY_EXISTING === '1') {
+    const withLesson = new Set<string>();
+    const { data: lc } = await svc.from('lesson_canonical').select('concepts(slug)');
+    for (const r of (lc ?? []) as Array<{ concepts: { slug: string } | null }>) if (r.concepts?.slug) withLesson.add(r.concepts.slug);
+    slugs = slugs.filter((s) => withLesson.has(s));
+  }
   const limit = Number(process.env.GEN_LIMIT ?? 70);
   slugs = slugs.slice(0, limit);
   console.log(`ținte: ${slugs.length} concepte`);

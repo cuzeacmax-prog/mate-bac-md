@@ -13,6 +13,28 @@ import { getTheoryFigure } from '@/lib/lesson/theory-figures/registry';
 import { renderPlotSVG } from '@/lib/lesson/plot';
 import { renderManipulative } from '@/lib/lesson/manipulatives';
 import { concreteExpr } from '@/lib/lesson/interactive';
+import { statementVisible, leakClasses } from '@/lib/content/body-render';
+
+/** Tot textul de PROZĂ vizibil al unui bloc (matematica trebuie să stea în $...$). */
+function blockProse(b: LessonBlock): string {
+  const parts: string[] = [];
+  const v = (b as { variante?: Record<string, string> }).variante;
+  if (v) parts.push(...Object.values(v));
+  switch (b.tip) {
+    case 'intro': parts.push(b.titlu, b.ideea_mare); break;
+    case 'step': parts.push(b.titlu_scurt, b.corp); break;
+    case 'formula': parts.push(b.explicatie); break;
+    case 'example': parts.push(b.enunt, ...b.pasi.map((p) => p.text)); break;
+    case 'quiz': parts.push(b.intrebare, ...Object.values(b.optiuni), b.indiciu ?? '', ...(b.rezolvare ?? [])); break;
+    case 'recap': parts.push(...b.puncte); break;
+    case 'reveal_figure': parts.push(...b.layers.map((l) => l.caption ?? ''), b.legenda ?? ''); break;
+    case 'progressive_table': parts.push(b.titlu ?? '', ...b.coloane, ...b.randuri.flatMap((r) => r.cells)); break;
+    case 'parameter_slider': parts.push(b.observe, b.legenda ?? ''); break;
+    case 'try_step': parts.push(b.prompt, b.hint); break;
+    default: { const lg = (b as { legenda?: string }).legenda; if (lg) parts.push(lg); }
+  }
+  return parts.filter(Boolean).join('\n');
+}
 
 export interface CanonicalLesson {
   id: string;
@@ -102,6 +124,12 @@ export function validateCanonicalBlocks(
       } else if (!b.exercise_id || !ctx.servableExerciseIds.has(b.exercise_id)) {
         errors.push(`blocul ${i}: reveal_figure exercise în afara pool-ului: ${b.exercise_id}`); continue;
       }
+    }
+    // ETAPA 81: ZERO scurgeri de randare — matematica DOAR în $...$ (inclusiv în variante)
+    const leaks = leakClasses(statementVisible(blockProse(b)));
+    if (leaks.length > 0) {
+      errors.push(`blocul ${i} (${b.tip}): notație matematică în text brut (scurgere: ${leaks.join(',')}) — pune-o în $...$`);
+      continue;
     }
     blocks.push(b);
   }
