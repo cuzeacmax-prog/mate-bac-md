@@ -8,6 +8,16 @@
  * ║  de mai jos; orice corecție = editezi lista de slug-uri.            ║
  * ╚══════════════════════════════════════════════════════════════════════╝
  *
+ * LĂRGIRE ETAPA 80 (REVIZUIRE UMANĂ — Maxim): am adăugat 18 slug-uri de concepte
+ * de METODĂ și CORP 3D la 3 topice EXISTENTE, pe potrivire de domeniu evidentă
+ * (anti-fabricație), ca să deblochez cele 126 de exerciții oficiale eligibile care
+ * linkau pe concepte neacoperite. NU am inventat topice noi; cele 17 topice fără
+ * conținut oficial eligibil RĂMÂN pe plasă (nu există exerciții oficiale de mapat):
+ *  • integrale  += proprietăți / metoda substituției / integrarea prin părți (def.) / teorema de medie;
+ *  • primitive  += integrarea prin părți (nedef.) / schimbarea de variabilă în primitive;
+ *  • geometrie_3d += piramidă, prismă dreaptă, paralelipiped(-dreptunghic) + volum,
+ *    con circular drept + arie laterală + volum, trunchi de con + volum.
+ *
  * Poartă anti-fabricație:
  *  - Toate slug-urile de mai jos au fost verificate că EXISTĂ în `concepts`
  *    (query anti-join la data scrierii: 0 inexistente).
@@ -99,12 +109,24 @@ export const TOPIC_CONCEPT_MAP: Record<string, string[]> = {
   ],
 
   // ── clasa 12 ──────────────────────────────────────────────────────────
+  // ETAPA 80: lărgire pe potrivire slug/titlu CLARĂ (anti-fabricație) — conceptele
+  // de METODĂ ale primitivei/integralei și CORPURILE 3D, ca să deblocheze cele 126
+  // de exerciții oficiale eligibile care linkau pe concepte de metodă/corp neacoperite.
   primitive: [
     'g12-primitiva-a-unei-functii',
     'g12-integrala-nedefinita',
     'g12-tabelul-integralelor-nedefinite-uzuale',
+    'g12-metoda-integrarii-prin-parti-integrala-nedefinita',
+    'g12-metoda-schimbarii-de-variabila-in-calculul-primitivelor',
   ],
-  integrale: ['g12-integrala-definita', 'g12-formula-leibniz-newton'],
+  integrale: [
+    'g12-integrala-definita',
+    'g12-formula-leibniz-newton',
+    'g12-proprietatile-integralei-definite',
+    'g12-metoda-substitutiei-pentru-integrala-definita',
+    'g12-metoda-integrarii-prin-parti-pentru-integrala-definita',
+    'g12-teorema-de-medie-pentru-integrala-definita',
+  ],
   arii_volume: [
     'g12-aria-subgraficului-unei-functii',
     'g12-aria-multimii-delimitate-de-graficele-a-doua-functii',
@@ -114,6 +136,16 @@ export const TOPIC_CONCEPT_MAP: Record<string, string[]> = {
     'g12-volumul-unui-corp-geometric',
     'g12-volumul-piramidei',
     'g12-volumul-prismei',
+    'g12-piramida',
+    'g12-prisma-dreapta',
+    'g12-paralelipiped',
+    'g12-paralelipiped-dreptunghic',
+    'g12-volumul-paralelipipedului-dreptunghic',
+    'g12-conul-circular-drept',
+    'g12-volumul-conului-circular-drept',
+    'g12-aria-laterala-a-conului-circular-drept',
+    'g12-trunchiul-de-con-circular-drept',
+    'g12-volumul-trunchiului-de-con',
   ],
   matrici_determinanti: [
     'g11-matrice',
