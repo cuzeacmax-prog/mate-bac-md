@@ -105,10 +105,17 @@ async function main() {
     }
   }
 
-  // ── 5) ETAPA 77 A3: blocurile lecțiilor CANONICE (toate câmpurile-text) ───
-  const { data: canonLessons } = await svc
+  // ── 5) ETAPA 77 A3 + 81: blocurile lecțiilor CANONICE SERVITE — DOAR ultima
+  //    versiune per concept (exact ce livrează getCanonicalLesson), nu versiunile vechi.
+  const { data: allCanon } = await svc
     .from('lesson_canonical')
-    .select('id, blocks, concepts(slug)');
+    .select('id, concept_id, version, blocks, concepts(slug)');
+  const latestByConcept = new Map<string, (typeof allCanon)[number]>();
+  for (const r of allCanon ?? []) {
+    const prev = latestByConcept.get(r.concept_id as string);
+    if (!prev || (r.version as number) > (prev.version as number)) latestByConcept.set(r.concept_id as string, r);
+  }
+  const canonLessons = [...latestByConcept.values()];
   for (const l of canonLessons ?? []) {
     const slug = (l.concepts as unknown as { slug: string } | null)?.slug ?? (l.id as string);
     const texts: string[] = [];

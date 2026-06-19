@@ -11,9 +11,37 @@ deterministe randează; AI nu desenează). Eșecuri-întâi, commit per fază, p
 | B — playerul interactiv | ✅ livrat | 5 componente + endpoint /try, 9 teste logică, POARTĂ B (build) verde |
 | C — vocabular adaptiv | ✅ livrat | mastery→registru + comutator, 12 teste, POARTĂ C verde |
 | D1 — mandat generator v2 | ✅ livrat | CANONICAL_ADDENDUM + validateCanonicalBlocks extins (build verde) |
-| D2 — regenerare 87 canonice | ⏸ blocat | model configurat `claude-fable-5` → 404 în acest mediu („use Opus 4.8") |
+| D2 — regenerare canonice v2 | ✅ executat | model→Opus 4.8 (migrație); **47/52 concepte v2 cu bloc interactiv**; cost real **$19.99** (avg $0.21/apel) |
+| D3 — render-audit v2 | ✅ verde | **0 scurgeri** pe servit (lecții-canonice 0/52, servabile 0/418, simulare 0/87) |
 | E — live interactiv | ✅ livrat | LESSON_SYSTEM_PROMPT mandatează interactivul (chat liber NEATINS) |
-| F — porți | ✅ verde | 189 teste · build OK · render-audit 0 scurgeri |
+| F — screencast + porți | ✅ executat | slider/tabel/zar/try_step/comutator în lecție REALĂ v2, desktop+mobil |
+
+## Execuție D2/D3/F (model deblocat → Opus 4.8)
+- **Migrație** `20260619000001`: `ai_model_config.lesson_canonical` → `claude-opus-4-8` (fără drift).
+- **D2** — regenerare în 2 valuri + reparații (eșecuri-întâi):
+  - sanity 5/5 ($0.99) → a prins o scurgere într-o `variante` → am transformat asta într-o
+    POARTĂ FERMĂ (validateCanonicalBlocks respinge math brut în orice câmp, reutilizând
+    detectorul calibrat din body-render);
+  - lot complet: 44 generate clean, 7 eșecuri (5 trunchiere „nu e array JSON" pe concepte
+    complexe de statistică/geometrie la 32K tokeni + 2 respinse de poarta de scurgere);
+  - retry: +2 recuperate; reparație mecanică R5-sigură (strip `$` din câmpurile `formula`
+    pre-delimitate de model, care dădeau `$$$…$$$`) + regenerare țintită → metoda-integrarii curat;
+  - FINAL: **47/52 concepte v2 (toate cu ≥1 bloc interactiv)**; 5 rămân pe versiunea veche
+    CURATĂ (generarea v2 a eșuat la trunchiere/scurgere repetată) — render OK, doar fără interactiv.
+  - cost real total: **$19.99** / 94 apeluri (estimare $20-25 — în țintă).
+- **D3**: render-audit pe SERVIT (ultima versiune per concept) — extins să traverseze textul
+  blocurilor interactive (caption/cells/observe/prompt/hint/variante): **0 scurgeri**.
+  _(figuri-teorie 14/45 = corpuri de teorie ale CONCEPTELOR, problemă pre-existentă ETAPA 79,
+  în afara scopului lecțiilor v2.)_
+- **F**: `docs/design-review/etapa81/` — slider mișcat (+observabile), tabel pe pași, zar aruncat
+  (sumă), try_step, comutator Simplu↔Riguros, pe `g12-elemente-de-calcul-financiar` +
+  `g12-probabilitate-conditionata`, desktop + mobil.
+
+## Cele 5 concepte rămase pe versiune veche (pentru Maxim)
+g11-formula-binomului-lui-newton, g12-media-aritmetica-a-seriei-statistice,
+g12-sfere-inscrise-si-circumscrise-poliedrelor-si-cilindrului,
+g12-gruparea-datelor-pe-intervale-de-variatie (+1) — trunchiere la 32K / scurgere repetată.
+Se recuperează cu max_tokens mai mare sau o repetare ulterioară; versiunile vechi servite sunt curate.
 
 ## A — Contract de blocuri v2 (`src/lib/lesson/blocks.ts`)
 5 blocuri noi cu limite ÎN SCHEMĂ (invalid → respins, recerut):

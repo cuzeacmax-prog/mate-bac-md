@@ -80,6 +80,12 @@ export function validateCanonicalBlocks(
       continue;
     }
     const b = parsed.block;
+    // ETAPA 81: câmpurile `formula`/`latex` sunt BARE — player-ul adaugă $$…$$.
+    // Modelul uneori le pre-delimitează cu $ → $$$…$$$ rupt. Le normalizăm (mecanic, R5-sigur).
+    const strip$ = (s: string) => s.replace(/^\$+/, '').replace(/\$+$/, '').trim();
+    if (b.tip === 'step' && b.formula) b.formula = strip$(b.formula);
+    if (b.tip === 'formula') b.latex = strip$(b.latex);
+    if (b.tip === 'example') for (const p of b.pasi) if (p.formula) p.formula = strip$(p.formula);
     // referințele: DOAR ce există (anti-fabricație)
     if (b.tip === 'figure') {
       if (b.kind === 'theory') {
