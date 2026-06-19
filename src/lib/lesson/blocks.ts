@@ -32,10 +32,22 @@ const propozitii = (max: number) =>
 /** o formulă LaTeX scurtă — UNA singură, fără text românesc lung în ea */
 const latexScurt = z.string().trim().min(1).max(200);
 
+/** ETAPA 81 FAZA C: registrul de vocabular al blocului (din mastery / comutator). */
+export const VOCAB_LEVELS = ['comun', 'punte', 'barem'] as const;
+export type VocabLevel = (typeof VOCAB_LEVELS)[number];
+const vocabLevel = z.enum(VOCAB_LEVELS);
+/** Variante CO-GENERATE ale prozei principale: comutatorul Simplu↔Riguros le
+ *  schimbă fără re-apel LLM (C3). Textul de bază = registrul 'comun'/punte implicit. */
+const variante = z
+  .object({ comun: z.string().max(420).optional(), punte: z.string().max(420).optional(), barem: z.string().max(420).optional() })
+  .optional();
+
 export const IntroBlockSchema = z.object({
   tip: z.literal('intro'),
   titlu: z.string().trim().min(1).max(80),
   ideea_mare: propozitii(2).and(z.string().max(280)),
+  vocab_level: vocabLevel.optional(),
+  variante,
 });
 
 export const StepBlockSchema = z.object({
@@ -44,6 +56,8 @@ export const StepBlockSchema = z.object({
   corp: propozitii(3).and(z.string().max(420)),
   /** UNA singură formulă, opțională */
   formula: latexScurt.optional(),
+  vocab_level: vocabLevel.optional(),
+  variante,
 });
 
 export const FormulaBlockSchema = z.object({
@@ -134,6 +148,96 @@ export const RecapBlockSchema = z.object({
   puncte: z.array(propozitii(1).and(z.string().max(160))).min(1).max(3),
 });
 
+// ═══════════════════ ETAPA 81 FAZA A — BLOCURI INTERACTIVE v2 ═══════════════════
+// R5: AI-ul CERE vizualuri cu parametri VALIDAȚI (limite în schemă); motoarele
+// deterministe randează; AI-ul nu desenează. Bloc invalid → respins, recerut.
+
+/** Straturi dezvăluite sincron cu pașii lecției (generalizează L0-L3 din 67). */
+export const RevealFigureBlockSchema = z
+  .object({
+    tip: z.literal('reveal_figure'),
+    figure_kind: z.enum(['theory', 'exercise']).default('exercise'),
+    theory_slug: z.string().trim().min(1).max(120).optional(),
+    exercise_id: z.string().uuid().optional(),
+    layers: z
+      .array(
+        z.object({
+          step_index: z.number().int().min(0).max(11),
+          elements: z.array(z.string().trim().min(1).max(48)).min(1).max(16),
+          caption: propozitii(1).and(z.string().max(160)).optional(),
+        })
+      )
+      .min(1)
+      .max(8),
+    legenda: z.string().trim().max(160).optional(),
+    vocab_level: vocabLevel.optional(),
+  })
+  .refine((b) => (b.figure_kind === 'exercise' ? !!b.exercise_id : !!b.theory_slug), {
+    message: "reveal_figure: kind='exercise' cere exercise_id; kind='theory' cere theory_slug",
+  });
+
+/** Tabel completat celulă-cu-celulă pe pași (Viète, semn, variație). */
+export const ProgressiveTableBlockSchema = z.object({
+  tip: z.literal('progressive_table'),
+  titlu: z.string().trim().max(80).optional(),
+  coloane: z.array(z.string().trim().min(1).max(60)).min(2).max(6),
+  randuri: z
+    .array(
+      z.object({
+        cells: z.array(z.string().trim().max(80)).min(2).max(6),
+        reveal_at_step: z.number().int().min(0).max(11),
+        highlight_cell: z.number().int().min(0).max(5).optional(),
+      })
+    )
+    .min(1)
+    .max(10),
+  vocab_level: vocabLevel.optional(),
+});
+
+/** Manipulativele din 71 + interacțiune TACTILĂ (zar aruncabil, urnă, persoane). */
+export const InteractiveManipulativeBlockSchema = z.object({
+  tip: z.literal('interactive_manipulative'),
+  // subsetul cu interacțiune cu sens (venn/dreapta/bare rămân statice → blocul 'manipulative')
+  kind: z.enum(['zaruri', 'monede', 'urna', 'persoane', 'carti']),
+  params: z.preprocess((v) => {
+    if (typeof v !== 'string') return v;
+    try { return JSON.parse(v); } catch { return v; }
+  }, z.record(z.string(), z.unknown())),
+  mode: z.literal('tactile').default('tactile'),
+  legenda: z.string().trim().max(160).optional(),
+  vocab_level: vocabLevel.optional(),
+});
+
+/** Elevul trage parametrul, vede efectul prin plot-ul determinist re-randat. */
+export const ParameterSliderBlockSchema = z
+  .object({
+    tip: z.literal('parameter_slider'),
+    /** expresie cu numele parametrului în ea, ex. „a*x^2 + 1" cu param „a" */
+    expr_template: z.string().trim().min(1).max(120),
+    param: z.string().trim().min(1).max(8),
+    /** [min, max, step] */
+    range: z.tuple([z.number(), z.number(), z.number()]),
+    /** domeniul x al plot-ului (lipsă → [-5,5]) */
+    domain: z.tuple([z.number(), z.number()]).optional(),
+    /** ce mărime urmărește elevul (vârf, Δ, nr. rădăcini) */
+    observe: z.string().trim().min(1).max(80),
+    legenda: z.string().trim().max(160).optional(),
+    vocab_level: vocabLevel.optional(),
+  })
+  .refine((b) => b.range[0] < b.range[1] && b.range[2] > 0, { message: 'range invalid: cere [min < max, step > 0]' })
+  .refine((b) => b.expr_template.includes(b.param), { message: 'expr_template trebuie să conțină parametrul' });
+
+/** Pasul „încearcă tu": elevul răspunde înainte ca lecția să continue; evaluat
+ *  determinist (ETAPA 63); greșit → hint, NU blochează. */
+export const TryStepBlockSchema = z.object({
+  tip: z.literal('try_step'),
+  prompt: z.string().trim().min(1).max(280),
+  /** răspunsul corect — verificat determinist cu compareAnswers (NU pleacă la client) */
+  expected: z.string().trim().min(1).max(120),
+  hint: propozitii(2).and(z.string().max(240)),
+  vocab_level: vocabLevel.optional(),
+});
+
 /**
  * Schema STRUCTURALĂ pentru model (Output.array element): aceleași forme,
  * FĂRĂ refine-urile de propoziții — refine nu se serializează în JSON Schema,
@@ -188,10 +292,35 @@ export const LessonBlockModelSchema = z.discriminatedUnion('tip', [
     legenda: z.string().optional(),
   }),
   z.object({ tip: z.literal('recap'), puncte: z.array(z.string()) }),
+  // ── ETAPA 81 interactiv (model-facing, fără refine; params/JSON ca string) ──
+  z.object({
+    tip: z.literal('reveal_figure'), figure_kind: z.enum(['theory', 'exercise']).optional(),
+    theory_slug: z.string().optional(), exercise_id: z.string().optional(),
+    layers: z.array(z.object({ step_index: z.number(), elements: z.array(z.string()), caption: z.string().optional() })),
+    legenda: z.string().optional(), vocab_level: z.string().optional(),
+  }),
+  z.object({
+    tip: z.literal('progressive_table'), titlu: z.string().optional(),
+    coloane: z.array(z.string()),
+    randuri: z.array(z.object({ cells: z.array(z.string()), reveal_at_step: z.number(), highlight_cell: z.number().optional() })),
+    vocab_level: z.string().optional(),
+  }),
+  z.object({
+    tip: z.literal('interactive_manipulative'), kind: z.string(), params: z.string(),
+    mode: z.string().optional(), legenda: z.string().optional(), vocab_level: z.string().optional(),
+  }),
+  z.object({
+    tip: z.literal('parameter_slider'), expr_template: z.string(), param: z.string(),
+    range: z.array(z.number()), domain: z.array(z.number()).optional(), observe: z.string(),
+    legenda: z.string().optional(), vocab_level: z.string().optional(),
+  }),
+  z.object({
+    tip: z.literal('try_step'), prompt: z.string(), expected: z.string(), hint: z.string(),
+    vocab_level: z.string().optional(),
+  }),
 ]);
 
-// FigureBlockSchema are .refine → nu poate intra direct în discriminatedUnion;
-// îl validăm separat în parseLessonBlock.
+// Schemele cu .refine nu pot intra în discriminatedUnion → validate separat în parseLessonBlock.
 const NON_FIGURE_SCHEMAS = z.discriminatedUnion('tip', [
   IntroBlockSchema,
   StepBlockSchema,
@@ -202,19 +331,36 @@ const NON_FIGURE_SCHEMAS = z.discriminatedUnion('tip', [
   PlotBlockSchema,
   ManipulativeBlockSchema,
   RecapBlockSchema,
+  ProgressiveTableBlockSchema,
+  InteractiveManipulativeBlockSchema,
+  TryStepBlockSchema,
 ]);
+
+/** blocurile cu .refine (validate prin schema lor specifică, nu prin union) */
+const REFINED_SCHEMAS: Record<string, z.ZodTypeAny> = {
+  figure: FigureBlockSchema,
+  reveal_figure: RevealFigureBlockSchema,
+  parameter_slider: ParameterSliderBlockSchema,
+};
 
 export type FigureBlock = z.infer<typeof FigureBlockSchema>;
 export type PlotBlock = z.infer<typeof PlotBlockSchema>;
 export type ManipulativeBlock = z.infer<typeof ManipulativeBlockSchema>;
-export type LessonBlock = z.infer<typeof NON_FIGURE_SCHEMAS> | FigureBlock;
+export type RevealFigureBlock = z.infer<typeof RevealFigureBlockSchema>;
+export type ProgressiveTableBlock = z.infer<typeof ProgressiveTableBlockSchema>;
+export type InteractiveManipulativeBlock = z.infer<typeof InteractiveManipulativeBlockSchema>;
+export type ParameterSliderBlock = z.infer<typeof ParameterSliderBlockSchema>;
+export type TryStepBlock = z.infer<typeof TryStepBlockSchema>;
+export type LessonBlock = z.infer<typeof NON_FIGURE_SCHEMAS> | FigureBlock | RevealFigureBlock | ParameterSliderBlock;
 export type QuizBlock = z.infer<typeof QuizBlockSchema>;
 export type LessonBlockClient =
-  | Exclude<LessonBlock, QuizBlock | PlotBlock | ManipulativeBlock>
+  | Exclude<LessonBlock, QuizBlock | PlotBlock | ManipulativeBlock | TryStepBlock>
   | (Omit<QuizBlock, 'corecta'> & { quiz_id: string })
-  /** plotul/manipulativul ajung la client CU svg-ul randat pe server */
+  /** plotul/manipulativul (static) ajung la client CU svg-ul randat pe server */
   | (PlotBlock & { svg: string })
-  | (ManipulativeBlock & { svg: string });
+  | (ManipulativeBlock & { svg: string })
+  /** try_step ajunge FĂRĂ `expected` (verificat pe server, ca quiz-ul) + un id */
+  | (Omit<TryStepBlock, 'expected'> & { try_id: string });
 
 /**
  * Validează un bloc brut de la model. Întoarce blocul tipizat sau eroarea
@@ -223,10 +369,10 @@ export type LessonBlockClient =
 export function parseLessonBlock(raw: unknown):
   | { ok: true; block: LessonBlock }
   | { ok: false; error: string } {
-  const isFigure =
-    typeof raw === 'object' && raw !== null && (raw as { tip?: unknown }).tip === 'figure';
-  const result = isFigure ? FigureBlockSchema.safeParse(raw) : NON_FIGURE_SCHEMAS.safeParse(raw);
-  if (result.success) return { ok: true, block: result.data };
+  const tip = typeof raw === 'object' && raw !== null ? (raw as { tip?: unknown }).tip : undefined;
+  const refined = typeof tip === 'string' ? REFINED_SCHEMAS[tip] : undefined;
+  const result = refined ? refined.safeParse(raw) : NON_FIGURE_SCHEMAS.safeParse(raw);
+  if (result.success) return { ok: true, block: result.data as LessonBlock };
   const issues = result.error.issues
     .map((i) => `${i.path.join('.') || '(rădăcină)'}: ${i.message}`)
     .join('; ');
@@ -241,4 +387,11 @@ export function stripQuizAnswer(block: QuizBlock, quizId: string): LessonBlockCl
   delete rest.indiciu;
   delete rest.rezolvare;
   return { ...rest, quiz_id: quizId } as LessonBlockClient;
+}
+
+/** try_step către client: FĂRĂ `expected` (verificat pe server, ETAPA 63), cu un id. */
+export function stripTryStepAnswer(block: TryStepBlock, tryId: string): LessonBlockClient {
+  const rest: Omit<TryStepBlock, 'expected'> & { expected?: string } = { ...block };
+  delete rest.expected;
+  return { ...rest, try_id: tryId } as LessonBlockClient;
 }
