@@ -92,6 +92,8 @@ function at(statement: string, re: RegExp): number {
 /** Sparge răspunsul oficial în bucăți candidate (pe `;`, `\\`, `\quad`, `. `, virgule de listă). */
 function splitOfficial(official: string): string[] {
   return official
+    // spațierile LaTeX (\; \, \: \! \ ) → spațiu, ca să NU spargem pe „;"-ul din „\;"
+    .replace(/\\[;,:!]|\\ /g, " ")
     .replace(/\\\\|\\quad|\\qquad/g, ";")
     .replace(/(\^?\d|\})\s*\.\s+/g, "$1;") // „...cm^3. Nu..." → separator
     .split(/;|,\s*\\;|,(?=\s*[A-Za-z]\w*\s*=)/)
@@ -260,6 +262,224 @@ function solveRegularTetra(statement: string): SolveOutput {
   return { kind: "solved", shape: "tetraedru", method: "cas_geometry_tetra", asked, confident: true };
 }
 
+// ───────────────────────── helpers de parsare (ETAPA 80) ─────────────────────────
+/** Valoarea numerică legată de un cuvânt-cheie, DOAR în propoziția lui (până la `.`/`?`). */
+function boundValue(s: string, toks: Token[], kw: RegExp, angle = false): number | null {
+  const idx = at(s, kw); if (idx < 0) return null;
+  const period = s.slice(idx).search(/[.?]/);
+  const limit = period >= 0 ? idx + period : s.length + 1;
+  for (const t of toks) {
+    if (t.index < idx || t.index >= limit) continue;
+    if (angle !== t.isAngle) continue;
+    if (t.value !== null) return t.value;
+  }
+  return null;
+}
+/** Primele n valori (ne-unghi implicit) DUPĂ un cuvânt-cheie. */
+function valuesAfter(s: string, toks: Token[], kw: RegExp, n: number, angle = false): number[] | null {
+  const idx = at(s, kw); if (idx < 0) return null;
+  const vals: number[] = [];
+  for (const t of toks) if (t.index >= idx && angle === t.isAngle && t.value !== null) vals.push(t.value);
+  return vals.length >= n ? vals.slice(0, n) : null;
+}
+
+// ═══════════════════════════ SOLVER: PARALELIPIPED DREPT ═══════════════════════════
+/** Paralelipiped drept: bază paralelogram (laturi p,q + unghi) sau romb (diagonale); muchie laterală c ⟂ bază. */
+function solveParallelepiped(s: string): SolveOutput {
+  const toks = tokenize(s);
+  let p: number | null = null, q: number | null = null, cosT: number | null = null;
+  let baseArea: number | null = null, side: number | null = null;
+  const baseDiags: number[] = [];
+  const rhombus = /\bromb/i.test(s);
+
+  if (rhombus) {
+    const dd = valuesAfter(s, toks, /diagonal/i, 2);
+    if (dd) { const [d1, d2] = dd; side = Math.hypot(d1 / 2, d2 / 2); baseArea = d1 * d2 / 2; baseDiags.push(Math.min(d1, d2), Math.max(d1, d2)); p = q = side; }
+  } else {
+    const sides = valuesAfter(s, toks, /laturi\w*\s+(?:a\s+)?baz/i, 2);
+    if (sides) { [p, q] = sides; }
+    const ang = boundValue(s, toks, /unghi/i, true);
+    if (ang != null) cosT = Math.cos(ang * Math.PI / 180);
+  }
+
+  // muchia laterală (= înălțimea paralelipipedului drept)
+  let c = boundValue(s, toks, /muchi(a|e)\s+lateral|muchia\s+lateral/i) ?? boundValue(s, toks, /[îi]n[ăa]l[țt]im/i);
+
+  // diagonala feței laterale → c (doar pe romb, unde latura e unică)
+  const faceDiag = boundValue(s, toks, /diagonal[ae]?\s+(a\s+)?fe[țt]ei\s+lateral|diagonala\s+fe[țt]ei/i);
+  if (c == null && faceDiag != null && side != null && faceDiag > side) c = Math.sqrt(faceDiag * faceDiag - side * side);
+
+  // două arii de fețe laterale + aria bazei + unghi → c (apoi V)
+  if (c == null && /fe[țt]e\s+laterale/i.test(s) && /arii/i.test(s)) {
+    const fa = valuesAfter(s, toks, /arii(le)?/i, 2);
+    const ab = boundValue(s, toks, /aria\s+bazei/i);
+    if (fa && ab != null && cosT != null) {
+      const sinT = Math.sqrt(1 - cosT * cosT);
+      baseArea = ab; c = Math.sqrt((fa[0] * fa[1] * sinT) / ab);
+    }
+  }
+
+  if (baseArea == null && p != null && q != null && cosT != null) baseArea = p * q * Math.sqrt(1 - cosT * cosT);
+
+  // diagonalele bazei: din p,q,cosT; sau din una dată + legea paralelogramului; sau din raport
+  if (baseDiags.length === 0 && p != null && q != null && cosT != null) {
+    const a2 = p * p + q * q, b2 = 2 * p * q * cosT;
+    baseDiags.push(Math.sqrt(a2 - b2), Math.sqrt(a2 + b2));
+  }
+  if (baseDiags.length === 0 && p != null && q != null) {
+    const given = boundValue(s, toks, /una\s+din\s+diagonalele\s+baz|diagonal[ae]?\s+(a\s+)?baz/i);
+    if (given != null) { const other2 = 2 * (p * p + q * q) - given * given; if (other2 > 0) baseDiags.push(Math.min(given, Math.sqrt(other2)), Math.max(given, Math.sqrt(other2))); }
+    const ratio = /raport[^.]*diagonal[^.]*?(\d+)\s*[:：]\s*(\d+)/i.exec(s);
+    if (baseDiags.length === 0 && ratio) {
+      const r1 = +ratio[1], r2 = +ratio[2]; const k2 = (2 * (p * p + q * q)) / (r1 * r1 + r2 * r2); const k = Math.sqrt(k2);
+      baseDiags.push(Math.min(r1, r2) * k, Math.max(r1, r2) * k);
+    }
+  }
+
+  const av = (re: RegExp) => re.test(s);
+  const asked: ComputedQuantity[] = [];
+  const perim = p != null && q != null ? 2 * (p + q) : null;
+  if (av(/aria\s+total/i) && baseArea != null && perim != null && c != null)
+    asked.push({ label: "aria totală", value: 2 * baseArea + perim * c, latex: (2 * baseArea + perim * c).toFixed(4) });
+  if (av(/volum/i) && baseArea != null && c != null)
+    asked.push({ label: "volum", value: baseArea * c, latex: (baseArea * c).toFixed(4) });
+  // ASK specific: „(lungimile) diagonalele/diagonalelor paralelipipedului/lui" (NU „diagonala feței", care e dat)
+  if (av(/diagonal(ele|elor)\s+(paralelipiped|lui\b)/i) && c != null && baseDiags.length > 0 && !av(/sec[țt]iun/i)) {
+    for (const d of baseDiags) asked.push({ label: "diagonală", value: Math.sqrt(d * d + c * c), latex: Math.sqrt(d * d + c * c).toFixed(4) });
+  }
+  if (av(/sec[țt]iun/i) && av(/diagonal/i) && c != null && baseDiags.length > 0) {
+    for (const d of baseDiags) asked.push({ label: "arie secțiune diagonală", value: d * c, latex: (d * c).toFixed(4) });
+  }
+  if (asked.length === 0) return { kind: "unsupported", shape: "paralelipiped", capability: "paralelipiped: combinație parametri/cerere neacoperită" };
+  return { kind: "solved", shape: "paralelipiped", method: "cas_geometry_box", asked, confident: true };
+}
+
+// ═══════════════════════════ SOLVER: PIRAMIDĂ REGULATĂ ═══════════════════════════
+/** Piramidă regulată triunghiulară/patrulateră: bază a, înălțime h, muchie laterală m, apotemă a_p. */
+function solveRegularPyramid(s: string): SolveOutput {
+  if (/complet(a[țt]i|[ăa]m)\s+(spa[țt]iile|tabelul)|tabelul\s+(de\s+mai\s+jos|urm[ăa]tor)|\\begin\{array\}|\|---/i.test(s))
+    return { kind: "unsupported", shape: "piramidă", capability: "tabel multi-parametru (solver de tabel)" };
+  // baze NEregulate / condiții speciale → în afara acestui solver
+  if (/trapez|romb|dreptunghi|perpendicular[ăa]\s+pe\s+plan|fa[țt]a\s+lateral[ăa]\s+(este\s+)?perpendicular/i.test(s))
+    return { kind: "unsupported", shape: "piramidă", capability: "piramidă cu bază neregulată / față perpendiculară (neacoperit)" };
+  const tri = /triunghiular|triunghi\s+(echilateral|regulat)/i.test(s);
+  const quad = /patrulater|p[ăa]tratic|baz[ăa]\s+p[ăa]trat/i.test(s);
+  if (!tri && !quad) return { kind: "unsupported", shape: "piramidă", capability: "piramidă: tip bază neidentificat (nici triunghiulară, nici patrulateră)" };
+  const toks = tokenize(s);
+  const a0 = boundValue(s, toks, /(latura|muchia)\s+(a\s+)?bazei|muchia\s+bazei/i);
+  const m0 = boundValue(s, toks, /muchi(a|e)\s+lateral/i);
+  const h0 = boundValue(s, toks, /[îi]n[ăa]l[țt]im/i);
+  const ap0 = boundValue(s, toks, /apotem/i);
+
+  // geometrie bază regulată: ρ = inradius, R = circumradius
+  const rho = (a: number) => tri ? a / (2 * Math.sqrt(3)) : a / 2;
+  const Rc = (a: number) => tri ? a / Math.sqrt(3) : a * Math.SQRT2 / 2;
+  let a = a0, h = h0;
+  if (a != null && h == null) {
+    if (m0 != null) { const r = Rc(a); const v = m0 * m0 - r * r; if (v > 0) h = Math.sqrt(v); }
+    else if (ap0 != null) { const r = rho(a); const v = ap0 * ap0 - r * r; if (v > 0) h = Math.sqrt(v); }
+  }
+  if (a == null) return { kind: "unsupported", shape: "piramidă", capability: "piramidă regulată: latura bazei lipsă" };
+  if (h == null) return { kind: "unsupported", shape: "piramidă", capability: "piramidă regulată: înălțime nederivabilă din date" };
+
+  const aa = a, hh = h;
+  const baseArea = tri ? Math.sqrt(3) / 4 * aa * aa : aa * aa;
+  const ap = Math.sqrt(hh * hh + rho(aa) ** 2);
+  const m = Math.sqrt(hh * hh + Rc(aa) ** 2);
+  const perim = tri ? 3 * aa : 4 * aa;
+  const Alat = perim / 2 * ap;
+  const Atot = baseArea + Alat;
+  const V = baseArea * hh / 3;
+
+  const av = (re: RegExp) => re.test(s);
+  const asked: ComputedQuantity[] = [];
+  if (av(/[îi]n[ăa]l[țt]im/i) && h0 == null) asked.push({ label: "înălțime", value: hh, latex: hh.toFixed(6) });
+  if (av(/muchi(a|e)\s+lateral/i) && m0 == null) asked.push({ label: "muchie laterală", value: m, latex: m.toFixed(6) });
+  if (av(/apotem/i) && ap0 == null) asked.push({ label: "apotemă", value: ap, latex: ap.toFixed(6) });
+  if (av(/aria\s+lateral/i)) asked.push({ label: "aria laterală", value: Alat, latex: Alat.toFixed(4) });
+  if (av(/aria\s+total/i)) asked.push({ label: "aria totală", value: Atot, latex: Atot.toFixed(4) });
+  if (av(/volum/i)) asked.push({ label: "volum", value: V, latex: V.toFixed(4) });
+  if (asked.length === 0) return { kind: "unsupported", shape: "piramidă", capability: "piramidă regulată: cantitate cerută nerecunoscută" };
+  return { kind: "solved", shape: "piramidă", method: "cas_geometry_pyramid", asked, confident: true };
+}
+
+// ═══════════════════════════ SOLVER: PRISMĂ DREAPTĂ ═══════════════════════════
+/** Prismă dreaptă cu bază triunghi general (3 laturi, Heron) + înălțime H (dată sau = înălțime a bazei). */
+function solvePrism(s: string): SolveOutput {
+  const toks = tokenize(s);
+  // 3 laturi ale bazei triunghiulare
+  const sides = valuesAfter(s, toks, /laturi(le)?\s+(a\s+)?baz/i, 3);
+  if (!sides || /paralelogram|romb|trapez|dreptunghi/i.test(s))
+    return { kind: "unsupported", shape: "prismă", capability: "prismă cu bază neacoperită (paralelogram/condiție specială)" };
+  const [x, y, z] = sides;
+  if (x + y <= z || x + z <= y || y + z <= x) return { kind: "unsupported", shape: "prismă", capability: "prismă: laturi care nu formează triunghi" };
+  const ss = (x + y + z) / 2;
+  const area = Math.sqrt(ss * (ss - x) * (ss - y) * (ss - z));
+  const sidesArr = [x, y, z];
+  const altMin = 2 * area / Math.max(...sidesArr); // înălțimea MICĂ (pe latura mare)
+  const altMax = 2 * area / Math.min(...sidesArr); // înălțimea MARE (pe latura mică)
+
+  // înălțimea prismei H: explicită SAU „= înălțimea (mare/mică) a bazei"
+  let H = boundValue(s, toks, /[îi]n[ăa]l[țt]im(ea)?\s+prismei|muchia\s+lateral|[îi]n[ăa]l[țt]imea\s+(are|este)/i);
+  if (H == null && /aceea[șs]i\s+lungime\s+ca\s+[șs]i\s+[îi]n[ăa]l[țt]im/i.test(s)) {
+    if (/mai\s+mare/i.test(s)) H = altMax; else if (/mai\s+mic/i.test(s)) H = altMin;
+  }
+
+  const perim = x + y + z;
+  const av = (re: RegExp) => re.test(s);
+  const asked: ComputedQuantity[] = [];
+  if (av(/volum/i) && H != null) asked.push({ label: "volum", value: area * H, latex: (area * H).toFixed(4) });
+  if (av(/aria\s+total/i) && H != null) asked.push({ label: "aria totală", value: 2 * area + perim * H, latex: (2 * area + perim * H).toFixed(4) });
+  if (av(/aria\s+lateral/i) && H != null) asked.push({ label: "aria laterală", value: perim * H, latex: (perim * H).toFixed(4) });
+  // secțiune prin muchia laterală + o înălțime a bazei = dreptunghi (înălțime_bază × H)
+  if (av(/sec[țt]iun/i) && H != null) {
+    const altUsed = /mai\s+mic/i.test(s) ? altMin : /mai\s+mare/i.test(s) ? altMax : null;
+    if (altUsed != null) asked.push({ label: "aria secțiunii", value: altUsed * H, latex: (altUsed * H).toFixed(4) });
+  }
+  if (asked.length === 0) return { kind: "unsupported", shape: "prismă", capability: "prismă: înălțime/cerere neacoperită (ex. unghi diagonală-bază)" };
+  return { kind: "solved", shape: "prismă", method: "cas_geometry_prism", asked, confident: true };
+}
+
+// ═══════════════════════════ SOLVER: TRUNCHI (FRUSTUM) REGULAT ═══════════════════════════
+/** Trunchi de piramidă regulat (pătrat sau triunghi echilateral): baze L,l + înălțime h → V, A_lat, A_tot. */
+function solveFrustum(s: string): SolveOutput {
+  if (/complet(a[țt]i|[ăa]m)\s+(spa[țt]iile|tabelul)|tabelul|\\begin\{array\}|\|---/i.test(s))
+    return { kind: "unsupported", shape: "trunchi", capability: "tabel multi-parametru (solver de tabel)" };
+  const tri = /triunghiular/i.test(s);
+  const quad = /patrulater/i.test(s);
+  if (!tri && !quad) return { kind: "unsupported", shape: "trunchi", capability: "trunchi: tip bază neidentificat" };
+  const toks = tokenize(s);
+  const bases = valuesAfter(s, toks, /laturi(le)?\s+bazelor|bazel(e|or)/i, 2);
+  let h = boundValue(s, toks, /[îi]n[ăa]l[țt]im/i);
+  if (!bases) return { kind: "unsupported", shape: "trunchi", capability: "trunchi: laturile bazelor lipsă" };
+  const L = Math.max(bases[0], bases[1]), l = Math.min(bases[0], bases[1]);
+
+  // apotema feței laterale a_t = √(h² + ((apotema_bază_mare − apotema_bază_mică))²)
+  const apB = tri ? L / (2 * Math.sqrt(3)) : L / 2;
+  const apb = tri ? l / (2 * Math.sqrt(3)) : l / 2;
+  // dacă h lipsește dar e dat a_t direct
+  const at0 = boundValue(s, toks, /apotem/i);
+  let a_t: number | null = at0;
+  if (a_t == null && h != null) a_t = Math.sqrt(h * h + (apB - apb) ** 2);
+  if (h == null && at0 != null) { const v = at0 * at0 - (apB - apb) ** 2; if (v > 0) h = Math.sqrt(v); }
+  if (h == null) return { kind: "unsupported", shape: "trunchi", capability: "trunchi: înălțime nederivabilă" };
+
+  const areaOf = (e: number) => tri ? Math.sqrt(3) / 4 * e * e : e * e;
+  const Abig = areaOf(L), Asmall = areaOf(l);
+  const V = h / 3 * (Abig + Asmall + Math.sqrt(Abig * Asmall));
+  const perimBig = tri ? 3 * L : 4 * L, perimSmall = tri ? 3 * l : 4 * l;
+  const Alat = (perimBig + perimSmall) / 2 * (a_t ?? Math.sqrt(h * h + (apB - apb) ** 2));
+  const Atot = Abig + Asmall + Alat;
+
+  const av = (re: RegExp) => re.test(s);
+  const asked: ComputedQuantity[] = [];
+  if (av(/volum/i)) asked.push({ label: "volum", value: V, latex: V.toFixed(4) });
+  if (av(/aria\s+lateral/i)) asked.push({ label: "aria laterală", value: Alat, latex: Alat.toFixed(4) });
+  if (av(/aria\s+total/i)) asked.push({ label: "aria totală", value: Atot, latex: Atot.toFixed(4) });
+  if (asked.length === 0) return { kind: "unsupported", shape: "trunchi", capability: "trunchi: cantitate cerută nerecunoscută (ex. diagonală/unghi)" };
+  return { kind: "solved", shape: "trunchi", method: "cas_geometry_frustum", asked, confident: true };
+}
+
 // ═══════════════════════════ ORCHESTRATOR ═══════════════════════════
 function nerez(shape: string | null, capability: string): GeoVerifyResult {
   return { verdict: "nerezolvabil-cas", method: "cas_geometry", shape, computed: [], computedLatex: null, note: capability, capability };
@@ -270,15 +490,15 @@ function decide(out: Extract<SolveOutput, { kind: "solved" }>, official: string)
   const pieces = splitOfficial(official);
   const numericPieces = pieces.filter((p) => evalLatexScalar(p) !== null);
   const results = asked.map((q) => ({ q, matched: matchesOfficial(pieces, q.value) }));
+  // VERIFICAT cere ca FIECARE cantitate cerută să fie reprodusă (nu „măcar una" —
+  // altfel o eroare de calcul pe o sub-cerere ar fi mascată). Negativ-controlul se bazează pe asta.
   const allMatched = results.length > 0 && results.every((r) => r.matched);
-  const anyMatched = results.some((r) => r.matched);
   const computedStr = asked.map((q) => `${q.label}=${q.latex}`).join(", ");
 
   if (allMatched) {
     return { verdict: "verificat", method, shape, computed: asked, computedLatex: (results.find((r) => r.matched)?.q ?? asked[0]).latex, note: `CAS reproduce oficialul: ${computedStr}`, capability: null };
   }
   if (confident && numericPieces.length > 0) {
-    if (anyMatched) return { verdict: "verificat", method, shape, computed: asked, computedLatex: (results.find((r) => r.matched)!.q).latex, note: `CAS reproduce (parțial) oficialul: ${computedStr}`, capability: null };
     return { verdict: "neconcordant", method, shape, computed: asked, computedLatex: asked[0].latex, note: `CAS dă ${computedStr}; oficial: ${pieces.join(" | ").slice(0, 240)}`, capability: null };
   }
   return { verdict: "nerezolvabil-cas", method, shape, computed: asked, computedLatex: asked[0]?.latex ?? null,
@@ -288,12 +508,12 @@ function decide(out: Extract<SolveOutput, { kind: "solved" }>, official: string)
 
 function dispatch(statement: string): SolveOutput {
   const s = statement;
-  if (/trunchi\s+de\s+(piramid|con)/i.test(s)) return { kind: "unsupported", shape: "trunchi", capability: "trunchi de piramidă/con (frustum) — operator de frustum neimplementat" };
+  if (/trunchi\s+de\s+(piramid|con)/i.test(s)) return solveFrustum(s);
   if (/tetraedr/i.test(s)) return solveRegularTetra(s);
   if (/\bcon\b|conul(ui)?|con\s+circular|con\s+echilater/i.test(s) && !/concept|continu|context/i.test(s)) return solveCone(s);
-  if (/piramid/i.test(s)) return { kind: "unsupported", shape: "piramidă", capability: "piramidă — solver neimplementat în FAZA A" };
-  if (/paralelipiped/i.test(s)) return { kind: "unsupported", shape: "paralelipiped", capability: "paralelipiped drept — solver neimplementat în FAZA A" };
-  if (/prism[ăa]/i.test(s)) return { kind: "unsupported", shape: "prismă", capability: "prismă — solver neimplementat în FAZA A" };
+  if (/paralelipiped/i.test(s)) return solveParallelepiped(s);
+  if (/prism/i.test(s)) return solvePrism(s);
+  if (/piramid/i.test(s)) return solveRegularPyramid(s);
   return { kind: "unsupported", shape: null, capability: "formă geometrică nerecunoscută" };
 }
 

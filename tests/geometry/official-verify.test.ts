@@ -99,11 +99,78 @@ describe('FAZA A — forme neacoperite → NEREZOLVABIL (nu fals NECONCORDANT)',
     );
     expect(r.verdict).toBe('nerezolvabil-cas');
   });
-  it('frustum (trunchi de piramidă) — operator lipsă', () => {
+  it('trunchi fără laturile bazelor → NEREZOLVABIL (date insuficiente)', () => {
     const r = verifyGeometry('Aflați volumul unui trunchi de piramidă patrulateră regulată...', 'F(x) = ...');
     expect(r.verdict).toBe('nerezolvabil-cas');
-    expect(r.capability).toMatch(/frustum/i);
+    expect(r.capability).toMatch(/trunchi|frustum|baze/i);
   });
+});
+
+// ════════════ ETAPA 80 — solvere extinse + POARTĂ ANTI-REGRES ════════════
+// Fiecare familie: ≥1 pozitiv (răspuns cunoscut → VERIFICAT) + 1 negativ-control
+// (răspuns greșit injectat → TREBUIE neconcordant; un solver care nu prinde
+// răspunsul greșit e respins).
+interface Caz { name: string; statement: string; official: string; expect: 'verificat' | 'neconcordant' | 'nerezolvabil-cas' }
+
+const PARALELIPIPED: Caz[] = [
+  { name: 'laturi 6,8 unghi 30, muchie 5 → A_tot=188', expect: 'verificat',
+    statement: 'Lungimile laturilor bazei unui paralelipiped drept sunt egale cu $6\\,cm$ și $8\\,cm$, iar măsura unghiului dintre ele este de $30°$. Aflați aria totală a paralelipipedului, știind că muchia laterală are lungimea de $5\\,cm$.',
+    official: 'A_t = 188\\,cm^2' },
+  { name: 'NEGATIV-CONTROL: același enunț, oficial greșit 200 → neconcordant', expect: 'neconcordant',
+    statement: 'Lungimile laturilor bazei unui paralelipiped drept sunt egale cu $6\\,cm$ și $8\\,cm$, iar măsura unghiului dintre ele este de $30°$. Aflați aria totală a paralelipipedului, știind că muchia laterală are lungimea de $5\\,cm$.',
+    official: 'A_t = 200\\,cm^2' },
+  { name: 'romb diagonale 6,8, diag-față 13 → A_tot=288', expect: 'verificat',
+    statement: 'Baza unui paralelipiped drept este un romb cu diagonalele de $6\\,cm$ și $8\\,cm$, iar diagonala feței laterale are lungimea $13\\,cm$. Aflați aria totală a paralelipipedului.',
+    official: 'A_t = 288\\,cm^2' },
+  { name: 'laturi 6,8, o diagonală bază 12, muchie 5 → diagonale 9,13', expect: 'verificat',
+    statement: 'Muchia laterală a unui paralelipiped drept are lungimea $5\\,cm$, laturile bazei au lungimile $6\\,cm$ și $8\\,cm$, iar una din diagonalele bazei are $12\\,cm$. Aflați lungimile diagonalelor paralelipipedului.',
+    official: 'd_1 = 9\\,cm,\\; d_2 = 13\\,cm' },
+  { name: 'unghi 30, fețe 6&12, bază 4 → V=12', expect: 'verificat',
+    statement: 'Baza unui paralelipiped drept este un paralelogram cu unghiul ascuțit de $30°$. Două fețe laterale ale paralelipipedului au ariile respectiv egale cu $6\\,cm^2$ și $12\\,cm^2$, iar aria bazei este egală cu $4\\,cm^2$. Aflați volumul paralelipipedului.',
+    official: 'V = 12\\,cm^3' },
+  { name: 'muchie 10, laturi 23,11, raport diag 2:3 → secțiuni 200,300', expect: 'verificat',
+    statement: 'Muchia laterală a unui paralelipiped drept are lungimea $10\\,cm$, laturile bazei au lungimile $23\\,cm$ și $11\\,cm$, iar raportul lungimilor diagonalelor bazei este de $2:3$. Aflați ariile secțiunilor diagonale ale paralelipipedului.',
+    official: 'A_1 = 200\\,cm^2,\\; A_2 = 300\\,cm^2' },
+];
+
+const PIRAMIDA: Caz[] = [
+  { name: 'tri regulată a=24, m=16 → h=8, A_lat=144√7', expect: 'verificat',
+    statement: 'O piramidă triunghiulară regulată are latura bazei de $24\\,cm$ și muchia laterală de $16\\,cm$. Calculați înălțimea și aria laterală.',
+    official: 'h = 8\\,cm;\\; A_{lat} = 144\\sqrt{7}\\,cm^2' },
+  { name: 'NEGATIV-CONTROL: h greșit 9 → neconcordant', expect: 'neconcordant',
+    statement: 'O piramidă triunghiulară regulată are latura bazei de $24\\,cm$ și muchia laterală de $16\\,cm$. Calculați înălțimea și aria laterală.',
+    official: 'h = 9\\,cm;\\; A_{lat} = 144\\sqrt{7}\\,cm^2' },
+];
+
+const PRISMA: Caz[] = [
+  { name: 'tri 4,5,7, muchie=înălț. mare → V=48', expect: 'verificat',
+    statement: 'Laturile bazei unei prisme triunghiulare drepte au lungimile $4\\,cm$, $5\\,cm$, $7\\,cm$, iar muchia laterală a prismei are aceeași lungime ca și înălțimea mai mare a triunghiului din bază. Să se afle volumul prismei.',
+    official: 'V=48\\,cm^3' },
+  { name: 'NEGATIV-CONTROL: V greșit 50 → neconcordant', expect: 'neconcordant',
+    statement: 'Laturile bazei unei prisme triunghiulare drepte au lungimile $4\\,cm$, $5\\,cm$, $7\\,cm$, iar muchia laterală a prismei are aceeași lungime ca și înălțimea mai mare a triunghiului din bază. Să se afle volumul prismei.',
+    official: 'V=50\\,cm^3' },
+];
+
+const FRUSTUM: Caz[] = [
+  { name: 'patrulater L=6,l=4,h=3 → V=76', expect: 'verificat',
+    statement: 'Aflați volumul unui trunchi de piramidă patrulateră regulată cu laturile bazelor de $6\\,cm$ și $4\\,cm$ și înălțimea de $3\\,cm$.',
+    official: 'V = 76\\,cm^3' },
+  { name: 'NEGATIV-CONTROL: V greșit 80 → neconcordant', expect: 'neconcordant',
+    statement: 'Aflați volumul unui trunchi de piramidă patrulateră regulată cu laturile bazelor de $6\\,cm$ și $4\\,cm$ și înălțimea de $3\\,cm$.',
+    official: 'V = 80\\,cm^3' },
+];
+
+describe('ETAPA 80 — paralelipiped drept', () => {
+  for (const c of PARALELIPIPED) it(c.name, () => { const r = verifyGeometry(c.statement, c.official); expect(r.verdict, r.note).toBe(c.expect); });
+});
+describe('ETAPA 80 — piramidă regulată', () => {
+  for (const c of PIRAMIDA) it(c.name, () => { const r = verifyGeometry(c.statement, c.official); expect(r.verdict, r.note).toBe(c.expect); });
+});
+describe('ETAPA 80 — prismă dreaptă', () => {
+  for (const c of PRISMA) it(c.name, () => { const r = verifyGeometry(c.statement, c.official); expect(r.verdict, r.note).toBe(c.expect); });
+});
+describe('ETAPA 80 — trunchi (frustum) regulat', () => {
+  for (const c of FRUSTUM) it(c.name, () => { const r = verifyGeometry(c.statement, c.official); expect(r.verdict, r.note).toBe(c.expect); });
 });
 
 describe('FAZA A — răspuns oficial mis-legat (numeric, dar al altei probleme) → NECONCORDANT', () => {
