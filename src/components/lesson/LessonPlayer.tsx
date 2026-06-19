@@ -25,8 +25,12 @@ import { playFeedback } from "@/lib/motion/feedback";
 import { MASTERY_THRESHOLD } from "@/lib/progres/data";
 import { playSound, preloadSounds, soundsEnabled, setSoundsEnabled } from "@/lib/sound/sounds";
 import { markValueMoment } from "@/lib/pwa/value-moments";
-import type { LessonBlockClient } from "@/lib/lesson/blocks";
+import type { LessonBlockClient, VocabLevel } from "@/lib/lesson/blocks";
+import { masteryToRegister, activeRegister, resolveProse, REGISTER_LABEL } from "@/lib/lesson/vocab";
 import { BreathingOrb } from "@/components/motion/BreathingOrb";
+
+const VOCAB_KEY = "lesson-vocab-v1";
+const REGISTERS: VocabLevel[] = ["comun", "punte", "barem"];
 
 interface Props {
   conceptSlug: string;
@@ -86,6 +90,19 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
   useEffect(() => {
     preloadSounds();
   }, []);
+  // ETAPA 81 FAZA C: registrul de vocabular. Default = nivelul din mastery (C1);
+  // comutatorul Simplu↔Riguros e override manual persistat în localStorage (C3).
+  const [masteryRegister, setMasteryRegister] = useState<VocabLevel>("punte");
+  const [vocabOverride, setVocabOverride] = useState<VocabLevel | null>(() => {
+    if (typeof window === "undefined") return null;
+    const v = localStorage.getItem(VOCAB_KEY);
+    return v === "comun" || v === "punte" || v === "barem" ? v : null;
+  });
+  const register = activeRegister(masteryRegister, vocabOverride);
+  const setRegister = (r: VocabLevel) => {
+    setVocabOverride(r);
+    try { localStorage.setItem(VOCAB_KEY, r); } catch { /* preferința rămâne pe sesiune */ }
+  };
   // ETAPA 77 A1: FOCUS MODE — cât player-ul e montat, sidebar-urile dispar
   // (CSS pe body[data-focus-lesson]); ieșirile rămân: „ieși în chat" + harta
   useEffect(() => {
@@ -110,7 +127,11 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
   useEffect(() => {
     fetch(`/api/lesson/ritual?concept=${encodeURIComponent(conceptSlug)}`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (d) initialMasteryRef.current = d.mastery; })
+      .then((d) => {
+        if (!d) return;
+        initialMasteryRef.current = d.mastery;
+        if (typeof d.mastery === "number") setMasteryRegister(masteryToRegister(d.mastery));
+      })
       .catch(() => { /* delta devine necunoscută, nu blocăm lecția */ });
   }, [conceptSlug]);
   useEffect(() => {
@@ -468,6 +489,20 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
             )}
           </span>
           <span className="flex items-center gap-3">
+            {/* ETAPA 81 C3: comutatorul de registru Simplu↔Riguros */}
+            <span className="inline-flex rounded-full border border-border overflow-hidden" role="group" aria-label="Registru de limbaj">
+              {REGISTERS.map((r) => (
+                <button
+                  key={r}
+                  onClick={() => setRegister(r)}
+                  aria-pressed={register === r}
+                  className={`px-1.5 py-0.5 text-[10px] font-medium ${register === r ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}
+                  title={`Limbaj: ${REGISTER_LABEL[r]}`}
+                >
+                  {REGISTER_LABEL[r]}
+                </button>
+              ))}
+            </span>
             {/* ETAPA 70 F: toggle-ul de sunete, vizibil în player */}
             <button
               onClick={() => { const next = !soundOn; setSoundOn(next); setSoundsEnabled(next); }}
@@ -512,6 +547,7 @@ export function LessonPlayer({ conceptSlug, streak, domainKey, onFallback, onExi
               quizState={currentQuizState}
               pendingQuiz={pendingQuiz}
               messageId={messageId}
+              register={register}
               onAnswer={answerQuiz}
               onRedeem={submitRedemption}
               onContinue={advance}
@@ -581,6 +617,7 @@ function BlockCard({
   quizState,
   pendingQuiz,
   messageId,
+  register,
   onAnswer,
   onRedeem,
   onContinue,
@@ -589,6 +626,7 @@ function BlockCard({
   quizState: QuizState;
   pendingQuiz: boolean;
   messageId: string | null;
+  register: VocabLevel;
   onAnswer: (quizId: string, letter: string) => void;
   onRedeem: (quizId: string, exerciseId: string, answer: string) => void;
   onContinue: () => void;
@@ -598,7 +636,7 @@ function BlockCard({
       return (
         <div className="glass-2 rounded-3xl p-8 space-y-4">
           <h1 className="text-2xl font-bold"><MathText text={block.titlu} /></h1>
-          <p className="text-[17px] leading-8"><MathText text={block.ideea_mare} /></p>
+          <p className="text-[17px] leading-8"><MathText text={resolveProse(block.ideea_mare, block.variante, register)} /></p>
         </div>
       );
     case "step":
@@ -607,7 +645,7 @@ function BlockCard({
           <p className="text-xs font-semibold text-primary uppercase tracking-wide">
             <MathText text={block.titlu_scurt} />
           </p>
-          <p className="text-[17px] leading-8"><MathText text={block.corp} /></p>
+          <p className="text-[17px] leading-8"><MathText text={resolveProse(block.corp, block.variante, register)} /></p>
           {block.formula && (
             <div className="rounded-xl bg-muted/60 px-4 py-3 text-center overflow-x-auto">
               <MathText text={`$$${block.formula}$$`} />
