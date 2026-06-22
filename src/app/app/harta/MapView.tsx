@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { MathText } from "@/components/MathText";
 import { MILESTONE_LABELS } from "@/lib/map/milestones";
+import { graphTotalNodes, nodesForGrade, gradesWithContent } from "@/lib/map/per-class";
 import type { KnowledgeMap, MapDomain, MapGradeSlice, MapNode } from "@/lib/map/state";
 
 type Lens = "bac" | "tinta" | "test";
@@ -70,6 +71,9 @@ const STARS = starField(76, 110);
 
 export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | null }) {
   const router = useRouter();
+  // ETAPA 82 B3: "Harta completă" — pornește mereu pe clasă (implicit false).
+  const [showAll, setShowAll] = useState(false);
+
   const [domainKey, setDomainKey] = useState(() => {
     if (tinta) {
       for (const d of map.domains) {
@@ -78,15 +82,11 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
         }
       }
     }
-    return map.domains[0]?.key ?? "i";
+    // ETAPA 82 B1: pornim pe un domeniu care ARE clasa elevului — nu pe domains[0]
+    // (adesea doar clasa 12), altfel un elev de clasa 10 ar ateriza pe clasa 12.
+    const withGrade = map.domains.find((d) => d.grades[String(map.studentGrade)]);
+    return withGrade?.key ?? map.domains[0]?.key ?? "i";
   });
-  const domain = map.domains.find((d) => d.key === domainKey) ?? map.domains[0];
-
-  // C1: clasa activă — default clasa elevului, altfel cea mai mare disponibilă
-  const gradesAvailable = useMemo(
-    () => Object.keys(domain?.grades ?? {}).map(Number).sort((a, b) => a - b),
-    [domain]
-  );
   const [gradeKey, setGradeKey] = useState<number>(() => {
     if (tinta) {
       for (const d of map.domains) {
@@ -97,10 +97,37 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
     }
     return map.studentGrade;
   });
-  const effectiveGrade = gradesAvailable.includes(gradeKey)
-    ? gradeKey
-    : gradesAvailable[gradesAvailable.length - 1];
+
+  // ETAPA 82 B1+B3: implicit afișăm DOAR domeniile cu clasa aleasă; "Harta
+  // completă" arată ansamblul (toate domeniile).
+  const visibleDomains = useMemo(
+    () => (showAll ? map.domains : map.domains.filter((d) => d.grades[String(gradeKey)])),
+    [showAll, map.domains, gradeKey]
+  );
+  const gradesContent = useMemo(() => new Set(gradesWithContent(map)), [map]);
+
+  // Domeniul activ se rezolvă mereu la unul VIZIBIL: dacă cel ales nu are clasa
+  // curentă, cădem pe primul vizibil (fără ecran gol înșelător).
+  const domain =
+    visibleDomains.find((d) => d.key === domainKey) ??
+    visibleDomains[0] ??
+    map.domains.find((d) => d.key === domainKey) ??
+    map.domains[0];
+
+  const gradesAvailable = useMemo(
+    () => Object.keys(domain?.grades ?? {}).map(Number).sort((a, b) => a - b),
+    [domain]
+  );
+  // ETAPA 82 B1: în per-clasă NU urcăm clasa automat (defectul: clasa 10 ajungea
+  // pe clasa 12). În "Harta completă" păstrăm clamp-ul ca să nu fie domenii goale.
+  const effectiveGrade = showAll
+    ? (gradesAvailable.includes(gradeKey) ? gradeKey : gradesAvailable[gradesAvailable.length - 1] ?? gradeKey)
+    : gradeKey;
   const slice: MapGradeSlice | undefined = domain?.grades[String(effectiveGrade)];
+
+  // dovada numărată (B POARTĂ): câte teme vede pe clasă vs tot graful
+  const gradeShown = useMemo(() => nodesForGrade(map, gradeKey), [map, gradeKey]);
+  const graphTotal = useMemo(() => graphTotalNodes(map), [map]);
 
   const [lens, setLens] = useState<Lens>("bac");
   const [selected, setSelected] = useState<MapNode | null>(null);
@@ -217,7 +244,7 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
   useEffect(() => {
     if (firstViewRef.current) return; // prima montare e gestionată de B3/F1
     fitView(true);
-  }, [domainKey, effectiveGrade, fitView]);
+  }, [domain?.key, effectiveGrade, showAll, fitView]);
 
   // B3 + F1: la deschidere — pan automat blând spre ținta lecției sau spre
   // nodul recomandat (O dată, apoi utilizatorul e liber)
@@ -316,34 +343,75 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
     [domainKey, effectiveGrade, map.domains, panToNode]
   );
 
-  if (!domain || !slice) return null;
+  // ETAPA 82 B: nu mai întoarcem null când felia lipsește — clasa elevului poate
+  // să nu aibă încă teme pe acest domeniu; afișăm un empty-state onest + scăparea
+  // spre "Harta completă", păstrând chrome-ul (pills, comutator).
+  if (!domain) return null;
 
   const recommendedId = map.quest.find((q) => q.kind === "recomandat")?.id ?? null;
 
   return (
     <div className="flex flex-col h-full flex-1 min-w-0">
-      {/* lentilele + selectorul de clasă (C1) */}
-      <div className="px-4 pt-3 pb-2 flex flex-wrap items-center gap-2 shrink-0">
+      {/* lentilele */}
+      <div className="px-4 pt-3 pb-1 flex flex-wrap items-center gap-2 shrink-0">
         <h1 className="text-lg font-bold mr-2">Harta cunoașterii</h1>
         <LensChip active={lens === "bac"} onClick={() => setLens("bac")}>BAC</LensChip>
         <LensChip active={lens === "tinta"} onClick={() => setLens("tinta")} disabled={map.targetGrade == null}>
           Nota-țintă{map.targetGrade != null ? ` ${map.targetGrade}` : ""}
         </LensChip>
         <LensChip active={lens === "test"} onClick={() => setLens("test")}>Test mâine</LensChip>
+      </div>
+
+      {/* ETAPA 82 B2+B3: selectorul de clasă (default = clasa elevului) + "Harta completă" */}
+      <div className="px-4 pb-2 flex flex-wrap items-center gap-2 shrink-0">
+        {ALL_GRADES.map((g) => {
+          const enabled = gradesContent.has(g) || g === map.studentGrade;
+          const active = !showAll && g === gradeKey;
+          return (
+            <button
+              key={g}
+              onClick={() => {
+                setGradeKey(g);
+                setShowAll(false);
+                setSelected(null);
+                // dacă domeniul curent nu are clasa g, sari pe primul care o are
+                const here = map.domains.find((d) => d.key === domainKey)?.grades[String(g)];
+                if (!here) {
+                  const k = map.domains.find((d) => d.grades[String(g)])?.key;
+                  if (k) setDomainKey(k);
+                }
+              }}
+              disabled={!enabled}
+              title={
+                g === map.studentGrade
+                  ? `Clasa ta (${g})`
+                  : enabled
+                    ? `Clasa ${g}`
+                    : `Clasa ${g}: încă fără teme în graf`
+              }
+              className={`rounded-full w-9 h-9 text-xs font-bold transition-colors disabled:opacity-25 disabled:cursor-not-allowed ${
+                active ? "bg-primary text-primary-foreground" : "glass-1 text-muted-foreground hover:text-foreground"
+              } ${g === map.studentGrade && !active ? "ring-1 ring-primary/40" : ""}`}
+            >
+              {g}
+            </button>
+          );
+        })}
         <span className="mx-1 h-5 w-px bg-border" aria-hidden />
-        {ALL_GRADES.map((g) => (
-          <button
-            key={g}
-            onClick={() => { setGradeKey(g); setSelected(null); }}
-            disabled={!gradesAvailable.includes(g)}
-            title={gradesAvailable.includes(g) ? `Clasa ${g}` : `Clasa ${g}: fără concepte în graf pe acest domeniu`}
-            className={`rounded-full w-9 h-9 text-xs font-bold transition-colors disabled:opacity-25 disabled:cursor-not-allowed ${
-              g === effectiveGrade ? "bg-primary text-primary-foreground" : "glass-1 text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {g}
-          </button>
-        ))}
+        <button
+          onClick={() => { setShowAll((v) => !v); setSelected(null); }}
+          title={showAll ? "Arată doar clasa ta" : "Arată tot graful (toate clasele)"}
+          className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+            showAll ? "bg-primary text-primary-foreground" : "glass-1 text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          {showAll ? "Doar clasa mea" : "Harta completă"}
+        </button>
+        <span className="text-[11px] text-muted-foreground ml-auto">
+          {showAll
+            ? `Harta completă · ${graphTotal} teme`
+            : `Clasa ${gradeKey}: ${gradeShown} ${gradeShown === 1 ? "temă" : "teme"} · ${graphTotal} în tot graful`}
+        </span>
       </div>
 
       {/* bannerul de focus activ */}
@@ -367,10 +435,11 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
         </div>
       )}
 
-      {/* tab-urile domeniilor, colorate, cu progres */}
+      {/* tab-urile domeniilor (ETAPA 82 B1: doar cele cu clasa aleasă, dacă nu e Harta completă) */}
       <div className="px-4 pb-2 flex gap-1.5 overflow-x-auto shrink-0">
-        {map.domains.map((d) => {
-          const slices = Object.values(d.grades);
+        {visibleDomains.map((d) => {
+          // în per-clasă numărăm doar felia clasei alese; în completă, tot domeniul
+          const slices = showAll ? Object.values(d.grades) : [d.grades[String(gradeKey)]].filter(Boolean);
           const total = slices.reduce((a, g) => a + g.nodes.length, 0);
           const done = slices.reduce((a, g) => a + g.counts.stapanit, 0);
           return (
@@ -379,7 +448,7 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
               onClick={() => { setDomainKey(d.key); setSelected(null); }}
               className="shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold border-2 transition-colors"
               style={
-                d.key === domainKey
+                d.key === domain.key
                   ? { background: `var(--domain-${d.key})`, borderColor: `var(--domain-${d.key})`, color: "var(--primary-foreground)" }
                   : { background: `var(--domain-${d.key}-bg)`, borderColor: "transparent", color: `var(--domain-${d.key}-fg)` }
               }
@@ -402,21 +471,42 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
         onWheel={onWheel}
       >
         {/* A1+A3: cerul — nebuloasă cross-fade + zgomot + stele + sigiliu */}
-        <SkyBackdrop domainKey={domainKey} />
+        <SkyBackdrop domainKey={domain.key} />
 
-        <svg className="w-full h-full relative" role="img" aria-label={`Harta conceptelor: ${domain.label}, clasa ${effectiveGrade}`}>
-          <g ref={gRef}>
-            <DomainGraph
-              domainKey={domain.key}
-              slice={slice}
-              nodeOpacity={nodeOpacity}
-              selectedId={selected?.id ?? null}
-              recommendedId={recommendedId}
-              questIds={map.quest.map((q) => q.id)}
-              onSelect={setSelected}
-            />
-          </g>
-        </svg>
+        {slice ? (
+          <svg className="w-full h-full relative" role="img" aria-label={`Harta conceptelor: ${domain.label}, clasa ${effectiveGrade}`}>
+            <g ref={gRef}>
+              <DomainGraph
+                domainKey={domain.key}
+                slice={slice}
+                nodeOpacity={nodeOpacity}
+                selectedId={selected?.id ?? null}
+                recommendedId={recommendedId}
+                questIds={map.quest.map((q) => q.id)}
+                onSelect={setSelected}
+              />
+            </g>
+          </svg>
+        ) : (
+          // ETAPA 82 B1: clasa elevului încă fără teme pe acest domeniu/graf —
+          // empty-state onest + scăparea spre Harta completă (nu ecran gol).
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-6 text-center">
+            <p className="text-4xl" aria-hidden>🌌</p>
+            <p className="font-semibold">
+              Pentru clasa {gradeKey} încă n-avem teme marcate în harta ta.
+            </p>
+            <p className="text-sm text-muted-foreground max-w-xs">
+              Conținutul tău se construiește. Între timp poți explora harta completă
+              sau o altă clasă.
+            </p>
+            <button
+              onClick={() => { setShowAll(true); setSelected(null); }}
+              className="rounded-xl bg-primary text-primary-foreground px-4 py-2 text-sm font-semibold"
+            >
+              Vezi harta completă →
+            </button>
+          </div>
+        )}
 
         {/* C2: breadcrumb-ul de întoarcere după portal */}
         {crumb && (
