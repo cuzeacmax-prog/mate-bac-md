@@ -381,6 +381,8 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
           return (
             <button
               key={g}
+              data-testid="grade-pill"
+              data-grade={g}
               onClick={() => {
                 setGradeKey(g);
                 setShowAll(false);
@@ -410,6 +412,7 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
         })}
         <span className="mx-1 h-5 w-px bg-border" aria-hidden />
         <button
+          data-testid="show-all-toggle"
           onClick={() => { setShowAll((v) => !v); setSelected(null); }}
           title={showAll ? "Arată doar clasa ta" : "Arată tot graful (toate clasele)"}
           className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
