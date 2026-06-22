@@ -44,11 +44,11 @@ export default function AuthPage() {
         transition={{ duration: 0.4 }}
       >
         <div className="space-y-2">
-          <p className="text-sm font-medium text-primary">Pasul 3 din 3</p>
+          <p className="text-sm font-medium text-primary">Aproape gata</p>
           <h2 className="text-2xl font-bold">Salvează progresul tău</h2>
           <p className="text-muted-foreground text-sm leading-relaxed">
             Creează un cont gratuit în 5 secunde.<br />
-            Predicția BAC și planul tău rămân salvate.
+            Progresul și planul tău rămân salvate.
           </p>
         </div>
 

@@ -32,6 +32,7 @@ export default function TrialPage() {
         body: JSON.stringify({
           gradeLevel: store.gradeLevel,
           targetBacScore: store.targetBacScore,
+          goal: store.goal,
           activatedTrial,
         }),
       });
@@ -42,6 +43,7 @@ export default function TrialPage() {
     track(activatedTrial ? Events.TRIAL_ACTIVATED : Events.TRIAL_SKIPPED, {
       grade_level: store.gradeLevel,
       target: store.targetBacScore,
+      goal: store.goal,
       prediction: store.initialBacPrediction,
     });
 

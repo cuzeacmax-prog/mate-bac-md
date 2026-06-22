@@ -7,8 +7,8 @@ import { Button } from '@/components/ui/button';
 import { track, Events } from '@/lib/analytics/posthog-client';
 
 const HIGHLIGHTS = [
-  { icon: Target, text: 'Predicție notă BAC personalizată' },
-  { icon: TrendingUp, text: 'Plan de studiu adaptat nivelului tău' },
+  { icon: Target, text: 'Vezi exact unde ești și ce-ți lipsește' },
+  { icon: TrendingUp, text: 'Plan de studiu adaptat clasei și obiectivului tău' },
   { icon: Clock, text: '8-15 minute pe zi pentru progres real' },
 ];
 
@@ -17,7 +17,7 @@ export default function WelcomePage() {
 
   function handleStart() {
     track(Events.ONBOARDING_STARTED);
-    router.push('/onboarding/goal');
+    router.push('/onboarding/grade');
   }
 
   return (
@@ -40,8 +40,8 @@ export default function WelcomePage() {
             <span className="text-primary">Profesor Maxim</span>
           </h1>
           <p className="text-muted-foreground text-base leading-relaxed">
-            Tutorul AI specializat 100% pe BAC Matematică Moldova.
-            În 3 minute îți facem o predicție personalizată a notei tale.
+            Tutorul AI de matematică pentru liceenii din Moldova.
+            În 3 minute aflăm clasa, obiectivul tău și unde te afli acum.
           </p>
         </div>
 

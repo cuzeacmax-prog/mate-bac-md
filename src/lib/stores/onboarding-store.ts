@@ -1,11 +1,14 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { DiagnosticAttempt } from '@/lib/diagnostic/adaptive';
+import type { Goal } from '@/lib/profile/goal';
 
 interface OnboardingState {
   // Pre-auth data
   targetBacScore: number | null;
-  gradeLevel: 10 | 11 | 12 | null;
+  gradeLevel: 9 | 10 | 11 | 12 | null;
+  // ETAPA 82: obiectivul (clasă vs BAC vs explorare) — ales înainte de diagnostic
+  goal: Goal | null;
 
   // Post-auth diagnostic
   currentStep: string | null;
@@ -19,7 +22,8 @@ interface OnboardingState {
 
   // Actions
   setTargetScore: (score: number) => void;
-  setGradeLevel: (grade: 10 | 11 | 12) => void;
+  setGradeLevel: (grade: 9 | 10 | 11 | 12) => void;
+  setGoal: (goal: Goal) => void;
   setCurrentStep: (step: string) => void;
   setDiagnosticSessionId: (id: string) => void;
   startDiagnosticTimer: () => void;
@@ -32,6 +36,7 @@ interface OnboardingState {
 const initialState = {
   targetBacScore: null,
   gradeLevel: null,
+  goal: null,
   currentStep: null,
   diagnosticSessionId: null,
   diagnosticHistory: [],
@@ -47,6 +52,7 @@ export const useOnboardingStore = create<OnboardingState>()(
 
       setTargetScore: (score) => set({ targetBacScore: score }),
       setGradeLevel: (grade) => set({ gradeLevel: grade }),
+      setGoal: (goal) => set({ goal }),
       setCurrentStep: (step) => set({ currentStep: step }),
       setDiagnosticSessionId: (id) => set({ diagnosticSessionId: id }),
       startDiagnosticTimer: () => set({ diagnosticStartedAt: Date.now() }),

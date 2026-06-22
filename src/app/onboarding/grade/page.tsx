@@ -6,6 +6,7 @@ import { useOnboardingStore } from '@/lib/stores/onboarding-store';
 import { track, Events } from '@/lib/analytics/posthog-client';
 
 const GRADES = [
+  { grade: 9 as const, label: 'Clasa a 9-a', topics: 'Numere reale, ecuații, funcții, geometrie plană' },
   { grade: 10 as const, label: 'Clasa a 10-a', topics: 'Ecuații, funcții, logaritmi, trigonometrie' },
   { grade: 11 as const, label: 'Clasa a 11-a', topics: 'Limite, derivate, șiruri, polinoame' },
   { grade: 12 as const, label: 'Clasa a 12-a', topics: 'Integrale, geometrie 3D, combinatorică' },
@@ -15,10 +16,10 @@ export default function GradePage() {
   const router = useRouter();
   const setGradeLevel = useOnboardingStore((s) => s.setGradeLevel);
 
-  function handleSelect(grade: 10 | 11 | 12) {
+  function handleSelect(grade: 9 | 10 | 11 | 12) {
     setGradeLevel(grade);
     track(Events.ONBOARDING_GRADE_SELECTED, { grade_level: grade });
-    router.push('/onboarding/auth');
+    router.push('/onboarding/obiectiv');
   }
 
   return (
@@ -30,10 +31,10 @@ export default function GradePage() {
         transition={{ duration: 0.4 }}
       >
         <div className="text-center space-y-2">
-          <p className="text-sm font-medium text-primary">Pasul 2 din 3</p>
+          <p className="text-sm font-medium text-primary">Pasul 1 din 3</p>
           <h2 className="text-2xl font-bold">În ce clasă ești?</h2>
           <p className="text-muted-foreground text-sm">
-            Testul se adaptează la programa ta
+            Harta și planul tău se potrivesc clasei tale
           </p>
         </div>
 

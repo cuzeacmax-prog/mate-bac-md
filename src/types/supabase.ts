@@ -2579,6 +2579,7 @@ export type Database = {
           current_bac_prediction: number | null
           email: string | null
           full_name: string | null
+          goal: string | null
           grade_level: number | null
           id: string
           initial_bac_prediction: number | null
@@ -2615,6 +2616,7 @@ export type Database = {
           current_bac_prediction?: number | null
           email?: string | null
           full_name?: string | null
+          goal?: string | null
           grade_level?: number | null
           id: string
           initial_bac_prediction?: number | null
@@ -2651,6 +2653,7 @@ export type Database = {
           current_bac_prediction?: number | null
           email?: string | null
           full_name?: string | null
+          goal?: string | null
           grade_level?: number | null
           id?: string
           initial_bac_prediction?: number | null

@@ -3,6 +3,7 @@ import "katex/dist/katex.min.css"; // ETAPA 66 E2: math doar pe rutele care o ra
 
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
+import { isGoal } from "@/lib/profile/goal";
 import { chisinauToday, computeStreak } from "@/lib/daily/daily";
 import { Header } from "@/components/layout/header";
 import { Sidebar } from "@/components/layout/sidebar";
@@ -31,7 +32,7 @@ export default async function AppLayout({
 
   // ETAPA 76 E (cauza #2 din baseline: TTFB — lanț de query-uri secvențiale):
   // cele 3 interogări sunt independente → un singur round-trip logic
-  const [profileRes, rateRes, streakRes] = await Promise.all([
+  const [profileRes, rateRes, streakRes, goalRes] = await Promise.all([
     supabase
       .from("profiles")
       .select("full_name, email, subscription_status")
@@ -48,7 +49,17 @@ export default async function AppLayout({
       console.error("[app/layout] streak failed:", err instanceof Error ? err.message : err);
       return 0;
     }),
+    // ETAPA 82 A3: obiectivul confirmat? (gate de o-singură-dată)
+    supabase.from("user_profiles").select("goal").eq("id", user.id).maybeSingle(),
   ]);
+
+  // ETAPA 82 A3: elevii (existenți sau noi) fără obiectiv confirmat trec o
+  // singură dată prin mini-pasul de confirmare a clasei + obiectivului —
+  // nu-i aruncăm în aplicație/diagnostic fără el. Default sigur = note_clasa.
+  const goalRaw = (goalRes.data as { goal: string | null } | null)?.goal ?? null;
+  if (!isGoal(goalRaw)) {
+    redirect("/onboarding/confirma");
+  }
   const profile = profileRes.data as {
     full_name: string | null;
     email: string | null;

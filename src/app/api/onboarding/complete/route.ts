@@ -1,13 +1,17 @@
 import { createClient } from '@/lib/supabase/server';
 import { createServiceClient } from '@/lib/supabase/service';
 import { startTrial } from '@/lib/payments/state';
+import { resolveGoal } from '@/lib/profile/goal';
 
 export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { gradeLevel, targetBacScore, activatedTrial } = await req.json();
+  const { gradeLevel, targetBacScore, goal, activatedTrial } = await req.json();
+  // ETAPA 82: un elev care termină onboardingul are mereu un obiectiv valid
+  // (default sigur note_clasa dacă lipsește — niciodată presupunerea BAC).
+  const resolvedGoal = resolveGoal(goal);
 
   // ETAPA 59: predicția și slăbiciunile vin din diagnostic_sessions (calculate
   // pe server la submit), NU din body-ul clientului.
@@ -29,6 +33,7 @@ export async function POST(req: Request) {
     .update({
       grade_level: gradeLevel ?? null,
       target_bac_score: targetBacScore ?? null,
+      goal: resolvedGoal,
       initial_bac_prediction: initialBacPrediction,
       current_bac_prediction: initialBacPrediction,
       bac_prediction_updated_at: new Date().toISOString(),

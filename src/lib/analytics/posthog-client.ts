@@ -77,6 +77,8 @@ export const Events = {
   ONBOARDING_STARTED: 'onboarding_started',
   ONBOARDING_GOAL_SELECTED: 'onboarding_goal_selected',
   ONBOARDING_GRADE_SELECTED: 'onboarding_grade_selected',
+  ONBOARDING_OBJECTIVE_SELECTED: 'onboarding_objective_selected',
+  PROFILE_OBJECTIVE_CONFIRMED: 'profile_objective_confirmed',
   SIGNUP_COMPLETED: 'signup_completed',
   DIAGNOSTIC_STARTED: 'diagnostic_started',
   DIAGNOSTIC_COMPLETED: 'diagnostic_completed',

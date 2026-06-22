@@ -1,5 +1,7 @@
 // ETAPA 10 — Types pentru noul schema
 
+import type { Goal } from '@/lib/profile/goal';
+
 export type SubscriptionTier = 'free' | 'trial' | 'premium' | 'pro' | 'family';
 export type SessionType = 'daily_challenge' | 'free_question' | 'mock_bac' | 'diagnostic' | 'practice';
 export type SubscriptionEventType = 'started' | 'renewed' | 'upgraded' | 'downgraded' | 'cancelled' | 'expired' | 'refunded';
@@ -10,7 +12,9 @@ export interface UserProfileExtended {
 
   // Onboarding
   target_bac_score: number | null;
-  grade_level: 10 | 11 | 12 | null;
+  grade_level: 9 | 10 | 11 | 12 | null;
+  // ETAPA 82: obiectivul elevului (BAC ca mod, nu cadru). NULL = neconfirmat.
+  goal: Goal | null;
   onboarding_completed: boolean;
   onboarding_completed_at: Date | null;
 

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useOnboardingStore } from '@/lib/stores/onboarding-store';
 import { track, Events } from '@/lib/analytics/posthog-client';
+import { resolveGoal, targetQuestion } from '@/lib/profile/goal';
 
 // ETAPA 73: carduri glass cu accentul de domeniu pe hover (tokens, nu palete ad-hoc)
 const GOALS = [
@@ -16,11 +17,14 @@ const GOALS = [
 export default function GoalPage() {
   const router = useRouter();
   const setTargetScore = useOnboardingStore((s) => s.setTargetScore);
+  // ETAPA 82: întrebarea se reformulează după obiectiv (BAC vs notă la clasă).
+  const goal = useOnboardingStore((s) => resolveGoal(s.goal));
+  const question = targetQuestion(goal) || 'Ce notă vrei să iei?';
 
   function handleSelect(score: number) {
     setTargetScore(score);
-    track(Events.ONBOARDING_GOAL_SELECTED, { target_score: score });
-    router.push('/onboarding/grade');
+    track(Events.ONBOARDING_GOAL_SELECTED, { target_score: score, goal });
+    router.push('/onboarding/auth');
   }
 
   return (
@@ -32,10 +36,10 @@ export default function GoalPage() {
         transition={{ duration: 0.4 }}
       >
         <div className="text-center space-y-2">
-          <p className="text-sm font-medium text-primary">Pasul 1 din 3</p>
-          <h2 className="text-2xl font-bold">Care este obiectivul tău?</h2>
+          <p className="text-sm font-medium text-primary">Pasul 3 din 3</p>
+          <h2 className="text-2xl font-bold">Care este nota ta țintă?</h2>
           <p className="text-muted-foreground text-sm">
-            Ce notă vrei să iei la BAC Matematică?
+            {question}
           </p>
         </div>
 
