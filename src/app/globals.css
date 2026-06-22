@@ -56,6 +56,12 @@
   --color-success-foreground: var(--success-foreground);
   --color-danger-bg: var(--danger-bg);
   --color-danger-foreground: var(--danger-foreground);
+  /* ETAPA 82 D: paleta albastru-negru ca utilitare Tailwind (bg-bg-deep etc.).
+   * Ancorare pentru ETAPA 83 — aici doar definite + probate pe hartă+onboarding. */
+  --color-bg-deep: var(--bg-deep);
+  --color-bg-night: var(--bg-night);
+  --color-bg-black: var(--bg-black);
+  --color-text-on-deep: var(--text-on-deep);
 }
 
 /*
@@ -105,6 +111,13 @@
   /* REGULA SACRĂ: matematica aproape-albă, pe suprafață SOLIDĂ */
   --math-fg: oklch(0.97 0.005 260);
   --math-surface: oklch(0.14 0.02 260);
+  /* ETAPA 82 D: paleta albastru-negru cerută de owner (ancorare pentru ETAPA 83).
+   * Definite ca VARIABILE; probate pe fundalul hărții (--bg-deep) și onboarding
+   * (--bg-night). Text deschis --text-on-deep pentru contrast AA pe ele. */
+  --bg-deep: #001D51;
+  --bg-night: #131936;
+  --bg-black: #05060c;
+  --text-on-deep: oklch(0.97 0.005 260);
   /* glass: 3 niveluri de elevație (folosite prin clasele .glass-1/2/3) */
   --glass-1: rgba(255, 255, 255, 0.04);
   --glass-1-border: rgba(255, 255, 255, 0.08);

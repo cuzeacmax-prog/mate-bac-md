@@ -34,6 +34,9 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
     // defect dovedit de bucla vizuală ETAPA 74 runda 1
     <MotionProvider>
     <div className="relative min-h-screen flex flex-col">
+      {/* ETAPA 82 D: ancora de paletă — fundal albastru-noapte SUB LivingBackdrop
+       * (-z-20 < -z-10), ca să nu acopere orbii vii dar să probeze tokenul nou. */}
+      <div aria-hidden className="fixed inset-0 -z-20 bg-bg-night" />
       <LivingBackdrop />
       {/* Progress bar (doar pe pașii funnelului) */}
       {showProgress && (

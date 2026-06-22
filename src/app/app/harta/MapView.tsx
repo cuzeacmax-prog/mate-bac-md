@@ -612,8 +612,9 @@ function nebulaStyle(key: string): React.CSSProperties {
     background: [
       `radial-gradient(55% 65% at 28% 30%, color-mix(in oklab, var(--domain-${key}) 26%, transparent), transparent 75%)`,
       `radial-gradient(50% 60% at 74% 68%, color-mix(in oklab, var(--domain-${key}) 16%, transparent), transparent 75%)`,
-      `radial-gradient(80% 90% at 50% 110%, oklch(0.12 0.03 270 / 0.9), transparent 70%)`,
-      `oklch(0.11 0.02 265)`,
+      `radial-gradient(80% 90% at 50% 110%, var(--bg-night), transparent 70%)`,
+      // ETAPA 82 D: fundalul de bază al hărții = tokenul de paletă (albastru profund)
+      `var(--bg-deep)`,
     ].join(","),
   };
 }
