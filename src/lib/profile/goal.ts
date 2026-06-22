@@ -81,6 +81,29 @@ export function targetQuestion(goal: Goal): string {
   }
 }
 
+/** Eticheta predicției din diagnostic (reveal) — fără „BAC" la non-bac. */
+export function predictionLabel(goal: Goal): string {
+  switch (goal) {
+    case 'bac':
+      return 'Nota ta estimată la BAC chiar acum';
+    case 'note_clasa':
+      return 'Nivelul tău la matematică chiar acum';
+    case 'explorare':
+      return 'Unde te afli acum la matematică';
+  }
+}
+
+/** Numele sursei oficiale de exerciții — „BAC" doar pentru goal=bac. */
+export function officialSourceLabel(goal: Goal): string {
+  return goal === 'bac' ? 'din culegerea oficială BAC' : 'din culegerea oficială';
+}
+
+/** Eticheta nodului din hartă despre exercițiile servabile — fără „BAC" la non-bac. */
+export function servableLabel(goal: Goal, n: number): string {
+  if (n <= 0) return 'fără exerciții servibile încă';
+  return goal === 'bac' ? `${n} exerciții servibile la BAC` : `${n} exerciții de exersat`;
+}
+
 /** Eticheta scurtă a obiectivului (setări, confirmare, badge-uri). */
 export function goalShort(goal: Goal): { label: string; emoji: string } {
   switch (goal) {

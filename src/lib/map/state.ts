@@ -18,6 +18,7 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { MASTERY_THRESHOLD } from '@/lib/progres/data';
+import { resolveGoal, type Goal } from '@/lib/profile/goal';
 import { MODULE_DOMAINS, type DomainColor } from './domain-colors';
 import { MAP_LAYOUTS, placeForSlug, type MapLayoutNode } from './layouts';
 import { milestoneOf, type Milestone } from './milestones';
@@ -71,6 +72,8 @@ export interface KnowledgeMap {
   targetGrade: number | null;
   /** clasa elevului (selectorul de clasă pornește aici) */
   studentGrade: number;
+  /** ETAPA 82: obiectivul elevului (BAC ca mod, nu cadru) */
+  goal: Goal;
   /** drumul: ultimul stăpânit → recomandat → următoarele 2 (determinist) */
   quest: QuestStep[];
 }
@@ -96,8 +99,9 @@ export async function getKnowledgeMap(
       .eq('user_id', userId),
     service.rpc('frontier_concepts', { p_user_id: userId, p_grade: grade, p_limit: 500 }),
     getActiveFocus(service, userId),
-    service.from('user_profiles').select('target_bac_score').eq('id', userId).maybeSingle(),
+    service.from('user_profiles').select('target_bac_score, goal').eq('id', userId).maybeSingle(),
   ]);
+  const goal = resolveGoal((profile.data as { goal?: string | null } | null)?.goal);
 
   const masteryById = new Map(
     (mastery.data ?? []).map((m) => [m.concept_id as string, Number(m.mastery)])
@@ -144,21 +148,25 @@ export async function getKnowledgeMap(
       for (const n of slice.nodes) nameById.set(n.id, { slug: n.slug, name: n.name });
     }
   }
+  // ETAPA 82 C3: drumul recomandat se calculează în cadrul clasei+obiectivului.
+  // explorare → „fără presiune de traseu obligatoriu" (quest gol, hartă liberă).
   const quest: QuestStep[] = [];
-  const masteredSorted = (mastery.data ?? [])
-    .filter((m) => Number(m.mastery) >= MASTERY_THRESHOLD && nameById.has(m.concept_id as string))
-    .sort((a, b) => String(b.last_evidence_at ?? '').localeCompare(String(a.last_evidence_at ?? '')));
-  if (masteredSorted[0]) {
-    const id = masteredSorted[0].concept_id as string;
-    quest.push({ id, ...nameById.get(id)!, kind: 'stapanit' });
-  }
-  for (const [i, r] of frontierRows.slice(0, 3).entries()) {
-    if (!nameById.has(r.concept_id)) continue;
-    quest.push({
-      id: r.concept_id,
-      ...nameById.get(r.concept_id)!,
-      kind: i === 0 ? 'recomandat' : 'urmeaza',
-    });
+  if (goal !== 'explorare') {
+    const masteredSorted = (mastery.data ?? [])
+      .filter((m) => Number(m.mastery) >= MASTERY_THRESHOLD && nameById.has(m.concept_id as string))
+      .sort((a, b) => String(b.last_evidence_at ?? '').localeCompare(String(a.last_evidence_at ?? '')));
+    if (masteredSorted[0]) {
+      const id = masteredSorted[0].concept_id as string;
+      quest.push({ id, ...nameById.get(id)!, kind: 'stapanit' });
+    }
+    for (const [i, r] of frontierRows.slice(0, 3).entries()) {
+      if (!nameById.has(r.concept_id)) continue;
+      quest.push({
+        id: r.concept_id,
+        ...nameById.get(r.concept_id)!,
+        kind: i === 0 ? 'recomandat' : 'urmeaza',
+      });
+    }
   }
 
   const rawTarget = (profile.data as { target_bac_score?: number | string | null } | null)?.target_bac_score;
@@ -167,6 +175,7 @@ export async function getKnowledgeMap(
     focus,
     targetGrade: rawTarget != null ? Number(rawTarget) : null,
     studentGrade: grade,
+    goal,
     quest,
   };
 }

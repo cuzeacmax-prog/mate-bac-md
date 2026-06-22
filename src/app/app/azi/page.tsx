@@ -9,6 +9,7 @@ import { domainKeyForSlug } from "@/lib/map/layouts";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { chisinauToday, computeStreak, getOrCreateDailyChallenge } from "@/lib/daily/daily";
+import { resolveGoal, officialSourceLabel } from "@/lib/profile/goal";
 import { DailyCard } from "./DailyCard";
 
 export const metadata = { title: "Azi · Profesor Maxim" };
@@ -42,8 +43,10 @@ export default async function AziPage() {
       .from("concept_mastery")
       .select("concept_id", { count: "exact", head: true })
       .eq("user_id", user.id),
-    supabase.from("user_profiles").select("grade_level").eq("id", user.id).maybeSingle(),
+    supabase.from("user_profiles").select("grade_level, goal").eq("id", user.id).maybeSingle(),
   ]);
+  const goal = resolveGoal((profileRow as { goal?: string | null } | null)?.goal);
+  const officialLabel = officialSourceLabel(goal);
 
   if (!evidenceCount) {
     return (
@@ -121,7 +124,12 @@ export default async function AziPage() {
       </div>
 
       {daily && (
-        <DailyCard exercises={daily.exercises} completed={daily.completed} streak={streak} />
+        <DailyCard
+          exercises={daily.exercises}
+          completed={daily.completed}
+          streak={streak}
+          officialLabel={officialLabel}
+        />
       )}
 
       {rows.length === 0 ? (
@@ -149,7 +157,7 @@ export default async function AziPage() {
                       {Number(r.verified_exercises) > 0 &&
                         ` · ${r.verified_exercises} exerciții verificate`}
                       {Number(r.servable_exercises) > Number(r.verified_exercises) &&
-                        ` · ${Number(r.servable_exercises) - Number(r.verified_exercises)} din culegerea oficială BAC`}
+                        ` · ${Number(r.servable_exercises) - Number(r.verified_exercises)} ${officialLabel}`}
                     </p>
                   </div>
                   <Link

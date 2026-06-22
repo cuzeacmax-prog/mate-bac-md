@@ -27,6 +27,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MathText } from "@/components/MathText";
 import { MILESTONE_LABELS } from "@/lib/map/milestones";
 import { graphTotalNodes, nodesForGrade, gradesWithContent } from "@/lib/map/per-class";
+import { defaultLens, showsBacLens, mapHeadline, servableLabel, type Goal } from "@/lib/profile/goal";
 import type { KnowledgeMap, MapDomain, MapGradeSlice, MapNode } from "@/lib/map/state";
 
 type Lens = "bac" | "tinta" | "test";
@@ -129,7 +130,9 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
   const gradeShown = useMemo(() => nodesForGrade(map, gradeKey), [map, gradeKey]);
   const graphTotal = useMemo(() => graphTotalNodes(map), [map]);
 
-  const [lens, setLens] = useState<Lens>("bac");
+  // ETAPA 82 C1: lentila implicită se subordonează obiectivului (null = neutru,
+  // fără dimming — explorare/hartă liberă).
+  const [lens, setLens] = useState<Lens | null>(() => defaultLens(map.goal, map.targetGrade != null));
   const [selected, setSelected] = useState<MapNode | null>(null);
   const [focusPending, setFocusPending] = useState(false);
   // C2: breadcrumb-ul de întoarcere după un salt prin portal
@@ -352,14 +355,22 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
 
   return (
     <div className="flex flex-col h-full flex-1 min-w-0">
-      {/* lentilele */}
+      {/* ETAPA 82 C1+C2: titlu + lentile subordonate obiectivului (BAC ca mod, nu cadru) */}
       <div className="px-4 pt-3 pb-1 flex flex-wrap items-center gap-2 shrink-0">
-        <h1 className="text-lg font-bold mr-2">Harta cunoașterii</h1>
-        <LensChip active={lens === "bac"} onClick={() => setLens("bac")}>BAC</LensChip>
-        <LensChip active={lens === "tinta"} onClick={() => setLens("tinta")} disabled={map.targetGrade == null}>
-          Nota-țintă{map.targetGrade != null ? ` ${map.targetGrade}` : ""}
-        </LensChip>
-        <LensChip active={lens === "test"} onClick={() => setLens("test")}>Test mâine</LensChip>
+        <h1 className="text-lg font-bold mr-2">{mapHeadline(map.goal, map.studentGrade)}</h1>
+        {showsBacLens(map.goal) && (
+          <LensChip active={lens === "bac"} onClick={() => setLens((l) => (l === "bac" ? null : "bac"))}>BAC</LensChip>
+        )}
+        {map.goal !== "explorare" && (
+          <LensChip
+            active={lens === "tinta"}
+            onClick={() => setLens((l) => (l === "tinta" ? null : "tinta"))}
+            disabled={map.targetGrade == null}
+          >
+            Nota-țintă{map.targetGrade != null ? ` ${map.targetGrade}` : ""}
+          </LensChip>
+        )}
+        <LensChip active={lens === "test"} onClick={() => setLens((l) => (l === "test" ? null : "test"))}>Test mâine</LensChip>
       </div>
 
       {/* ETAPA 82 B2+B3: selectorul de clasă (default = clasa elevului) + "Harta completă" */}
@@ -543,6 +554,7 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
             domain={domain}
             slice={slice}
             currentGrade={effectiveGrade}
+            goal={map.goal}
             onJumpToPrereq={jumpToPrereq}
             onClose={() => setSelected(null)}
           />
@@ -847,11 +859,12 @@ export class MapErrorBoundary extends Component<{ children: ReactNode }, { error
 }
 
 /** sheet-ul de jos (B3) + F2 mini-drum + C2 portaluri */
-function NodeSheet({ node, domain, slice, currentGrade, onJumpToPrereq, onClose }: {
+function NodeSheet({ node, domain, slice, currentGrade, goal, onJumpToPrereq, onClose }: {
   node: MapNode;
   domain: MapDomain;
   slice: MapGradeSlice;
   currentGrade: number;
+  goal: Goal;
   onJumpToPrereq: (p: { slug: string; domain: string | null; grade: number | null }) => void;
   onClose: () => void;
 }) {
@@ -882,7 +895,7 @@ function NodeSheet({ node, domain, slice, currentGrade, onJumpToPrereq, onClose 
               </span>
             )}
             <span className="text-xs text-muted-foreground">
-              {node.servable > 0 ? `${node.servable} exerciții servibile la BAC` : "fără exerciții servibile încă"}
+              {servableLabel(goal, node.servable)}
             </span>
           </div>
         </div>

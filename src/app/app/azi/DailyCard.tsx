@@ -17,6 +17,8 @@ interface Props {
   exercises: DailyExercise[];
   completed: boolean;
   streak: number;
+  /** ETAPA 82 C2: numele sursei oficiale, fără „BAC" la goal != bac */
+  officialLabel: string;
 }
 
 interface AttemptResult {
@@ -24,7 +26,7 @@ interface AttemptResult {
   method: string;
 }
 
-export function DailyCard({ exercises: initial, completed: initialCompleted, streak: initialStreak }: Props) {
+export function DailyCard({ exercises: initial, completed: initialCompleted, streak: initialStreak, officialLabel }: Props) {
   const [exercises, setExercises] = useState<DailyExercise[]>(initial);
   const [completed, setCompleted] = useState(initialCompleted);
   const [streak, setStreak] = useState(initialStreak);
@@ -103,7 +105,7 @@ export function DailyCard({ exercises: initial, completed: initialCompleted, str
                   {i + 1}. {ex.concept_name}
                   {ex.tier === "sursa-oficiala" && (
                     <span className="ml-2 rounded-full bg-secondary text-secondary-foreground px-2 py-0.5">
-                      din culegerea oficială BAC
+                      {officialLabel}
                     </span>
                   )}
                 </p>

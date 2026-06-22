@@ -7,6 +7,7 @@ import { ArrowUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NumberReveal } from '@/components/onboarding/NumberReveal';
 import { useOnboardingStore } from '@/lib/stores/onboarding-store';
+import { resolveGoal, predictionLabel } from '@/lib/profile/goal';
 import { track, Events } from '@/lib/analytics/posthog-client';
 
 const LOADING_MESSAGES = [
@@ -20,6 +21,7 @@ export default function RevealPage() {
   const store = useOnboardingStore();
   const prediction = store.initialBacPrediction ?? 5.8;
   const targetScore = store.targetBacScore ?? 9;
+  const goal = resolveGoal(store.goal);
 
   const [phase, setPhase] = useState<'loading' | 'reveal' | 'done'>('loading');
   const [msgIdx, setMsgIdx] = useState(0);
@@ -100,7 +102,7 @@ export default function RevealPage() {
             {/* Main score */}
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground font-medium">
-                Nota ta estimată la BAC chiar acum
+                {predictionLabel(goal)}
               </p>
               <div className="flex items-center justify-center gap-2">
                 <span className="text-8xl font-black text-primary tabular-nums">
