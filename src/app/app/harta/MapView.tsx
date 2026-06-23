@@ -355,12 +355,16 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
 
   const recommendedId = map.quest.find((q) => q.kind === "recomandat")?.id ?? null;
 
+  // ETAPA 84 C: O SINGURĂ sursă pentru clasa afișată — titlul, badge-ul și pastila
+  // activă din selector o citesc pe aceasta (în „Harta completă" nu e o clasă anume).
+  const selectedGrade = showAll ? null : gradeKey;
+
   return (
     <div className="flex flex-col h-full flex-1 min-w-0">
       {/* ETAPA 82 C1+C2: titlu + lentile subordonate obiectivului (BAC ca mod, nu cadru) */}
       <div className="px-4 pt-3 pb-1 flex flex-wrap items-center gap-2 shrink-0">
         {/* ETAPA 84 C: titlul citește clasa SELECTATĂ (nu studentGrade) — sincron cu selectorul+badge */}
-        <h1 className="fluid-h2 font-bold mr-2">{mapHeadline(map.goal, showAll ? null : gradeKey)}</h1>
+        <h1 className="fluid-h2 font-bold mr-2">{mapHeadline(map.goal, selectedGrade)}</h1>
         {showsBacLens(map.goal) && (
           <LensChip active={lens === "bac"} onClick={() => setLens((l) => (l === "bac" ? null : "bac"))}>BAC</LensChip>
         )}
@@ -380,7 +384,7 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
       <div className="px-4 pb-2 flex flex-wrap items-center gap-2 shrink-0">
         {ALL_GRADES.map((g) => {
           const enabled = gradesContent.has(g) || g === map.studentGrade;
-          const active = !showAll && g === gradeKey;
+          const active = selectedGrade === g;
           return (
             <button
               key={g}
@@ -425,10 +429,10 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
         >
           {showAll ? "Doar clasa mea" : "Harta completă"}
         </button>
-        <span className="text-[11px] text-muted-foreground ml-auto">
-          {showAll
+        <span className="text-[11px] text-muted-foreground ml-auto" data-testid="map-badge">
+          {selectedGrade == null
             ? `Harta completă · ${graphTotal} teme`
-            : `Clasa ${gradeKey}: ${gradeShown} ${gradeShown === 1 ? "temă" : "teme"} · ${graphTotal} în tot graful`}
+            : `Clasa ${selectedGrade}: ${gradeShown} ${gradeShown === 1 ? "temă" : "teme"} · ${graphTotal} în tot graful`}
         </span>
       </div>
 
