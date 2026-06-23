@@ -27,6 +27,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MathText } from "@/components/MathText";
 import { MILESTONE_LABELS } from "@/lib/map/milestones";
 import { graphTotalNodes, nodesForGrade, gradesWithContent } from "@/lib/map/per-class";
+import { masteryColor } from "@/lib/map/mastery-color";
 import { defaultLens, showsBacLens, mapHeadline, servableLabel, type Goal } from "@/lib/profile/goal";
 import type { KnowledgeMap, MapDomain, MapGradeSlice, MapNode } from "@/lib/map/state";
 
@@ -667,21 +668,8 @@ const DomainGraph = memo(function DomainGraph({ domainKey, slice, nodeOpacity, s
   return (
     <>
       <defs>
-        <radialGradient id={`node-full-${domainKey}`}>
-          <stop offset="0%" stopColor={`var(--domain-${domainKey}-fg)`} />
-          <stop offset="45%" stopColor={color} />
-          <stop offset="100%" stopColor={color} />
-        </radialGradient>
-        <radialGradient id={`node-soft-${domainKey}`}>
-          <stop offset="0%" stopColor={`var(--domain-${domainKey}-bg)`} stopOpacity={1} />
-          <stop offset="78%" stopColor={`var(--domain-${domainKey}-bg)`} stopOpacity={1} />
-          <stop offset="100%" stopColor={color} stopOpacity={0.55} />
-        </radialGradient>
-        <radialGradient id={`halo-${domainKey}`}>
-          <stop offset="0%" stopColor={color} stopOpacity={0.5} />
-          <stop offset="55%" stopColor={color} stopOpacity={0.22} />
-          <stop offset="100%" stopColor={color} stopOpacity={0} />
-        </radialGradient>
+        {/* ETAPA 83 C: nodurile nu mai folosesc gradiente de domeniu — culoarea lor
+            codifică mastery (vezi masteryColor). Rămâne doar washul de domeniu. */}
         <radialGradient id={`wash-${domainKey}`}>
           <stop offset="0%" stopColor={color} stopOpacity={0.08} />
           <stop offset="70%" stopColor={color} stopOpacity={0.05} />
@@ -725,7 +713,6 @@ const DomainGraph = memo(function DomainGraph({ domainKey, slice, nodeOpacity, s
         <StarNode
           key={n.id}
           node={n}
-          domainKey={domainKey}
           opacity={nodeOpacity(n)}
           selected={selectedId === n.id}
           pulse={pulseIds.has(n.id)}
@@ -739,11 +726,12 @@ const DomainGraph = memo(function DomainGraph({ domainKey, slice, nodeOpacity, s
 });
 
 /** A2: nodul = STEA — halo, raze de difracție la stăpânite, mărime pe importanță */
-const StarNode = memo(function StarNode({ node, domainKey, opacity, selected, pulse, recommended, onQuest, onSelect }: {
-  node: MapNode; domainKey: string; opacity: number; selected: boolean; pulse: boolean;
+const StarNode = memo(function StarNode({ node, opacity, selected, pulse, recommended, onQuest, onSelect }: {
+  node: MapNode; opacity: number; selected: boolean; pulse: boolean;
   recommended: boolean; onQuest: boolean; onSelect: (n: MapNode) => void;
 }) {
-  const color = `var(--domain-${domainKey})`;
+  // ETAPA 83 C: culoarea nodului CODIFICĂ mastery (determinist, albastru profund→electric).
+  const mc = masteryColor(node.mastery, node.status);
   const R = starRadius(node.servable);
   const label = node.name.length > 24 ? `${node.name.slice(0, 23)}…` : node.name;
   const pillW = label.length * 6.6 + 16;
@@ -755,13 +743,13 @@ const StarNode = memo(function StarNode({ node, domainKey, opacity, selected, pu
       onPointerDown={(e) => e.stopPropagation()}
       className="cursor-pointer"
     >
-      {/* haloul — steaua luminează; recomandatul e cea mai strălucitoare */}
-      {node.status !== "blocat" && (
+      {/* haloul = culoarea de mastery, intensitate = glow (recomandatul pulsează) */}
+      {node.status !== "blocat" && mc.glow > 0 && (
         <circle
           r={R * (recommended ? 2.6 : 1.9)}
-          fill={`url(#halo-${domainKey})`}
+          fill={mc.fill}
           className={recommended ? "map-pulse" : node.status === "disponibil" && pulse ? "map-pulse" : undefined}
-          opacity={recommended ? 1 : node.status === "stapanit" ? 1 : node.status === "disponibil" ? 0.9 : 0.7}
+          opacity={(recommended ? 0.5 : 0.32) * (0.4 + mc.glow * 0.6)}
           pointerEvents="none"
         />
       )}
@@ -774,18 +762,12 @@ const StarNode = memo(function StarNode({ node, domainKey, opacity, selected, pu
       )}
       {/* unda radială la selectarea unei stele stăpânite (registrul 74) */}
       {selected && node.status === "stapanit" && (
-        <circle r={R} fill="none" stroke={color} strokeWidth={2.5} className="fx-node-wave" />
+        <circle r={R} fill="none" stroke={mc.fill} strokeWidth={2.5} className="fx-node-wave" />
       )}
       <circle
         r={R}
-        fill={
-          node.status === "stapanit"
-            ? `url(#node-full-${domainKey})`
-            : node.status === "blocat"
-              ? "var(--card)"
-              : `url(#node-soft-${domainKey})`
-        }
-        stroke={selected ? "var(--ring)" : color}
+        fill={node.status === "blocat" ? "var(--card)" : mc.fill}
+        stroke={selected ? "var(--ring)" : node.status === "blocat" ? "var(--border)" : mc.fill}
         strokeWidth={selected ? 3.5 : node.status === "blocat" ? 1 : 2}
         strokeDasharray={node.status === "blocat" ? "4 4" : undefined}
         strokeOpacity={node.status === "blocat" ? 0.6 : 1}
@@ -794,7 +776,7 @@ const StarNode = memo(function StarNode({ node, domainKey, opacity, selected, pu
         <text textAnchor="middle" dy={7} fontSize={Math.round(R * 0.66)} fontWeight={700} fill="var(--primary-foreground)" stroke="none">✓</text>
       )}
       {node.status === "in-lucru" && (
-        <text textAnchor="middle" dy={5} fontSize={13} fontWeight={700} fill={`var(--domain-${domainKey}-fg)`} stroke="none">
+        <text textAnchor="middle" dy={5} fontSize={13} fontWeight={700} fill="var(--text-on-deep)" stroke="none">
           {Math.round(node.mastery * 100)}%
         </text>
       )}
@@ -804,7 +786,7 @@ const StarNode = memo(function StarNode({ node, domainKey, opacity, selected, pu
       {/* B2: eticheta „Următorul" pe steaua recomandată */}
       {recommended && (
         <>
-          <rect x={-44} y={-R - 30} width={88} height={20} rx={10} fill={color} stroke="none" pointerEvents="none" />
+          <rect x={-44} y={-R - 30} width={88} height={20} rx={10} fill="var(--bg-electric)" stroke="none" pointerEvents="none" />
           <text textAnchor="middle" y={-R - 16} fontSize={11} fontWeight={700} fill="var(--primary-foreground)" stroke="none">
             ⭐ Următorul
           </text>
