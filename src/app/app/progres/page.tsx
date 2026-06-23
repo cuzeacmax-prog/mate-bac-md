@@ -32,7 +32,7 @@ export default async function ProgresPage() {
   if (data.totals.mastered + data.totals.inProgress === 0 && data.exercisesSolved === 0) {
     return (
       <div className="max-w-2xl mx-auto px-6 py-16 text-center space-y-4">
-        <h1 className="text-2xl font-semibold">Progresul tău</h1>
+        <h1 className="fluid-h1 font-semibold">Progresul tău</h1>
         <p className="text-muted-foreground">
           Harta ta e încă goală — fă diagnosticul scurt ca să vedem de unde pornim,
           apoi fiecare lecție și exercițiu colorează câte o celulă.
@@ -50,7 +50,7 @@ export default async function ProgresPage() {
   return (
     <div className="max-w-3xl mx-auto px-6 py-8 space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">Progresul tău</h1>
+        <h1 className="fluid-h1 font-semibold">Progresul tău</h1>
         <p className="text-sm text-muted-foreground mt-1">
           Harta conceptelor clasei {data.grade}, pe domeniile programei BAC.
         </p>

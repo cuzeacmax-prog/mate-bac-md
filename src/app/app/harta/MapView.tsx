@@ -358,7 +358,7 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
     <div className="flex flex-col h-full flex-1 min-w-0">
       {/* ETAPA 82 C1+C2: titlu + lentile subordonate obiectivului (BAC ca mod, nu cadru) */}
       <div className="px-4 pt-3 pb-1 flex flex-wrap items-center gap-2 shrink-0">
-        <h1 className="text-lg font-bold mr-2">{mapHeadline(map.goal, map.studentGrade)}</h1>
+        <h1 className="fluid-h2 font-bold mr-2">{mapHeadline(map.goal, map.studentGrade)}</h1>
         {showsBacLens(map.goal) && (
           <LensChip active={lens === "bac"} onClick={() => setLens((l) => (l === "bac" ? null : "bac"))}>BAC</LensChip>
         )}

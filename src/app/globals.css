@@ -186,7 +186,23 @@
   }
   html {
     @apply font-sans;
+    /* ETAPA 83 FAZA D: tipografie fluidă — baza scalează lin între mobil și desktop
+     * (telefon ~15px, desktop ~17px), fără salturi bruște la breakpoint. Toate
+     * dimensiunile rem moștenesc scalarea. text-size-adjust oprește zoom-ul auto iOS. */
+    font-size: clamp(15px, 0.92rem + 0.18vw, 17px);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
+}
+
+/* ETAPA 83 FAZA D: utilitare de titlu FLUID (titluri mari care nu taie pe telefon,
+ * nici minuscule pe desktop). Folosite pe ecranele-cheie: azi, hartă, simulare, progres. */
+@layer utilities {
+  .fluid-h1 { font-size: clamp(1.5rem, 1.2rem + 1.4vw, 2.25rem); line-height: 1.15; }
+  .fluid-h2 { font-size: clamp(1.25rem, 1.05rem + 0.9vw, 1.75rem); line-height: 1.2; }
+  .fluid-lead { font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1.05rem); }
+  /* gutter responsiv pentru containerele de conținut (mobil strâns, desktop aerisit) */
+  .pad-fluid { padding-inline: clamp(1rem, 0.5rem + 2.5vw, 2.5rem); }
 }
 
 /* ── ETAPA 70/73: REGULA SACRĂ — matematica = lizibilitate maximă ───────────
