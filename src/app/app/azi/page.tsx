@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 import { chisinauToday, computeStreak, getOrCreateDailyChallenge } from "@/lib/daily/daily";
 import { resolveGoal, officialSourceLabel } from "@/lib/profile/goal";
+import { buildGreeting } from "@/lib/daily/greeting";
 import { DailyCard } from "./DailyCard";
 
 export const metadata = { title: "Azi · Profesor Maxim" };
@@ -43,7 +44,7 @@ export default async function AziPage() {
       .from("concept_mastery")
       .select("concept_id", { count: "exact", head: true })
       .eq("user_id", user.id),
-    supabase.from("user_profiles").select("grade_level, goal").eq("id", user.id).maybeSingle(),
+    supabase.from("user_profiles").select("grade_level, goal, full_name, streak_last_activity_date").eq("id", user.id).maybeSingle(),
   ]);
   const goal = resolveGoal((profileRow as { goal?: string | null } | null)?.goal);
   const officialLabel = officialSourceLabel(goal);
@@ -73,16 +74,42 @@ export default async function AziPage() {
 
   // ETAPA 14 + 76 E: daily ∥ streak ∥ frontiera — toate independente
   const today = chisinauToday();
-  const [daily, streak, frontierRes] = await Promise.all([
+  const [daily, streak, frontierRes, lastMasteredRes] = await Promise.all([
     getOrCreateDailyChallenge(service, user.id, grade, today),
     computeStreak(service, user.id, today),
     service.rpc("frontier_concepts", { p_user_id: user.id, p_grade: grade, p_limit: 5 }),
+    // ETAPA 83 F: ultimul concept stăpânit (ieri) pentru salutul „viu"
+    service
+      .from("concept_mastery")
+      .select("last_evidence_at, concepts(name)")
+      .eq("user_id", user.id)
+      .gte("mastery", 0.6)
+      .order("last_evidence_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ]);
   const { data: frontier, error } = frontierRes;
   if (error) {
     console.error("[azi] frontier_concepts error:", error.message);
   }
   const rows = (frontier ?? []) as FrontierRow[];
+
+  // ── ETAPA 83 FAZA F: salutul viu (determinist, din date) ───────────────────
+  const lastConceptName =
+    ((lastMasteredRes.data as { concepts?: { name?: string } | { name?: string }[] } | null)?.concepts as { name?: string } | undefined)?.name ??
+    (Array.isArray((lastMasteredRes.data as { concepts?: unknown } | null)?.concepts)
+      ? ((lastMasteredRes.data as { concepts: { name?: string }[] }).concepts[0]?.name)
+      : null) ?? null;
+  const lastActivity = (profileRow as { streak_last_activity_date?: string | null } | null)?.streak_last_activity_date ?? null;
+  const daysSinceActive = lastActivity
+    ? Math.max(0, Math.round((new Date(today).getTime() - new Date(lastActivity).getTime()) / 86_400_000))
+    : 0;
+  const greeting = buildGreeting({
+    name: (profileRow as { full_name?: string | null } | null)?.full_name ?? null,
+    lastConcept: lastConceptName,
+    nextConcept: rows[0]?.name ?? null,
+    daysSinceActive,
+  });
 
   // prerechizitele directe ale conceptelor afișate (pentru „de ce e următorul")
   const ids = rows.map((r) => r.concept_id);
@@ -107,6 +134,18 @@ export default async function AziPage() {
 
   return (
     <div className="relative max-w-2xl mx-auto px-6 py-10 space-y-6">
+      {/* ETAPA 83 FAZA F: momentul 1/4 — salutul viu (pe nume + stare reală) */}
+      <section
+        className={`rounded-2xl p-5 page-enter border ${
+          greeting.tone === "return"
+            ? "bg-bg-deep border-[var(--bg-electric)]/40"
+            : "glass-solid border-[var(--glass-2)]"
+        }`}
+      >
+        <p className="fluid-h2 font-bold">{greeting.title}</p>
+        <p className="fluid-lead text-muted-foreground mt-1">{greeting.sub}</p>
+      </section>
+
       <div className="flex items-start justify-between gap-3">
         <div>
           <h1 className="fluid-h1 font-semibold">Ce înveți azi</h1>
