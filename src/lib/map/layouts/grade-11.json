@@ -1,0 +1,6364 @@
+{
+ "grade": 11,
+ "groups": [
+  {
+   "key": "g11:modulul-7",
+   "label": "Modulul 7",
+   "width": 2164,
+   "height": 1004,
+   "nodes": [
+    {
+     "id": "661590e0-17d6-4fd6-9412-ddac8ce397bb",
+     "slug": "g11-matrice-nula",
+     "name": "matrice nulă",
+     "grade": 11,
+     "x": 1866,
+     "y": 930,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1e1ec2e5-5b36-4d4d-bae7-de4af2726e7b",
+       "slug": "g11-matrice",
+       "name": "matrice",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "0954c614-718d-4efc-a797-00768bae46e7",
+     "slug": "g11-matrice-coloana",
+     "name": "matrice-coloană",
+     "grade": 11,
+     "x": 396,
+     "y": 930,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1e1ec2e5-5b36-4d4d-bae7-de4af2726e7b",
+       "slug": "g11-matrice",
+       "name": "matrice",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "b87800a9-0d27-4840-8ea1-e07e4c905adb",
+     "slug": "g11-matrice-unitate",
+     "name": "matrice unitate",
+     "grade": 11,
+     "x": 102,
+     "y": 716,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d25bf215-0ded-4bd1-a252-9060cb279157",
+       "slug": "g11-matrice-patratica-de-ordinul-n",
+       "name": "matrice pătratică de ordinul n",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "9671d572-d83a-4014-84ec-b9d5751d8857",
+     "slug": "g11-operatii-cu-matrice",
+     "name": "operații cu matrice",
+     "grade": 11,
+     "x": 592,
+     "y": 716,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1e1ec2e5-5b36-4d4d-bae7-de4af2726e7b",
+       "slug": "g11-matrice",
+       "name": "matrice",
+       "grade": 11
+      },
+      {
+       "id": "5bbe22f2-667e-4fb6-9aa7-5efeb23bc7ef",
+       "slug": "g11-matrice-egale",
+       "name": "matrice egale",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "5bbe22f2-667e-4fb6-9aa7-5efeb23bc7ef",
+     "slug": "g11-matrice-egale",
+     "name": "matrice egale",
+     "grade": 11,
+     "x": 592,
+     "y": 930,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1e1ec2e5-5b36-4d4d-bae7-de4af2726e7b",
+       "slug": "g11-matrice",
+       "name": "matrice",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "504cd768-03fb-48b4-967e-c70a20be3611",
+     "slug": "g11-matrice-linie",
+     "name": "matrice-linie",
+     "grade": 11,
+     "x": 788,
+     "y": 930,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1e1ec2e5-5b36-4d4d-bae7-de4af2726e7b",
+       "slug": "g11-matrice",
+       "name": "matrice",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "05c4d814-1221-486e-bdf4-32dea1be5055",
+     "slug": "g11-matrice-triunghiulara",
+     "name": "matrice triunghiulară",
+     "grade": 11,
+     "x": 298,
+     "y": 716,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d25bf215-0ded-4bd1-a252-9060cb279157",
+       "slug": "g11-matrice-patratica-de-ordinul-n",
+       "name": "matrice pătratică de ordinul n",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "1a4afbcc-5bcc-4d3c-8e99-e99ba4075b66",
+     "slug": "g11-matrice-esalon",
+     "name": "matrice eșalon",
+     "grade": 11,
+     "x": 646,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "4d436824-7278-462c-9f5e-cbaa6485d507",
+       "slug": "g11-transformari-elementare-ale-matricelor",
+       "name": "transformări elementare ale matricelor",
+       "grade": 11
+      },
+      {
+       "id": "1e1ec2e5-5b36-4d4d-bae7-de4af2726e7b",
+       "slug": "g11-matrice",
+       "name": "matrice",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "56a9680a-2ef5-4a6a-bf73-e34160ed9cba",
+     "slug": "g11-teorema-kronecker-capelli",
+     "name": "teorema Kronecker–Capelli",
+     "grade": 11,
+     "x": 1180,
+     "y": 716,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "26f88fad-eb63-4fed-ad95-e29701b218ca",
+       "slug": "g11-compatibilitatea-sistemelor-de-ecuatii-liniare",
+       "name": "compatibilitatea sistemelor de ecuații liniare",
+       "grade": 11
+      },
+      {
+       "id": "1daef7c0-635b-496b-9af8-125afced03ae",
+       "slug": "g11-determinant-de-ordinul-n",
+       "name": "determinant de ordinul n",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "1daef7c0-635b-496b-9af8-125afced03ae",
+     "slug": "g11-determinant-de-ordinul-n",
+     "name": "determinant de ordinul n",
+     "grade": 11,
+     "x": 1278,
+     "y": 930,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "17361c25-0aeb-4b7d-8515-51920e71dbd3",
+       "slug": "g11-determinant-de-ordinul-3",
+       "name": "determinant de ordinul 3",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "e9d8aece-0fda-4ba8-a84c-8b6ffec9e1c6",
+     "slug": "g11-inversa-unei-matrice",
+     "name": "inversa unei matrice",
+     "grade": 11,
+     "x": 984,
+     "y": 930,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1f8de49f-f957-454e-ab2d-c1d4aa2c93ef",
+       "slug": "g11-matrice-inversabila",
+       "name": "matrice inversabilă",
+       "grade": 11
+      },
+      {
+       "id": "e95ae9cd-8e26-4113-ab50-adcbe0ea05f5",
+       "slug": "g11-produsul-matricelor",
+       "name": "produsul matricelor",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "fa3c5cd7-05ad-4233-b9c3-5f082dce82d1",
+     "slug": "g11-metoda-matriciala-de-rezolvare-a-sistemelor",
+     "name": "metoda matricială de rezolvare a sistemelor",
+     "grade": 11,
+     "x": 984,
+     "y": 716,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e9d8aece-0fda-4ba8-a84c-8b6ffec9e1c6",
+       "slug": "g11-inversa-unei-matrice",
+       "name": "inversa unei matrice",
+       "grade": 11
+      },
+      {
+       "id": "eebd1783-034a-4c6b-960e-4743c2d7f72a",
+       "slug": "g11-sistem-de-ecuatii-liniare",
+       "name": "sistem de ecuații liniare",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "addf7041-d1ca-4d38-9f51-22a24626ec15",
+     "slug": "g11-dezvoltarea-determinantului-dupa-o-linie-sau-coloana",
+     "name": "dezvoltarea determinantului după o linie sau coloană",
+     "grade": 11,
+     "x": 1474,
+     "y": 716,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1daef7c0-635b-496b-9af8-125afced03ae",
+       "slug": "g11-determinant-de-ordinul-n",
+       "name": "determinant de ordinul n",
+       "grade": 11
+      },
+      {
+       "id": "17361c25-0aeb-4b7d-8515-51920e71dbd3",
+       "slug": "g11-determinant-de-ordinul-3",
+       "name": "determinant de ordinul 3",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "2368d3dd-4b11-4f66-8ebd-20c1bd1ea578",
+     "slug": "g11-sistem-de-ecuatii-liniare-omogen",
+     "name": "sistem de ecuații liniare omogen",
+     "grade": 11,
+     "x": 1866,
+     "y": 716,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "eebd1783-034a-4c6b-960e-4743c2d7f72a",
+       "slug": "g11-sistem-de-ecuatii-liniare",
+       "name": "sistem de ecuații liniare",
+       "grade": 11
+      },
+      {
+       "id": "661590e0-17d6-4fd6-9412-ddac8ce397bb",
+       "slug": "g11-matrice-nula",
+       "name": "matrice nulă",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "ef56e03a-5f3f-4d03-bd86-5c0982eb04ca",
+     "slug": "g11-determinantul-produsului-matricelor",
+     "name": "determinantul produsului matricelor",
+     "grade": 11,
+     "x": 1474,
+     "y": 930,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "f45fa6a8-addd-4cd5-9385-e30e5607ab75",
+       "slug": "g11-proprietatile-determinantilor",
+       "name": "proprietățile determinanților",
+       "grade": 11
+      },
+      {
+       "id": "e95ae9cd-8e26-4113-ab50-adcbe0ea05f5",
+       "slug": "g11-produsul-matricelor",
+       "name": "produsul matricelor",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "4d436824-7278-462c-9f5e-cbaa6485d507",
+     "slug": "g11-transformari-elementare-ale-matricelor",
+     "name": "transformări elementare ale matricelor",
+     "grade": 11,
+     "x": 592,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "9671d572-d83a-4014-84ec-b9d5751d8857",
+       "slug": "g11-operatii-cu-matrice",
+       "name": "operații cu matrice",
+       "grade": 11
+      },
+      {
+       "id": "1e1ec2e5-5b36-4d4d-bae7-de4af2726e7b",
+       "slug": "g11-matrice",
+       "name": "matrice",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "9440e6e9-4228-448f-bffc-77479125c518",
+     "slug": "g11-metoda-lui-gauss",
+     "name": "metoda lui Gauss",
+     "grade": 11,
+     "x": 592,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1a4afbcc-5bcc-4d3c-8e99-e99ba4075b66",
+       "slug": "g11-matrice-esalon",
+       "name": "matrice eșalon",
+       "grade": 11
+      },
+      {
+       "id": "4d436824-7278-462c-9f5e-cbaa6485d507",
+       "slug": "g11-transformari-elementare-ale-matricelor",
+       "name": "transformări elementare ale matricelor",
+       "grade": 11
+      },
+      {
+       "id": "eebd1783-034a-4c6b-960e-4743c2d7f72a",
+       "slug": "g11-sistem-de-ecuatii-liniare",
+       "name": "sistem de ecuații liniare",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "479b1cf2-0d5a-49ba-b38f-4314e6137e35",
+     "slug": "g11-regula-lui-cramer-pentru-sistem-2-2",
+     "name": "regula lui Cramer pentru sistem 2×2",
+     "grade": 11,
+     "x": 1670,
+     "y": 930,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ac7f70ef-4d03-40c4-a0a6-4029fa1936ac",
+       "slug": "g11-determinant-de-ordinul-2",
+       "name": "determinant de ordinul 2",
+       "grade": 11
+      },
+      {
+       "id": "eebd1783-034a-4c6b-960e-4743c2d7f72a",
+       "slug": "g11-sistem-de-ecuatii-liniare",
+       "name": "sistem de ecuații liniare",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "d25bf215-0ded-4bd1-a252-9060cb279157",
+     "slug": "g11-matrice-patratica-de-ordinul-n",
+     "name": "matrice pătratică de ordinul n",
+     "grade": 11,
+     "x": 200,
+     "y": 930,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1e1ec2e5-5b36-4d4d-bae7-de4af2726e7b",
+       "slug": "g11-matrice",
+       "name": "matrice",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "e57e1d37-2513-44ec-85b3-40a21369d8d5",
+     "slug": "g11-regula-lui-cramer-pentru-sistem-3-3",
+     "name": "regula lui Cramer pentru sistem 3×3",
+     "grade": 11,
+     "x": 2062,
+     "y": 930,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "17361c25-0aeb-4b7d-8515-51920e71dbd3",
+       "slug": "g11-determinant-de-ordinul-3",
+       "name": "determinant de ordinul 3",
+       "grade": 11
+      },
+      {
+       "id": "eebd1783-034a-4c6b-960e-4743c2d7f72a",
+       "slug": "g11-sistem-de-ecuatii-liniare",
+       "name": "sistem de ecuații liniare",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "05c4d814-1221-486e-bdf4-32dea1be5055",
+     "to": "d25bf215-0ded-4bd1-a252-9060cb279157"
+    },
+    {
+     "from": "b87800a9-0d27-4840-8ea1-e07e4c905adb",
+     "to": "d25bf215-0ded-4bd1-a252-9060cb279157"
+    },
+    {
+     "from": "9671d572-d83a-4014-84ec-b9d5751d8857",
+     "to": "5bbe22f2-667e-4fb6-9aa7-5efeb23bc7ef"
+    },
+    {
+     "from": "1a4afbcc-5bcc-4d3c-8e99-e99ba4075b66",
+     "to": "4d436824-7278-462c-9f5e-cbaa6485d507"
+    },
+    {
+     "from": "4d436824-7278-462c-9f5e-cbaa6485d507",
+     "to": "9671d572-d83a-4014-84ec-b9d5751d8857"
+    },
+    {
+     "from": "addf7041-d1ca-4d38-9f51-22a24626ec15",
+     "to": "1daef7c0-635b-496b-9af8-125afced03ae"
+    },
+    {
+     "from": "fa3c5cd7-05ad-4233-b9c3-5f082dce82d1",
+     "to": "e9d8aece-0fda-4ba8-a84c-8b6ffec9e1c6"
+    },
+    {
+     "from": "9440e6e9-4228-448f-bffc-77479125c518",
+     "to": "1a4afbcc-5bcc-4d3c-8e99-e99ba4075b66"
+    },
+    {
+     "from": "9440e6e9-4228-448f-bffc-77479125c518",
+     "to": "4d436824-7278-462c-9f5e-cbaa6485d507"
+    },
+    {
+     "from": "56a9680a-2ef5-4a6a-bf73-e34160ed9cba",
+     "to": "1daef7c0-635b-496b-9af8-125afced03ae"
+    },
+    {
+     "from": "2368d3dd-4b11-4f66-8ebd-20c1bd1ea578",
+     "to": "661590e0-17d6-4fd6-9412-ddac8ce397bb"
+    }
+   ]
+  },
+  {
+   "key": "g11:modulul-1",
+   "label": "Modulul 1",
+   "width": 1666,
+   "height": 1004,
+   "nodes": [
+    {
+     "id": "7db8e8ac-36c2-46e5-8fee-74b428d673f6",
+     "slug": "g11-cel-mai-mic-element-al-unei-multimi",
+     "name": "cel mai mic element al unei mulțimi",
+     "grade": 11,
+     "x": 406,
+     "y": 930,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "46c3e6cb-0987-4986-950e-3d80450a8644",
+       "slug": "g10-multimea-numerelor-reale",
+       "name": "mulțimea numerelor reale",
+       "grade": 10
+      },
+      {
+       "id": "4dedcfbf-974b-4ce8-98ae-8a7fa8c6d017",
+       "slug": "g10-multime",
+       "name": "mulțime",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "7c5393a4-f333-4d07-8571-0fbeaf6aec0c",
+     "slug": "g11-margine-superioara-supremum",
+     "name": "margine superioară (supremum)",
+     "grade": 11,
+     "x": 376,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5cb01686-bd7a-493a-bb91-a2c9aedc12aa",
+       "slug": "g11-majorant-al-unei-multimi",
+       "name": "majorant al unei mulțimi",
+       "grade": 11
+      },
+      {
+       "id": "4dedcfbf-974b-4ce8-98ae-8a7fa8c6d017",
+       "slug": "g10-multime",
+       "name": "mulțime",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "4a43d074-f4a2-469a-8b40-d1ee50c7c0a8",
+     "slug": "g11-punct-interior-al-unei-multimi",
+     "name": "punct interior al unei mulțimi",
+     "grade": 11,
+     "x": 798,
+     "y": 930,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "46c3e6cb-0987-4986-950e-3d80450a8644",
+       "slug": "g10-multimea-numerelor-reale",
+       "name": "mulțimea numerelor reale",
+       "grade": 10
+      },
+      {
+       "id": "4dedcfbf-974b-4ce8-98ae-8a7fa8c6d017",
+       "slug": "g10-multime",
+       "name": "mulțime",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "819a350a-ce95-4374-97ee-1b0057609f6b",
+     "slug": "g11-margine-inferioara-infimum",
+     "name": "margine inferioară (infimum)",
+     "grade": 11,
+     "x": 504,
+     "y": 716,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "7db8e8ac-36c2-46e5-8fee-74b428d673f6",
+       "slug": "g11-cel-mai-mic-element-al-unei-multimi",
+       "name": "cel mai mic element al unei mulțimi",
+       "grade": 11
+      },
+      {
+       "id": "4dedcfbf-974b-4ce8-98ae-8a7fa8c6d017",
+       "slug": "g10-multime",
+       "name": "mulțime",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "b8cd4ca7-a065-4bda-8a85-a50a43fa1f1a",
+     "slug": "g11-logaritm-natural",
+     "name": "logaritm natural",
+     "grade": 11,
+     "x": 602,
+     "y": 930,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "0db9d5e6-fe16-4745-97cd-498866fd2e7a",
+       "slug": "g10-logaritmul-unui-numar",
+       "name": "logaritmul unui număr",
+       "grade": 10
+      },
+      {
+       "id": "46faa8a9-371e-4112-810a-99b0df66d618",
+       "slug": "g11-numarul-e",
+       "name": "numărul e",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "551fbd50-03f7-4817-aa4d-9e3e5083218b",
+     "slug": "g11-minorant-al-unei-multimi",
+     "name": "minorant al unei mulțimi",
+     "grade": 11,
+     "x": 308,
+     "y": 716,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "7db8e8ac-36c2-46e5-8fee-74b428d673f6",
+       "slug": "g11-cel-mai-mic-element-al-unei-multimi",
+       "name": "cel mai mic element al unei mulțimi",
+       "grade": 11
+      },
+      {
+       "id": "4dedcfbf-974b-4ce8-98ae-8a7fa8c6d017",
+       "slug": "g10-multime",
+       "name": "mulțime",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "93b6c77a-dae2-4c9d-b745-b909d9e22452",
+     "slug": "g11-sir-convergent",
+     "name": "șir convergent",
+     "grade": 11,
+     "x": 916,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c26f55eb-cc2b-494a-94ff-b90d361650d0",
+       "slug": "g11-sir-de-numere-reale",
+       "name": "șir de numere reale",
+       "grade": 11
+      },
+      {
+       "id": "54322bf7-180b-4527-947f-0b110f8c2b7a",
+       "slug": "g11-vecinatatea-unui-punct",
+       "name": "vecinătatea unui punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "130d832a-1366-44f7-a887-bfa6b802218c",
+     "slug": "g11-cel-mai-mare-element-al-unei-multimi",
+     "name": "cel mai mare element al unei mulțimi",
+     "grade": 11,
+     "x": 102,
+     "y": 930,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "46c3e6cb-0987-4986-950e-3d80450a8644",
+       "slug": "g10-multimea-numerelor-reale",
+       "name": "mulțimea numerelor reale",
+       "grade": 10
+      },
+      {
+       "id": "4dedcfbf-974b-4ce8-98ae-8a7fa8c6d017",
+       "slug": "g10-multime",
+       "name": "mulțime",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "cc479b64-8ac9-4646-9723-e1add388352e",
+     "slug": "g11-subsir-al-unui-sir",
+     "name": "subșir al unui șir",
+     "grade": 11,
+     "x": 1172,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c26f55eb-cc2b-494a-94ff-b90d361650d0",
+       "slug": "g11-sir-de-numere-reale",
+       "name": "șir de numere reale",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "264e01ec-874c-4a77-9a8a-06ba088505f8",
+     "slug": "g11-siruri-egale",
+     "name": "șiruri egale",
+     "grade": 11,
+     "x": 1368,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c26f55eb-cc2b-494a-94ff-b90d361650d0",
+       "slug": "g11-sir-de-numere-reale",
+       "name": "șir de numere reale",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "54322bf7-180b-4527-947f-0b110f8c2b7a",
+     "slug": "g11-vecinatatea-unui-punct",
+     "name": "vecinătatea unui punct",
+     "grade": 11,
+     "x": 798,
+     "y": 716,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "46c3e6cb-0987-4986-950e-3d80450a8644",
+       "slug": "g10-multimea-numerelor-reale",
+       "name": "mulțimea numerelor reale",
+       "grade": 10
+      },
+      {
+       "id": "4a43d074-f4a2-469a-8b40-d1ee50c7c0a8",
+       "slug": "g11-punct-interior-al-unei-multimi",
+       "name": "punct interior al unei mulțimi",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "5cb01686-bd7a-493a-bb91-a2c9aedc12aa",
+     "slug": "g11-majorant-al-unei-multimi",
+     "name": "majorant al unei mulțimi",
+     "grade": 11,
+     "x": 102,
+     "y": 716,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "130d832a-1366-44f7-a887-bfa6b802218c",
+       "slug": "g11-cel-mai-mare-element-al-unei-multimi",
+       "name": "cel mai mare element al unei mulțimi",
+       "grade": 11
+      },
+      {
+       "id": "4dedcfbf-974b-4ce8-98ae-8a7fa8c6d017",
+       "slug": "g10-multime",
+       "name": "mulțime",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "88e2127c-e55d-4f99-ac40-680aabfd0c80",
+     "slug": "g11-sir-monoton",
+     "name": "șir monoton",
+     "grade": 11,
+     "x": 1564,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c26f55eb-cc2b-494a-94ff-b90d361650d0",
+       "slug": "g11-sir-de-numere-reale",
+       "name": "șir de numere reale",
+       "grade": 11
+      },
+      {
+       "id": "31614939-e52c-4f46-b1ec-4b9fa6f6e6eb",
+       "slug": "g9-monotonia-unei-functii",
+       "name": "monotonia unei funcții",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "c74d0f51-8e0a-46d6-a363-7d2960ae5b13",
+     "slug": "g11-formula-termenului-general-al-progresiei-geometrice",
+     "name": "formula termenului general al progresiei geometrice",
+     "grade": 11,
+     "x": 994,
+     "y": 930,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "59c86ad1-c00d-44a6-9004-2860ba15ded4",
+       "slug": "g11-progresia-geometrica",
+       "name": "progresia geometrică",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "d6de2179-2b5e-4490-9ccf-0e48111e8db2",
+     "slug": "g11-limita-infinita-a-unui-sir",
+     "name": "limita infinită a unui șir",
+     "grade": 11,
+     "x": 970,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c26f55eb-cc2b-494a-94ff-b90d361650d0",
+       "slug": "g11-sir-de-numere-reale",
+       "name": "șir de numere reale",
+       "grade": 11
+      },
+      {
+       "id": "079c0271-16a1-412d-bb42-dfa4b638c7be",
+       "slug": "g11-limita-unui-sir",
+       "name": "limita unui șir",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "c26f55eb-cc2b-494a-94ff-b90d361650d0",
+     "slug": "g11-sir-de-numere-reale",
+     "name": "șir de numere reale",
+     "grade": 11,
+     "x": 1118,
+     "y": 716,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "46c3e6cb-0987-4986-950e-3d80450a8644",
+       "slug": "g10-multimea-numerelor-reale",
+       "name": "mulțimea numerelor reale",
+       "grade": 10
+      },
+      {
+       "id": "fc9c1410-b0e1-4b6a-923c-2eebb0099bdb",
+       "slug": "g8-sir-numeric",
+       "name": "șir numeric",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "079c0271-16a1-412d-bb42-dfa4b638c7be",
+     "slug": "g11-limita-unui-sir",
+     "name": "limita unui șir",
+     "grade": 11,
+     "x": 916,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c26f55eb-cc2b-494a-94ff-b90d361650d0",
+       "slug": "g11-sir-de-numere-reale",
+       "name": "șir de numere reale",
+       "grade": 11
+      },
+      {
+       "id": "93b6c77a-dae2-4c9d-b745-b909d9e22452",
+       "slug": "g11-sir-convergent",
+       "name": "șir convergent",
+       "grade": 11
+      },
+      {
+       "id": "54322bf7-180b-4527-947f-0b110f8c2b7a",
+       "slug": "g11-vecinatatea-unui-punct",
+       "name": "vecinătatea unui punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "6f3e7713-e5b3-4867-afea-9ba966679558",
+     "slug": "g11-formula-termenului-general-al-progresiei-aritmetice",
+     "name": "formula termenului general al progresiei aritmetice",
+     "grade": 11,
+     "x": 1190,
+     "y": 930,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d4fdb54e-fc63-47b2-928e-e30656d48b89",
+       "slug": "g11-progresia-aritmetica",
+       "name": "progresia aritmetică",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "b8bd1727-f71d-4afa-8bcd-f097369e0302",
+     "slug": "g11-multime-marginita",
+     "name": "mulțime mărginită",
+     "grade": 11,
+     "x": 180,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5cb01686-bd7a-493a-bb91-a2c9aedc12aa",
+       "slug": "g11-majorant-al-unei-multimi",
+       "name": "majorant al unei mulțimi",
+       "grade": 11
+      },
+      {
+       "id": "551fbd50-03f7-4817-aa4d-9e3e5083218b",
+       "slug": "g11-minorant-al-unei-multimi",
+       "name": "minorant al unei mulțimi",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "5cb01686-bd7a-493a-bb91-a2c9aedc12aa",
+     "to": "130d832a-1366-44f7-a887-bfa6b802218c"
+    },
+    {
+     "from": "819a350a-ce95-4374-97ee-1b0057609f6b",
+     "to": "7db8e8ac-36c2-46e5-8fee-74b428d673f6"
+    },
+    {
+     "from": "7c5393a4-f333-4d07-8571-0fbeaf6aec0c",
+     "to": "5cb01686-bd7a-493a-bb91-a2c9aedc12aa"
+    },
+    {
+     "from": "551fbd50-03f7-4817-aa4d-9e3e5083218b",
+     "to": "7db8e8ac-36c2-46e5-8fee-74b428d673f6"
+    },
+    {
+     "from": "b8bd1727-f71d-4afa-8bcd-f097369e0302",
+     "to": "5cb01686-bd7a-493a-bb91-a2c9aedc12aa"
+    },
+    {
+     "from": "b8bd1727-f71d-4afa-8bcd-f097369e0302",
+     "to": "551fbd50-03f7-4817-aa4d-9e3e5083218b"
+    },
+    {
+     "from": "88e2127c-e55d-4f99-ac40-680aabfd0c80",
+     "to": "c26f55eb-cc2b-494a-94ff-b90d361650d0"
+    },
+    {
+     "from": "264e01ec-874c-4a77-9a8a-06ba088505f8",
+     "to": "c26f55eb-cc2b-494a-94ff-b90d361650d0"
+    },
+    {
+     "from": "cc479b64-8ac9-4646-9723-e1add388352e",
+     "to": "c26f55eb-cc2b-494a-94ff-b90d361650d0"
+    },
+    {
+     "from": "079c0271-16a1-412d-bb42-dfa4b638c7be",
+     "to": "c26f55eb-cc2b-494a-94ff-b90d361650d0"
+    },
+    {
+     "from": "079c0271-16a1-412d-bb42-dfa4b638c7be",
+     "to": "93b6c77a-dae2-4c9d-b745-b909d9e22452"
+    },
+    {
+     "from": "079c0271-16a1-412d-bb42-dfa4b638c7be",
+     "to": "54322bf7-180b-4527-947f-0b110f8c2b7a"
+    },
+    {
+     "from": "93b6c77a-dae2-4c9d-b745-b909d9e22452",
+     "to": "c26f55eb-cc2b-494a-94ff-b90d361650d0"
+    },
+    {
+     "from": "93b6c77a-dae2-4c9d-b745-b909d9e22452",
+     "to": "54322bf7-180b-4527-947f-0b110f8c2b7a"
+    },
+    {
+     "from": "54322bf7-180b-4527-947f-0b110f8c2b7a",
+     "to": "4a43d074-f4a2-469a-8b40-d1ee50c7c0a8"
+    },
+    {
+     "from": "d6de2179-2b5e-4490-9ccf-0e48111e8db2",
+     "to": "c26f55eb-cc2b-494a-94ff-b90d361650d0"
+    },
+    {
+     "from": "d6de2179-2b5e-4490-9ccf-0e48111e8db2",
+     "to": "079c0271-16a1-412d-bb42-dfa4b638c7be"
+    }
+   ]
+  },
+  {
+   "key": "g11:modulul-2",
+   "label": "Modulul 2",
+   "width": 2752,
+   "height": 576,
+   "nodes": [
+    {
+     "id": "8503c99d-59e3-4e70-810b-b2f6f5b54283",
+     "slug": "g11-functia-modul-valoarea-absoluta",
+     "name": "funcția modul (valoarea absolută)",
+     "grade": 11,
+     "x": 102,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "fac0551d-5a2d-44e2-81ec-59ca9b3ef7bc",
+       "slug": "g10-modulul-numarului-real",
+       "name": "modulul numărului real",
+       "grade": 10
+      },
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "6d712327-24ae-4372-b2eb-21d21b191e3e",
+     "slug": "g11-functia-heaviside",
+     "name": "funcția Heaviside",
+     "grade": 11,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "4a56702e-2489-4116-9b8a-b038e3784955",
+       "slug": "g10-functie",
+       "name": "funcție",
+       "grade": 10
+      },
+      {
+       "id": "f981da7b-fb5d-46f2-a2e1-ccc3f2ad75b7",
+       "slug": "g11-limita-laterala-a-unei-functii",
+       "name": "limită laterală a unei funcții",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "4b7434ad-19ac-48eb-9e8b-fdb1f79a9cbf",
+     "slug": "g11-forme-determinate-si-nedeterminate-la-limite",
+     "name": "forme determinate și nedeterminate la limite",
+     "grade": 11,
+     "x": 2552,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "bb18d5da-477d-47b4-85e8-dda3ae9676c4",
+       "slug": "g11-operatii-cu-limite-de-functii",
+       "name": "operații cu limite de funcții",
+       "grade": 11
+      },
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "e181c23a-a600-4eec-a97e-73b49207a79a",
+     "slug": "g11-cazuri-exceptate-la-operatii-cu-limite",
+     "name": "cazuri exceptate la operații cu limite",
+     "grade": 11,
+     "x": 2258,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "4b7434ad-19ac-48eb-9e8b-fdb1f79a9cbf",
+       "slug": "g11-forme-determinate-si-nedeterminate-la-limite",
+       "name": "forme determinate și nedeterminate la limite",
+       "grade": 11
+      },
+      {
+       "id": "bb18d5da-477d-47b4-85e8-dda3ae9676c4",
+       "slug": "g11-operatii-cu-limite-de-functii",
+       "name": "operații cu limite de funcții",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "e131ba0b-b3e5-48f4-ade3-a4afeaf7d71e",
+     "slug": "g11-limita-functiei-sinus",
+     "name": "limita funcției sinus",
+     "grade": 11,
+     "x": 298,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "ab92147a-b85b-4d8f-838c-8748b067ce58",
+       "slug": "g10-proprietatile-functiei-sinus",
+       "name": "proprietățile funcției sinus",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "f981da7b-fb5d-46f2-a2e1-ccc3f2ad75b7",
+     "slug": "g11-limita-laterala-a-unei-functii",
+     "name": "limită laterală a unei funcții",
+     "grade": 11,
+     "x": 494,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "7f758c08-7961-448c-b28d-6b934dd4d547",
+     "slug": "g11-limita-unei-functii-la-infinit-sau-egala-cu-infinit",
+     "name": "limita unei funcții la infinit sau egală cu infinit",
+     "grade": 11,
+     "x": 690,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "d6de2179-2b5e-4490-9ccf-0e48111e8db2",
+       "slug": "g11-limita-infinita-a-unui-sir",
+       "name": "limita infinită a unui șir",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "639efe73-0b63-43c2-8e6c-c567d79eed7c",
+     "slug": "g11-limita-functiei-exponentiale",
+     "name": "limita funcției exponențiale",
+     "grade": 11,
+     "x": 886,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "5dd9d2bb-b8b7-46e5-9ff9-1b5709957049",
+       "slug": "g10-functia-exponentiala",
+       "name": "funcția exponențială",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "5b6c328f-0be5-4502-9b18-8ab08b17a1e5",
+     "slug": "g11-metoda-schimbarii-de-variabila-la-limite",
+     "name": "metoda schimbării de variabilă la limite",
+     "grade": 11,
+     "x": 2356,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "bb18d5da-477d-47b4-85e8-dda3ae9676c4",
+       "slug": "g11-operatii-cu-limite-de-functii",
+       "name": "operații cu limite de funcții",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "7f5fa61a-725b-4b6f-a2cf-b50259e8652b",
+     "slug": "g11-limita-functiei-cosinus",
+     "name": "limita funcției cosinus",
+     "grade": 11,
+     "x": 1082,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "fbd6ad08-e0fd-4094-adfc-0f8f92d0a8a0",
+       "slug": "g10-proprietatile-functiei-cosinus",
+       "name": "proprietățile funcției cosinus",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "278c55fe-92de-4d40-af97-969242b16f5f",
+     "slug": "g11-limita-functiei-logaritmice",
+     "name": "limita funcției logaritmice",
+     "grade": 11,
+     "x": 1278,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "8e0530a8-de48-42ca-b556-86489762c398",
+       "slug": "g10-functia-logaritmica",
+       "name": "funcția logaritmică",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "2707d059-473d-4930-a196-6e421f737a72",
+     "slug": "g11-functii-elementare",
+     "name": "funcții elementare",
+     "grade": 11,
+     "x": 1474,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5dd9d2bb-b8b7-46e5-9ff9-1b5709957049",
+       "slug": "g10-functia-exponentiala",
+       "name": "funcția exponențială",
+       "grade": 10
+      },
+      {
+       "id": "8e0530a8-de48-42ca-b556-86489762c398",
+       "slug": "g10-functia-logaritmica",
+       "name": "funcția logaritmică",
+       "grade": 10
+      },
+      {
+       "id": "33fa19bd-1780-4cce-9b8f-9e191c504071",
+       "slug": "g10-functiile-trigonometrice-sinus-si-cosinus",
+       "name": "funcțiile trigonometrice sinus și cosinus",
+       "grade": 10
+      },
+      {
+       "id": "bcd83018-b30c-46a8-b131-cb2098026866",
+       "slug": "g10-functiile-trigonometrice-tangenta-si-cotangenta",
+       "name": "funcțiile trigonometrice tangentă și cotangentă",
+       "grade": 10
+      },
+      {
+       "id": "0783dcb2-eb94-4f5c-b702-3762d5786021",
+       "slug": "g10-functia-radical",
+       "name": "funcția radical",
+       "grade": 10
+      },
+      {
+       "id": "4a56702e-2489-4116-9b8a-b038e3784955",
+       "slug": "g10-functie",
+       "name": "funcție",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "7172f28c-641a-4eb1-bae6-8dc7e27e11f2",
+     "slug": "g11-functia-arccotangenta",
+     "name": "funcția arccotangentă",
+     "grade": 11,
+     "x": 1670,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "cb355bfa-b495-4b8e-8c84-e9212e530864",
+       "slug": "g10-functii-trigonometrice-inverse",
+       "name": "funcții trigonometrice inverse",
+       "grade": 10
+      },
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "ff4779c9-6899-4367-85eb-1e29bb5b5977",
+     "slug": "g11-limita-functiei-putere-cu-exponent-real",
+     "name": "limita funcției putere cu exponent real",
+     "grade": 11,
+     "x": 1866,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "edfabfe0-54af-4df7-aa0f-70c99cc034d4",
+       "slug": "g10-puterea-cu-exponent-real",
+       "name": "puterea cu exponent real",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "ceab2c01-1a3e-4dd3-94fd-d81f45ec1c5c",
+     "slug": "g11-limita-functiei-putere-cu-exponent-intreg-negativ",
+     "name": "limita funcției putere cu exponent întreg negativ",
+     "grade": 11,
+     "x": 2062,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "c0946b6c-dcf0-4f96-a33d-0aa2ee0debef",
+       "slug": "g10-putere-cu-exponent-intreg",
+       "name": "putere cu exponent întreg",
+       "grade": 10
+      },
+      {
+       "id": "edfabfe0-54af-4df7-aa0f-70c99cc034d4",
+       "slug": "g10-puterea-cu-exponent-real",
+       "name": "puterea cu exponent real",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "bb18d5da-477d-47b4-85e8-dda3ae9676c4",
+     "slug": "g11-operatii-cu-limite-de-functii",
+     "name": "operații cu limite de funcții",
+     "grade": 11,
+     "x": 2258,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "f15a1fc2-ff68-44d4-918c-2e1db50f2657",
+       "slug": "g11-operatii-cu-siruri-convergente",
+       "name": "operații cu șiruri convergente",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "52eda020-dc9d-4276-8ad2-027168e4e9f8",
+     "slug": "g11-limita-functiei-putere-cu-exponent-natural",
+     "name": "limita funcției putere cu exponent natural",
+     "grade": 11,
+     "x": 2454,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "bef204ba-9aa1-4b9b-b142-513d2c9f521c",
+       "slug": "g8-puterea-cu-exponent-natural",
+       "name": "puterea cu exponent natural",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "71ec9c84-7b8b-4aef-8fa0-d1d8e916ec13",
+     "slug": "g11-limita-functiei-polinomiale",
+     "name": "limita funcției polinomiale",
+     "grade": 11,
+     "x": 2650,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "a940f5fe-9062-4b5f-8e6d-c48524425c51",
+       "slug": "g10-functia-de-gradul-i",
+       "name": "funcția de gradul I",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "76013f67-f4a6-45bb-b66c-0e951ee614ec",
+     "slug": "g11-proprietati-ale-limitelor-de-functii",
+     "name": "proprietăți ale limitelor de funcții",
+     "grade": 11,
+     "x": 1484,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "bb18d5da-477d-47b4-85e8-dda3ae9676c4",
+       "slug": "g11-operatii-cu-limite-de-functii",
+       "name": "operații cu limite de funcții",
+       "grade": 11
+      },
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "6d712327-24ae-4372-b2eb-21d21b191e3e",
+     "to": "f981da7b-fb5d-46f2-a2e1-ccc3f2ad75b7"
+    },
+    {
+     "from": "4b7434ad-19ac-48eb-9e8b-fdb1f79a9cbf",
+     "to": "bb18d5da-477d-47b4-85e8-dda3ae9676c4"
+    },
+    {
+     "from": "5b6c328f-0be5-4502-9b18-8ab08b17a1e5",
+     "to": "bb18d5da-477d-47b4-85e8-dda3ae9676c4"
+    },
+    {
+     "from": "76013f67-f4a6-45bb-b66c-0e951ee614ec",
+     "to": "bb18d5da-477d-47b4-85e8-dda3ae9676c4"
+    },
+    {
+     "from": "e181c23a-a600-4eec-a97e-73b49207a79a",
+     "to": "4b7434ad-19ac-48eb-9e8b-fdb1f79a9cbf"
+    },
+    {
+     "from": "e181c23a-a600-4eec-a97e-73b49207a79a",
+     "to": "bb18d5da-477d-47b4-85e8-dda3ae9676c4"
+    }
+   ]
+  },
+  {
+   "key": "g11:siruri-de-numere-reale",
+   "label": "Șiruri de numere reale",
+   "width": 2360,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "9714d648-2223-4b6b-b9cc-72f72090cdc5",
+     "slug": "g11-teorema-de-caracterizare-a-marginii-superioare",
+     "name": "teorema de caracterizare a marginii superioare",
+     "grade": 11,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "7c5393a4-f333-4d07-8571-0fbeaf6aec0c",
+       "slug": "g11-margine-superioara-supremum",
+       "name": "margine superioară (supremum)",
+       "grade": 11
+      },
+      {
+       "id": "b8bd1727-f71d-4afa-8bcd-f097369e0302",
+       "slug": "g11-multime-marginita",
+       "name": "mulțime mărginită",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "0964bd7e-5900-4c62-b46d-058c1fccf018",
+     "slug": "g11-sir-numeric-finit",
+     "name": "șir numeric finit",
+     "grade": 11,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c26f55eb-cc2b-494a-94ff-b90d361650d0",
+       "slug": "g11-sir-de-numere-reale",
+       "name": "șir de numere reale",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "e333f1e1-bdec-4ffd-860b-4580781790cd",
+     "slug": "g11-progresia-geometrica-infinit-descrescatoare",
+     "name": "progresia geometrică infinit descrescătoare",
+     "grade": 11,
+     "x": 886,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "59c86ad1-c00d-44a6-9004-2860ba15ded4",
+       "slug": "g11-progresia-geometrica",
+       "name": "progresia geometrică",
+       "grade": 11
+      },
+      {
+       "id": "458352b1-0f5b-478c-ad07-03949f18f379",
+       "slug": "g11-formula-sumei-primilor-n-termeni-ai-progresiei-geometrice",
+       "name": "formula sumei primilor n termeni ai progresiei geometrice",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "baf18222-11e7-49f1-9b8c-039d28b53a86",
+     "slug": "g11-sir-divergent",
+     "name": "șir divergent",
+     "grade": 11,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c26f55eb-cc2b-494a-94ff-b90d361650d0",
+       "slug": "g11-sir-de-numere-reale",
+       "name": "șir de numere reale",
+       "grade": 11
+      },
+      {
+       "id": "93b6c77a-dae2-4c9d-b745-b909d9e22452",
+       "slug": "g11-sir-convergent",
+       "name": "șir convergent",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "24bbfd9f-6d3d-40c1-b425-5266b678b058",
+     "slug": "g11-teorema-de-caracterizare-a-marginii-inferioare",
+     "name": "teorema de caracterizare a marginii inferioare",
+     "grade": 11,
+     "x": 690,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "819a350a-ce95-4374-97ee-1b0057609f6b",
+       "slug": "g11-margine-inferioara-infimum",
+       "name": "margine inferioară (infimum)",
+       "grade": 11
+      },
+      {
+       "id": "b8bd1727-f71d-4afa-8bcd-f097369e0302",
+       "slug": "g11-multime-marginita",
+       "name": "mulțime mărginită",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "458352b1-0f5b-478c-ad07-03949f18f379",
+     "slug": "g11-formula-sumei-primilor-n-termeni-ai-progresiei-geometrice",
+     "name": "formula sumei primilor n termeni ai progresiei geometrice",
+     "grade": 11,
+     "x": 886,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "59c86ad1-c00d-44a6-9004-2860ba15ded4",
+       "slug": "g11-progresia-geometrica",
+       "name": "progresia geometrică",
+       "grade": 11
+      },
+      {
+       "id": "c74d0f51-8e0a-46d6-a363-7d2960ae5b13",
+       "slug": "g11-formula-termenului-general-al-progresiei-geometrice",
+       "name": "formula termenului general al progresiei geometrice",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "2bce3592-2539-4019-acaf-e2952cbe2eb0",
+     "slug": "g11-sir-marginit",
+     "name": "șir mărginit",
+     "grade": 11,
+     "x": 1082,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b8bd1727-f71d-4afa-8bcd-f097369e0302",
+       "slug": "g11-multime-marginita",
+       "name": "mulțime mărginită",
+       "grade": 11
+      },
+      {
+       "id": "c26f55eb-cc2b-494a-94ff-b90d361650d0",
+       "slug": "g11-sir-de-numere-reale",
+       "name": "șir de numere reale",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "a781e379-856e-40e0-abc1-8b0723253cd3",
+     "slug": "g11-sirul-lui-fibonacci",
+     "name": "șirul lui Fibonacci",
+     "grade": 11,
+     "x": 1278,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c26f55eb-cc2b-494a-94ff-b90d361650d0",
+       "slug": "g11-sir-de-numere-reale",
+       "name": "șir de numere reale",
+       "grade": 11
+      },
+      {
+       "id": "c83409a6-f2d1-4392-b5c8-8752bbaae697",
+       "slug": "g8-sirul-lui-fibonacci",
+       "name": "șirul lui Fibonacci",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "9487b25f-a17f-4fd1-9467-16fc0ad9db86",
+     "slug": "g11-teorema-existentei-si-unicitatii-marginii-superioare",
+     "name": "teorema existenței și unicității marginii superioare",
+     "grade": 11,
+     "x": 1474,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b5980d88-4fb9-43ab-b61c-601565400801",
+       "slug": "g11-axioma-continuitatii-multimii-numerelor-reale",
+       "name": "axioma continuității mulțimii numerelor reale",
+       "grade": 11
+      },
+      {
+       "id": "7c5393a4-f333-4d07-8571-0fbeaf6aec0c",
+       "slug": "g11-margine-superioara-supremum",
+       "name": "margine superioară (supremum)",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "fd8d4e6e-db16-42af-962d-25096a497fa0",
+     "slug": "g11-inegalitatea-mediilor",
+     "name": "inegalitatea mediilor",
+     "grade": 11,
+     "x": 1670,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "46c3e6cb-0987-4986-950e-3d80450a8644",
+       "slug": "g10-multimea-numerelor-reale",
+       "name": "mulțimea numerelor reale",
+       "grade": 10
+      },
+      {
+       "id": "c26f55eb-cc2b-494a-94ff-b90d361650d0",
+       "slug": "g11-sir-de-numere-reale",
+       "name": "șir de numere reale",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "1f834640-ebb6-4746-bb83-052abd660c93",
+     "slug": "g11-sir-numeric-infinit",
+     "name": "șir numeric infinit",
+     "grade": 11,
+     "x": 1866,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c26f55eb-cc2b-494a-94ff-b90d361650d0",
+       "slug": "g11-sir-de-numere-reale",
+       "name": "șir de numere reale",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "f15a1fc2-ff68-44d4-918c-2e1db50f2657",
+     "slug": "g11-operatii-cu-siruri-convergente",
+     "name": "operații cu șiruri convergente",
+     "grade": 11,
+     "x": 2062,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "93b6c77a-dae2-4c9d-b745-b909d9e22452",
+       "slug": "g11-sir-convergent",
+       "name": "șir convergent",
+       "grade": 11
+      },
+      {
+       "id": "079c0271-16a1-412d-bb42-dfa4b638c7be",
+       "slug": "g11-limita-unui-sir",
+       "name": "limita unui șir",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "32603ff5-f860-43d2-9fb0-d457a4fd68ff",
+     "slug": "g11-termenul-general-al-sirului",
+     "name": "termenul general al șirului",
+     "grade": 11,
+     "x": 2258,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c26f55eb-cc2b-494a-94ff-b90d361650d0",
+       "slug": "g11-sir-de-numere-reale",
+       "name": "șir de numere reale",
+       "grade": 11
+      },
+      {
+       "id": "4160c7ae-b7b0-48f5-a385-ef3d7f568b4f",
+       "slug": "g8-termenul-general-al-sirului",
+       "name": "termenul general al șirului",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "dbe0b262-bbdb-4c1a-b750-c148a0aacf29",
+     "slug": "g11-teorema-weierstrass-pentru-siruri",
+     "name": "teorema Weierstrass pentru șiruri",
+     "grade": 11,
+     "x": 1082,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "2bce3592-2539-4019-acaf-e2952cbe2eb0",
+       "slug": "g11-sir-marginit",
+       "name": "șir mărginit",
+       "grade": 11
+      },
+      {
+       "id": "88e2127c-e55d-4f99-ac40-680aabfd0c80",
+       "slug": "g11-sir-monoton",
+       "name": "șir monoton",
+       "grade": 11
+      },
+      {
+       "id": "93b6c77a-dae2-4c9d-b745-b909d9e22452",
+       "slug": "g11-sir-convergent",
+       "name": "șir convergent",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "e333f1e1-bdec-4ffd-860b-4580781790cd",
+     "to": "458352b1-0f5b-478c-ad07-03949f18f379"
+    },
+    {
+     "from": "dbe0b262-bbdb-4c1a-b750-c148a0aacf29",
+     "to": "2bce3592-2539-4019-acaf-e2952cbe2eb0"
+    }
+   ]
+  },
+  {
+   "key": "g11:modulul-4",
+   "label": "Modulul 4",
+   "width": 1576,
+   "height": 576,
+   "nodes": [
+    {
+     "id": "0065442b-0962-484c-aa2b-ce8e50661bf1",
+     "slug": "g11-derivarea-functiei-de-tipul-u-x-v-x",
+     "name": "derivarea funcției de tipul u(x)^v(x)",
+     "grade": 11,
+     "x": 102,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5f4dea25-8c52-40b6-abae-b1cf8a6f822d",
+       "slug": "g11-derivata-functiei-compuse",
+       "name": "derivata funcției compuse",
+       "grade": 11
+      },
+      {
+       "id": "7fcd9f55-efff-438d-981d-8bb056c6fb85",
+       "slug": "g11-derivata-functiei-exponentiale",
+       "name": "derivata funcției exponențiale",
+       "grade": 11
+      },
+      {
+       "id": "616fcba1-a9ed-4a53-9992-2749d0c0e9d2",
+       "slug": "g11-derivata-functiei-logaritmice",
+       "name": "derivata funcției logaritmice",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "1f060e7b-7636-484a-962b-c06327185fe8",
+     "slug": "g11-derivata-functiei-cotangenta",
+     "name": "derivata funcției cotangentă",
+     "grade": 11,
+     "x": 984,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "875c2205-da9f-4195-a24b-03ac18aeb9e9",
+       "slug": "g11-reguli-de-derivare",
+       "name": "reguli de derivare",
+       "grade": 11
+      },
+      {
+       "id": "5f4dea25-8c52-40b6-abae-b1cf8a6f822d",
+       "slug": "g11-derivata-functiei-compuse",
+       "name": "derivata funcției compuse",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "2ed82045-bcea-42d1-b110-066f9ca8a744",
+     "slug": "g11-proprietati-generale-ale-functiilor-derivabile",
+     "name": "proprietăți generale ale funcțiilor derivabile",
+     "grade": 11,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "fb736dd0-7dbe-421a-b7ce-7775d9bea046",
+       "slug": "g11-teorema-lui-fermat",
+       "name": "teorema lui Fermat",
+       "grade": 11
+      },
+      {
+       "id": "1d0f4484-9cf2-49c2-9fc6-9a7ec1bbc965",
+       "slug": "g11-teorema-lui-rolle",
+       "name": "teorema lui Rolle",
+       "grade": 11
+      },
+      {
+       "id": "6488a8e9-b38c-412d-a759-55e188caf7a6",
+       "slug": "g11-teorema-lui-lagrange",
+       "name": "teorema lui Lagrange",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "6834b415-93f1-4e0b-8cd0-33eda52693dd",
+     "slug": "g11-derivata-functiei-tangenta",
+     "name": "derivata funcției tangentă",
+     "grade": 11,
+     "x": 788,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "875c2205-da9f-4195-a24b-03ac18aeb9e9",
+       "slug": "g11-reguli-de-derivare",
+       "name": "reguli de derivare",
+       "grade": 11
+      },
+      {
+       "id": "5f4dea25-8c52-40b6-abae-b1cf8a6f822d",
+       "slug": "g11-derivata-functiei-compuse",
+       "name": "derivata funcției compuse",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "e8640d3c-4734-486b-86cd-7f5a13a39a7f",
+     "slug": "g11-derivata-de-ordin-superior",
+     "name": "derivata de ordin superior",
+     "grade": 11,
+     "x": 298,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8832c35b-9256-40d9-a82e-16a2a4092ef1",
+       "slug": "g11-derivata-de-ordinul-doi",
+       "name": "derivata de ordinul doi",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "5f2bab22-d31d-4afc-a935-3bc241b7e58e",
+     "slug": "g11-tangenta-la-graficul-unei-functii",
+     "name": "tangenta la graficul unei funcții",
+     "grade": 11,
+     "x": 1082,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "bd6b438f-f33e-4ab7-b828-d43022dae9ed",
+     "slug": "g11-functie-derivabila-pe-multime",
+     "name": "funcție derivabilă pe mulțime",
+     "grade": 11,
+     "x": 690,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "fd7db408-de22-4930-b828-02b6bed4af3e",
+       "slug": "g10-graficul-functiei",
+       "name": "graficul funcției",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "875c2205-da9f-4195-a24b-03ac18aeb9e9",
+     "slug": "g11-reguli-de-derivare",
+     "name": "reguli de derivare",
+     "grade": 11,
+     "x": 886,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "65b3dc7a-2b5b-45ac-ab4f-ec627f720a86",
+       "slug": "g11-derivata-functiei-constante",
+       "name": "derivata funcției constante",
+       "grade": 11
+      },
+      {
+       "id": "1ba1f267-c6e3-4d77-b9e1-7ae819cb4f49",
+       "slug": "g11-derivata-functiei-identice",
+       "name": "derivata funcției identice",
+       "grade": 11
+      },
+      {
+       "id": "00d0a879-48cc-45ec-b63d-7c025da9c6ee",
+       "slug": "g11-derivata-functiei-putere-cu-exponent-real",
+       "name": "derivata funcției putere cu exponent real",
+       "grade": 11
+      },
+      {
+       "id": "0f7ee18a-c3c9-460d-8e15-a29eb82801f9",
+       "slug": "g11-derivata-functiei-sinus",
+       "name": "derivata funcției sinus",
+       "grade": 11
+      },
+      {
+       "id": "3db3663f-7eeb-4ec7-9304-2a6bd422faa5",
+       "slug": "g11-derivata-functiei-cosinus",
+       "name": "derivata funcției cosinus",
+       "grade": 11
+      },
+      {
+       "id": "7fcd9f55-efff-438d-981d-8bb056c6fb85",
+       "slug": "g11-derivata-functiei-exponentiale",
+       "name": "derivata funcției exponențiale",
+       "grade": 11
+      },
+      {
+       "id": "616fcba1-a9ed-4a53-9992-2749d0c0e9d2",
+       "slug": "g11-derivata-functiei-logaritmice",
+       "name": "derivata funcției logaritmice",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "4f8ca74f-6c3a-4e3a-a7d5-76e4782d7980",
+     "slug": "g11-ecuatia-tangentei-la-graficul-functiei",
+     "name": "ecuația tangentei la graficul funcției",
+     "grade": 11,
+     "x": 1082,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5f2bab22-d31d-4afc-a935-3bc241b7e58e",
+       "slug": "g11-tangenta-la-graficul-unei-functii",
+       "name": "tangenta la graficul unei funcții",
+       "grade": 11
+      },
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "a9307e04-780f-49cd-8f5c-dd4640bd056c",
+     "slug": "g11-semitangenta",
+     "name": "semitangentă",
+     "grade": 11,
+     "x": 1278,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "7b579ba5-7f29-42e9-b108-3b400b948756",
+       "slug": "g11-derivate-laterale",
+       "name": "derivate laterale",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "2d516be0-d5d1-4465-ac50-1a798a9ecc58",
+     "slug": "g11-punct-de-intoarcere",
+     "name": "punct de întoarcere",
+     "grade": 11,
+     "x": 1474,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "7b579ba5-7f29-42e9-b108-3b400b948756",
+       "slug": "g11-derivate-laterale",
+       "name": "derivate laterale",
+       "grade": 11
+      },
+      {
+       "id": "03212167-bc40-4059-b4c8-b71da946fd07",
+       "slug": "g11-punct-unghiular",
+       "name": "punct unghiular",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "fb736dd0-7dbe-421a-b7ce-7775d9bea046",
+     "slug": "g11-teorema-lui-fermat",
+     "name": "teorema lui Fermat",
+     "grade": 11,
+     "x": 494,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "82e38b2c-c81d-4b40-91fd-974daec0ed84",
+       "slug": "g10-monotonia-functiei",
+       "name": "monotonia funcției",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "00d0a879-48cc-45ec-b63d-7c025da9c6ee",
+     "slug": "g11-derivata-functiei-putere-cu-exponent-real",
+     "name": "derivata funcției putere cu exponent real",
+     "grade": 11,
+     "x": 886,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "edfabfe0-54af-4df7-aa0f-70c99cc034d4",
+       "slug": "g10-puterea-cu-exponent-real",
+       "name": "puterea cu exponent real",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "7b579ba5-7f29-42e9-b108-3b400b948756",
+     "slug": "g11-derivate-laterale",
+     "name": "derivate laterale",
+     "grade": 11,
+     "x": 1376,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "f981da7b-fb5d-46f2-a2e1-ccc3f2ad75b7",
+       "slug": "g11-limita-laterala-a-unei-functii",
+       "name": "limită laterală a unei funcții",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "4f8ca74f-6c3a-4e3a-a7d5-76e4782d7980",
+     "to": "5f2bab22-d31d-4afc-a935-3bc241b7e58e"
+    },
+    {
+     "from": "2d516be0-d5d1-4465-ac50-1a798a9ecc58",
+     "to": "7b579ba5-7f29-42e9-b108-3b400b948756"
+    },
+    {
+     "from": "a9307e04-780f-49cd-8f5c-dd4640bd056c",
+     "to": "7b579ba5-7f29-42e9-b108-3b400b948756"
+    },
+    {
+     "from": "875c2205-da9f-4195-a24b-03ac18aeb9e9",
+     "to": "00d0a879-48cc-45ec-b63d-7c025da9c6ee"
+    },
+    {
+     "from": "1f060e7b-7636-484a-962b-c06327185fe8",
+     "to": "875c2205-da9f-4195-a24b-03ac18aeb9e9"
+    },
+    {
+     "from": "6834b415-93f1-4e0b-8cd0-33eda52693dd",
+     "to": "875c2205-da9f-4195-a24b-03ac18aeb9e9"
+    },
+    {
+     "from": "2ed82045-bcea-42d1-b110-066f9ca8a744",
+     "to": "fb736dd0-7dbe-421a-b7ce-7775d9bea046"
+    }
+   ]
+  },
+  {
+   "key": "g11:limite-de-functii",
+   "label": "Limite de funcții",
+   "width": 2164,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "692d25b1-fd1a-44eb-9172-9a305f89004b",
+     "slug": "g11-functie-rationala",
+     "name": "funcție rațională",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "7a488da8-1167-4fd1-8e26-af45f7654e74",
+       "slug": "g9-fractie-algebrica",
+       "name": "fracție algebrică",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "8d19d5e2-d628-48aa-b375-dd648f657a0e",
+     "slug": "g11-functia-arctangenta",
+     "name": "funcția arctangentă",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "cb355bfa-b495-4b8e-8c84-e9212e530864",
+       "slug": "g10-functii-trigonometrice-inverse",
+       "name": "funcții trigonometrice inverse",
+       "grade": 10
+      },
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "2b00e630-b8b8-4c62-afa8-986207319e21",
+     "slug": "g11-functia-arcsinus",
+     "name": "funcția arcsinus",
+     "grade": 11,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "cb355bfa-b495-4b8e-8c84-e9212e530864",
+       "slug": "g10-functii-trigonometrice-inverse",
+       "name": "funcții trigonometrice inverse",
+       "grade": 10
+      },
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "91f9b064-1663-4d14-bcb9-ee225a17fe0a",
+     "slug": "g11-functie-dominanta",
+     "name": "funcție dominantă",
+     "grade": 11,
+     "x": 690,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "2707d059-473d-4930-a196-6e421f737a72",
+       "slug": "g11-functii-elementare",
+       "name": "funcții elementare",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "40c2cbc9-d0e0-4d82-9105-b8eae7a2d58b",
+     "slug": "g11-functia-tangenta",
+     "name": "funcția tangentă",
+     "grade": 11,
+     "x": 886,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "bcd83018-b30c-46a8-b131-cb2098026866",
+       "slug": "g10-functiile-trigonometrice-tangenta-si-cotangenta",
+       "name": "funcțiile trigonometrice tangentă și cotangentă",
+       "grade": 10
+      },
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "3d1febb8-3d36-4840-9464-cfc57066e698",
+     "slug": "g11-functia-cotangenta",
+     "name": "funcția cotangentă",
+     "grade": 11,
+     "x": 1082,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "bcd83018-b30c-46a8-b131-cb2098026866",
+       "slug": "g10-functiile-trigonometrice-tangenta-si-cotangenta",
+       "name": "funcțiile trigonometrice tangentă și cotangentă",
+       "grade": 10
+      },
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "4dbfd476-b606-4729-b99f-afd58d182960",
+     "slug": "g11-functia-arccosinus",
+     "name": "funcția arccosinus",
+     "grade": 11,
+     "x": 1278,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "cb355bfa-b495-4b8e-8c84-e9212e530864",
+       "slug": "g10-functii-trigonometrice-inverse",
+       "name": "funcții trigonometrice inverse",
+       "grade": 10
+      },
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "01c8be2c-b36a-4979-8d63-3850efcd28b4",
+     "slug": "g11-functie-radical",
+     "name": "funcție radical",
+     "grade": 11,
+     "x": 1474,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "0783dcb2-eb94-4f5c-b702-3762d5786021",
+       "slug": "g10-functia-radical",
+       "name": "funcția radical",
+       "grade": 10
+      },
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "890ef2f2-e921-4037-861d-a18b67074ee3",
+     "slug": "g11-functii-trigonometrice-inverse",
+     "name": "funcții trigonometrice inverse",
+     "grade": 11,
+     "x": 1670,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "cb355bfa-b495-4b8e-8c84-e9212e530864",
+       "slug": "g10-functii-trigonometrice-inverse",
+       "name": "funcții trigonometrice inverse",
+       "grade": 10
+      },
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "034dd9df-d2e9-42a4-a78f-687ea0ea7bd4",
+     "slug": "g11-forme-exceptate-la-limite-de-functii",
+     "name": "forme exceptate la limite de funcții",
+     "grade": 11,
+     "x": 1866,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "bb18d5da-477d-47b4-85e8-dda3ae9676c4",
+       "slug": "g11-operatii-cu-limite-de-functii",
+       "name": "operații cu limite de funcții",
+       "grade": 11
+      },
+      {
+       "id": "4b7434ad-19ac-48eb-9e8b-fdb1f79a9cbf",
+       "slug": "g11-forme-determinate-si-nedeterminate-la-limite",
+       "name": "forme determinate și nedeterminate la limite",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "2b8d3eb0-110a-4210-9716-513b5a988cbf",
+     "slug": "g11-regula-lui-l-hospital",
+     "name": "regula lui l'Hospital",
+     "grade": 11,
+     "x": 2062,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:perpendicularitatea-in-spatiu",
+   "label": "Perpendicularitatea în spațiu",
+   "width": 792,
+   "height": 576,
+   "nodes": [
+    {
+     "id": "41efe417-5ae2-4384-a75b-9a7c03e7d780",
+     "slug": "g11-drepte-perpendiculare-in-spatiu",
+     "name": "drepte perpendiculare în spațiu",
+     "grade": 11,
+     "x": 298,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8c8778e3-bf53-4345-b206-c07053c7a7d2",
+       "slug": "g11-pozitiile-relative-ale-doua-drepte-in-spatiu",
+       "name": "pozițiile relative ale două drepte în spațiu",
+       "grade": 11
+      },
+      {
+       "id": "98b15fa6-20c9-417f-a679-298c8ab17663",
+       "slug": "g6-drepte-perpendiculare",
+       "name": "drepte perpendiculare",
+       "grade": 6
+      }
+     ]
+    },
+    {
+     "id": "10291145-85ed-4f7c-a550-794c076f0f64",
+     "slug": "g11-proiectie-ortogonala-a-unui-punct-pe-o-dreapta",
+     "name": "proiecție ortogonală a unui punct pe o dreaptă",
+     "grade": 11,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "502953ed-bf50-477b-b602-68da1b4a7d27",
+       "slug": "g8-proiectia-ortogonala-a-unei-figuri-pe-o-dreapta",
+       "name": "proiecția ortogonală a unei figuri pe o dreaptă",
+       "grade": 8
+      },
+      {
+       "id": "41efe417-5ae2-4384-a75b-9a7c03e7d780",
+       "slug": "g11-drepte-perpendiculare-in-spatiu",
+       "name": "drepte perpendiculare în spațiu",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "ca1f6e79-883c-4373-a8b0-7041ea735e81",
+     "slug": "g11-proiectia-unei-figuri-pe-un-plan",
+     "name": "proiecția unei figuri pe un plan",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "0cc59ea1-143b-4dd5-b1d2-bdb033641279",
+       "slug": "g11-proiectie-ortogonala-a-unui-punct-pe-un-plan",
+       "name": "proiecție ortogonală a unui punct pe un plan",
+       "grade": 11
+      },
+      {
+       "id": "5be837b5-027c-4d6c-826a-7fdf258d0c4b",
+       "slug": "g11-dreapta-perpendiculara-pe-un-plan",
+       "name": "dreaptă perpendiculară pe un plan",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "cbbdc4cf-49b0-4d3a-963f-fbd4ba6dec17",
+     "slug": "g11-distanta-de-la-un-punct-la-o-dreapta",
+     "name": "distanța de la un punct la o dreaptă",
+     "grade": 11,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "99b3e6e3-f9b5-490d-9a29-adfd6d5f9823",
+       "slug": "g7-distanta-de-la-un-punct-la-o-dreapta",
+       "name": "distanța de la un punct la o dreaptă",
+       "grade": 7
+      },
+      {
+       "id": "41efe417-5ae2-4384-a75b-9a7c03e7d780",
+       "slug": "g11-drepte-perpendiculare-in-spatiu",
+       "name": "drepte perpendiculare în spațiu",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "a8ef7f24-6649-4b37-a20b-10cc02501ead",
+     "slug": "g11-unghiul-format-de-o-dreapta-si-un-plan",
+     "name": "unghiul format de o dreaptă și un plan",
+     "grade": 11,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5be837b5-027c-4d6c-826a-7fdf258d0c4b",
+       "slug": "g11-dreapta-perpendiculara-pe-un-plan",
+       "name": "dreaptă perpendiculară pe un plan",
+       "grade": 11
+      },
+      {
+       "id": "0cc59ea1-143b-4dd5-b1d2-bdb033641279",
+       "slug": "g11-proiectie-ortogonala-a-unui-punct-pe-un-plan",
+       "name": "proiecție ortogonală a unui punct pe un plan",
+       "grade": 11
+      },
+      {
+       "id": "d0f8f856-afc5-45c9-95ef-e7249f14029a",
+       "slug": "g7-unghi",
+       "name": "unghi",
+       "grade": 7
+      }
+     ]
+    },
+    {
+     "id": "53c6a42a-ecd5-4c00-8b18-15a8e497dbd5",
+     "slug": "g11-teorema-celor-trei-perpendiculare",
+     "name": "teorema celor trei perpendiculare",
+     "grade": 11,
+     "x": 690,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5be837b5-027c-4d6c-826a-7fdf258d0c4b",
+       "slug": "g11-dreapta-perpendiculara-pe-un-plan",
+       "name": "dreaptă perpendiculară pe un plan",
+       "grade": 11
+      },
+      {
+       "id": "0cc59ea1-143b-4dd5-b1d2-bdb033641279",
+       "slug": "g11-proiectie-ortogonala-a-unui-punct-pe-un-plan",
+       "name": "proiecție ortogonală a unui punct pe un plan",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "5be837b5-027c-4d6c-826a-7fdf258d0c4b",
+     "slug": "g11-dreapta-perpendiculara-pe-un-plan",
+     "name": "dreaptă perpendiculară pe un plan",
+     "grade": 11,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d79087a3-2c15-4f7d-be96-e155f5fc66fc",
+       "slug": "g11-planul-in-spatiu",
+       "name": "planul în spațiu",
+       "grade": 11
+      },
+      {
+       "id": "99b3e6e3-f9b5-490d-9a29-adfd6d5f9823",
+       "slug": "g7-distanta-de-la-un-punct-la-o-dreapta",
+       "name": "distanța de la un punct la o dreaptă",
+       "grade": 7
+      },
+      {
+       "id": "41efe417-5ae2-4384-a75b-9a7c03e7d780",
+       "slug": "g11-drepte-perpendiculare-in-spatiu",
+       "name": "drepte perpendiculare în spațiu",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "20a829c3-5a61-47d3-8bd7-7e3b81b5307b",
+     "slug": "g11-unghiul-format-de-doua-drepte-necoplanare",
+     "name": "unghiul format de două drepte necoplanare",
+     "grade": 11,
+     "x": 494,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8c8778e3-bf53-4345-b206-c07053c7a7d2",
+       "slug": "g11-pozitiile-relative-ale-doua-drepte-in-spatiu",
+       "name": "pozițiile relative ale două drepte în spațiu",
+       "grade": 11
+      },
+      {
+       "id": "d0f8f856-afc5-45c9-95ef-e7249f14029a",
+       "slug": "g7-unghi",
+       "name": "unghi",
+       "grade": 7
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "5be837b5-027c-4d6c-826a-7fdf258d0c4b",
+     "to": "41efe417-5ae2-4384-a75b-9a7c03e7d780"
+    },
+    {
+     "from": "cbbdc4cf-49b0-4d3a-963f-fbd4ba6dec17",
+     "to": "41efe417-5ae2-4384-a75b-9a7c03e7d780"
+    },
+    {
+     "from": "10291145-85ed-4f7c-a550-794c076f0f64",
+     "to": "41efe417-5ae2-4384-a75b-9a7c03e7d780"
+    },
+    {
+     "from": "53c6a42a-ecd5-4c00-8b18-15a8e497dbd5",
+     "to": "5be837b5-027c-4d6c-826a-7fdf258d0c4b"
+    },
+    {
+     "from": "a8ef7f24-6649-4b37-a20b-10cc02501ead",
+     "to": "5be837b5-027c-4d6c-826a-7fdf258d0c4b"
+    },
+    {
+     "from": "ca1f6e79-883c-4373-a8b0-7041ea735e81",
+     "to": "5be837b5-027c-4d6c-826a-7fdf258d0c4b"
+    }
+   ]
+  },
+  {
+   "key": "g11:modulul-3",
+   "label": "Modulul 3",
+   "width": 792,
+   "height": 576,
+   "nodes": [
+    {
+     "id": "211fb5df-25cc-4256-9a9d-1db610bbf9f8",
+     "slug": "g11-punct-de-discontinuitate-de-speta-a-doua",
+     "name": "punct de discontinuitate de speța a doua",
+     "grade": 11,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "956be79d-d25c-46bc-ac7e-af8ab7e93bc0",
+       "slug": "g11-punct-de-discontinuitate",
+       "name": "punct de discontinuitate",
+       "grade": 11
+      },
+      {
+       "id": "f981da7b-fb5d-46f2-a2e1-ccc3f2ad75b7",
+       "slug": "g11-limita-laterala-a-unei-functii",
+       "name": "limită laterală a unei funcții",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "3937e006-1d21-4f3b-b569-6c0c6e48bb37",
+     "slug": "g11-saltul-functiei-intr-un-punct",
+     "name": "saltul funcției într-un punct",
+     "grade": 11,
+     "x": 102,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "485c0063-52e7-495e-a672-f5dbf3017dc0",
+       "slug": "g11-punct-de-discontinuitate-de-speta-intai",
+       "name": "punct de discontinuitate de speța întâi",
+       "grade": 11
+      },
+      {
+       "id": "f981da7b-fb5d-46f2-a2e1-ccc3f2ad75b7",
+       "slug": "g11-limita-laterala-a-unei-functii",
+       "name": "limită laterală a unei funcții",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "38d643ae-4be0-4478-af9c-c820a0fbc6ee",
+     "slug": "g11-cea-mai-mare-si-cea-mai-mica-valoare-a-functiei-pe-interval",
+     "name": "cea mai mare și cea mai mică valoare a funcției pe interval",
+     "grade": 11,
+     "x": 298,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "750fb27c-f029-49b0-9fb9-d9f1dde28a77",
+       "slug": "g11-teorema-weierstrass-de-marginire",
+       "name": "teorema Weierstrass de mărginire",
+       "grade": 11
+      },
+      {
+       "id": "e3438e5e-1472-4fec-9f70-2b77f8b28853",
+       "slug": "g11-multime-compacta",
+       "name": "mulțime compactă",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "c1307400-ba20-489f-8e1a-f8a8191199ef",
+     "slug": "g11-punct-de-continuitate",
+     "name": "punct de continuitate",
+     "grade": 11,
+     "x": 494,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e9d7ccda-da60-42f4-bc71-96b3c6baeff7",
+       "slug": "g11-functie-continua-intr-un-punct",
+       "name": "funcție continuă într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "4c68c554-e390-4514-ada8-6ea98451a4d1",
+     "slug": "g11-teorema-bolzano-cauchy-despre-valorile-intermediare",
+     "name": "teorema Bolzano–Cauchy despre valorile intermediare",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d7474886-99c6-4529-b3a4-e6b90057eadf",
+       "slug": "g11-proprietatea-lui-darboux",
+       "name": "proprietatea lui Darboux",
+       "grade": 11
+      },
+      {
+       "id": "ed6282ad-bfef-4f1d-8885-34310fbbb4d6",
+       "slug": "g11-functie-continua-pe-o-multime",
+       "name": "funcție continuă pe o mulțime",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "d7474886-99c6-4529-b3a4-e6b90057eadf",
+     "slug": "g11-proprietatea-lui-darboux",
+     "name": "proprietatea lui Darboux",
+     "grade": 11,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "38d643ae-4be0-4478-af9c-c820a0fbc6ee",
+       "slug": "g11-cea-mai-mare-si-cea-mai-mica-valoare-a-functiei-pe-interval",
+       "name": "cea mai mare și cea mai mică valoare a funcției pe interval",
+       "grade": 11
+      },
+      {
+       "id": "ed6282ad-bfef-4f1d-8885-34310fbbb4d6",
+       "slug": "g11-functie-continua-pe-o-multime",
+       "name": "funcție continuă pe o mulțime",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "956be79d-d25c-46bc-ac7e-af8ab7e93bc0",
+     "slug": "g11-punct-de-discontinuitate",
+     "name": "punct de discontinuitate",
+     "grade": 11,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "2e71ba4b-6c40-4628-8b3a-ddfaf6c27f7e",
+       "slug": "g11-functie-discontinua-intr-un-punct",
+       "name": "funcție discontinuă într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "c1307400-ba20-489f-8e1a-f8a8191199ef",
+       "slug": "g11-punct-de-continuitate",
+       "name": "punct de continuitate",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "2ed00629-14df-4390-981b-b14dc388f2c3",
+     "slug": "g11-operatii-cu-functii-continue",
+     "name": "operații cu funcții continue",
+     "grade": 11,
+     "x": 690,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e9d7ccda-da60-42f4-bc71-96b3c6baeff7",
+       "slug": "g11-functie-continua-intr-un-punct",
+       "name": "funcție continuă într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "509e30e4-09c7-402c-bacc-e31e7be630c2",
+       "slug": "g10-operatii-cu-functii",
+       "name": "operații cu funcții",
+       "grade": 10
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "956be79d-d25c-46bc-ac7e-af8ab7e93bc0",
+     "to": "c1307400-ba20-489f-8e1a-f8a8191199ef"
+    },
+    {
+     "from": "211fb5df-25cc-4256-9a9d-1db610bbf9f8",
+     "to": "956be79d-d25c-46bc-ac7e-af8ab7e93bc0"
+    },
+    {
+     "from": "d7474886-99c6-4529-b3a4-e6b90057eadf",
+     "to": "38d643ae-4be0-4478-af9c-c820a0fbc6ee"
+    },
+    {
+     "from": "4c68c554-e390-4514-ada8-6ea98451a4d1",
+     "to": "d7474886-99c6-4529-b3a4-e6b90057eadf"
+    }
+   ]
+  },
+  {
+   "key": "g11:numere-complexe",
+   "label": "Numere complexe",
+   "width": 596,
+   "height": 576,
+   "nodes": [
+    {
+     "id": "670819a5-6f86-4f2a-836f-ed0c11dabac7",
+     "slug": "g11-conjugatul-unui-numar-complex",
+     "name": "conjugatul unui număr complex",
+     "grade": 11,
+     "x": 102,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "235b93f1-9ba3-4b9a-adbc-d2bf6d66a32d",
+       "slug": "g11-numar-complex",
+       "name": "număr complex",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "d4ccbb73-6589-4cb5-807b-6696e5d49884",
+     "slug": "g11-egalitatea-numerelor-complexe",
+     "name": "egalitatea numerelor complexe",
+     "grade": 11,
+     "x": 298,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "235b93f1-9ba3-4b9a-adbc-d2bf6d66a32d",
+       "slug": "g11-numar-complex",
+       "name": "număr complex",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "b100efc7-f637-4f50-9579-18b79e0c2a34",
+     "slug": "g11-argumentul-unui-numar-complex",
+     "name": "argumentul unui număr complex",
+     "grade": 11,
+     "x": 494,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1e35f3e9-e03f-4ad0-86c7-709ea3bfae16",
+       "slug": "g11-modulul-unui-numar-complex",
+       "name": "modulul unui număr complex",
+       "grade": 11
+      },
+      {
+       "id": "0637203e-9ccc-4130-a7da-d5017d7e65fb",
+       "slug": "g11-reprezentarea-geometrica-a-numerelor-complexe",
+       "name": "reprezentarea geometrică a numerelor complexe",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "68e8be9a-af59-4280-817a-d476a9520599",
+     "slug": "g11-formula-lui-moivre",
+     "name": "formula lui Moivre",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e3d84615-3040-4253-9b57-9a2996c06491",
+       "slug": "g11-forma-trigonometrica-a-unui-numar-complex",
+       "name": "forma trigonometrică a unui număr complex",
+       "grade": 11
+      },
+      {
+       "id": "c9ba1990-d4c6-4663-a8a6-9eceb05ecedf",
+       "slug": "g11-operatii-cu-numere-complexe-in-forma-algebrica",
+       "name": "operații cu numere complexe în formă algebrică",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "c9ba1990-d4c6-4663-a8a6-9eceb05ecedf",
+     "slug": "g11-operatii-cu-numere-complexe-in-forma-algebrica",
+     "name": "operații cu numere complexe în formă algebrică",
+     "grade": 11,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "235b93f1-9ba3-4b9a-adbc-d2bf6d66a32d",
+       "slug": "g11-numar-complex",
+       "name": "număr complex",
+       "grade": 11
+      },
+      {
+       "id": "d4ccbb73-6589-4cb5-807b-6696e5d49884",
+       "slug": "g11-egalitatea-numerelor-complexe",
+       "name": "egalitatea numerelor complexe",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "37d0d4dd-b0e8-4d4d-a326-cd9f4b3ff57c",
+     "slug": "g11-operatii-cu-numere-complexe-in-forma-trigonometrica",
+     "name": "operații cu numere complexe în formă trigonometrică",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e3d84615-3040-4253-9b57-9a2996c06491",
+       "slug": "g11-forma-trigonometrica-a-unui-numar-complex",
+       "name": "forma trigonometrică a unui număr complex",
+       "grade": 11
+      },
+      {
+       "id": "c9ba1990-d4c6-4663-a8a6-9eceb05ecedf",
+       "slug": "g11-operatii-cu-numere-complexe-in-forma-algebrica",
+       "name": "operații cu numere complexe în formă algebrică",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "58649d79-fdc6-4649-911d-a37ed9ebd1c9",
+     "slug": "g11-putere-a-unui-numar-complex",
+     "name": "putere a unui număr complex",
+     "grade": 11,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c9ba1990-d4c6-4663-a8a6-9eceb05ecedf",
+       "slug": "g11-operatii-cu-numere-complexe-in-forma-algebrica",
+       "name": "operații cu numere complexe în formă algebrică",
+       "grade": 11
+      },
+      {
+       "id": "bef204ba-9aa1-4b9b-b142-513d2c9f521c",
+       "slug": "g8-puterea-cu-exponent-natural",
+       "name": "puterea cu exponent natural",
+       "grade": 8
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "c9ba1990-d4c6-4663-a8a6-9eceb05ecedf",
+     "to": "d4ccbb73-6589-4cb5-807b-6696e5d49884"
+    },
+    {
+     "from": "58649d79-fdc6-4649-911d-a37ed9ebd1c9",
+     "to": "c9ba1990-d4c6-4663-a8a6-9eceb05ecedf"
+    },
+    {
+     "from": "68e8be9a-af59-4280-817a-d476a9520599",
+     "to": "c9ba1990-d4c6-4663-a8a6-9eceb05ecedf"
+    },
+    {
+     "from": "37d0d4dd-b0e8-4d4d-a326-cd9f4b3ff57c",
+     "to": "c9ba1990-d4c6-4663-a8a6-9eceb05ecedf"
+    }
+   ]
+  },
+  {
+   "key": "g11:modulul-6",
+   "label": "Modulul 6",
+   "width": 596,
+   "height": 576,
+   "nodes": [
+    {
+     "id": "ec5cff26-a151-45e1-a49f-a83c96a75b66",
+     "slug": "g11-radacina-de-ordinul-n-a-unui-numar-complex",
+     "name": "rădăcina de ordinul n a unui număr complex",
+     "grade": 11,
+     "x": 102,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "68e8be9a-af59-4280-817a-d476a9520599",
+       "slug": "g11-formula-lui-moivre",
+       "name": "formula lui Moivre",
+       "grade": 11
+      },
+      {
+       "id": "235b93f1-9ba3-4b9a-adbc-d2bf6d66a32d",
+       "slug": "g11-numar-complex",
+       "name": "număr complex",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "1e35f3e9-e03f-4ad0-86c7-709ea3bfae16",
+     "slug": "g11-modulul-unui-numar-complex",
+     "name": "modulul unui număr complex",
+     "grade": 11,
+     "x": 494,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "235b93f1-9ba3-4b9a-adbc-d2bf6d66a32d",
+       "slug": "g11-numar-complex",
+       "name": "număr complex",
+       "grade": 11
+      },
+      {
+       "id": "670819a5-6f86-4f2a-836f-ed0c11dabac7",
+       "slug": "g11-conjugatul-unui-numar-complex",
+       "name": "conjugatul unui număr complex",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "298d51d1-18ba-45cc-a1e6-ad28e5e43660",
+     "slug": "g11-ecuatii-binome",
+     "name": "ecuații binome",
+     "grade": 11,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ec5cff26-a151-45e1-a49f-a83c96a75b66",
+       "slug": "g11-radacina-de-ordinul-n-a-unui-numar-complex",
+       "name": "rădăcina de ordinul n a unui număr complex",
+       "grade": 11
+      },
+      {
+       "id": "a979fa31-bc58-4028-b16c-c0fb6814761b",
+       "slug": "g9-ecuatia-de-gradul-ii-cu-o-necunoscuta",
+       "name": "ecuația de gradul II cu o necunoscută",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "c62a66ea-7f00-4212-ad9f-78eef11fa83c",
+     "slug": "g11-aplicatii-ale-numerelor-complexe-in-geometrie",
+     "name": "aplicații ale numerelor complexe în geometrie",
+     "grade": 11,
+     "x": 396,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c9ba1990-d4c6-4663-a8a6-9eceb05ecedf",
+       "slug": "g11-operatii-cu-numere-complexe-in-forma-algebrica",
+       "name": "operații cu numere complexe în formă algebrică",
+       "grade": 11
+      },
+      {
+       "id": "0637203e-9ccc-4130-a7da-d5017d7e65fb",
+       "slug": "g11-reprezentarea-geometrica-a-numerelor-complexe",
+       "name": "reprezentarea geometrică a numerelor complexe",
+       "grade": 11
+      },
+      {
+       "id": "e3d84615-3040-4253-9b57-9a2996c06491",
+       "slug": "g11-forma-trigonometrica-a-unui-numar-complex",
+       "name": "forma trigonometrică a unui număr complex",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "0637203e-9ccc-4130-a7da-d5017d7e65fb",
+     "slug": "g11-reprezentarea-geometrica-a-numerelor-complexe",
+     "name": "reprezentarea geometrică a numerelor complexe",
+     "grade": 11,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "235b93f1-9ba3-4b9a-adbc-d2bf6d66a32d",
+       "slug": "g11-numar-complex",
+       "name": "număr complex",
+       "grade": 11
+      },
+      {
+       "id": "decf1f3e-b77f-4dfe-907e-18fc769a36fe",
+       "slug": "g7-sistem-de-axe-ortogonale",
+       "name": "sistem de axe ortogonale",
+       "grade": 7
+      }
+     ]
+    },
+    {
+     "id": "e3d84615-3040-4253-9b57-9a2996c06491",
+     "slug": "g11-forma-trigonometrica-a-unui-numar-complex",
+     "name": "forma trigonometrică a unui număr complex",
+     "grade": 11,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1e35f3e9-e03f-4ad0-86c7-709ea3bfae16",
+       "slug": "g11-modulul-unui-numar-complex",
+       "name": "modulul unui număr complex",
+       "grade": 11
+      },
+      {
+       "id": "b100efc7-f637-4f50-9579-18b79e0c2a34",
+       "slug": "g11-argumentul-unui-numar-complex",
+       "name": "argumentul unui număr complex",
+       "grade": 11
+      },
+      {
+       "id": "33fa19bd-1780-4cce-9b8f-9e191c504071",
+       "slug": "g10-functiile-trigonometrice-sinus-si-cosinus",
+       "name": "funcțiile trigonometrice sinus și cosinus",
+       "grade": 10
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "e3d84615-3040-4253-9b57-9a2996c06491",
+     "to": "1e35f3e9-e03f-4ad0-86c7-709ea3bfae16"
+    },
+    {
+     "from": "298d51d1-18ba-45cc-a1e6-ad28e5e43660",
+     "to": "ec5cff26-a151-45e1-a49f-a83c96a75b66"
+    },
+    {
+     "from": "c62a66ea-7f00-4212-ad9f-78eef11fa83c",
+     "to": "0637203e-9ccc-4130-a7da-d5017d7e65fb"
+    },
+    {
+     "from": "c62a66ea-7f00-4212-ad9f-78eef11fa83c",
+     "to": "e3d84615-3040-4253-9b57-9a2996c06491"
+    }
+   ]
+  },
+  {
+   "key": "g11:elemente-de-algebra-superioara",
+   "label": "Elemente de algebră superioară",
+   "width": 1184,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "194f526a-6af2-4313-aaed-da7efa2fe631",
+     "slug": "g11-matrice-diagonala",
+     "name": "matrice diagonală",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d25bf215-0ded-4bd1-a252-9060cb279157",
+       "slug": "g11-matrice-patratica-de-ordinul-n",
+       "name": "matrice pătratică de ordinul n",
+       "grade": 11
+      },
+      {
+       "id": "05c4d814-1221-486e-bdf4-32dea1be5055",
+       "slug": "g11-matrice-triunghiulara",
+       "name": "matrice triunghiulară",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "03d40214-91d0-4c2d-a86b-5db2d0a8334f",
+     "slug": "g11-solutie-generala-a-sistemului",
+     "name": "soluție generală a sistemului",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "26f88fad-eb63-4fed-ad95-e29701b218ca",
+       "slug": "g11-compatibilitatea-sistemelor-de-ecuatii-liniare",
+       "name": "compatibilitatea sistemelor de ecuații liniare",
+       "grade": 11
+      },
+      {
+       "id": "eebd1783-034a-4c6b-960e-4743c2d7f72a",
+       "slug": "g11-sistem-de-ecuatii-liniare",
+       "name": "sistem de ecuații liniare",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "b0f2484c-0a1c-4639-97ed-fa0ef7eb62a9",
+     "slug": "g11-puteri-ale-unei-matrice",
+     "name": "puteri ale unei matrice",
+     "grade": 11,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e95ae9cd-8e26-4113-ab50-adcbe0ea05f5",
+       "slug": "g11-produsul-matricelor",
+       "name": "produsul matricelor",
+       "grade": 11
+      },
+      {
+       "id": "d25bf215-0ded-4bd1-a252-9060cb279157",
+       "slug": "g11-matrice-patratica-de-ordinul-n",
+       "name": "matrice pătratică de ordinul n",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "b11aaf15-cf0d-4d06-96ab-099bf292f840",
+     "slug": "g11-ecuatie-matriciala",
+     "name": "ecuație matricială",
+     "grade": 11,
+     "x": 690,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "9671d572-d83a-4014-84ec-b9d5751d8857",
+       "slug": "g11-operatii-cu-matrice",
+       "name": "operații cu matrice",
+       "grade": 11
+      },
+      {
+       "id": "e9d8aece-0fda-4ba8-a84c-8b6ffec9e1c6",
+       "slug": "g11-inversa-unei-matrice",
+       "name": "inversa unei matrice",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "17361c25-0aeb-4b7d-8515-51920e71dbd3",
+     "slug": "g11-determinant-de-ordinul-3",
+     "name": "determinant de ordinul 3",
+     "grade": 11,
+     "x": 886,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ac7f70ef-4d03-40c4-a0a6-4029fa1936ac",
+       "slug": "g11-determinant-de-ordinul-2",
+       "name": "determinant de ordinul 2",
+       "grade": 11
+      },
+      {
+       "id": "d25bf215-0ded-4bd1-a252-9060cb279157",
+       "slug": "g11-matrice-patratica-de-ordinul-n",
+       "name": "matrice pătratică de ordinul n",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "e9400457-5eac-4ee0-97d4-d294d2507432",
+     "slug": "g11-matrice-extinsa-a-sistemului",
+     "name": "matrice extinsă a sistemului",
+     "grade": 11,
+     "x": 1082,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1e1ec2e5-5b36-4d4d-bae7-de4af2726e7b",
+       "slug": "g11-matrice",
+       "name": "matrice",
+       "grade": 11
+      },
+      {
+       "id": "eebd1783-034a-4c6b-960e-4743c2d7f72a",
+       "slug": "g11-sistem-de-ecuatii-liniare",
+       "name": "sistem de ecuații liniare",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:modulul-5",
+   "label": "Modulul 5",
+   "width": 792,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "91404d43-405e-4e0a-b356-4838d1a88ea9",
+     "slug": "g11-tabloul-de-variatie-al-functiei",
+     "name": "tabloul de variație al funcției",
+     "grade": 11,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e1c2d6b2-435f-4d7d-9a56-3d23ccb5e3aa",
+       "slug": "g11-intervalele-de-monotonie-ale-unei-functii",
+       "name": "intervalele de monotonie ale unei funcții",
+       "grade": 11
+      },
+      {
+       "id": "cb6b5c26-fe46-4688-aeea-f21d7e3a5465",
+       "slug": "g11-maxim-local",
+       "name": "maxim local",
+       "grade": 11
+      },
+      {
+       "id": "f79ba68c-876d-46f3-bfdc-848d421b4d13",
+       "slug": "g11-minim-local",
+       "name": "minim local",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "e9a139c9-d70a-4fc4-a69f-c583dcdbeab0",
+     "slug": "g11-functie-strict-convexa",
+     "name": "funcție strict convexă",
+     "grade": 11,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8242a302-4c2c-445f-a8b8-761b6cfdc161",
+       "slug": "g11-functie-convexa",
+       "name": "funcție convexă",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "07e5a0cd-d304-41f4-9c92-e1992f01d47d",
+     "slug": "g11-reprezentarea-grafica-a-functiei",
+     "name": "reprezentarea grafică a funcției",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e1c2d6b2-435f-4d7d-9a56-3d23ccb5e3aa",
+       "slug": "g11-intervalele-de-monotonie-ale-unei-functii",
+       "name": "intervalele de monotonie ale unei funcții",
+       "grade": 11
+      },
+      {
+       "id": "91404d43-405e-4e0a-b356-4838d1a88ea9",
+       "slug": "g11-tabloul-de-variatie-al-functiei",
+       "name": "tabloul de variație al funcției",
+       "grade": 11
+      },
+      {
+       "id": "342c8f84-3cf2-40d5-ab3d-37684981895c",
+       "slug": "g11-punct-de-inflexiune",
+       "name": "punct de inflexiune",
+       "grade": 11
+      },
+      {
+       "id": "932b264a-fe9f-4496-bf75-72116ea007f6",
+       "slug": "g11-asimptota-graficului-unei-functii",
+       "name": "asimptota graficului unei funcții",
+       "grade": 11
+      },
+      {
+       "id": "fd7db408-de22-4930-b828-02b6bed4af3e",
+       "slug": "g10-graficul-functiei",
+       "name": "graficul funcției",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "bf13b3cd-1198-45a7-b9b3-42fab86a6d20",
+     "slug": "g11-optimizare-prin-derivate",
+     "name": "optimizare prin derivate",
+     "grade": 11,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e1c2d6b2-435f-4d7d-9a56-3d23ccb5e3aa",
+       "slug": "g11-intervalele-de-monotonie-ale-unei-functii",
+       "name": "intervalele de monotonie ale unei funcții",
+       "grade": 11
+      },
+      {
+       "id": "0ea21e7e-3424-4a94-9f9b-1d19bc834ebb",
+       "slug": "g11-extreme-globale-ale-functiei",
+       "name": "extreme globale ale funcției",
+       "grade": 11
+      },
+      {
+       "id": "36fc112f-0eec-4da5-8a50-92509e347e57",
+       "slug": "g10-proprietati-ale-functiei",
+       "name": "proprietăți ale funcției",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "0ea21e7e-3424-4a94-9f9b-1d19bc834ebb",
+     "slug": "g11-extreme-globale-ale-functiei",
+     "name": "extreme globale ale funcției",
+     "grade": 11,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "cb6b5c26-fe46-4688-aeea-f21d7e3a5465",
+       "slug": "g11-maxim-local",
+       "name": "maxim local",
+       "grade": 11
+      },
+      {
+       "id": "f79ba68c-876d-46f3-bfdc-848d421b4d13",
+       "slug": "g11-minim-local",
+       "name": "minim local",
+       "grade": 11
+      },
+      {
+       "id": "38d643ae-4be0-4478-af9c-c820a0fbc6ee",
+       "slug": "g11-cea-mai-mare-si-cea-mai-mica-valoare-a-functiei-pe-interval",
+       "name": "cea mai mare și cea mai mică valoare a funcției pe interval",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "b6332854-d19e-42d1-9116-47521c7e18b7",
+     "slug": "g11-functie-strict-concava",
+     "name": "funcție strict concavă",
+     "grade": 11,
+     "x": 690,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8e409d46-78da-4c77-b4c5-caa0003615b4",
+       "slug": "g11-functie-concava",
+       "name": "funcție concavă",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "07e5a0cd-d304-41f4-9c92-e1992f01d47d",
+     "to": "91404d43-405e-4e0a-b356-4838d1a88ea9"
+    },
+    {
+     "from": "bf13b3cd-1198-45a7-b9b3-42fab86a6d20",
+     "to": "0ea21e7e-3424-4a94-9f9b-1d19bc834ebb"
+    }
+   ]
+  },
+  {
+   "key": "g11:transformari-geometrice",
+   "label": "Transformări geometrice",
+   "width": 596,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "d3ddc934-7317-42b5-9a35-235745d9e847",
+     "slug": "g11-simetrie-centrala",
+     "name": "simetrie centrală",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "3f35050f-db0f-480c-b38f-28dd89338b54",
+       "slug": "g11-izometrie",
+       "name": "izometrie",
+       "grade": 11
+      },
+      {
+       "id": "be154197-642b-4a57-a868-28f8d19b94bb",
+       "slug": "g7-simetria-fata-de-un-punct",
+       "name": "simetria față de un punct",
+       "grade": 7
+      }
+     ]
+    },
+    {
+     "id": "21303583-6eba-48b6-a33b-5b396af59a7d",
+     "slug": "g11-figura-de-rotatie",
+     "name": "figură de rotație",
+     "grade": 11,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "174f6885-0cd3-4517-963a-5280c3063601",
+       "slug": "g11-rotatie-axiala",
+       "name": "rotație axială",
+       "grade": 11
+      },
+      {
+       "id": "636641f2-e4b7-43b8-a3de-3ec5d9495d02",
+       "slug": "g11-transformare-geometrica",
+       "name": "transformare geometrică",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "3f35050f-db0f-480c-b38f-28dd89338b54",
+     "slug": "g11-izometrie",
+     "name": "izometrie",
+     "grade": 11,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "636641f2-e4b7-43b8-a3de-3ec5d9495d02",
+       "slug": "g11-transformare-geometrica",
+       "name": "transformare geometrică",
+       "grade": 11
+      },
+      {
+       "id": "cc157300-bfd0-4dca-ad15-f22cd450ce31",
+       "slug": "g7-congruenta-figurilor",
+       "name": "congruența figurilor",
+       "grade": 7
+      }
+     ]
+    },
+    {
+     "id": "a005f296-5c96-46de-aa64-20d492e184ce",
+     "slug": "g11-omotetie",
+     "name": "omotetie",
+     "grade": 11,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ae79fc71-8652-4804-8bf4-a55568f2ff0e",
+       "slug": "g11-asemanare-de-coeficient-k",
+       "name": "asemănare de coeficient k",
+       "grade": 11
+      },
+      {
+       "id": "636641f2-e4b7-43b8-a3de-3ec5d9495d02",
+       "slug": "g11-transformare-geometrica",
+       "name": "transformare geometrică",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "d3ddc934-7317-42b5-9a35-235745d9e847",
+     "to": "3f35050f-db0f-480c-b38f-28dd89338b54"
+    }
+   ]
+  },
+  {
+   "key": "g11:functii-derivabile",
+   "label": "Funcții derivabile",
+   "width": 792,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "03212167-bc40-4059-b4c8-b71da946fd07",
+     "slug": "g11-punct-unghiular",
+     "name": "punct unghiular",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "7b579ba5-7f29-42e9-b108-3b400b948756",
+       "slug": "g11-derivate-laterale",
+       "name": "derivate laterale",
+       "grade": 11
+      },
+      {
+       "id": "5f2bab22-d31d-4afc-a935-3bc241b7e58e",
+       "slug": "g11-tangenta-la-graficul-unei-functii",
+       "name": "tangenta la graficul unei funcții",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "c261c261-2a75-49bf-a3e5-23c6696062e7",
+     "slug": "g11-tabloul-diferentialelor-functiilor-elementare",
+     "name": "tabloul diferențialelor funcțiilor elementare",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ff1befc0-bcd9-4606-a0de-98dc9601e8e3",
+       "slug": "g11-diferentiala-functiei-intr-un-punct",
+       "name": "diferențiala funcției într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "875c2205-da9f-4195-a24b-03ac18aeb9e9",
+       "slug": "g11-reguli-de-derivare",
+       "name": "reguli de derivare",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "60488e44-ef46-4764-b4fa-39bc6ea00abd",
+     "slug": "g11-formula-binomului-lui-newton",
+     "name": "formula binomului lui Newton",
+     "grade": 11,
+     "x": 494,
+     "y": 74,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "a383883f-9707-4aaa-a46b-00a7019112c6",
+       "slug": "g10-combinari",
+       "name": "combinări",
+       "grade": 10
+      },
+      {
+       "id": "4c0894d5-63a4-4746-a548-6682762860be",
+       "slug": "g10-binomul-lui-newton",
+       "name": "binomul lui Newton",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "10c5d065-8a08-458e-8f5f-2f15d72c1975",
+     "slug": "g11-tangenta-verticala-la-graficul-functiei",
+     "name": "tangenta verticală la graficul funcției",
+     "grade": 11,
+     "x": 690,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5f2bab22-d31d-4afc-a935-3bc241b7e58e",
+       "slug": "g11-tangenta-la-graficul-unei-functii",
+       "name": "tangenta la graficul unei funcții",
+       "grade": 11
+      },
+      {
+       "id": "7b579ba5-7f29-42e9-b108-3b400b948756",
+       "slug": "g11-derivate-laterale",
+       "name": "derivate laterale",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:modulul-2-limite-de-functii",
+   "label": "Modulul 2. Limite de funcții",
+   "width": 596,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "c7775589-4d92-4024-a532-e7a8e16aa333",
+     "slug": "g11-multime-inchisa",
+     "name": "mulțime închisă",
+     "grade": 11,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "4dedcfbf-974b-4ce8-98ae-8a7fa8c6d017",
+       "slug": "g10-multime",
+       "name": "mulțime",
+       "grade": 10
+      },
+      {
+       "id": "46c3e6cb-0987-4986-950e-3d80450a8644",
+       "slug": "g10-multimea-numerelor-reale",
+       "name": "mulțimea numerelor reale",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "e3438e5e-1472-4fec-9f70-2b77f8b28853",
+     "slug": "g11-multime-compacta",
+     "name": "mulțime compactă",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b8bd1727-f71d-4afa-8bcd-f097369e0302",
+       "slug": "g11-multime-marginita",
+       "name": "mulțime mărginită",
+       "grade": 11
+      },
+      {
+       "id": "c7775589-4d92-4024-a532-e7a8e16aa333",
+       "slug": "g11-multime-inchisa",
+       "name": "mulțime închisă",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "6a7f07ad-3e68-480b-ae90-f986f5e4f335",
+     "slug": "g11-punct-izolat",
+     "name": "punct izolat",
+     "grade": 11,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "46c3e6cb-0987-4986-950e-3d80450a8644",
+       "slug": "g10-multimea-numerelor-reale",
+       "name": "mulțimea numerelor reale",
+       "grade": 10
+      },
+      {
+       "id": "4dedcfbf-974b-4ce8-98ae-8a7fa8c6d017",
+       "slug": "g10-multime",
+       "name": "mulțime",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "6620f382-486d-4f4b-9724-e4347d477297",
+     "slug": "g11-punct-de-acumulare",
+     "name": "punct de acumulare",
+     "grade": 11,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "4a43d074-f4a2-469a-8b40-d1ee50c7c0a8",
+       "slug": "g11-punct-interior-al-unei-multimi",
+       "name": "punct interior al unei mulțimi",
+       "grade": 11
+      },
+      {
+       "id": "54322bf7-180b-4527-947f-0b110f8c2b7a",
+       "slug": "g11-vecinatatea-unui-punct",
+       "name": "vecinătatea unui punct",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "e3438e5e-1472-4fec-9f70-2b77f8b28853",
+     "to": "c7775589-4d92-4024-a532-e7a8e16aa333"
+    }
+   ]
+  },
+  {
+   "key": "g11:3-4-functia-sinus-3-5-functia-cosinus-3-6-functi",
+   "label": "3.4. Funcția sinus / 3.5. Funcția cosinus / 3.6. Funcția exponențială / 3.7. Funcția logaritmică",
+   "width": 792,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "0f7ee18a-c3c9-460d-8e15-a29eb82801f9",
+     "slug": "g11-derivata-functiei-sinus",
+     "name": "derivata funcției sinus",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "ab92147a-b85b-4d8f-838c-8748b067ce58",
+       "slug": "g10-proprietatile-functiei-sinus",
+       "name": "proprietățile funcției sinus",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "7fcd9f55-efff-438d-981d-8bb056c6fb85",
+     "slug": "g11-derivata-functiei-exponentiale",
+     "name": "derivata funcției exponențiale",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "5dd9d2bb-b8b7-46e5-9ff9-1b5709957049",
+       "slug": "g10-functia-exponentiala",
+       "name": "funcția exponențială",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "616fcba1-a9ed-4a53-9992-2749d0c0e9d2",
+     "slug": "g11-derivata-functiei-logaritmice",
+     "name": "derivata funcției logaritmice",
+     "grade": 11,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "8e0530a8-de48-42ca-b556-86489762c398",
+       "slug": "g10-functia-logaritmica",
+       "name": "funcția logaritmică",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "3db3663f-7eeb-4ec7-9304-2a6bd422faa5",
+     "slug": "g11-derivata-functiei-cosinus",
+     "name": "derivata funcției cosinus",
+     "grade": 11,
+     "x": 690,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "fbd6ad08-e0fd-4094-adfc-0f8f92d0a8a0",
+       "slug": "g10-proprietatile-functiei-cosinus",
+       "name": "proprietățile funcției cosinus",
+       "grade": 10
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:modulul-10",
+   "label": "Modulul 10",
+   "width": 792,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "c3224f50-ae27-48ed-96f2-f8a1213c1461",
+     "slug": "g11-elemente-invariante-ale-unei-transformari-geometrice",
+     "name": "elemente invariante ale unei transformări geometrice",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "636641f2-e4b7-43b8-a3de-3ec5d9495d02",
+       "slug": "g11-transformare-geometrica",
+       "name": "transformare geometrică",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "fb65f3b3-a2a7-49e0-a20c-201656968ca9",
+     "slug": "g11-translatie",
+     "name": "translație",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "3f35050f-db0f-480c-b38f-28dd89338b54",
+       "slug": "g11-izometrie",
+       "name": "izometrie",
+       "grade": 11
+      },
+      {
+       "id": "1c304210-c4f4-4fa3-a091-b0cfdcdd595b",
+       "slug": "g8-translatie",
+       "name": "translație",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "ae79fc71-8652-4804-8bf4-a55568f2ff0e",
+     "slug": "g11-asemanare-de-coeficient-k",
+     "name": "asemănare de coeficient k",
+     "grade": 11,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "636641f2-e4b7-43b8-a3de-3ec5d9495d02",
+       "slug": "g11-transformare-geometrica",
+       "name": "transformare geometrică",
+       "grade": 11
+      },
+      {
+       "id": "92f654ab-c278-4f24-b57e-bc5eb2123910",
+       "slug": "g10-asemanarea-figurilor",
+       "name": "asemănarea figurilor",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "174f6885-0cd3-4517-963a-5280c3063601",
+     "slug": "g11-rotatie-axiala",
+     "name": "rotație axială",
+     "grade": 11,
+     "x": 690,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "3f35050f-db0f-480c-b38f-28dd89338b54",
+       "slug": "g11-izometrie",
+       "name": "izometrie",
+       "grade": 11
+      },
+      {
+       "id": "d79087a3-2c15-4f7d-be96-e155f5fc66fc",
+       "slug": "g11-planul-in-spatiu",
+       "name": "planul în spațiu",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:2-3-asimptote",
+   "label": "2.3. Asimptote",
+   "width": 596,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "b68e6452-917d-4de1-86fc-cf474b3ec468",
+     "slug": "g11-asimptota-verticala",
+     "name": "asimptotă verticală",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "932b264a-fe9f-4496-bf75-72116ea007f6",
+       "slug": "g11-asimptota-graficului-unei-functii",
+       "name": "asimptota graficului unei funcții",
+       "grade": 11
+      },
+      {
+       "id": "7f758c08-7961-448c-b28d-6b934dd4d547",
+       "slug": "g11-limita-unei-functii-la-infinit-sau-egala-cu-infinit",
+       "name": "limita unei funcții la infinit sau egală cu infinit",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "c57327a3-c517-4a87-8139-a1fa39505483",
+     "slug": "g11-asimptota-orizontala",
+     "name": "asimptotă orizontală",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "932b264a-fe9f-4496-bf75-72116ea007f6",
+       "slug": "g11-asimptota-graficului-unei-functii",
+       "name": "asimptota graficului unei funcții",
+       "grade": 11
+      },
+      {
+       "id": "7f758c08-7961-448c-b28d-6b934dd4d547",
+       "slug": "g11-limita-unei-functii-la-infinit-sau-egala-cu-infinit",
+       "name": "limita unei funcții la infinit sau egală cu infinit",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "932b264a-fe9f-4496-bf75-72116ea007f6",
+     "slug": "g11-asimptota-graficului-unei-functii",
+     "name": "asimptota graficului unei funcții",
+     "grade": 11,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "7f758c08-7961-448c-b28d-6b934dd4d547",
+       "slug": "g11-limita-unei-functii-la-infinit-sau-egala-cu-infinit",
+       "name": "limita unei funcții la infinit sau egală cu infinit",
+       "grade": 11
+      },
+      {
+       "id": "fd7db408-de22-4930-b828-02b6bed4af3e",
+       "slug": "g10-graficul-functiei",
+       "name": "graficul funcției",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "1ad932c3-3954-4e0e-86e9-1d456a5b566b",
+     "slug": "g11-asimptota-oblica",
+     "name": "asimptotă oblică",
+     "grade": 11,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "932b264a-fe9f-4496-bf75-72116ea007f6",
+       "slug": "g11-asimptota-graficului-unei-functii",
+       "name": "asimptota graficului unei funcții",
+       "grade": 11
+      },
+      {
+       "id": "7f758c08-7961-448c-b28d-6b934dd4d547",
+       "slug": "g11-limita-unei-functii-la-infinit-sau-egala-cu-infinit",
+       "name": "limita unei funcții la infinit sau egală cu infinit",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "1ad932c3-3954-4e0e-86e9-1d456a5b566b",
+     "to": "932b264a-fe9f-4496-bf75-72116ea007f6"
+    },
+    {
+     "from": "c57327a3-c517-4a87-8139-a1fa39505483",
+     "to": "932b264a-fe9f-4496-bf75-72116ea007f6"
+    },
+    {
+     "from": "b68e6452-917d-4de1-86fc-cf474b3ec468",
+     "to": "932b264a-fe9f-4496-bf75-72116ea007f6"
+    }
+   ]
+  },
+  {
+   "key": "g11:modulul-9",
+   "label": "Modulul 9",
+   "width": 596,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "34fe1cca-970c-4245-addd-432181213ef5",
+     "slug": "g11-masura-unghiului-diedru",
+     "name": "măsura unghiului diedru",
+     "grade": 11,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "41a5cb04-a053-4509-9af3-b67f4e3bb2d2",
+       "slug": "g11-unghi-diedru",
+       "name": "unghi diedru",
+       "grade": 11
+      },
+      {
+       "id": "653e5061-5240-4575-8433-ec4fd5084851",
+       "slug": "g6-masura-unghiului",
+       "name": "măsura unghiului",
+       "grade": 6
+      }
+     ]
+    },
+    {
+     "id": "35e73ad2-ccec-41d9-86ec-0bd7c700e2ac",
+     "slug": "g11-distanta-de-la-un-punct-la-un-plan",
+     "name": "distanța de la un punct la un plan",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5be837b5-027c-4d6c-826a-7fdf258d0c4b",
+       "slug": "g11-dreapta-perpendiculara-pe-un-plan",
+       "name": "dreaptă perpendiculară pe un plan",
+       "grade": 11
+      },
+      {
+       "id": "0cc59ea1-143b-4dd5-b1d2-bdb033641279",
+       "slug": "g11-proiectie-ortogonala-a-unui-punct-pe-un-plan",
+       "name": "proiecție ortogonală a unui punct pe un plan",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "0cc59ea1-143b-4dd5-b1d2-bdb033641279",
+     "slug": "g11-proiectie-ortogonala-a-unui-punct-pe-un-plan",
+     "name": "proiecție ortogonală a unui punct pe un plan",
+     "grade": 11,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5be837b5-027c-4d6c-826a-7fdf258d0c4b",
+       "slug": "g11-dreapta-perpendiculara-pe-un-plan",
+       "name": "dreaptă perpendiculară pe un plan",
+       "grade": 11
+      },
+      {
+       "id": "502953ed-bf50-477b-b602-68da1b4a7d27",
+       "slug": "g8-proiectia-ortogonala-a-unei-figuri-pe-o-dreapta",
+       "name": "proiecția ortogonală a unei figuri pe o dreaptă",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "3db51d94-a11f-491e-a822-13fcb61af900",
+     "slug": "g11-plane-perpendiculare",
+     "name": "plane perpendiculare",
+     "grade": 11,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5be837b5-027c-4d6c-826a-7fdf258d0c4b",
+       "slug": "g11-dreapta-perpendiculara-pe-un-plan",
+       "name": "dreaptă perpendiculară pe un plan",
+       "grade": 11
+      },
+      {
+       "id": "41a5cb04-a053-4509-9af3-b67f4e3bb2d2",
+       "slug": "g11-unghi-diedru",
+       "name": "unghi diedru",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "35e73ad2-ccec-41d9-86ec-0bd7c700e2ac",
+     "to": "0cc59ea1-143b-4dd5-b1d2-bdb033641279"
+    }
+   ]
+  },
+  {
+   "key": "g11:modulul-1-siruri-de-numere-reale",
+   "label": "Modulul 1. Șiruri de numere reale",
+   "width": 400,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "b5980d88-4fb9-43ab-b61c-601565400801",
+     "slug": "g11-axioma-continuitatii-multimii-numerelor-reale",
+     "name": "axioma continuității mulțimii numerelor reale",
+     "grade": 11,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "46c3e6cb-0987-4986-950e-3d80450a8644",
+       "slug": "g10-multimea-numerelor-reale",
+       "name": "mulțimea numerelor reale",
+       "grade": 10
+      },
+      {
+       "id": "d2494f30-5ccf-4e8e-abb5-b049db9e4a19",
+       "slug": "g9-multimea-numerelor-reale-r",
+       "name": "mulțimea numerelor reale R",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "98b3f823-e967-40e0-ba8b-f2a9ce1b777e",
+     "slug": "g11-principiul-lui-arhimede",
+     "name": "principiul lui Arhimede",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b5980d88-4fb9-43ab-b61c-601565400801",
+       "slug": "g11-axioma-continuitatii-multimii-numerelor-reale",
+       "name": "axioma continuității mulțimii numerelor reale",
+       "grade": 11
+      },
+      {
+       "id": "46c3e6cb-0987-4986-950e-3d80450a8644",
+       "slug": "g10-multimea-numerelor-reale",
+       "name": "mulțimea numerelor reale",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "6a08b2e3-47fb-4fd3-91a0-94b862762c44",
+     "slug": "g11-partea-intreaga-a-unui-numar-real",
+     "name": "partea întreagă a unui număr real",
+     "grade": 11,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "46c3e6cb-0987-4986-950e-3d80450a8644",
+       "slug": "g10-multimea-numerelor-reale",
+       "name": "mulțimea numerelor reale",
+       "grade": 10
+      },
+      {
+       "id": "8959d1f8-d5f5-4cfd-97e0-dc34573c2a9f",
+       "slug": "g10-operatii-aritmetice-cu-numere-reale",
+       "name": "operații aritmetice cu numere reale",
+       "grade": 10
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "98b3f823-e967-40e0-ba8b-f2a9ce1b777e",
+     "to": "b5980d88-4fb9-43ab-b61c-601565400801"
+    }
+   ]
+  },
+  {
+   "key": "g11:modulul-4-functii-derivabile",
+   "label": "Modulul 4. Funcții derivabile",
+   "width": 400,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "529d141e-dae4-495b-b917-755326c4db14",
+     "slug": "g11-diferentiala-functiei",
+     "name": "diferențiala funcției",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "ff1befc0-bcd9-4606-a0de-98dc9601e8e3",
+       "slug": "g11-diferentiala-functiei-intr-un-punct",
+       "name": "diferențiala funcției într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+     "slug": "g11-derivata-functiei-intr-un-punct",
+     "name": "derivata funcției într-un punct",
+     "grade": 11,
+     "x": 200,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "4a56702e-2489-4116-9b8a-b038e3784955",
+       "slug": "g10-functie",
+       "name": "funcție",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "87f576b0-8b38-40d8-9436-d089a4e7e80a",
+     "slug": "g11-calcul-diferential",
+     "name": "calcul diferențial",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e9d7ccda-da60-42f4-bc71-96b3c6baeff7",
+       "slug": "g11-functie-continua-intr-un-punct",
+       "name": "funcție continuă într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "87f576b0-8b38-40d8-9436-d089a4e7e80a",
+     "to": "37ca2e50-119a-4298-bf9b-2b9323efa655"
+    },
+    {
+     "from": "529d141e-dae4-495b-b917-755326c4db14",
+     "to": "37ca2e50-119a-4298-bf9b-2b9323efa655"
+    }
+   ]
+  },
+  {
+   "key": "g11:aplicatii-ale-derivatelor",
+   "label": "Aplicații ale derivatelor",
+   "width": 596,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "56511cc6-22d3-4834-9221-83253c4845f6",
+     "slug": "g11-functie-descrescatoare-pe-interval",
+     "name": "funcție descrescătoare pe interval",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e1c2d6b2-435f-4d7d-9a56-3d23ccb5e3aa",
+       "slug": "g11-intervalele-de-monotonie-ale-unei-functii",
+       "name": "intervalele de monotonie ale unei funcții",
+       "grade": 11
+      },
+      {
+       "id": "82e38b2c-c81d-4b40-91fd-974daec0ed84",
+       "slug": "g10-monotonia-functiei",
+       "name": "monotonia funcției",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "7069a937-9ba0-46e3-839c-46d0c5140d15",
+     "slug": "g11-functie-crescatoare-pe-interval",
+     "name": "funcție crescătoare pe interval",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e1c2d6b2-435f-4d7d-9a56-3d23ccb5e3aa",
+       "slug": "g11-intervalele-de-monotonie-ale-unei-functii",
+       "name": "intervalele de monotonie ale unei funcții",
+       "grade": 11
+      },
+      {
+       "id": "82e38b2c-c81d-4b40-91fd-974daec0ed84",
+       "slug": "g10-monotonia-functiei",
+       "name": "monotonia funcției",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "ddf6f4df-8c60-4d8a-99ca-27ab6b66afc0",
+     "slug": "g11-puncte-critice-statonare",
+     "name": "puncte critice (stațonare)",
+     "grade": 11,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "fb736dd0-7dbe-421a-b7ce-7775d9bea046",
+       "slug": "g11-teorema-lui-fermat",
+       "name": "teorema lui Fermat",
+       "grade": 11
+      },
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:paralelismul-dreptelor-si-planelor",
+   "label": "Paralelismul dreptelor și planelor",
+   "width": 596,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "5b14da66-d42b-48e1-bfad-4499b638382e",
+     "slug": "g11-puncte-coplanare-si-necoplanare",
+     "name": "puncte coplanare și necoplanare",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d79087a3-2c15-4f7d-be96-e155f5fc66fc",
+       "slug": "g11-planul-in-spatiu",
+       "name": "planul în spațiu",
+       "grade": 11
+      },
+      {
+       "id": "8912264d-178e-4309-b7a0-6896129e6399",
+       "slug": "g7-puncte-coliniare",
+       "name": "puncte coliniare",
+       "grade": 7
+      }
+     ]
+    },
+    {
+     "id": "23193e8a-70d3-416f-abcc-5a8b29a2ae85",
+     "slug": "g11-teorema-acoperisului",
+     "name": "teorema acoperișului",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "f0e9edf7-8503-46a6-9747-c660f59c4d9d",
+       "slug": "g11-dreapta-paralela-cu-un-plan",
+       "name": "dreaptă paralelă cu un plan",
+       "grade": 11
+      },
+      {
+       "id": "d79087a3-2c15-4f7d-be96-e155f5fc66fc",
+       "slug": "g11-planul-in-spatiu",
+       "name": "planul în spațiu",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "87d111d0-e12a-43e2-a02f-dcf929d84b33",
+     "slug": "g11-semispatiu",
+     "name": "semispațiu",
+     "grade": 11,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d79087a3-2c15-4f7d-be96-e155f5fc66fc",
+       "slug": "g11-planul-in-spatiu",
+       "name": "planul în spațiu",
+       "grade": 11
+      },
+      {
+       "id": "a519e2f7-ee83-469d-a7c9-2bdc02e4ea79",
+       "slug": "g7-semiplan",
+       "name": "semiplan",
+       "grade": 7
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:functii-continue",
+   "label": "Funcții continue",
+   "width": 400,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "7368c23d-7c07-4452-b199-e81c2aa1c136",
+     "slug": "g11-teorema-bolzano-cauchy-despre-anularea-functiei",
+     "name": "teorema Bolzano–Cauchy despre anularea funcției",
+     "grade": 11,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e9d7ccda-da60-42f4-bc71-96b3c6baeff7",
+       "slug": "g11-functie-continua-intr-un-punct",
+       "name": "funcție continuă într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "d7474886-99c6-4529-b3a4-e6b90057eadf",
+       "slug": "g11-proprietatea-lui-darboux",
+       "name": "proprietatea lui Darboux",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "488da75b-8bf7-474a-8d89-cc76b8f0be11",
+     "slug": "g11-clase-de-functii-continue",
+     "name": "clase de funcții continue",
+     "grade": 11,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ed6282ad-bfef-4f1d-8885-34310fbbb4d6",
+       "slug": "g11-functie-continua-pe-o-multime",
+       "name": "funcție continuă pe o mulțime",
+       "grade": 11
+      },
+      {
+       "id": "2ed00629-14df-4390-981b-b14dc388f2c3",
+       "slug": "g11-operatii-cu-functii-continue",
+       "name": "operații cu funcții continue",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "65b36128-fb36-491d-8b3a-77ed407d538c",
+     "slug": "g11-metoda-intervalelor",
+     "name": "metoda intervalelor",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "7368c23d-7c07-4452-b199-e81c2aa1c136",
+       "slug": "g11-teorema-bolzano-cauchy-despre-anularea-functiei",
+       "name": "teorema Bolzano–Cauchy despre anularea funcției",
+       "grade": 11
+      },
+      {
+       "id": "4f25e775-9a11-4b81-bde5-7666291034e2",
+       "slug": "g9-inecuatia-de-gradul-ii-cu-o-necunoscuta",
+       "name": "inecuația de gradul II cu o necunoscută",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "65b36128-fb36-491d-8b3a-77ed407d538c",
+     "to": "7368c23d-7c07-4452-b199-e81c2aa1c136"
+    }
+   ]
+  },
+  {
+   "key": "g11:modulul-3-functii-continue",
+   "label": "Modulul 3. Funcții continue",
+   "width": 400,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "ed6282ad-bfef-4f1d-8885-34310fbbb4d6",
+     "slug": "g11-functie-continua-pe-o-multime",
+     "name": "funcție continuă pe o mulțime",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e9d7ccda-da60-42f4-bc71-96b3c6baeff7",
+       "slug": "g11-functie-continua-intr-un-punct",
+       "name": "funcție continuă într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "4a56702e-2489-4116-9b8a-b038e3784955",
+       "slug": "g10-functie",
+       "name": "funcție",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "2e71ba4b-6c40-4628-8b3a-ddfaf6c27f7e",
+     "slug": "g11-functie-discontinua-intr-un-punct",
+     "name": "funcție discontinuă într-un punct",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e9d7ccda-da60-42f4-bc71-96b3c6baeff7",
+       "slug": "g11-functie-continua-intr-un-punct",
+       "name": "funcție continuă într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "e9d7ccda-da60-42f4-bc71-96b3c6baeff7",
+     "slug": "g11-functie-continua-intr-un-punct",
+     "name": "funcție continuă într-un punct",
+     "grade": 11,
+     "x": 200,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "f981da7b-fb5d-46f2-a2e1-ccc3f2ad75b7",
+       "slug": "g11-limita-laterala-a-unei-functii",
+       "name": "limită laterală a unei funcții",
+       "grade": 11
+      },
+      {
+       "id": "4a56702e-2489-4116-9b8a-b038e3784955",
+       "slug": "g10-functie",
+       "name": "funcție",
+       "grade": 10
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "ed6282ad-bfef-4f1d-8885-34310fbbb4d6",
+     "to": "e9d7ccda-da60-42f4-bc71-96b3c6baeff7"
+    },
+    {
+     "from": "2e71ba4b-6c40-4628-8b3a-ddfaf6c27f7e",
+     "to": "e9d7ccda-da60-42f4-bc71-96b3c6baeff7"
+    }
+   ]
+  },
+  {
+   "key": "g11:3-proprietati-ale-functiilor-continue",
+   "label": "§3 Proprietăți ale funcțiilor continue",
+   "width": 204,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "31ee37d0-aecf-4d76-a38d-eeb3683a5086",
+     "slug": "g11-functie-marginita",
+     "name": "funcție mărginită",
+     "grade": 11,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ed6282ad-bfef-4f1d-8885-34310fbbb4d6",
+       "slug": "g11-functie-continua-pe-o-multime",
+       "name": "funcție continuă pe o mulțime",
+       "grade": 11
+      },
+      {
+       "id": "0ef1c2df-3235-4406-ab22-da1aa2dde00b",
+       "slug": "g10-functie-marginita",
+       "name": "funcție mărginită",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "750fb27c-f029-49b0-9fb9-d9f1dde28a77",
+     "slug": "g11-teorema-weierstrass-de-marginire",
+     "name": "teorema Weierstrass de mărginire",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "31ee37d0-aecf-4d76-a38d-eeb3683a5086",
+       "slug": "g11-functie-marginita",
+       "name": "funcție mărginită",
+       "grade": 11
+      },
+      {
+       "id": "ed6282ad-bfef-4f1d-8885-34310fbbb4d6",
+       "slug": "g11-functie-continua-pe-o-multime",
+       "name": "funcție continuă pe o mulțime",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "750fb27c-f029-49b0-9fb9-d9f1dde28a77",
+     "to": "31ee37d0-aecf-4d76-a38d-eeb3683a5086"
+    }
+   ]
+  },
+  {
+   "key": "g11:1-2-puncte-de-extrem-ale-unei-functii",
+   "label": "1.2. Puncte de extrem ale unei funcții",
+   "width": 400,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "cb6b5c26-fe46-4688-aeea-f21d7e3a5465",
+     "slug": "g11-maxim-local",
+     "name": "maxim local",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "fb736dd0-7dbe-421a-b7ce-7775d9bea046",
+       "slug": "g11-teorema-lui-fermat",
+       "name": "teorema lui Fermat",
+       "grade": 11
+      },
+      {
+       "id": "e1c2d6b2-435f-4d7d-9a56-3d23ccb5e3aa",
+       "slug": "g11-intervalele-de-monotonie-ale-unei-functii",
+       "name": "intervalele de monotonie ale unei funcții",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "f79ba68c-876d-46f3-bfdc-848d421b4d13",
+     "slug": "g11-minim-local",
+     "name": "minim local",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "fb736dd0-7dbe-421a-b7ce-7775d9bea046",
+       "slug": "g11-teorema-lui-fermat",
+       "name": "teorema lui Fermat",
+       "grade": 11
+      },
+      {
+       "id": "e1c2d6b2-435f-4d7d-9a56-3d23ccb5e3aa",
+       "slug": "g11-intervalele-de-monotonie-ale-unei-functii",
+       "name": "intervalele de monotonie ale unei funcții",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:3-3-suma-unei-progresii-geometrice-infinit-descr",
+   "label": "3.3. Suma unei progresii geometrice infinit descrescătoare / 3.4. Numărul e",
+   "width": 204,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "69017cbd-cda9-4286-9983-7c0ac239297a",
+     "slug": "g11-suma-progresiei-geometrice-infinit-descrescatoare",
+     "name": "suma progresiei geometrice infinit descrescătoare",
+     "grade": 11,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e333f1e1-bdec-4ffd-860b-4580781790cd",
+       "slug": "g11-progresia-geometrica-infinit-descrescatoare",
+       "name": "progresia geometrică infinit descrescătoare",
+       "grade": 11
+      },
+      {
+       "id": "458352b1-0f5b-478c-ad07-03949f18f379",
+       "slug": "g11-formula-sumei-primilor-n-termeni-ai-progresiei-geometrice",
+       "name": "formula sumei primilor n termeni ai progresiei geometrice",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "46faa8a9-371e-4112-810a-99b0df66d618",
+     "slug": "g11-numarul-e",
+     "name": "numărul e",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "59c86ad1-c00d-44a6-9004-2860ba15ded4",
+       "slug": "g11-progresia-geometrica",
+       "name": "progresia geometrică",
+       "grade": 11
+      },
+      {
+       "id": "69017cbd-cda9-4286-9983-7c0ac239297a",
+       "slug": "g11-suma-progresiei-geometrice-infinit-descrescatoare",
+       "name": "suma progresiei geometrice infinit descrescătoare",
+       "grade": 11
+      },
+      {
+       "id": "93b6c77a-dae2-4c9d-b745-b909d9e22452",
+       "slug": "g11-sir-convergent",
+       "name": "șir convergent",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "46faa8a9-371e-4112-810a-99b0df66d618",
+     "to": "69017cbd-cda9-4286-9983-7c0ac239297a"
+    }
+   ]
+  },
+  {
+   "key": "g11:2-2-determinarea-intervalelor-de-concavitate-con",
+   "label": "2.2. Determinarea intervalelor de concavitate, convexitate. Puncte de inflexiune",
+   "width": 400,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "1063a577-fab7-419d-b7fa-cb53d0b89cb3",
+     "slug": "g11-criteriu-suficient-pentru-extrem-cu-derivata-a-doua",
+     "name": "criteriu suficient pentru extrem cu derivata a doua",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8832c35b-9256-40d9-a82e-16a2a4092ef1",
+       "slug": "g11-derivata-de-ordinul-doi",
+       "name": "derivata de ordinul doi",
+       "grade": 11
+      },
+      {
+       "id": "cb6b5c26-fe46-4688-aeea-f21d7e3a5465",
+       "slug": "g11-maxim-local",
+       "name": "maxim local",
+       "grade": 11
+      },
+      {
+       "id": "f79ba68c-876d-46f3-bfdc-848d421b4d13",
+       "slug": "g11-minim-local",
+       "name": "minim local",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "342c8f84-3cf2-40d5-ab3d-37684981895c",
+     "slug": "g11-punct-de-inflexiune",
+     "name": "punct de inflexiune",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8e409d46-78da-4c77-b4c5-caa0003615b4",
+       "slug": "g11-functie-concava",
+       "name": "funcție concavă",
+       "grade": 11
+      },
+      {
+       "id": "8242a302-4c2c-445f-a8b8-761b6cfdc161",
+       "slug": "g11-functie-convexa",
+       "name": "funcție convexă",
+       "grade": 11
+      },
+      {
+       "id": "8832c35b-9256-40d9-a82e-16a2a4092ef1",
+       "slug": "g11-derivata-de-ordinul-doi",
+       "name": "derivata de ordinul doi",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:3-derivatele-unor-functii-elementare",
+   "label": "§3 Derivatele unor funcții elementare",
+   "width": 400,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "65b3dc7a-2b5b-45ac-ab4f-ec627f720a86",
+     "slug": "g11-derivata-functiei-constante",
+     "name": "derivata funcției constante",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "1ba1f267-c6e3-4d77-b9e1-7ae819cb4f49",
+     "slug": "g11-derivata-functiei-identice",
+     "name": "derivata funcției identice",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:3-sisteme-de-ecuatii-liniare",
+   "label": "§3. Sisteme de ecuații liniare",
+   "width": 204,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "eebd1783-034a-4c6b-960e-4743c2d7f72a",
+     "slug": "g11-sistem-de-ecuatii-liniare",
+     "name": "sistem de ecuații liniare",
+     "grade": 11,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1e1ec2e5-5b36-4d4d-bae7-de4af2726e7b",
+       "slug": "g11-matrice",
+       "name": "matrice",
+       "grade": 11
+      },
+      {
+       "id": "e068e76c-2778-4b91-b8c3-e26ee67cd672",
+       "slug": "g9-sistem-de-ecuatii-cu-doua-necunoscute",
+       "name": "sistem de ecuații cu două necunoscute",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "26f88fad-eb63-4fed-ad95-e29701b218ca",
+     "slug": "g11-compatibilitatea-sistemelor-de-ecuatii-liniare",
+     "name": "compatibilitatea sistemelor de ecuații liniare",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "eebd1783-034a-4c6b-960e-4743c2d7f72a",
+       "slug": "g11-sistem-de-ecuatii-liniare",
+       "name": "sistem de ecuații liniare",
+       "grade": 11
+      },
+      {
+       "id": "b8135ebc-df51-4f3e-9e12-a47010774488",
+       "slug": "g9-tipuri-de-sisteme-de-ecuatii",
+       "name": "tipuri de sisteme de ecuații",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "26f88fad-eb63-4fed-ad95-e29701b218ca",
+     "to": "eebd1783-034a-4c6b-960e-4743c2d7f72a"
+    }
+   ]
+  },
+  {
+   "key": "g11:2-rolul-derivatei-a-doua-in-studiul-functiilor-a",
+   "label": "§2 Rolul derivatei a doua în studiul funcțiilor. Asimptote",
+   "width": 400,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "8242a302-4c2c-445f-a8b8-761b6cfdc161",
+     "slug": "g11-functie-convexa",
+     "name": "funcție convexă",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8832c35b-9256-40d9-a82e-16a2a4092ef1",
+       "slug": "g11-derivata-de-ordinul-doi",
+       "name": "derivata de ordinul doi",
+       "grade": 11
+      },
+      {
+       "id": "e1c2d6b2-435f-4d7d-9a56-3d23ccb5e3aa",
+       "slug": "g11-intervalele-de-monotonie-ale-unei-functii",
+       "name": "intervalele de monotonie ale unei funcții",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "8e409d46-78da-4c77-b4c5-caa0003615b4",
+     "slug": "g11-functie-concava",
+     "name": "funcție concavă",
+     "grade": 11,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8832c35b-9256-40d9-a82e-16a2a4092ef1",
+       "slug": "g11-derivata-de-ordinul-doi",
+       "name": "derivata de ordinul doi",
+       "grade": 11
+      },
+      {
+       "id": "e1c2d6b2-435f-4d7d-9a56-3d23ccb5e3aa",
+       "slug": "g11-intervalele-de-monotonie-ale-unei-functii",
+       "name": "intervalele de monotonie ale unei funcții",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:modulul-8-paralelismul-dreptelor-si-planelor",
+   "label": "Modulul 8. Paralelismul dreptelor și planelor",
+   "width": 204,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "d79087a3-2c15-4f7d-be96-e155f5fc66fc",
+     "slug": "g11-planul-in-spatiu",
+     "name": "planul în spațiu",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "422e6d29-295f-4f3b-ba56-6a73f1c9385b",
+       "slug": "g11-axiomele-geometriei-in-spatiu",
+       "name": "axiomele geometriei în spațiu",
+       "grade": 11
+      },
+      {
+       "id": "2daf6987-b1ac-41ea-8811-8eeaa9c82897",
+       "slug": "g7-plan",
+       "name": "plan",
+       "grade": 7
+      }
+     ]
+    },
+    {
+     "id": "422e6d29-295f-4f3b-ba56-6a73f1c9385b",
+     "slug": "g11-axiomele-geometriei-in-spatiu",
+     "name": "axiomele geometriei în spațiu",
+     "grade": 11,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "62cb6771-9c51-443e-9cc6-3d627e45ff45",
+       "slug": "g9-figura-geometrica",
+       "name": "figură geometrică",
+       "grade": 9
+      },
+      {
+       "id": "2daf6987-b1ac-41ea-8811-8eeaa9c82897",
+       "slug": "g7-plan",
+       "name": "plan",
+       "grade": 7
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "d79087a3-2c15-4f7d-be96-e155f5fc66fc",
+     "to": "422e6d29-295f-4f3b-ba56-6a73f1c9385b"
+    }
+   ]
+  },
+  {
+   "key": "g11:4-plane-paralele",
+   "label": "§4 Plane paralele",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "0063de20-f8ea-4788-bc1d-b7f50436b052",
+     "slug": "g11-plane-paralele",
+     "name": "plane paralele",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "f0e9edf7-8503-46a6-9747-c660f59c4d9d",
+       "slug": "g11-dreapta-paralela-cu-un-plan",
+       "name": "dreaptă paralelă cu un plan",
+       "grade": 11
+      },
+      {
+       "id": "927331b9-50d4-4305-bdf7-89ed15f82e80",
+       "slug": "g9-plane-pozitii-relative",
+       "name": "plane — poziții relative",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:modulul-7-elemente-de-algebra-superioara",
+   "label": "Modulul 7. Elemente de algebră superioară",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "1e1ec2e5-5b36-4d4d-bae7-de4af2726e7b",
+     "slug": "g11-matrice",
+     "name": "matrice",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "46c3e6cb-0987-4986-950e-3d80450a8644",
+       "slug": "g10-multimea-numerelor-reale",
+       "name": "mulțimea numerelor reale",
+       "grade": 10
+      },
+      {
+       "id": "fcdd5f66-68c1-43c9-a3ef-ee22814c9ca7",
+       "slug": "g5-multime-infinita",
+       "name": "mulțime infinită",
+       "grade": 5
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:2-3-proprietatile-determinantilor",
+   "label": "2.3. Proprietățile determinanților",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "f45fa6a8-addd-4cd5-9385-e30e5607ab75",
+     "slug": "g11-proprietatile-determinantilor",
+     "name": "proprietățile determinanților",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1daef7c0-635b-496b-9af8-125afced03ae",
+       "slug": "g11-determinant-de-ordinul-n",
+       "name": "determinant de ordinul n",
+       "grade": 11
+      },
+      {
+       "id": "addf7041-d1ca-4d38-9f51-22a24626ec15",
+       "slug": "g11-dezvoltarea-determinantului-dupa-o-linie-sau-coloana",
+       "name": "dezvoltarea determinantului după o linie sau coloană",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:1-2-puncte-de-discontinuitate",
+   "label": "1.2. Puncte de discontinuitate",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "485c0063-52e7-495e-a672-f5dbf3017dc0",
+     "slug": "g11-punct-de-discontinuitate-de-speta-intai",
+     "name": "punct de discontinuitate de speța întâi",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "956be79d-d25c-46bc-ac7e-af8ab7e93bc0",
+       "slug": "g11-punct-de-discontinuitate",
+       "name": "punct de discontinuitate",
+       "grade": 11
+      },
+      {
+       "id": "f981da7b-fb5d-46f2-a2e1-ccc3f2ad75b7",
+       "slug": "g11-limita-laterala-a-unei-functii",
+       "name": "limită laterală a unei funcții",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:2-determinanti",
+   "label": "§2 Determinanți",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "ac7f70ef-4d03-40c4-a0a6-4029fa1936ac",
+     "slug": "g11-determinant-de-ordinul-2",
+     "name": "determinant de ordinul 2",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d25bf215-0ded-4bd1-a252-9060cb279157",
+       "slug": "g11-matrice-patratica-de-ordinul-n",
+       "name": "matrice pătratică de ordinul n",
+       "grade": 11
+      },
+      {
+       "id": "9671d572-d83a-4014-84ec-b9d5751d8857",
+       "slug": "g11-operatii-cu-matrice",
+       "name": "operații cu matrice",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:alfabetul-grec",
+   "label": "Alfabetul grec",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "25e041e6-7d51-4e3e-a919-4df1a1cde55c",
+     "slug": "g11-alfabetul-grec",
+     "name": "alfabetul grec",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": []
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:2-progresii-aritmetice-progresii-geometrice",
+   "label": "§2 Progresii aritmetice. Progresii geometrice",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "d4fdb54e-fc63-47b2-928e-e30656d48b89",
+     "slug": "g11-progresia-aritmetica",
+     "name": "progresia aritmetică",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c26f55eb-cc2b-494a-94ff-b90d361650d0",
+       "slug": "g11-sir-de-numere-reale",
+       "name": "șir de numere reale",
+       "grade": 11
+      },
+      {
+       "id": "fc9c1410-b0e1-4b6a-923c-2eebb0099bdb",
+       "slug": "g8-sir-numeric",
+       "name": "șir numeric",
+       "grade": 8
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:6-3-teorema-lui-lagrange",
+   "label": "6.3. Teorema lui Lagrange",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "6488a8e9-b38c-412d-a759-55e188caf7a6",
+     "slug": "g11-teorema-lui-lagrange",
+     "name": "teorema lui Lagrange",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1d0f4484-9cf2-49c2-9fc6-9a7ec1bbc965",
+       "slug": "g11-teorema-lui-rolle",
+       "name": "teorema lui Rolle",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:4-6-derivate-de-ordin-superior",
+   "label": "4.6. Derivate de ordin superior",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "8832c35b-9256-40d9-a82e-16a2a4092ef1",
+     "slug": "g11-derivata-de-ordinul-doi",
+     "name": "derivata de ordinul doi",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "875c2205-da9f-4195-a24b-03ac18aeb9e9",
+       "slug": "g11-reguli-de-derivare",
+       "name": "reguli de derivare",
+       "grade": 11
+      },
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:1-2-limita-unei-functii-intr-un-punct",
+   "label": "1.2. Limita unei funcții într-un punct",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+     "slug": "g11-limita-unei-functii-intr-un-punct",
+     "name": "limita unei funcții într-un punct",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "4a56702e-2489-4116-9b8a-b038e3784955",
+       "slug": "g10-functie",
+       "name": "funcție",
+       "grade": 10
+      },
+      {
+       "id": "6620f382-486d-4f4b-9724-e4347d477297",
+       "slug": "g11-punct-de-acumulare",
+       "name": "punct de acumulare",
+       "grade": 11
+      },
+      {
+       "id": "54322bf7-180b-4527-947f-0b110f8c2b7a",
+       "slug": "g11-vecinatatea-unui-punct",
+       "name": "vecinătatea unui punct",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:2-2-progresii-geometrice",
+   "label": "2.2. Progresii geometrice",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "59c86ad1-c00d-44a6-9004-2860ba15ded4",
+     "slug": "g11-progresia-geometrica",
+     "name": "progresia geometrică",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c26f55eb-cc2b-494a-94ff-b90d361650d0",
+       "slug": "g11-sir-de-numere-reale",
+       "name": "șir de numere reale",
+       "grade": 11
+      },
+      {
+       "id": "fc9c1410-b0e1-4b6a-923c-2eebb0099bdb",
+       "slug": "g8-sir-numeric",
+       "name": "șir numeric",
+       "grade": 8
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:3-2-rezolvarea-ecuatiilor-de-forma-mz-pz-q-0-m-c",
+   "label": "3.2. Rezolvarea ecuațiilor de forma mz²ᵏ + pzᵏ + q = 0, m∈C*, p,q∈C, k∈N*",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "fb72b6b8-f732-4b80-be22-7e038d38b2fa",
+     "slug": "g11-ecuatii-trinome",
+     "name": "ecuații trinome",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "298d51d1-18ba-45cc-a1e6-ad28e5e43660",
+       "slug": "g11-ecuatii-binome",
+       "name": "ecuații binome",
+       "grade": 11
+      },
+      {
+       "id": "c9ba1990-d4c6-4663-a8a6-9eceb05ecedf",
+       "slug": "g11-operatii-cu-numere-complexe-in-forma-algebrica",
+       "name": "operații cu numere complexe în formă algebrică",
+       "grade": 11
+      },
+      {
+       "id": "a979fa31-bc58-4028-b16c-c0fb6814761b",
+       "slug": "g9-ecuatia-de-gradul-ii-cu-o-necunoscuta",
+       "name": "ecuația de gradul II cu o necunoscută",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:4-simetria-fata-de-un-plan",
+   "label": "§4 Simetria față de un plan",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "0e0b2414-8260-42db-b5f5-74d1491c6047",
+     "slug": "g11-simetrie-fata-de-un-plan",
+     "name": "simetrie față de un plan",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "3f35050f-db0f-480c-b38f-28dd89338b54",
+       "slug": "g11-izometrie",
+       "name": "izometrie",
+       "grade": 11
+      },
+      {
+       "id": "d79087a3-2c15-4f7d-be96-e155f5fc66fc",
+       "slug": "g11-planul-in-spatiu",
+       "name": "planul în spațiu",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:2-1-3-formula-sumei-primilor-n-termeni-ai-unei-p",
+   "label": "2.1.3. Formula sumei primilor n termeni ai unei progresii aritmetice",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "1c5a61ba-36c9-4db5-8f5d-a2ddf0666e58",
+     "slug": "g11-formula-sumei-primilor-n-termeni-ai-progresiei-aritmetice",
+     "name": "formula sumei primilor n termeni ai progresiei aritmetice",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d4fdb54e-fc63-47b2-928e-e30656d48b89",
+       "slug": "g11-progresia-aritmetica",
+       "name": "progresia aritmetică",
+       "grade": 11
+      },
+      {
+       "id": "6f3e7713-e5b3-4867-afea-9ba966679558",
+       "slug": "g11-formula-termenului-general-al-progresiei-aritmetice",
+       "name": "formula termenului general al progresiei aritmetice",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:2-simetria-centrala",
+   "label": "§2 Simetria centrală",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "044a8387-96f2-43a3-bab9-56b5abde9ddf",
+     "slug": "g11-figura-central-simetrica",
+     "name": "figură central-simetrică",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d3ddc934-7317-42b5-9a35-235745d9e847",
+       "slug": "g11-simetrie-centrala",
+       "name": "simetrie centrală",
+       "grade": 11
+      },
+      {
+       "id": "d755c8d5-0840-43bc-8555-d89193748ed4",
+       "slug": "g7-centrul-de-simetrie-al-figurii",
+       "name": "centrul de simetrie al figurii",
+       "grade": 7
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:inmultirea-matricelor",
+   "label": "Înmulțirea matricelor",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "e95ae9cd-8e26-4113-ab50-adcbe0ea05f5",
+     "slug": "g11-produsul-matricelor",
+     "name": "produsul matricelor",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "9671d572-d83a-4014-84ec-b9d5751d8857",
+       "slug": "g11-operatii-cu-matrice",
+       "name": "operații cu matrice",
+       "grade": 11
+      },
+      {
+       "id": "d25bf215-0ded-4bd1-a252-9060cb279157",
+       "slug": "g11-matrice-patratica-de-ordinul-n",
+       "name": "matrice pătratică de ordinul n",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:modulul-8",
+   "label": "Modulul 8",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "f0e9edf7-8503-46a6-9747-c660f59c4d9d",
+     "slug": "g11-dreapta-paralela-cu-un-plan",
+     "name": "dreaptă paralelă cu un plan",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d79087a3-2c15-4f7d-be96-e155f5fc66fc",
+       "slug": "g11-planul-in-spatiu",
+       "name": "planul în spațiu",
+       "grade": 11
+      },
+      {
+       "id": "8c8778e3-bf53-4345-b206-c07053c7a7d2",
+       "slug": "g11-pozitiile-relative-ale-doua-drepte-in-spatiu",
+       "name": "pozițiile relative ale două drepte în spațiu",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:5-diferentiala-unei-functii",
+   "label": "§5 Diferențiala unei funcții",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "ff1befc0-bcd9-4606-a0de-98dc9601e8e3",
+     "slug": "g11-diferentiala-functiei-intr-un-punct",
+     "name": "diferențiala funcției într-un punct",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "8959d1f8-d5f5-4cfd-97e0-dc34573c2a9f",
+       "slug": "g10-operatii-aritmetice-cu-numere-reale",
+       "name": "operații aritmetice cu numere reale",
+       "grade": 10
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:3-2-limite-remarcabile",
+   "label": "3.2. Limite remarcabile",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "6e1a3dea-e0d0-4fd5-878f-10a66f915441",
+     "slug": "g11-limite-remarcabile",
+     "name": "limite remarcabile",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e131ba0b-b3e5-48f4-ade3-a4afeaf7d71e",
+       "slug": "g11-limita-functiei-sinus",
+       "name": "limita funcției sinus",
+       "grade": 11
+      },
+      {
+       "id": "76013f67-f4a6-45bb-b66c-0e951ee614ec",
+       "slug": "g11-proprietati-ale-limitelor-de-functii",
+       "name": "proprietăți ale limitelor de funcții",
+       "grade": 11
+      },
+      {
+       "id": "46faa8a9-371e-4112-810a-99b0df66d618",
+       "slug": "g11-numarul-e",
+       "name": "numărul e",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:1-4-derivabilitate-si-continuitate",
+   "label": "1.4. Derivabilitate și continuitate",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "ec39a31c-fa49-4fab-a6bb-7752c602f79b",
+     "slug": "g11-algoritm-de-calcul-al-derivatei",
+     "name": "algoritm de calcul al derivatei",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "875c2205-da9f-4195-a24b-03ac18aeb9e9",
+       "slug": "g11-reguli-de-derivare",
+       "name": "reguli de derivare",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:1-3-determinarea-extremelor-globale",
+   "label": "1.3. Determinarea extremelor globale",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "24bc5a88-9b09-4b0b-82ca-6263733b2a73",
+     "slug": "g11-algoritm-de-determinare-a-extremelor-globale",
+     "name": "algoritm de determinare a extremelor globale",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "0ea21e7e-3424-4a94-9f9b-1d19bc834ebb",
+       "slug": "g11-extreme-globale-ale-functiei",
+       "name": "extreme globale ale funcției",
+       "grade": 11
+      },
+      {
+       "id": "ddf6f4df-8c60-4d8a-99ca-27ab6b66afc0",
+       "slug": "g11-puncte-critice-statonare",
+       "name": "puncte critice (stațonare)",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:pozitiile-relative-ale-dreptelor-si-planelor",
+   "label": "Pozițiile relative ale dreptelor și planelor",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "c779d3df-7ede-4b6b-8254-90aecf320ef4",
+     "slug": "g11-pozitiile-relative-ale-dreptelor-si-planelor-in-spatiu",
+     "name": "pozițiile relative ale dreptelor și planelor în spațiu",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8c8778e3-bf53-4345-b206-c07053c7a7d2",
+       "slug": "g11-pozitiile-relative-ale-doua-drepte-in-spatiu",
+       "name": "pozițiile relative ale două drepte în spațiu",
+       "grade": 11
+      },
+      {
+       "id": "f0e9edf7-8503-46a6-9747-c660f59c4d9d",
+       "slug": "g11-dreapta-paralela-cu-un-plan",
+       "name": "dreaptă paralelă cu un plan",
+       "grade": 11
+      },
+      {
+       "id": "0063de20-f8ea-4788-bc1d-b7f50436b052",
+       "slug": "g11-plane-paralele",
+       "name": "plane paralele",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:2-pozitiile-relative-a-doua-drepte-in-spatiu",
+   "label": "§2 Pozițiile relative a două drepte în spațiu",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "8c8778e3-bf53-4345-b206-c07053c7a7d2",
+     "slug": "g11-pozitiile-relative-ale-doua-drepte-in-spatiu",
+     "name": "pozițiile relative ale două drepte în spațiu",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "422e6d29-295f-4f3b-ba56-6a73f1c9385b",
+       "slug": "g11-axiomele-geometriei-in-spatiu",
+       "name": "axiomele geometriei în spațiu",
+       "grade": 11
+      },
+      {
+       "id": "a16957ce-2d3b-4bd6-8e45-20e11b394a90",
+       "slug": "g7-pozitii-relative-ale-dreptelor",
+       "name": "poziții relative ale dreptelor",
+       "grade": 7
+      },
+      {
+       "id": "c9fb716f-d230-4340-84ca-f9f4e35dd418",
+       "slug": "g9-drepte-in-spatiu-pozitii-relative",
+       "name": "drepte în spațiu — poziții relative",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:modulul-10-transformari-geometrice",
+   "label": "Modulul 10. Transformări geometrice",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "636641f2-e4b7-43b8-a3de-3ec5d9495d02",
+     "slug": "g11-transformare-geometrica",
+     "name": "transformare geometrică",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "62cb6771-9c51-443e-9cc6-3d627e45ff45",
+       "slug": "g9-figura-geometrica",
+       "name": "figură geometrică",
+       "grade": 9
+      },
+      {
+       "id": "cc157300-bfd0-4dca-ad15-f22cd450ce31",
+       "slug": "g7-congruenta-figurilor",
+       "name": "congruența figurilor",
+       "grade": 7
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:4-operatii-cu-functii-derivabile",
+   "label": "§4 Operații cu funcții derivabile",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "5f4dea25-8c52-40b6-abae-b1cf8a6f822d",
+     "slug": "g11-derivata-functiei-compuse",
+     "name": "derivata funcției compuse",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "875c2205-da9f-4195-a24b-03ac18aeb9e9",
+       "slug": "g11-reguli-de-derivare",
+       "name": "reguli de derivare",
+       "grade": 11
+      },
+      {
+       "id": "9bc4e8db-4b70-4110-8244-ef3e10666f94",
+       "slug": "g10-compunerea-functiilor",
+       "name": "compunerea funcțiilor",
+       "grade": 10
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:6-2-teorema-lui-rolle",
+   "label": "6.2. Teorema lui Rolle",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "1d0f4484-9cf2-49c2-9fc6-9a7ec1bbc965",
+     "slug": "g11-teorema-lui-rolle",
+     "name": "teorema lui Rolle",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "fb736dd0-7dbe-421a-b7ce-7775d9bea046",
+       "slug": "g11-teorema-lui-fermat",
+       "name": "teorema lui Fermat",
+       "grade": 11
+      },
+      {
+       "id": "bd6b438f-f33e-4ab7-b828-d43022dae9ed",
+       "slug": "g11-functie-derivabila-pe-multime",
+       "name": "funcție derivabilă pe mulțime",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:modulul-9-perpendicularitatea-in-spatiu",
+   "label": "Modulul 9. Perpendicularitatea în spațiu",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "9ebbf07a-7b60-4a08-89b4-cb1c74f9a6ed",
+     "slug": "g11-lema-despre-unghiuri-cu-laturile-paralele",
+     "name": "lema despre unghiuri cu laturile paralele",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d0f8f856-afc5-45c9-95ef-e7249f14029a",
+       "slug": "g7-unghi",
+       "name": "unghi",
+       "grade": 7
+      },
+      {
+       "id": "8c8778e3-bf53-4345-b206-c07053c7a7d2",
+       "slug": "g11-pozitiile-relative-ale-doua-drepte-in-spatiu",
+       "name": "pozițiile relative ale două drepte în spațiu",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:modulul-5-aplicatii-ale-derivatelor",
+   "label": "Modulul 5. Aplicații ale derivatelor",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "e1c2d6b2-435f-4d7d-9a56-3d23ccb5e3aa",
+     "slug": "g11-intervalele-de-monotonie-ale-unei-functii",
+     "name": "intervalele de monotonie ale unei funcții",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "875c2205-da9f-4195-a24b-03ac18aeb9e9",
+       "slug": "g11-reguli-de-derivare",
+       "name": "reguli de derivare",
+       "grade": 11
+      },
+      {
+       "id": "82e38b2c-c81d-4b40-91fd-974daec0ed84",
+       "slug": "g10-monotonia-functiei",
+       "name": "monotonia funcției",
+       "grade": 10
+      },
+      {
+       "id": "6488a8e9-b38c-412d-a759-55e188caf7a6",
+       "slug": "g11-teorema-lui-lagrange",
+       "name": "teorema lui Lagrange",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:1-2-2-viteza-instantanee-a-unui-mobil-1-3-notiun",
+   "label": "1.2.2. Viteza instantanee a unui mobil / 1.3. Noțiunea de derivată a unei funcții într-un punct",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "d47f9a2b-ec4b-4f58-ba33-6d429917a8c8",
+     "slug": "g11-viteza-instantanee",
+     "name": "viteza instantanee",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:4-4-derivarea-functiei-inverse",
+   "label": "4.4. Derivarea funcției inverse",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "52c392fb-947e-4750-ac75-f3ee0fbd6725",
+     "slug": "g11-derivata-functiei-inverse",
+     "name": "derivata funcției inverse",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "875c2205-da9f-4195-a24b-03ac18aeb9e9",
+       "slug": "g11-reguli-de-derivare",
+       "name": "reguli de derivare",
+       "grade": 11
+      },
+      {
+       "id": "9b6307d7-fb2b-4cc2-97e2-a6808ee498c0",
+       "slug": "g10-functie-inversa",
+       "name": "funcție inversă",
+       "grade": 10
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:3-simetria-axiala",
+   "label": "§3. Simetria axială",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "24af5b17-e375-415b-846a-25946ed6687c",
+     "slug": "g11-simetrie-axiala",
+     "name": "simetrie axială",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "3f35050f-db0f-480c-b38f-28dd89338b54",
+       "slug": "g11-izometrie",
+       "name": "izometrie",
+       "grade": 11
+      },
+      {
+       "id": "69ef2564-473a-4c81-93bb-b35c72f35209",
+       "slug": "g7-simetria-fata-de-o-dreapta",
+       "name": "simetria față de o dreaptă",
+       "grade": 7
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:3-unghi-format-de-doua-plane-unghi-diedru",
+   "label": "§3 Unghi format de două plane (unghi diedru)",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "41a5cb04-a053-4509-9af3-b67f4e3bb2d2",
+     "slug": "g11-unghi-diedru",
+     "name": "unghi diedru",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d79087a3-2c15-4f7d-be96-e155f5fc66fc",
+       "slug": "g11-planul-in-spatiu",
+       "name": "planul în spațiu",
+       "grade": 11
+      },
+      {
+       "id": "d0f8f856-afc5-45c9-95ef-e7249f14029a",
+       "slug": "g7-unghi",
+       "name": "unghi",
+       "grade": 7
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:1-4-matrice-inversabile",
+   "label": "1.4. Matrice inversabile",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "1f8de49f-f957-454e-ab2d-c1d4aa2c93ef",
+     "slug": "g11-matrice-inversabila",
+     "name": "matrice inversabilă",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d25bf215-0ded-4bd1-a252-9060cb279157",
+       "slug": "g11-matrice-patratica-de-ordinul-n",
+       "name": "matrice pătratică de ordinul n",
+       "grade": 11
+      },
+      {
+       "id": "b87800a9-0d27-4840-8ea1-e07e4c905adb",
+       "slug": "g11-matrice-unitate",
+       "name": "matrice unitate",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g11:modulul-6-numere-complexe",
+   "label": "Modulul 6. Numere complexe",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "235b93f1-9ba3-4b9a-adbc-d2bf6d66a32d",
+     "slug": "g11-numar-complex",
+     "name": "număr complex",
+     "grade": 11,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "46c3e6cb-0987-4986-950e-3d80450a8644",
+       "slug": "g10-multimea-numerelor-reale",
+       "name": "mulțimea numerelor reale",
+       "grade": 10
+      },
+      {
+       "id": "7c78d919-1e57-4ad9-a18c-a89b60ea8db6",
+       "slug": "g8-ecuatie-de-gradul-ii-cu-o-necunoscuta",
+       "name": "ecuație de gradul II cu o necunoscută",
+       "grade": 8
+      }
+     ]
+    }
+   ],
+   "edges": []
+  }
+ ],
+ "generated": "2026-06-23"
+}

@@ -19,8 +19,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { MASTERY_THRESHOLD } from '@/lib/progres/data';
 import { resolveGoal, type Goal } from '@/lib/profile/goal';
-import { MODULE_DOMAINS, type DomainColor } from './domain-colors';
-import { MAP_LAYOUTS, placeForSlug, type MapLayoutNode } from './layouts';
+import { GRADE_GROUPS, placeForSlug, type MapLayoutNode } from './layouts';
 import { milestoneOf, type Milestone } from './milestones';
 import { getActiveFocus, type ActiveFocus } from './focus';
 
@@ -36,7 +35,7 @@ export interface MapNode extends MapLayoutNode {
     name: string;
     mastered: boolean;
     grade: number | null;
-    domain: DomainColor['key'] | null;
+    domain: string | null;
   }>;
 }
 
@@ -50,10 +49,11 @@ export interface MapGradeSlice {
 }
 
 export interface MapDomain {
-  key: DomainColor['key'];
+  /** ETAPA 84: cheia grupului (ex. „g11:functia-radical"), nu cele 7 domenii BAC */
+  key: string;
   module: string;
   label: string;
-  /** feliile pe clasă — DOAR clasele cu noduri (selector onest) */
+  /** felia pe clasă — un grup aparține UNEI clase (modelul per-clasă din 84) */
   grades: Record<string, MapGradeSlice>;
 }
 
@@ -109,13 +109,13 @@ export async function getKnowledgeMap(
   const frontierRows = (frontier.data ?? []) as Array<{ concept_id: string; slug: string; name: string }>;
   const frontierIds = new Set(frontierRows.map((r) => r.concept_id));
 
+  // ETAPA 84 B: harta se construiește din `concepts` grupate per clasă (toate
+  // grupurile tuturor claselor — selectorul de clasă le filtrează). Fiecare grup =
+  // un „domain" cu o singură felie de clasă.
   const domains: MapDomain[] = [];
-  for (const [module, d] of Object.entries(MODULE_DOMAINS)) {
-    const layout = MAP_LAYOUTS[d.key];
-    if (!layout) continue;
-    const grades: Record<string, MapGradeSlice> = {};
-    for (const [gradeKey, gl] of Object.entries(layout.grades)) {
-      const nodes: MapNode[] = gl.nodes.map((n) => {
+  for (const grade of [9, 10, 11, 12]) {
+    for (const group of GRADE_GROUPS[grade] ?? []) {
+      const nodes: MapNode[] = group.nodes.map((n) => {
         const m = masteryById.get(n.id);
         return {
           ...n,
@@ -136,9 +136,9 @@ export async function getKnowledgeMap(
       });
       const counts: Record<NodeStatus, number> = { blocat: 0, disponibil: 0, 'in-lucru': 0, stapanit: 0 };
       for (const n of nodes) counts[n.status]++;
-      grades[gradeKey] = { grade: Number(gradeKey), width: gl.width, height: gl.height, edges: gl.edges, nodes, counts };
+      const slice: MapGradeSlice = { grade, width: group.width, height: group.height, edges: group.edges, nodes, counts };
+      domains.push({ key: group.key, module: group.label, label: group.label, grades: { [String(grade)]: slice } });
     }
-    domains.push({ key: d.key, module, label: layout.label, grades });
   }
 
   // ── FAZA B: drumul recomandat (determinist, din sursele existente) ────────

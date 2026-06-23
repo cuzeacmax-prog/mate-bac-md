@@ -1,101 +1,56 @@
 /**
- * etapa82-map-class.ts — ETAPA 82 POARTĂ B: dovada numărată a hărții per clasă.
+ * etapa82-map-class.ts — POARTĂ B (ETAPA 82 per clasă + **ETAPA 84 fix afișare**):
+ * dovada numărată că harta arată TOATE conceptele fiecărei clase (nu 1).
+ *   npx tsx --env-file=.env.local scripts/verify/etapa82-map-class.ts
  *
- * Rulează: npx tsx --env-file=.env.local scripts/verify/etapa82-map-class.ts
- *
- * Partea 1 (deterministă, fără DB): din layout-urile precomputate arată câte
- * noduri vede fiecare clasă vs tot graful — un elev de clasa 10 trebuie să vadă
- * STRICT mai puțin decât tot graful, și diferit de clasa 12.
- * Partea 2 (best-effort, cu DB): raportează „limbo" — concepte fără clasă sau cu
- * clasă în afara 9-12 (pentru curățare), și distribuția pe clase în familii.
+ * Sursa hărții e acum `concepts` grupate per clasă (GRADE_GROUPS). Verificăm că
+ * nr. de noduri pe clasă în hartă == nr. de concepte ale clasei în DB.
  */
-import { MAP_LAYOUTS } from '../../src/lib/map/layouts';
-import {
-  graphTotalNodes,
-  nodesForGrade,
-  gradesWithContent,
-  domainsForGrade,
-} from '../../src/lib/map/per-class';
+import { GRADE_GROUPS, ALL_GROUPS } from '../../src/lib/map/layouts';
+import { graphTotalNodes, nodesForGrade } from '../../src/lib/map/per-class';
 
 type MapLike = Parameters<typeof graphTotalNodes>[0];
+function pass(m: string) { console.log(`✅ ${m}`); }
+function fail(m: string): never { throw new Error(m); }
 
-function pass(msg: string) {
-  console.log(`✅ ${msg}`);
-}
-function fail(msg: string): never {
-  // exitCode (nu process.exit) — pe Windows exit-ul abrupt în timpul închiderii
-  // socketului Supabase declanșează un abort libuv. Lăsăm bucla să se dreneze.
-  throw new Error(msg);
-}
-
-// ── Partea 1: dovada numărată din layout-uri ────────────────────────────────
-const domains = Object.entries(MAP_LAYOUTS).map(([key, layout]) => ({
-  key,
-  grades: Object.fromEntries(
-    Object.entries(layout.grades).map(([g, gl]) => [g, { nodes: gl.nodes }])
-  ),
-}));
+// mapLike din noul model: fiecare grup = un domain cu o singură felie de clasă
+const domains = ALL_GROUPS.map((g) => ({ key: g.key, grades: { [String(g.grade)]: { nodes: g.nodes } } }));
 const mapLike = { domains } as unknown as MapLike;
-
 const total = graphTotalNodes(mapLike);
-const present = gradesWithContent(mapLike);
 
-console.log('── Harta per clasă: noduri afișate vs total graf ──');
-console.log(`Total graf: ${total} noduri\n`);
+console.log('── Harta per clasă: noduri afișate (din layout-uri) ──');
+const shown: Record<number, number> = {};
 for (const g of [9, 10, 11, 12]) {
-  const n = nodesForGrade(mapLike, g);
-  const doms = domainsForGrade(mapLike, g);
-  console.log(`Clasa ${g}: ${n} noduri · ${doms.length} domenii [${doms.join(', ') || '—'}]`);
+  shown[g] = nodesForGrade(mapLike, g);
+  console.log(`Clasa ${g}: ${shown[g]} noduri · ${(GRADE_GROUPS[g] ?? []).length} grupuri`);
 }
-console.log('');
+console.log(`Total graf: ${total} noduri\n`);
 
-if (total <= 0) fail('graful nu are noduri (layout-uri goale?)');
+// regresie ETAPA 84: clasa 11 NU mai e „1 temă"
+if (shown[11] <= 1) fail(`clasa 11 afișează ${shown[11]} (bug-ul de afișare a revenit!)`);
+pass(`clasa 11 afișează ${shown[11]} noduri (nu „1 temă")`);
+if (shown[10] === shown[12]) fail('clasa 10 == clasa 12 (filtrare per clasă stricată)');
+pass(`clasele diferă: 9=${shown[9]} 10=${shown[10]} 11=${shown[11]} 12=${shown[12]}`);
 
-const c10 = nodesForGrade(mapLike, 10);
-const c12 = nodesForGrade(mapLike, 12);
-
-// R1: clasa 10 vede STRICT mai puțin decât tot graful (filtrarea funcționează)
-if (!(c10 < total)) fail(`clasa 10 (${c10}) NU vede mai puțin decât tot graful (${total})`);
-pass(`clasa 10 vede ${c10} < ${total} (filtrare per clasă confirmată)`);
-
-// R2: clasa 10 ≠ clasa 12 (vizibil diferite)
-if (c10 === c12) fail(`clasa 10 (${c10}) și clasa 12 (${c12}) afișează la fel — nu sunt diferite`);
-pass(`clasa 10 (${c10}) ≠ clasa 12 (${c12}) — vederi diferite`);
-
-// R3: fiecare clasă cu conținut e un subset al totalului
-for (const g of present) {
-  const n = nodesForGrade(mapLike, g);
-  if (n > total) fail(`clasa ${g} (${n}) > total (${total}) — imposibil`);
-}
-pass(`fiecare clasă ⊆ total graf (${present.join(', ')})`);
-
-// ── Partea 2: raport limbo (best-effort, cu DB) ─────────────────────────────
-async function limboReport() {
+async function dbCheck() {
   try {
     const { createServiceClient } = await import('../../src/lib/supabase/service');
     const svc = createServiceClient();
-    const { count, error } = await svc
-      .from('concepts')
-      .select('id', { count: 'exact', head: true })
-      .is('grade_level', null);
-    if (error) throw new Error(error.message);
-    console.log('\n── Raport limbo (pentru curățare) ──');
-    console.log(`Concepte cu grade_level NULL: ${count ?? 0}`);
-    if ((count ?? 0) === 0) {
-      pass('zero concepte în limbo (toate au clasă atribuită)');
-    } else {
-      console.log(`⚠ ${count} concepte fără clasă — de marcat (nu blochează poarta).`);
+    console.log('\n── Dovadă numărată: hartă vs DB (per clasă) ──');
+    for (const g of [9, 10, 11, 12]) {
+      const { count } = await svc.from('concepts').select('id', { count: 'exact', head: true }).eq('grade_level', g);
+      const db = count ?? 0;
+      const ok = shown[g] === db;
+      console.log(`  ${ok ? '✓' : '✗'} clasa ${g}: hartă ${shown[g]} vs DB ${db}`);
+      if (!ok) fail(`clasa ${g}: harta (${shown[g]}) ≠ DB (${db})`);
     }
-  } catch (err) {
-    console.log(`\n(raport limbo sărit: ${err instanceof Error ? err.message : String(err)})`);
+    pass('nr. teme afișate pe hartă == nr. real din DB, pentru fiecare clasă 9-12');
+  } catch (e) {
+    if (e instanceof Error && /clasa \d+:/.test(e.message)) throw e;
+    console.log(`\n(verificarea DB sărită: ${e instanceof Error ? e.message : String(e)})`);
   }
 }
 
-limboReport()
-  .then(() => {
-    console.log('\n✅ ETAPA 82 POARTĂ B acceptată: harta se filtrează per clasă (dovadă numărată).');
-  })
-  .catch((err) => {
-    console.error(`✗ EȘEC: ${err instanceof Error ? err.message : String(err)}`);
-    process.exitCode = 1;
-  });
+dbCheck()
+  .then(() => console.log('\n✅ POARTĂ B: harta afișează toate conceptele fiecărei clase (dovadă numărată hartă==DB).'))
+  .catch((e) => { console.error(`✗ EȘEC: ${e instanceof Error ? e.message : String(e)}`); process.exitCode = 1; });

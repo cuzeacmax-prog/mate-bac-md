@@ -28,6 +28,7 @@ import { MathText } from "@/components/MathText";
 import { MILESTONE_LABELS } from "@/lib/map/milestones";
 import { graphTotalNodes, nodesForGrade, gradesWithContent } from "@/lib/map/per-class";
 import { masteryColor } from "@/lib/map/mastery-color";
+import { domainButton, groupHue } from "@/lib/map/domain-style";
 import { defaultLens, showsBacLens, mapHeadline, servableLabel, type Goal } from "@/lib/profile/goal";
 import type { KnowledgeMap, MapDomain, MapGradeSlice, MapNode } from "@/lib/map/state";
 
@@ -358,7 +359,8 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
     <div className="flex flex-col h-full flex-1 min-w-0">
       {/* ETAPA 82 C1+C2: titlu + lentile subordonate obiectivului (BAC ca mod, nu cadru) */}
       <div className="px-4 pt-3 pb-1 flex flex-wrap items-center gap-2 shrink-0">
-        <h1 className="fluid-h2 font-bold mr-2">{mapHeadline(map.goal, map.studentGrade)}</h1>
+        {/* ETAPA 84 C: titlul citește clasa SELECTATĂ (nu studentGrade) — sincron cu selectorul+badge */}
+        <h1 className="fluid-h2 font-bold mr-2">{mapHeadline(map.goal, showAll ? null : gradeKey)}</h1>
         {showsBacLens(map.goal) && (
           <LensChip active={lens === "bac"} onClick={() => setLens((l) => (l === "bac" ? null : "bac"))}>BAC</LensChip>
         )}
@@ -458,19 +460,25 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
           const slices = showAll ? Object.values(d.grades) : [d.grades[String(gradeKey)]].filter(Boolean);
           const total = slices.reduce((a, g) => a + g.nodes.length, 0);
           const done = slices.reduce((a, g) => a + g.counts.stapanit, 0);
+          // ETAPA 84 D: gradient ordonat — luminozitatea bg = progresul real la domeniu,
+          // tentă subtilă per grup; text deschis (AA, bg plafonat). Activ = ring electric.
+          const progress = total > 0 ? done / total : 0;
+          const btn = domainButton(d.key, progress);
+          const active = d.key === domain.key;
           return (
             <button
               key={d.key}
               onClick={() => { setDomainKey(d.key); setSelected(null); }}
-              className="shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold border-2 transition-colors"
-              style={
-                d.key === domain.key
-                  ? { background: `var(--domain-${d.key})`, borderColor: `var(--domain-${d.key})`, color: "var(--primary-foreground)" }
-                  : { background: `var(--domain-${d.key}-bg)`, borderColor: "transparent", color: `var(--domain-${d.key}-fg)` }
-              }
+              className="shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold border transition-all"
+              style={{
+                background: btn.bg,
+                borderColor: active ? "var(--bg-electric)" : "rgba(255,255,255,0.10)",
+                color: "var(--text-on-deep)",
+                boxShadow: active ? "0 0 0 1px var(--bg-electric), 0 0 14px -4px var(--bg-electric)" : undefined,
+              }}
             >
               {d.label}
-              <span className="block opacity-90 font-normal">{done}/{total}</span>
+              <span className="block opacity-80 font-normal">{done}/{total}</span>
             </button>
           );
         })}
@@ -601,11 +609,11 @@ const SkyBackdrop = memo(function SkyBackdrop({ domainKey }: { domainKey: string
       </svg>
       {/* A3: sigiliul domeniului — watermark 30-40vh în culoarea domeniului */}
       {previous && (
-        <span key={`seal-prev-${previous}`} className="sky-seal sky-seal-out" style={{ color: `var(--domain-${previous})` }}>
+        <span key={`seal-prev-${previous}`} className="sky-seal sky-seal-out" style={{ color: `oklch(0.5 0.16 ${groupHue(previous)})` }}>
           {DOMAIN_SEALS[previous] ?? "∫"}
         </span>
       )}
-      <span key={`seal-${current}`} className="sky-seal sky-seal-in" style={{ color: `var(--domain-${current})` }}>
+      <span key={`seal-${current}`} className="sky-seal sky-seal-in" style={{ color: `oklch(0.5 0.16 ${groupHue(current)})` }}>
         {DOMAIN_SEALS[current] ?? "∫"}
       </span>
     </div>
@@ -613,12 +621,14 @@ const SkyBackdrop = memo(function SkyBackdrop({ domainKey }: { domainKey: string
 });
 
 function nebulaStyle(key: string): React.CSSProperties {
+  // ETAPA 84 D: nebuloasa = albastru-night cu o tentă subtilă derivată din grup
+  // (banda 210-280), nu cele 7 culori de domeniu. Fundalul de bază = --bg-deep.
+  const tint = `oklch(0.5 0.16 ${groupHue(key)})`;
   return {
     background: [
-      `radial-gradient(55% 65% at 28% 30%, color-mix(in oklab, var(--domain-${key}) 26%, transparent), transparent 75%)`,
-      `radial-gradient(50% 60% at 74% 68%, color-mix(in oklab, var(--domain-${key}) 16%, transparent), transparent 75%)`,
+      `radial-gradient(55% 65% at 28% 30%, color-mix(in oklab, ${tint} 24%, transparent), transparent 75%)`,
+      `radial-gradient(50% 60% at 74% 68%, color-mix(in oklab, ${tint} 14%, transparent), transparent 75%)`,
       `radial-gradient(80% 90% at 50% 110%, var(--bg-night), transparent 70%)`,
-      // ETAPA 82 D: fundalul de bază al hărții = tokenul de paletă (albastru profund)
       `var(--bg-deep)`,
     ].join(","),
   };
@@ -654,7 +664,8 @@ const DomainGraph = memo(function DomainGraph({ domainKey, slice, nodeOpacity, s
   const pulseIds = new Set(
     slice.nodes.filter((n) => n.status === "disponibil").slice(0, MAX_PULSE).map((n) => n.id)
   );
-  const color = `var(--domain-${domainKey})`;
+  // ETAPA 84 D: culoarea structurii (muchii/wash) = tenta albastră a grupului
+  const color = `oklch(0.6 0.16 ${groupHue(domainKey)})`;
   const xs = slice.nodes.map((n) => n.x);
   const ys = slice.nodes.map((n) => n.y);
   const cx = (Math.min(...xs) + Math.max(...xs)) / 2;
@@ -874,10 +885,7 @@ function NodeSheet({ node, domain, slice, currentGrade, goal, onJumpToPrereq, on
           <h2 className="font-bold leading-snug"><MathText text={node.name} /></h2>
           <div className="flex flex-wrap items-center gap-2 mt-1.5">
             {node.milestone && (
-              <span
-                className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
-                style={{ background: `var(--domain-${domain.key}-bg)`, color: `var(--domain-${domain.key}-fg)` }}
-              >
+              <span className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold bg-secondary text-secondary-foreground">
                 {MILESTONE_LABELS[node.milestone]}
               </span>
             )}

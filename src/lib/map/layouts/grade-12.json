@@ -1,0 +1,6193 @@
+{
+ "grade": 12,
+ "groups": [
+  {
+   "key": "g12:modulul-9",
+   "label": "Modulul 9",
+   "width": 5692,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "55284e8b-0fa7-4b57-976e-9fa5379affa1",
+     "slug": "g12-teorema-cosinusului",
+     "name": "teorema cosinusului",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "89a03554-0524-41ff-9b41-f61550a21f44",
+       "slug": "g10-teorema-cosinusului",
+       "name": "teorema cosinusului",
+       "grade": 10
+      },
+      {
+       "id": "d8232c94-e253-4bb1-bdf0-96af48a67520",
+       "slug": "g10-teorema-sinusurilor",
+       "name": "teorema sinusurilor",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "fcc625b1-5076-4108-9e6f-e7cdbe9c4d7a",
+     "slug": "g12-mijlocul-segmentului-in-coordonate",
+     "name": "mijlocul segmentului în coordonate",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c2bf0812-c974-4cbe-81e6-fcc78ab2005b",
+       "slug": "g7-mijlocul-segmentului-coordonate",
+       "name": "mijlocul segmentului (coordonate)",
+       "grade": 7
+      },
+      {
+       "id": "1c9db94b-d293-4299-b4fd-665f8925d706",
+       "slug": "g7-coordonatele-unui-punct",
+       "name": "coordonatele unui punct",
+       "grade": 7
+      }
+     ]
+    },
+    {
+     "id": "d77ab9dc-270f-4b59-af6a-1b91b0a75dd5",
+     "slug": "g12-triunghiul-lui-pascal",
+     "name": "triunghiul lui Pascal",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "4c0894d5-63a4-4746-a548-6682762860be",
+       "slug": "g10-binomul-lui-newton",
+       "name": "binomul lui Newton",
+       "grade": 10
+      },
+      {
+       "id": "dbec3c22-7f40-4fdd-b60b-8c0170362e00",
+       "slug": "g12-binomul-lui-newton",
+       "name": "binomul lui Newton",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "3f37ea0c-21b1-4a61-b979-992bc9f531e6",
+     "slug": "g12-formula-lui-heron",
+     "name": "formula lui Heron",
+     "grade": 12,
+     "x": 690,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1b48ce7b-bd50-4b92-a2c0-65ac06db128f",
+       "slug": "g9-aria-triunghiului",
+       "name": "aria triunghiului",
+       "grade": 9
+      },
+      {
+       "id": "d8232c94-e253-4bb1-bdf0-96af48a67520",
+       "slug": "g10-teorema-sinusurilor",
+       "name": "teorema sinusurilor",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "d1090915-4381-4d67-92a8-1645787e78b0",
+     "slug": "g12-distanta-dintre-doua-puncte",
+     "name": "distanța dintre două puncte",
+     "grade": 12,
+     "x": 886,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "78b996fe-5d27-4922-9e34-3e9a00a177e6",
+       "slug": "g7-distanta-dintre-doua-puncte",
+       "name": "distanța dintre două puncte",
+       "grade": 7
+      }
+     ]
+    },
+    {
+     "id": "7cb3929a-f1d8-4638-87f0-ef20d1ac6c20",
+     "slug": "g12-formula-medianei",
+     "name": "formula medianei",
+     "grade": 12,
+     "x": 1082,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "bf53a727-9719-4147-898f-7f19982caa80",
+       "slug": "g7-linii-importante-ale-triunghiului",
+       "name": "linii importante ale triunghiului",
+       "grade": 7
+      },
+      {
+       "id": "c2bf0812-c974-4cbe-81e6-fcc78ab2005b",
+       "slug": "g7-mijlocul-segmentului-coordonate",
+       "name": "mijlocul segmentului (coordonate)",
+       "grade": 7
+      }
+     ]
+    },
+    {
+     "id": "4c7b503f-4d8b-43e6-a567-1445efcd5bf2",
+     "slug": "g12-metode-de-rezolvare-a-inecuatiilor-cu-modul",
+     "name": "metode de rezolvare a inecuațiilor cu modul",
+     "grade": 12,
+     "x": 1278,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1c4a41af-6865-47fe-a080-c7f161d8598e",
+       "slug": "g10-ecuatii-cu-modul",
+       "name": "ecuații cu modul",
+       "grade": 10
+      },
+      {
+       "id": "99c372b7-d4a9-47c2-80bc-ebd5b10622dd",
+       "slug": "g10-inecuatii-cu-modul",
+       "name": "inecuații cu modul",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "31408262-906c-4feb-a31f-6bddfd5686b8",
+     "slug": "g12-coordonatele-vectorului",
+     "name": "coordonatele vectorului",
+     "grade": 12,
+     "x": 1474,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b629416e-eb73-48a0-af99-f83b575ea26b",
+       "slug": "g8-coordonatele-vectorului",
+       "name": "coordonatele vectorului",
+       "grade": 8
+      },
+      {
+       "id": "1c9db94b-d293-4299-b4fd-665f8925d706",
+       "slug": "g7-coordonatele-unui-punct",
+       "name": "coordonatele unui punct",
+       "grade": 7
+      }
+     ]
+    },
+    {
+     "id": "a69d88c3-bf4d-4390-adc2-9e7560808924",
+     "slug": "g12-transformari-geometrice",
+     "name": "transformări geometrice",
+     "grade": 12,
+     "x": 1670,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "636641f2-e4b7-43b8-a3de-3ec5d9495d02",
+       "slug": "g11-transformare-geometrica",
+       "name": "transformare geometrică",
+       "grade": 11
+      },
+      {
+       "id": "ae79fc71-8652-4804-8bf4-a55568f2ff0e",
+       "slug": "g11-asemanare-de-coeficient-k",
+       "name": "asemănare de coeficient k",
+       "grade": 11
+      },
+      {
+       "id": "a005f296-5c96-46de-aa64-20d492e184ce",
+       "slug": "g11-omotetie",
+       "name": "omotetie",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "b93525aa-386c-466f-913d-d1ef8b0f84f7",
+     "slug": "g12-elemente-de-logica-matematica",
+     "name": "elemente de logică matematică",
+     "grade": 12,
+     "x": 1866,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "fa505192-4622-4a99-84bb-f94c561e1711",
+       "slug": "g10-propozitie-logica",
+       "name": "propoziție logică",
+       "grade": 10
+      },
+      {
+       "id": "95bd376f-1f71-4a4a-9f0b-b4cd3e443add",
+       "slug": "g6-propozitie-matematica",
+       "name": "propoziție matematică",
+       "grade": 6
+      }
+     ]
+    },
+    {
+     "id": "02d5edba-0725-41d2-ab2d-bf867d2a584e",
+     "slug": "g12-triunghiul-arbitrar-notatii-si-elemente",
+     "name": "triunghiul arbitrar (notații și elemente)",
+     "grade": 12,
+     "x": 2062,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5bf27411-4876-4dcd-b3ed-c3b79518917c",
+       "slug": "g7-triunghi",
+       "name": "triunghi",
+       "grade": 7
+      },
+      {
+       "id": "d0e33404-4f15-4ce4-959e-8aef905ff930",
+       "slug": "g9-elementele-triunghiului",
+       "name": "elementele triunghiului",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "fdc5d044-45d3-4a65-845c-fef9ce6a9a7e",
+     "slug": "g12-radacina-de-ordinul-n-a-numarului-complex",
+     "name": "rădăcina de ordinul n a numărului complex",
+     "grade": 12,
+     "x": 2258,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ec5cff26-a151-45e1-a49f-a83c96a75b66",
+       "slug": "g11-radacina-de-ordinul-n-a-unui-numar-complex",
+       "name": "rădăcina de ordinul n a unui număr complex",
+       "grade": 11
+      },
+      {
+       "id": "61300b92-a28f-43c0-8fc1-e65a26683a5d",
+       "slug": "g12-formula-lui-moivre",
+       "name": "formula lui Moivre",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "4ad2c938-1795-49a9-838f-d1148ac91d85",
+     "slug": "g12-regula-lui-l-hospital",
+     "name": "regula lui l'Hospital",
+     "grade": 12,
+     "x": 2454,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "2b8d3eb0-110a-4210-9716-513b5a988cbf",
+       "slug": "g11-regula-lui-l-hospital",
+       "name": "regula lui l'Hospital",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "ac588887-57a6-4a72-b4a8-dce6699480a5",
+     "slug": "g12-produsul-scalar-al-doi-vectori",
+     "name": "produsul scalar al doi vectori",
+     "grade": 12,
+     "x": 2650,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d55f5c32-db4f-4e19-bb92-df5d9295693a",
+       "slug": "g8-produsul-scalar-a-doi-vectori",
+       "name": "produsul scalar a doi vectori",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "a7b5620a-387e-40d8-8ba3-2126e32862f5",
+     "slug": "g12-pozitii-relative-ale-dreptelor-si-planelor-in-spatiu",
+     "name": "poziții relative ale dreptelor și planelor în spațiu",
+     "grade": 12,
+     "x": 2846,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c779d3df-7ede-4b6b-8254-90aecf320ef4",
+       "slug": "g11-pozitiile-relative-ale-dreptelor-si-planelor-in-spatiu",
+       "name": "pozițiile relative ale dreptelor și planelor în spațiu",
+       "grade": 11
+      },
+      {
+       "id": "c9fb716f-d230-4340-84ca-f9f4e35dd418",
+       "slug": "g9-drepte-in-spatiu-pozitii-relative",
+       "name": "drepte în spațiu — poziții relative",
+       "grade": 9
+      },
+      {
+       "id": "927331b9-50d4-4305-bdf7-89ed15f82e80",
+       "slug": "g9-plane-pozitii-relative",
+       "name": "plane — poziții relative",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "3b3fbb55-3120-453a-9d8d-dd26170697ca",
+     "slug": "g12-punct-de-discontinuitate",
+     "name": "punct de discontinuitate",
+     "grade": 12,
+     "x": 3042,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "956be79d-d25c-46bc-ac7e-af8ab7e93bc0",
+       "slug": "g11-punct-de-discontinuitate",
+       "name": "punct de discontinuitate",
+       "grade": 11
+      },
+      {
+       "id": "485c0063-52e7-495e-a672-f5dbf3017dc0",
+       "slug": "g11-punct-de-discontinuitate-de-speta-intai",
+       "name": "punct de discontinuitate de speța întâi",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "f184f7ae-63d6-4759-bb57-cc0e96d2490b",
+     "slug": "g12-teorema-lui-b-zout",
+     "name": "teorema lui Bézout",
+     "grade": 12,
+     "x": 3238,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "42532acf-4e27-4311-b2e4-ff23c78bc9dd",
+       "slug": "g9-teorema-lui-b-zout",
+       "name": "teorema lui Bézout",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "743e03e8-d234-48a9-93ce-0ba0de7b39ec",
+     "slug": "g12-limita-unui-sir",
+     "name": "limita unui șir",
+     "grade": 12,
+     "x": 3434,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "079c0271-16a1-412d-bb42-dfa4b638c7be",
+       "slug": "g11-limita-unui-sir",
+       "name": "limita unui șir",
+       "grade": 11
+      },
+      {
+       "id": "93b6c77a-dae2-4c9d-b745-b909d9e22452",
+       "slug": "g11-sir-convergent",
+       "name": "șir convergent",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "f79681d7-9bc3-4340-af9f-aee2a7ef2d67",
+     "slug": "g12-inecuatii-trigonometrice-fundamentale",
+     "name": "inecuații trigonometrice fundamentale",
+     "grade": 12,
+     "x": 3630,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "17dd4dee-3698-4774-872b-e2355e2d8614",
+       "slug": "g10-inecuatii-trigonometrice-fundamentale",
+       "name": "inecuații trigonometrice fundamentale",
+       "grade": 10
+      },
+      {
+       "id": "feef9bde-1f86-4ec9-9512-baa01dac3f0a",
+       "slug": "g10-inecuatie-trigonometrica-fundamentala-cu-cosinus",
+       "name": "inecuație trigonometrică fundamentală cu cosinus",
+       "grade": 10
+      },
+      {
+       "id": "670aab8a-732f-4f38-8e08-110f992abe63",
+       "slug": "g10-inecuatie-trigonometrica-fundamentala-cu-sinus",
+       "name": "inecuație trigonometrică fundamentală cu sinus",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "5e5fa0f6-bc63-453a-990d-fba30ab70f05",
+     "slug": "g12-transformari-care-pastreaza-echivalenta-ecuatiilor",
+     "name": "transformări care păstrează echivalența ecuațiilor",
+     "grade": 12,
+     "x": 3826,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "f94741e9-2b26-4811-938e-a217cf4e8034",
+       "slug": "g10-ecuatii-echivalente",
+       "name": "ecuații echivalente",
+       "grade": 10
+      },
+      {
+       "id": "237427b5-86f5-4622-b7d5-1bcca27c6e84",
+       "slug": "g9-ecuatii-echivalente",
+       "name": "ecuații echivalente",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "d8c1feb3-b924-4139-ab82-25c93ba2e2a2",
+     "slug": "g12-functie-continua-in-punct",
+     "name": "funcție continuă în punct",
+     "grade": 12,
+     "x": 4022,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e9d7ccda-da60-42f4-bc71-96b3c6baeff7",
+       "slug": "g11-functie-continua-intr-un-punct",
+       "name": "funcție continuă într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "e2cceb8d-ee0d-4f9f-90c3-b2dece33dc31",
+       "slug": "g12-limita-functiei-intr-un-punct",
+       "name": "limita funcției într-un punct",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "cb01aacc-2b2a-4656-a704-93a06c968a17",
+     "slug": "g12-sisteme-de-ecuatii-liniare",
+     "name": "sisteme de ecuații liniare",
+     "grade": 12,
+     "x": 4218,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "eebd1783-034a-4c6b-960e-4743c2d7f72a",
+       "slug": "g11-sistem-de-ecuatii-liniare",
+       "name": "sistem de ecuații liniare",
+       "grade": 11
+      },
+      {
+       "id": "26f88fad-eb63-4fed-ad95-e29701b218ca",
+       "slug": "g11-compatibilitatea-sistemelor-de-ecuatii-liniare",
+       "name": "compatibilitatea sistemelor de ecuații liniare",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "54c3ee56-1def-4a01-b98d-20422de18b57",
+     "slug": "g12-combinari",
+     "name": "combinări",
+     "grade": 12,
+     "x": 4414,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "a383883f-9707-4aaa-a46b-00a7019112c6",
+       "slug": "g10-combinari",
+       "name": "combinări",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "fc743b07-776c-498c-92a6-c41829e35aea",
+     "slug": "g12-permutari",
+     "name": "permutări",
+     "grade": 12,
+     "x": 4610,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "f5e0a933-0887-4d79-92bf-a9d5987946a6",
+       "slug": "g10-permutari",
+       "name": "permutări",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "f2e384db-5cb4-4bd0-9a13-e03b9afc29c6",
+     "slug": "g12-teorema-sinusurilor",
+     "name": "teorema sinusurilor",
+     "grade": 12,
+     "x": 4806,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d8232c94-e253-4bb1-bdf0-96af48a67520",
+       "slug": "g10-teorema-sinusurilor",
+       "name": "teorema sinusurilor",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "057e234e-c3a9-42f5-9a4f-698f0ac63841",
+     "slug": "g12-asimptota-unei-functii",
+     "name": "asimptota unei funcții",
+     "grade": 12,
+     "x": 5002,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "932b264a-fe9f-4496-bf75-72116ea007f6",
+       "slug": "g11-asimptota-graficului-unei-functii",
+       "name": "asimptota graficului unei funcții",
+       "grade": 11
+      },
+      {
+       "id": "c57327a3-c517-4a87-8139-a1fa39505483",
+       "slug": "g11-asimptota-orizontala",
+       "name": "asimptotă orizontală",
+       "grade": 11
+      },
+      {
+       "id": "b68e6452-917d-4de1-86fc-cf474b3ec468",
+       "slug": "g11-asimptota-verticala",
+       "name": "asimptotă verticală",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "79243908-9616-40f8-bd19-9cf7201e614e",
+     "slug": "g12-radacina-polinomului",
+     "name": "rădăcina polinomului",
+     "grade": 12,
+     "x": 5198,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "07c6ea11-8d21-47de-a652-f43e4c5c42ab",
+       "slug": "g9-radacina-unui-polinom",
+       "name": "rădăcina unui polinom",
+       "grade": 9
+      },
+      {
+       "id": "42532acf-4e27-4311-b2e4-ff23c78bc9dd",
+       "slug": "g9-teorema-lui-b-zout",
+       "name": "teorema lui Bézout",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "96803faf-c2ec-43a0-9906-f8f2f70e3c86",
+     "slug": "g12-functii-trigonometrice-inverse",
+     "name": "funcții trigonometrice inverse",
+     "grade": 12,
+     "x": 5394,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "cb355bfa-b495-4b8e-8c84-e9212e530864",
+       "slug": "g10-functii-trigonometrice-inverse",
+       "name": "funcții trigonometrice inverse",
+       "grade": 10
+      },
+      {
+       "id": "6bf1a024-90e7-4156-a2c2-fded58bb671b",
+       "slug": "g10-arccos",
+       "name": "arccos",
+       "grade": 10
+      },
+      {
+       "id": "2ff4c294-19fd-4020-bae7-89dec6306693",
+       "slug": "g10-arcsin",
+       "name": "arcsin",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "0ae356bc-7f06-47c7-9d7c-1d337ba73c0b",
+     "slug": "g12-algoritm-de-rezolvare-a-problemelor-de-maxim-si-minim",
+     "name": "algoritm de rezolvare a problemelor de maxim și minim",
+     "grade": 12,
+     "x": 5590,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "bf13b3cd-1198-45a7-b9b3-42fab86a6d20",
+       "slug": "g11-optimizare-prin-derivate",
+       "name": "optimizare prin derivate",
+       "grade": 11
+      },
+      {
+       "id": "24bc5a88-9b09-4b0b-82ca-6263733b2a73",
+       "slug": "g11-algoritm-de-determinare-a-extremelor-globale",
+       "name": "algoritm de determinare a extremelor globale",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:recapitulare-finala",
+   "label": "Recapitulare finală",
+   "width": 2752,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "ff625300-99a5-47a8-a38b-beb2cb062879",
+     "slug": "g12-romb",
+     "name": "romb",
+     "grade": 12,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1c7e8284-f0fe-483a-8e3d-3bbb2efc79eb",
+       "slug": "g10-romb",
+       "name": "romb",
+       "grade": 10
+      },
+      {
+       "id": "a665046d-ae97-40e7-9cf8-832c7e2cd7a3",
+       "slug": "g6-romb",
+       "name": "romb",
+       "grade": 6
+      }
+     ]
+    },
+    {
+     "id": "0c24f649-f640-470c-ac81-c06c4a094f66",
+     "slug": "g12-paralelogram",
+     "name": "paralelogram",
+     "grade": 12,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "bf8d8699-e7db-4979-b28f-772aae9e7888",
+       "slug": "g10-paralelogram",
+       "name": "paralelogram",
+       "grade": 10
+      },
+      {
+       "id": "c5036e1f-547e-4d02-8ecc-09954166724e",
+       "slug": "g8-paralelogram",
+       "name": "paralelogram",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "877d7bee-6cc9-4160-8756-6e22505f7ecf",
+     "slug": "g12-impartirea-polinoamelor",
+     "name": "împărțirea polinoamelor",
+     "grade": 12,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "397ee0b7-478b-4fbb-9a47-35f6ac89bb6e",
+       "slug": "g9-impartirea-polinoamelor",
+       "name": "împărțirea polinoamelor",
+       "grade": 9
+      },
+      {
+       "id": "98c52e04-afd2-4de3-af88-4a8311826cf0",
+       "slug": "g9-impartirea-polinomului-la-binomul-x",
+       "name": "împărțirea polinomului la binomul X − α",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "c3bf9101-4faf-4540-9dfe-14917d2769a2",
+     "slug": "g12-metoda-inductiei-matematice",
+     "name": "metoda inducției matematice",
+     "grade": 12,
+     "x": 690,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ec6f401b-bb9d-435f-8ca8-c21f724004fd",
+       "slug": "g10-inductie-matematica",
+       "name": "inducție matematică",
+       "grade": 10
+      },
+      {
+       "id": "b93525aa-386c-466f-913d-d1ef8b0f84f7",
+       "slug": "g12-elemente-de-logica-matematica",
+       "name": "elemente de logică matematică",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "71d5eca8-ef4f-49f8-9dcb-b8fb3ed86c7d",
+     "slug": "g12-proprietati-ale-functiilor-continue",
+     "name": "proprietăți ale funcțiilor continue",
+     "grade": 12,
+     "x": 886,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "2ed00629-14df-4390-981b-b14dc388f2c3",
+       "slug": "g11-operatii-cu-functii-continue",
+       "name": "operații cu funcții continue",
+       "grade": 11
+      },
+      {
+       "id": "750fb27c-f029-49b0-9fb9-d9f1dde28a77",
+       "slug": "g11-teorema-weierstrass-de-marginire",
+       "name": "teorema Weierstrass de mărginire",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "66f67d46-6581-4838-bf8b-d6ceb2bad62c",
+     "slug": "g12-dreptunghi",
+     "name": "dreptunghi",
+     "grade": 12,
+     "x": 1082,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "fbcf2bec-f308-4818-a397-7fd8d6394128",
+       "slug": "g10-dreptunghi",
+       "name": "dreptunghi",
+       "grade": 10
+      },
+      {
+       "id": "800050b7-278a-4e07-8003-5c9a8442a4ed",
+       "slug": "g5-dreptunghi",
+       "name": "dreptunghi",
+       "grade": 5
+      }
+     ]
+    },
+    {
+     "id": "05d6d480-2704-4a3b-bddc-b8f753491961",
+     "slug": "g12-regula-lui-cramer",
+     "name": "regula lui Cramer",
+     "grade": 12,
+     "x": 1278,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "479b1cf2-0d5a-49ba-b38f-4314e6137e35",
+       "slug": "g11-regula-lui-cramer-pentru-sistem-2-2",
+       "name": "regula lui Cramer pentru sistem 2×2",
+       "grade": 11
+      },
+      {
+       "id": "e57e1d37-2513-44ec-85b3-40a21369d8d5",
+       "slug": "g11-regula-lui-cramer-pentru-sistem-3-3",
+       "name": "regula lui Cramer pentru sistem 3×3",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "71aec203-607a-48b7-b4fa-597d68b1a9c7",
+     "slug": "g12-triunghi-dreptunghic",
+     "name": "triunghi dreptunghic",
+     "grade": 12,
+     "x": 1474,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "60b3fbfa-961b-496b-8ce8-95d263e8dfa8",
+       "slug": "g10-triunghi-dreptunghic",
+       "name": "triunghi dreptunghic",
+       "grade": 10
+      },
+      {
+       "id": "f60e8253-f971-41dd-b4d3-7b4ea110c93c",
+       "slug": "g7-triunghiul-dreptunghic",
+       "name": "triunghiul dreptunghic",
+       "grade": 7
+      }
+     ]
+    },
+    {
+     "id": "ad20cbb7-db35-4597-b581-5f5b9ea92df6",
+     "slug": "g12-metoda-lui-gauss",
+     "name": "metoda lui Gauss",
+     "grade": 12,
+     "x": 1670,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "9440e6e9-4228-448f-bffc-77479125c518",
+       "slug": "g11-metoda-lui-gauss",
+       "name": "metoda lui Gauss",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "61300b92-a28f-43c0-8fc1-e65a26683a5d",
+     "slug": "g12-formula-lui-moivre",
+     "name": "formula lui Moivre",
+     "grade": 12,
+     "x": 1866,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "68e8be9a-af59-4280-817a-d476a9520599",
+       "slug": "g11-formula-lui-moivre",
+       "name": "formula lui Moivre",
+       "grade": 11
+      },
+      {
+       "id": "d8600115-fb48-4151-a455-d089b50ecb56",
+       "slug": "g12-forma-trigonometrica-a-numarului-complex",
+       "name": "forma trigonometrică a numărului complex",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "d8600115-fb48-4151-a455-d089b50ecb56",
+     "slug": "g12-forma-trigonometrica-a-numarului-complex",
+     "name": "forma trigonometrică a numărului complex",
+     "grade": 12,
+     "x": 1866,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e3d84615-3040-4253-9b57-9a2996c06491",
+       "slug": "g11-forma-trigonometrica-a-unui-numar-complex",
+       "name": "forma trigonometrică a unui număr complex",
+       "grade": 11
+      },
+      {
+       "id": "68e8be9a-af59-4280-817a-d476a9520599",
+       "slug": "g11-formula-lui-moivre",
+       "name": "formula lui Moivre",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "4eb1957d-3b43-400b-a450-0ba8328ae197",
+     "slug": "g12-patrulater-convex",
+     "name": "patrulater convex",
+     "grade": 12,
+     "x": 2062,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "f8cfca37-0eda-4905-908e-1728367f88b5",
+       "slug": "g8-patrulater",
+       "name": "patrulater",
+       "grade": 8
+      },
+      {
+       "id": "f215384e-ebe1-486e-ba5b-22404e383d9b",
+       "slug": "g9-patrulater",
+       "name": "patrulater",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "c09f9c25-d827-4cfd-9022-8532bea82dee",
+     "slug": "g12-triunghiuri-asemenea",
+     "name": "triunghiuri asemenea",
+     "grade": 12,
+     "x": 2258,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b81f5a11-186b-46af-9de6-693357fb3abe",
+       "slug": "g8-triunghiuri-asemenea",
+       "name": "triunghiuri asemenea",
+       "grade": 8
+      },
+      {
+       "id": "373f1ae2-ae44-4a42-aed7-97e159b18735",
+       "slug": "g10-triunghiuri-asemenea",
+       "name": "triunghiuri asemenea",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "ad0e9dea-dc9d-462c-a7bc-53a8a99c7bad",
+     "slug": "g12-triunghi-echilateral",
+     "name": "triunghi echilateral",
+     "grade": 12,
+     "x": 2454,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "29c2e731-bfd8-44f6-bb48-ee4f3b8196b6",
+       "slug": "g10-triunghi-echilateral",
+       "name": "triunghi echilateral",
+       "grade": 10
+      },
+      {
+       "id": "a375be4c-84f6-498b-8b46-3953422536d6",
+       "slug": "g7-triunghiul-echilateral",
+       "name": "triunghiul echilateral",
+       "grade": 7
+      }
+     ]
+    },
+    {
+     "id": "94ad76e0-2788-452e-a031-45123e0dedd8",
+     "slug": "g12-metoda-reducerii-la-absurd",
+     "name": "metoda reducerii la absurd",
+     "grade": 12,
+     "x": 2650,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "9467803b-1c6f-4323-8f67-686f2f04b195",
+       "slug": "g10-metoda-reducerii-la-absurd",
+       "name": "metoda reducerii la absurd",
+       "grade": 10
+      },
+      {
+       "id": "b1f95447-38a5-4eba-9cf6-dd68c21d6246",
+       "slug": "g8-metoda-reducerii-la-absurd",
+       "name": "metoda reducerii la absurd",
+       "grade": 8
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "61300b92-a28f-43c0-8fc1-e65a26683a5d",
+     "to": "d8600115-fb48-4151-a455-d089b50ecb56"
+    }
+   ]
+  },
+  {
+   "key": "g12:poliedre-recapitulare-si-completari",
+   "label": "Poliedre. Recapitulare și completări",
+   "width": 1576,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "8e3509c6-b7c8-43a4-b8c3-b81dd6e32836",
+     "slug": "g12-asemanarea-corpurilor-geometrice",
+     "name": "asemănarea corpurilor geometrice",
+     "grade": 12,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "92f654ab-c278-4f24-b57e-bc5eb2123910",
+       "slug": "g10-asemanarea-figurilor",
+       "name": "asemănarea figurilor",
+       "grade": 10
+      },
+      {
+       "id": "dfc3d37e-872c-4f1c-9d65-554cdff0a3f9",
+       "slug": "g9-poliedru",
+       "name": "poliedru",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "25d01f7f-ad11-4231-ade8-bb4feba456ca",
+     "slug": "g12-poliedru-convex",
+     "name": "poliedru convex",
+     "grade": 12,
+     "x": 1278,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "f71f9c9f-d69c-492f-8f07-03b47c33f2ed",
+       "slug": "g8-poligon-convex",
+       "name": "poligon convex",
+       "grade": 8
+      },
+      {
+       "id": "b96dee57-48a5-4787-9140-769d8a39294c",
+       "slug": "g12-poliedru",
+       "name": "poliedru",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "382d9c0b-0787-40e0-b565-b59f771e8226",
+     "slug": "g12-prisma-oblica",
+     "name": "prismă oblică",
+     "grade": 12,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+       "slug": "g12-prisma",
+       "name": "prismă",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "814ddbf3-8de2-4c35-acfd-a6eb256a035e",
+     "slug": "g12-prisma-regulata",
+     "name": "prismă regulată",
+     "grade": 12,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+       "slug": "g12-prisma",
+       "name": "prismă",
+       "grade": 12
+      },
+      {
+       "id": "4418b0ca-791f-4c62-b4f8-9a78688b60a2",
+       "slug": "g9-poligon-regulat",
+       "name": "poligon regulat",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "85f70c37-b9a1-432a-b568-40f143a03937",
+     "slug": "g12-cub",
+     "name": "cub",
+     "grade": 12,
+     "x": 690,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "da4101c2-eb66-442a-8f61-0751220bbe1d",
+       "slug": "g9-cub",
+       "name": "cub",
+       "grade": 9
+      },
+      {
+       "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+       "slug": "g12-prisma",
+       "name": "prismă",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "1f1395cb-eaf0-4e86-bf46-9c2a40cc5116",
+     "slug": "g12-corp-congruent",
+     "name": "corp congruent",
+     "grade": 12,
+     "x": 886,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "cc157300-bfd0-4dca-ad15-f22cd450ce31",
+       "slug": "g7-congruenta-figurilor",
+       "name": "congruența figurilor",
+       "grade": 7
+      },
+      {
+       "id": "bdc6e442-e927-4e61-a40f-81f05889074f",
+       "slug": "g12-corp-geometric",
+       "name": "corp geometric",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "b96dee57-48a5-4787-9140-769d8a39294c",
+     "slug": "g12-poliedru",
+     "name": "poliedru",
+     "grade": 12,
+     "x": 1082,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "dfc3d37e-872c-4f1c-9d65-554cdff0a3f9",
+       "slug": "g9-poliedru",
+       "name": "poliedru",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "e0b5edb7-e4c3-47a3-ac2e-bb8a18dd70ed",
+     "slug": "g12-prisma-dreapta",
+     "name": "prismă dreaptă",
+     "grade": 12,
+     "x": 1278,
+     "y": 288,
+     "servable": 3,
+     "prereqs": [
+      {
+       "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+       "slug": "g12-prisma",
+       "name": "prismă",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "5de9f445-8e05-44cf-bfe7-79a575a52474",
+     "slug": "g12-paralelipiped",
+     "name": "paralelipiped",
+     "grade": 12,
+     "x": 1474,
+     "y": 288,
+     "servable": 10,
+     "prereqs": [
+      {
+       "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+       "slug": "g12-prisma",
+       "name": "prismă",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "45f94eaf-4e56-4d3c-9fed-5b354f309f8f",
+     "slug": "g12-poliedru-regulat",
+     "name": "poliedru regulat",
+     "grade": 12,
+     "x": 1082,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "4418b0ca-791f-4c62-b4f8-9a78688b60a2",
+       "slug": "g9-poligon-regulat",
+       "name": "poligon regulat",
+       "grade": 9
+      },
+      {
+       "id": "b96dee57-48a5-4787-9140-769d8a39294c",
+       "slug": "g12-poliedru",
+       "name": "poliedru",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "c7e92210-2692-46a7-ae76-3e5561619102",
+     "slug": "g12-paralelipiped-dreptunghic",
+     "name": "paralelipiped dreptunghic",
+     "grade": 12,
+     "x": 1474,
+     "y": 74,
+     "servable": 8,
+     "prereqs": [
+      {
+       "id": "5de9f445-8e05-44cf-bfe7-79a575a52474",
+       "slug": "g12-paralelipiped",
+       "name": "paralelipiped",
+       "grade": 12
+      },
+      {
+       "id": "4a4212fc-b6d5-4584-a7e3-d81b21659bc7",
+       "slug": "g4-paralelipiped-dreptunghic",
+       "name": "paralelipiped dreptunghic",
+       "grade": 4
+      }
+     ]
+    },
+    {
+     "id": "8a084915-95d4-4829-8700-f6405241fb3d",
+     "slug": "g12-tetraedru",
+     "name": "tetraedru",
+     "grade": 12,
+     "x": 886,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b96dee57-48a5-4787-9140-769d8a39294c",
+       "slug": "g12-poliedru",
+       "name": "poliedru",
+       "grade": 12
+      },
+      {
+       "id": "782ea464-bf05-4140-ac29-2b18b6d632aa",
+       "slug": "g12-tetraedru-transparent-opac",
+       "name": "tetraedru transparent / opac",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "25d01f7f-ad11-4231-ade8-bb4feba456ca",
+     "to": "b96dee57-48a5-4787-9140-769d8a39294c"
+    },
+    {
+     "from": "45f94eaf-4e56-4d3c-9fed-5b354f309f8f",
+     "to": "b96dee57-48a5-4787-9140-769d8a39294c"
+    },
+    {
+     "from": "8a084915-95d4-4829-8700-f6405241fb3d",
+     "to": "b96dee57-48a5-4787-9140-769d8a39294c"
+    },
+    {
+     "from": "c7e92210-2692-46a7-ae76-3e5561619102",
+     "to": "5de9f445-8e05-44cf-bfe7-79a575a52474"
+    }
+   ]
+  },
+  {
+   "key": "g12:modulul-6",
+   "label": "Modulul 6",
+   "width": 1380,
+   "height": 790,
+   "nodes": [
+    {
+     "id": "129305be-0b28-48dc-80a1-e937cee2d0f6",
+     "slug": "g12-elemente-de-calcul-financiar",
+     "name": "elemente de calcul financiar",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "598fcae2-4b78-48a8-b006-83eb2911080e",
+       "slug": "g12-procent",
+       "name": "procent",
+       "grade": 12
+      },
+      {
+       "id": "30f033b1-49a1-4b35-83e0-e6f60caa1ff0",
+       "slug": "g12-dobanda-compusa",
+       "name": "dobânda compusă",
+       "grade": 12
+      },
+      {
+       "id": "e8bbae01-27ba-4f06-b2eb-c9665a776882",
+       "slug": "g12-dobanda-simpla",
+       "name": "dobânda simplă",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "4f50b430-3493-4004-b151-03afa2bd3e65",
+     "slug": "g12-buget",
+     "name": "buget",
+     "grade": 12,
+     "x": 102,
+     "y": 716,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "598fcae2-4b78-48a8-b006-83eb2911080e",
+       "slug": "g12-procent",
+       "name": "procent",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "30f033b1-49a1-4b35-83e0-e6f60caa1ff0",
+     "slug": "g12-dobanda-compusa",
+     "name": "dobânda compusă",
+     "grade": 12,
+     "x": 352,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8d356bc6-a63a-4ef7-a87a-a4f65cb173b7",
+       "slug": "g12-dobanda-notiune-generala",
+       "name": "dobânda (noțiune generală)",
+       "grade": 12
+      },
+      {
+       "id": "e8bbae01-27ba-4f06-b2eb-c9665a776882",
+       "slug": "g12-dobanda-simpla",
+       "name": "dobânda simplă",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "8d356bc6-a63a-4ef7-a87a-a4f65cb173b7",
+     "slug": "g12-dobanda-notiune-generala",
+     "name": "dobânda (noțiune generală)",
+     "grade": 12,
+     "x": 298,
+     "y": 716,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "598fcae2-4b78-48a8-b006-83eb2911080e",
+       "slug": "g12-procent",
+       "name": "procent",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "230ce38b-bd3d-4383-8f8e-de6a6d6ee6dd",
+     "slug": "g12-adaos-comercial",
+     "name": "adaos comercial",
+     "grade": 12,
+     "x": 494,
+     "y": 716,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "598fcae2-4b78-48a8-b006-83eb2911080e",
+       "slug": "g12-procent",
+       "name": "procent",
+       "grade": 12
+      },
+      {
+       "id": "67f54ece-eb46-43fd-9952-a97dc78d8a30",
+       "slug": "g12-pretul-de-cost",
+       "name": "prețul de cost",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "b07300cf-6566-4cae-bda9-f336d3f3d2d8",
+     "slug": "g12-salariu",
+     "name": "salariu",
+     "grade": 12,
+     "x": 690,
+     "y": 716,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "598fcae2-4b78-48a8-b006-83eb2911080e",
+       "slug": "g12-procent",
+       "name": "procent",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "e8bbae01-27ba-4f06-b2eb-c9665a776882",
+     "slug": "g12-dobanda-simpla",
+     "name": "dobânda simplă",
+     "grade": 12,
+     "x": 244,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8d356bc6-a63a-4ef7-a87a-a4f65cb173b7",
+       "slug": "g12-dobanda-notiune-generala",
+       "name": "dobânda (noțiune generală)",
+       "grade": 12
+      },
+      {
+       "id": "598fcae2-4b78-48a8-b006-83eb2911080e",
+       "slug": "g12-procent",
+       "name": "procent",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "054bc373-cc1a-42cc-8cc8-0175ecf3b290",
+     "slug": "g12-modelare-statistica",
+     "name": "modelare statistică",
+     "grade": 12,
+     "x": 886,
+     "y": 716,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "60c78008-7baa-4fbb-8c85-fb13df8ad6aa",
+       "slug": "g12-serie-statistica",
+       "name": "serie statistică",
+       "grade": 12
+      },
+      {
+       "id": "8e26802c-cfed-4dbf-8ca4-e6fbcfce7c7c",
+       "slug": "g8-statistica-matematica",
+       "name": "statistică matematică",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "5e0a967f-4929-44a9-b8ef-2943181b3b98",
+     "slug": "g12-gruparea-datelor-pe-intervale-de-variatie",
+     "name": "gruparea datelor pe intervale de variație",
+     "grade": 12,
+     "x": 1082,
+     "y": 716,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "60c78008-7baa-4fbb-8c85-fb13df8ad6aa",
+       "slug": "g12-serie-statistica",
+       "name": "serie statistică",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "2fbfd8da-f275-4a24-805a-2a5b4f5e2c8b",
+     "slug": "g12-modul-dominanta-seriei-statistice",
+     "name": "modul (dominanta) seriei statistice",
+     "grade": 12,
+     "x": 1278,
+     "y": 716,
+     "servable": 4,
+     "prereqs": [
+      {
+       "id": "60c78008-7baa-4fbb-8c85-fb13df8ad6aa",
+       "slug": "g12-serie-statistica",
+       "name": "serie statistică",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "30f033b1-49a1-4b35-83e0-e6f60caa1ff0",
+     "to": "8d356bc6-a63a-4ef7-a87a-a4f65cb173b7"
+    },
+    {
+     "from": "30f033b1-49a1-4b35-83e0-e6f60caa1ff0",
+     "to": "e8bbae01-27ba-4f06-b2eb-c9665a776882"
+    },
+    {
+     "from": "e8bbae01-27ba-4f06-b2eb-c9665a776882",
+     "to": "8d356bc6-a63a-4ef7-a87a-a4f65cb173b7"
+    },
+    {
+     "from": "129305be-0b28-48dc-80a1-e937cee2d0f6",
+     "to": "30f033b1-49a1-4b35-83e0-e6f60caa1ff0"
+    },
+    {
+     "from": "129305be-0b28-48dc-80a1-e937cee2d0f6",
+     "to": "e8bbae01-27ba-4f06-b2eb-c9665a776882"
+    }
+   ]
+  },
+  {
+   "key": "g12:modulul-1",
+   "label": "Modulul 1",
+   "width": 1184,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "78c0eec4-2ab9-4ee9-b2cb-4e132acaceab",
+     "slug": "g12-derivata-functiei-inverse",
+     "name": "derivata funcției inverse",
+     "grade": 12,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "52c392fb-947e-4750-ac75-f3ee0fbd6725",
+       "slug": "g11-derivata-functiei-inverse",
+       "name": "derivata funcției inverse",
+       "grade": 11
+      },
+      {
+       "id": "1f2fe4b8-d64d-4905-bc1b-b987f2574424",
+       "slug": "g12-reguli-de-calcul-al-derivatelor",
+       "name": "reguli de calcul al derivatelor",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "d56b64bf-db69-4c27-a789-5f794d107e52",
+     "slug": "g12-derivata-de-ordin-superior",
+     "name": "derivata de ordin superior",
+     "grade": 12,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8832c35b-9256-40d9-a82e-16a2a4092ef1",
+       "slug": "g11-derivata-de-ordinul-doi",
+       "name": "derivata de ordinul doi",
+       "grade": 11
+      },
+      {
+       "id": "1f2fe4b8-d64d-4905-bc1b-b987f2574424",
+       "slug": "g12-reguli-de-calcul-al-derivatelor",
+       "name": "reguli de calcul al derivatelor",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "d2640544-6fed-4882-9565-9c35752f24aa",
+     "slug": "g12-derivata-functiei-compuse",
+     "name": "derivata funcției compuse",
+     "grade": 12,
+     "x": 1082,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5f4dea25-8c52-40b6-abae-b1cf8a6f822d",
+       "slug": "g11-derivata-functiei-compuse",
+       "name": "derivata funcției compuse",
+       "grade": 11
+      },
+      {
+       "id": "1f2fe4b8-d64d-4905-bc1b-b987f2574424",
+       "slug": "g12-reguli-de-calcul-al-derivatelor",
+       "name": "reguli de calcul al derivatelor",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "bdf479ce-7905-47b8-b324-52274dd7b054",
+     "slug": "g12-diferentiala-functiei-compuse",
+     "name": "diferențiala funcției compuse",
+     "grade": 12,
+     "x": 1072,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d2640544-6fed-4882-9565-9c35752f24aa",
+       "slug": "g12-derivata-functiei-compuse",
+       "name": "derivata funcției compuse",
+       "grade": 12
+      },
+      {
+       "id": "44310502-2c9a-42e8-a961-93e3d8a425d0",
+       "slug": "g12-reguli-de-calcul-al-diferentialelor",
+       "name": "reguli de calcul al diferențialelor",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "8afa5df9-6c1f-4fc0-8a3e-c7b3fc8616e2",
+     "slug": "g12-derivabilitate-pe-multime",
+     "name": "derivabilitate pe mulțime",
+     "grade": 12,
+     "x": 690,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "bd6b438f-f33e-4ab7-b828-d43022dae9ed",
+       "slug": "g11-functie-derivabila-pe-multime",
+       "name": "funcție derivabilă pe mulțime",
+       "grade": 11
+      },
+      {
+       "id": "48100e27-c4e8-44a4-bdd1-cf68d9e8feec",
+       "slug": "g12-derivata-unei-functii-in-punct",
+       "name": "derivata unei funcții în punct",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "2ee6b637-31ff-47e4-9032-03ba2fa9792c",
+     "slug": "g12-derivata-laterala",
+     "name": "derivata laterală",
+     "grade": 12,
+     "x": 886,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "7b579ba5-7f29-42e9-b108-3b400b948756",
+       "slug": "g11-derivate-laterale",
+       "name": "derivate laterale",
+       "grade": 11
+      },
+      {
+       "id": "48100e27-c4e8-44a4-bdd1-cf68d9e8feec",
+       "slug": "g12-derivata-unei-functii-in-punct",
+       "name": "derivata unei funcții în punct",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "d197850a-c19b-4741-ae48-d784252d6892",
+     "slug": "g12-tabelul-diferentialelor-functiilor-elementare",
+     "name": "tabelul diferențialelor funcțiilor elementare",
+     "grade": 12,
+     "x": 484,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c261c261-2a75-49bf-a3e5-23c6696062e7",
+       "slug": "g11-tabloul-diferentialelor-functiilor-elementare",
+       "name": "tabloul diferențialelor funcțiilor elementare",
+       "grade": 11
+      },
+      {
+       "id": "44310502-2c9a-42e8-a961-93e3d8a425d0",
+       "slug": "g12-reguli-de-calcul-al-diferentialelor",
+       "name": "reguli de calcul al diferențialelor",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "44310502-2c9a-42e8-a961-93e3d8a425d0",
+     "slug": "g12-reguli-de-calcul-al-diferentialelor",
+     "name": "reguli de calcul al diferențialelor",
+     "grade": 12,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "875c2205-da9f-4195-a24b-03ac18aeb9e9",
+       "slug": "g11-reguli-de-derivare",
+       "name": "reguli de derivare",
+       "grade": 11
+      },
+      {
+       "id": "1470bd28-1ce5-4031-93d0-3e5aad820445",
+       "slug": "g12-diferentiala-unei-functii",
+       "name": "diferențiala unei funcții",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "bdf479ce-7905-47b8-b324-52274dd7b054",
+     "to": "d2640544-6fed-4882-9565-9c35752f24aa"
+    },
+    {
+     "from": "bdf479ce-7905-47b8-b324-52274dd7b054",
+     "to": "44310502-2c9a-42e8-a961-93e3d8a425d0"
+    },
+    {
+     "from": "d197850a-c19b-4741-ae48-d784252d6892",
+     "to": "44310502-2c9a-42e8-a961-93e3d8a425d0"
+    }
+   ]
+  },
+  {
+   "key": "g12:elemente-de-statistica-matematica-si-de-calcul-f",
+   "label": "Elemente de statistică matematică și de calcul financiar",
+   "width": 792,
+   "height": 576,
+   "nodes": [
+    {
+     "id": "67f54ece-eb46-43fd-9952-a97dc78d8a30",
+     "slug": "g12-pretul-de-cost",
+     "name": "prețul de cost",
+     "grade": 12,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "598fcae2-4b78-48a8-b006-83eb2911080e",
+       "slug": "g12-procent",
+       "name": "procent",
+       "grade": 12
+      },
+      {
+       "id": "aff660c8-0ca0-4a7a-b140-fe94447714af",
+       "slug": "g12-profit",
+       "name": "profit",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "c9d12d2e-4604-46a3-a4cf-297b8f1d31ce",
+     "slug": "g12-frecventa-absoluta-cumulata",
+     "name": "frecvența absolută cumulată",
+     "grade": 12,
+     "x": 690,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "3c9a0d4d-c9dd-45df-ac7b-9c92148790b2",
+       "slug": "g12-frecventa-absoluta-a-intervalului",
+       "name": "frecvența absolută a intervalului",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "3c9a0d4d-c9dd-45df-ac7b-9c92148790b2",
+     "slug": "g12-frecventa-absoluta-a-intervalului",
+     "name": "frecvența absolută a intervalului",
+     "grade": 12,
+     "x": 592,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5e0a967f-4929-44a9-b8ef-2943181b3b98",
+       "slug": "g12-gruparea-datelor-pe-intervale-de-variatie",
+       "name": "gruparea datelor pe intervale de variație",
+       "grade": 12
+      },
+      {
+       "id": "424572a3-9c7e-4969-8fb4-7c2e431471ca",
+       "slug": "g12-frecventa-absoluta-a-variantei",
+       "name": "frecvența absolută a variantei",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "85a69ea6-28e9-4d10-bd1f-4e206de327de",
+     "slug": "g12-frecventa-relativa",
+     "name": "frecvența relativă",
+     "grade": 12,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "424572a3-9c7e-4969-8fb4-7c2e431471ca",
+       "slug": "g12-frecventa-absoluta-a-variantei",
+       "name": "frecvența absolută a variantei",
+       "grade": 12
+      },
+      {
+       "id": "3c9a0d4d-c9dd-45df-ac7b-9c92148790b2",
+       "slug": "g12-frecventa-absoluta-a-intervalului",
+       "name": "frecvența absolută a intervalului",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "1afdb7d6-94f0-465b-8e57-473194690a1a",
+     "slug": "g12-frecventa-relativa-cumulata",
+     "name": "frecvența relativă cumulată",
+     "grade": 12,
+     "x": 592,
+     "y": 74,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "85a69ea6-28e9-4d10-bd1f-4e206de327de",
+       "slug": "g12-frecventa-relativa",
+       "name": "frecvența relativă",
+       "grade": 12
+      },
+      {
+       "id": "c9d12d2e-4604-46a3-a4cf-297b8f1d31ce",
+       "slug": "g12-frecventa-absoluta-cumulata",
+       "name": "frecvența absolută cumulată",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "70b16a15-fe99-4e45-ad29-ac25c0738a67",
+     "slug": "g12-credit",
+     "name": "credit",
+     "grade": 12,
+     "x": 396,
+     "y": 502,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "30f033b1-49a1-4b35-83e0-e6f60caa1ff0",
+       "slug": "g12-dobanda-compusa",
+       "name": "dobânda compusă",
+       "grade": 12
+      },
+      {
+       "id": "e8bbae01-27ba-4f06-b2eb-c9665a776882",
+       "slug": "g12-dobanda-simpla",
+       "name": "dobânda simplă",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "aff660c8-0ca0-4a7a-b140-fe94447714af",
+     "slug": "g12-profit",
+     "name": "profit",
+     "grade": 12,
+     "x": 200,
+     "y": 502,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "598fcae2-4b78-48a8-b006-83eb2911080e",
+       "slug": "g12-procent",
+       "name": "procent",
+       "grade": 12
+      },
+      {
+       "id": "4f50b430-3493-4004-b151-03afa2bd3e65",
+       "slug": "g12-buget",
+       "name": "buget",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "d1d103ed-9354-4067-908f-dfe00481a201",
+     "slug": "g12-tva-taxa-pe-valoarea-adaugata",
+     "name": "TVA (taxa pe valoarea adăugată)",
+     "grade": 12,
+     "x": 102,
+     "y": 288,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "598fcae2-4b78-48a8-b006-83eb2911080e",
+       "slug": "g12-procent",
+       "name": "procent",
+       "grade": 12
+      },
+      {
+       "id": "aff660c8-0ca0-4a7a-b140-fe94447714af",
+       "slug": "g12-profit",
+       "name": "profit",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "c9d12d2e-4604-46a3-a4cf-297b8f1d31ce",
+     "to": "3c9a0d4d-c9dd-45df-ac7b-9c92148790b2"
+    },
+    {
+     "from": "85a69ea6-28e9-4d10-bd1f-4e206de327de",
+     "to": "3c9a0d4d-c9dd-45df-ac7b-9c92148790b2"
+    },
+    {
+     "from": "1afdb7d6-94f0-465b-8e57-473194690a1a",
+     "to": "85a69ea6-28e9-4d10-bd1f-4e206de327de"
+    },
+    {
+     "from": "1afdb7d6-94f0-465b-8e57-473194690a1a",
+     "to": "c9d12d2e-4604-46a3-a4cf-297b8f1d31ce"
+    },
+    {
+     "from": "67f54ece-eb46-43fd-9952-a97dc78d8a30",
+     "to": "aff660c8-0ca0-4a7a-b140-fe94447714af"
+    },
+    {
+     "from": "d1d103ed-9354-4067-908f-dfe00481a201",
+     "to": "aff660c8-0ca0-4a7a-b140-fe94447714af"
+    }
+   ]
+  },
+  {
+   "key": "g12:1-notiuni-fundamentale",
+   "label": "§1 Noțiuni fundamentale",
+   "width": 812,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "ac1d11d1-5b93-4fda-8bbb-206ab528a0f4",
+     "slug": "g12-variabila-statistica",
+     "name": "variabilă statistică",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "46efbc39-e5cd-4079-888e-60840b1615b6",
+       "slug": "g12-caracteristica-statistica",
+       "name": "caracteristică statistică",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "32b56b6e-dbb1-4dbd-9172-89c1f619a15c",
+     "slug": "g12-unitate-statistica",
+     "name": "unitate statistică",
+     "grade": 12,
+     "x": 710,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "3caa5fef-4f43-4a24-b997-e0f96131d0ce",
+       "slug": "g12-populatie-statistica",
+       "name": "populație statistică",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "0b6061a4-f8ff-414c-b05b-fdb39a6d73e5",
+     "slug": "g12-sondaj-statistic",
+     "name": "sondaj statistic",
+     "grade": 12,
+     "x": 504,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "27f40f69-731c-43b2-aec7-0ac682b4e716",
+       "slug": "g12-observare-statistica",
+       "name": "observare statistică",
+       "grade": 12
+      },
+      {
+       "id": "3caa5fef-4f43-4a24-b997-e0f96131d0ce",
+       "slug": "g12-populatie-statistica",
+       "name": "populație statistică",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "d616a1c6-979f-4d87-a3c7-55b76c55b810",
+     "slug": "g12-esantion",
+     "name": "eșantion",
+     "grade": 12,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b4b12015-5a38-420b-8fcc-78bf9bf93b3a",
+       "slug": "g8-populatie-statistica",
+       "name": "populație statistică",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "46efbc39-e5cd-4079-888e-60840b1615b6",
+     "slug": "g12-caracteristica-statistica",
+     "name": "caracteristică statistică",
+     "grade": 12,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "9e0f32dd-5bb4-4413-9855-b9f502db97ab",
+       "slug": "g8-frecventa-statistica",
+       "name": "frecvență statistică",
+       "grade": 8
+      },
+      {
+       "id": "3b05472e-9142-44cd-aea9-b2a3f77aa759",
+       "slug": "g8-caracteristica-statistica",
+       "name": "caracteristică statistică",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "3caa5fef-4f43-4a24-b997-e0f96131d0ce",
+     "slug": "g12-populatie-statistica",
+     "name": "populație statistică",
+     "grade": 12,
+     "x": 700,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b4b12015-5a38-420b-8fcc-78bf9bf93b3a",
+       "slug": "g8-populatie-statistica",
+       "name": "populație statistică",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "27f40f69-731c-43b2-aec7-0ac682b4e716",
+     "slug": "g12-observare-statistica",
+     "name": "observare statistică",
+     "grade": 12,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "67d6a491-5027-44a7-bcc9-451beb9455bd",
+       "slug": "g6-experiment",
+       "name": "experiment",
+       "grade": 6
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "0b6061a4-f8ff-414c-b05b-fdb39a6d73e5",
+     "to": "27f40f69-731c-43b2-aec7-0ac682b4e716"
+    },
+    {
+     "from": "0b6061a4-f8ff-414c-b05b-fdb39a6d73e5",
+     "to": "3caa5fef-4f43-4a24-b997-e0f96131d0ce"
+    },
+    {
+     "from": "32b56b6e-dbb1-4dbd-9172-89c1f619a15c",
+     "to": "3caa5fef-4f43-4a24-b997-e0f96131d0ce"
+    },
+    {
+     "from": "ac1d11d1-5b93-4fda-8bbb-206ab528a0f4",
+     "to": "46efbc39-e5cd-4079-888e-60840b1615b6"
+    }
+   ]
+  },
+  {
+   "key": "g12:modulul-8",
+   "label": "Modulul 8",
+   "width": 1184,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "c27d7a8a-8524-4a79-ad99-d6f33b9143bf",
+     "slug": "g12-aria-laterala-a-trunchiului-de-con-circular-drept",
+     "name": "aria laterală a trunchiului de con circular drept",
+     "grade": 12,
+     "x": 102,
+     "y": 288,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "2c787bba-74b1-486c-82a0-1d24ae80e0ad",
+       "slug": "g12-trunchiul-de-con-circular-drept",
+       "name": "trunchiul de con circular drept",
+       "grade": 12
+      },
+      {
+       "id": "17b1f0e4-238c-4c69-a9d3-b2e5ac142580",
+       "slug": "g9-aria-si-volumul-conului",
+       "name": "aria și volumul conului",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "c30c928a-7f50-4459-ac8a-a42dfa64eaa9",
+     "slug": "g12-hiperbola",
+     "name": "hiperbola",
+     "grade": 12,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8a59fd61-a363-4350-9ee7-2650d564e558",
+       "slug": "g12-sectiuni-conice",
+       "name": "secțiuni conice",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "aa6067b9-2448-4a6b-a665-7e78b142e29f",
+     "slug": "g12-volumul-corpului-sferic",
+     "name": "volumul corpului sferic",
+     "grade": 12,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b89edf5d-8cad-4b34-a21f-0a3a6f314768",
+       "slug": "g12-sfera-si-corpul-sferic",
+       "name": "sfera și corpul sferic",
+       "grade": 12
+      },
+      {
+       "id": "cb7ea2c5-ab12-412b-97e0-fe40293e108a",
+       "slug": "g9-aria-sferei-si-volumul-corpului-sferic",
+       "name": "aria sferei și volumul corpului sferic",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "ed0d5f74-b521-4c06-9c39-9f1d56417d99",
+     "slug": "g12-volumul-conului-circular-drept",
+     "name": "volumul conului circular drept",
+     "grade": 12,
+     "x": 690,
+     "y": 288,
+     "servable": 11,
+     "prereqs": [
+      {
+       "id": "35226cd5-b770-4cd4-9fa5-e8408746b838",
+       "slug": "g12-conul-circular-drept",
+       "name": "conul circular drept",
+       "grade": 12
+      },
+      {
+       "id": "17b1f0e4-238c-4c69-a9d3-b2e5ac142580",
+       "slug": "g9-aria-si-volumul-conului",
+       "name": "aria și volumul conului",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "1a546344-ba89-4ed6-8c1f-dfd40e7459f7",
+     "slug": "g12-aria-totala-a-conului-circular-drept",
+     "name": "aria totală a conului circular drept",
+     "grade": 12,
+     "x": 886,
+     "y": 288,
+     "servable": 2,
+     "prereqs": [
+      {
+       "id": "7a6c4286-e026-4203-9a15-ddf8295ef2de",
+       "slug": "g12-aria-laterala-a-conului-circular-drept",
+       "name": "aria laterală a conului circular drept",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "4d1cd7ce-dde4-4197-8472-8520d66a1b67",
+     "slug": "g12-aria-totala-a-trunchiului-de-con-circular-drept",
+     "name": "aria totală a trunchiului de con circular drept",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c27d7a8a-8524-4a79-ad99-d6f33b9143bf",
+       "slug": "g12-aria-laterala-a-trunchiului-de-con-circular-drept",
+       "name": "aria laterală a trunchiului de con circular drept",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "2db2ccd2-4e4f-4ed0-ab84-ba25943f19c8",
+     "slug": "g12-aria-sferei-si-calotei-sferice",
+     "name": "aria sferei și calotei sferice",
+     "grade": 12,
+     "x": 1082,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b89edf5d-8cad-4b34-a21f-0a3a6f314768",
+       "slug": "g12-sfera-si-corpul-sferic",
+       "name": "sfera și corpul sferic",
+       "grade": 12
+      },
+      {
+       "id": "cb7ea2c5-ab12-412b-97e0-fe40293e108a",
+       "slug": "g9-aria-sferei-si-volumul-corpului-sferic",
+       "name": "aria sferei și volumul corpului sferic",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "4d1cd7ce-dde4-4197-8472-8520d66a1b67",
+     "to": "c27d7a8a-8524-4a79-ad99-d6f33b9143bf"
+    }
+   ]
+  },
+  {
+   "key": "g12:2-diferentiala-unei-functii-3-interpretarea-geom",
+   "label": "2. Diferențiala unei funcții / 3. Interpretarea geometrică a derivatei și diferențialei funcției",
+   "width": 1184,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "6d302027-eebc-47c7-94af-be49d59f344b",
+     "slug": "g12-ecuatia-tangentei-la-graficul-functiei",
+     "name": "ecuația tangentei la graficul funcției",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "4f8ca74f-6c3a-4e3a-a7d5-76e4782d7980",
+       "slug": "g11-ecuatia-tangentei-la-graficul-functiei",
+       "name": "ecuația tangentei la graficul funcției",
+       "grade": 11
+      },
+      {
+       "id": "4194c551-4362-4986-b93b-4200a7fd3cd8",
+       "slug": "g12-interpretarea-geometrica-a-derivatei",
+       "name": "interpretarea geometrică a derivatei",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "6aeb0f96-4ed3-44d8-9d0a-25c7baa7e7c1",
+     "slug": "g12-punct-de-inflexiune",
+     "name": "punct de inflexiune",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "342c8f84-3cf2-40d5-ab3d-37684981895c",
+       "slug": "g11-punct-de-inflexiune",
+       "name": "punct de inflexiune",
+       "grade": 11
+      },
+      {
+       "id": "1f2fe4b8-d64d-4905-bc1b-b987f2574424",
+       "slug": "g12-reguli-de-calcul-al-derivatelor",
+       "name": "reguli de calcul al derivatelor",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "ab5f2f05-0bd8-49b7-b277-aa0e5628f8d5",
+     "slug": "g12-formula-de-calcul-aproximativ-al-valorii-functiei",
+     "name": "formula de calcul aproximativ al valorii funcției",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1470bd28-1ce5-4031-93d0-3e5aad820445",
+       "slug": "g12-diferentiala-unei-functii",
+       "name": "diferențiala unei funcții",
+       "grade": 12
+      },
+      {
+       "id": "4194c551-4362-4986-b93b-4200a7fd3cd8",
+       "slug": "g12-interpretarea-geometrica-a-derivatei",
+       "name": "interpretarea geometrică a derivatei",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "b40347ec-01b8-4bbe-b8c4-5b5177f7c356",
+     "slug": "g12-punct-unghiular",
+     "name": "punct unghiular",
+     "grade": 12,
+     "x": 690,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "03212167-bc40-4059-b4c8-b71da946fd07",
+       "slug": "g11-punct-unghiular",
+       "name": "punct unghiular",
+       "grade": 11
+      },
+      {
+       "id": "1f2fe4b8-d64d-4905-bc1b-b987f2574424",
+       "slug": "g12-reguli-de-calcul-al-derivatelor",
+       "name": "reguli de calcul al derivatelor",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "5cb30a97-7ec1-42aa-934d-2f0d7ef988a1",
+     "slug": "g12-punct-de-intoarcere",
+     "name": "punct de întoarcere",
+     "grade": 12,
+     "x": 886,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "2d516be0-d5d1-4465-ac50-1a798a9ecc58",
+       "slug": "g11-punct-de-intoarcere",
+       "name": "punct de întoarcere",
+       "grade": 11
+      },
+      {
+       "id": "1f2fe4b8-d64d-4905-bc1b-b987f2574424",
+       "slug": "g12-reguli-de-calcul-al-derivatelor",
+       "name": "reguli de calcul al derivatelor",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "f4613481-4d24-4d83-89d6-4ee26ca05d39",
+     "slug": "g12-interpretarea-geometrica-a-diferentialei",
+     "name": "interpretarea geometrică a diferențialei",
+     "grade": 12,
+     "x": 1082,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ff1befc0-bcd9-4606-a0de-98dc9601e8e3",
+       "slug": "g11-diferentiala-functiei-intr-un-punct",
+       "name": "diferențiala funcției într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "1470bd28-1ce5-4031-93d0-3e5aad820445",
+       "slug": "g12-diferentiala-unei-functii",
+       "name": "diferențiala unei funcții",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:1-2-elemente-de-teoria-multimilor",
+   "label": "1.2. Elemente de teoria mulțimilor",
+   "width": 1184,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "82af011b-516c-4627-9b86-35a325c58518",
+     "slug": "g12-multime-vida",
+     "name": "mulțime vidă",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e7b6f583-9267-45c3-97f9-90a8aadaf2c5",
+       "slug": "g5-multime-vida",
+       "name": "mulțime vidă",
+       "grade": 5
+      }
+     ]
+    },
+    {
+     "id": "63185c65-4a99-4b00-ba8c-dc981aed139f",
+     "slug": "g12-multimi-egale",
+     "name": "mulțimi egale",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "f6c22d98-a46b-407a-aa22-062d4497f423",
+       "slug": "g5-multimi-egale",
+       "name": "mulțimi egale",
+       "grade": 5
+      },
+      {
+       "id": "ef9d33c3-388f-47d3-896c-da908989254e",
+       "slug": "g6-multime",
+       "name": "mulțime",
+       "grade": 6
+      }
+     ]
+    },
+    {
+     "id": "f76d25eb-cf79-4d10-a662-c134458afcac",
+     "slug": "g12-cardinalul-unei-multimi",
+     "name": "cardinalul unei mulțimi",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "70c735ff-1a3e-424c-a8cc-8106dd8fd169",
+       "slug": "g5-cardinalul-multimii",
+       "name": "cardinalul mulțimii",
+       "grade": 5
+      },
+      {
+       "id": "23435fd4-e5e3-40e6-9059-41bd1986dd2a",
+       "slug": "g6-cardinalul-multimii",
+       "name": "cardinalul mulțimii",
+       "grade": 6
+      }
+     ]
+    },
+    {
+     "id": "3f9c7fed-ba8a-4f03-be11-43f5eb1f689c",
+     "slug": "g12-booleanul-unei-multimi",
+     "name": "booleanul unei mulțimi",
+     "grade": 12,
+     "x": 690,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "0d06a4d8-f721-46fc-b54d-b73f0722b9a5",
+       "slug": "g5-multime",
+       "name": "mulțime",
+       "grade": 5
+      },
+      {
+       "id": "4dedcfbf-974b-4ce8-98ae-8a7fa8c6d017",
+       "slug": "g10-multime",
+       "name": "mulțime",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "fe8d6a7c-cedb-46a5-a34f-af2e440d06b6",
+     "slug": "g12-operatii-cu-multimi",
+     "name": "operații cu mulțimi",
+     "grade": 12,
+     "x": 886,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "2f215661-1411-4c34-9b0a-1bdf57a7eff9",
+       "slug": "g6-operatii-cu-multimi",
+       "name": "operații cu mulțimi",
+       "grade": 6
+      },
+      {
+       "id": "d92d1d31-d231-4ca2-a34f-c5882d076cab",
+       "slug": "g10-operatii-cu-multimi",
+       "name": "operații cu mulțimi",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "b9b4566e-0fce-48c5-8252-c1bcebd41b36",
+     "slug": "g12-submultime",
+     "name": "submulțime",
+     "grade": 12,
+     "x": 1082,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "324ea9d9-eb7e-4d17-803b-ec9cb3725ab7",
+       "slug": "g5-submultime",
+       "name": "submulțime",
+       "grade": 5
+      },
+      {
+       "id": "82be12c5-02cb-4ce2-8c84-ef8fe8d239b6",
+       "slug": "g6-submultime",
+       "name": "submulțime",
+       "grade": 6
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:corpuri-de-rotatie-recapitulare-si-completari",
+   "label": "Corpuri de rotație. Recapitulare și completări",
+   "width": 694,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "793174e2-82a4-4439-acbc-f555c9e0aaa5",
+     "slug": "g12-volumul-trunchiului-de-con",
+     "name": "volumul trunchiului de con",
+     "grade": 12,
+     "x": 102,
+     "y": 288,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "2c787bba-74b1-486c-82a0-1d24ae80e0ad",
+       "slug": "g12-trunchiul-de-con-circular-drept",
+       "name": "trunchiul de con circular drept",
+       "grade": 12
+      },
+      {
+       "id": "17b1f0e4-238c-4c69-a9d3-b2e5ac142580",
+       "slug": "g9-aria-si-volumul-conului",
+       "name": "aria și volumul conului",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "8d6f6e8f-8f27-4843-8157-fe2ca386c8f1",
+     "slug": "g12-semisfera",
+     "name": "semisferă",
+     "grade": 12,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b89edf5d-8cad-4b34-a21f-0a3a6f314768",
+       "slug": "g12-sfera-si-corpul-sferic",
+       "name": "sfera și corpul sferic",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "e68b8d09-cafc-4b30-9d32-a920e500497c",
+     "slug": "g12-zona-sferica",
+     "name": "zonă sferică",
+     "grade": 12,
+     "x": 200,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b89edf5d-8cad-4b34-a21f-0a3a6f314768",
+       "slug": "g12-sfera-si-corpul-sferic",
+       "name": "sfera și corpul sferic",
+       "grade": 12
+      },
+      {
+       "id": "7b96fb75-cdc5-468c-8731-0c7560bd6d41",
+       "slug": "g12-calota-sferica",
+       "name": "calotă sferică",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "844627d5-31fc-4f02-9aea-571c708d2c3e",
+     "slug": "g12-segment-sferic",
+     "name": "segment sferic",
+     "grade": 12,
+     "x": 396,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b89edf5d-8cad-4b34-a21f-0a3a6f314768",
+       "slug": "g12-sfera-si-corpul-sferic",
+       "name": "sfera și corpul sferic",
+       "grade": 12
+      },
+      {
+       "id": "7b96fb75-cdc5-468c-8731-0c7560bd6d41",
+       "slug": "g12-calota-sferica",
+       "name": "calotă sferică",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "241db00d-5fff-4389-86df-08b7cab6b275",
+     "slug": "g12-sector-sferic",
+     "name": "sector sferic",
+     "grade": 12,
+     "x": 592,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b89edf5d-8cad-4b34-a21f-0a3a6f314768",
+       "slug": "g12-sfera-si-corpul-sferic",
+       "name": "sfera și corpul sferic",
+       "grade": 12
+      },
+      {
+       "id": "7b96fb75-cdc5-468c-8731-0c7560bd6d41",
+       "slug": "g12-calota-sferica",
+       "name": "calotă sferică",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "7b96fb75-cdc5-468c-8731-0c7560bd6d41",
+     "slug": "g12-calota-sferica",
+     "name": "calotă sferică",
+     "grade": 12,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b89edf5d-8cad-4b34-a21f-0a3a6f314768",
+       "slug": "g12-sfera-si-corpul-sferic",
+       "name": "sfera și corpul sferic",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "241db00d-5fff-4389-86df-08b7cab6b275",
+     "to": "7b96fb75-cdc5-468c-8731-0c7560bd6d41"
+    },
+    {
+     "from": "844627d5-31fc-4f02-9aea-571c708d2c3e",
+     "to": "7b96fb75-cdc5-468c-8731-0c7560bd6d41"
+    },
+    {
+     "from": "e68b8d09-cafc-4b30-9d32-a920e500497c",
+     "to": "7b96fb75-cdc5-468c-8731-0c7560bd6d41"
+    }
+   ]
+  },
+  {
+   "key": "g12:1-numere-complexe-multimi-elemente-de-logica-mat",
+   "label": "§1. Numere complexe. Mulțimi. Elemente de logică matematică / 1.1. Numere complexe",
+   "width": 792,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "962300dc-d07f-4960-af88-cda0a41dfae0",
+     "slug": "g12-catul-numerelor-complexe",
+     "name": "câtul numerelor complexe",
+     "grade": 12,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "670819a5-6f86-4f2a-836f-ed0c11dabac7",
+       "slug": "g11-conjugatul-unui-numar-complex",
+       "name": "conjugatul unui număr complex",
+       "grade": 11
+      },
+      {
+       "id": "c9ba1990-d4c6-4663-a8a6-9eceb05ecedf",
+       "slug": "g11-operatii-cu-numere-complexe-in-forma-algebrica",
+       "name": "operații cu numere complexe în formă algebrică",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "38d146e4-9ebf-45d2-90f6-0bd17429eb85",
+     "slug": "g12-radacini-de-ordinul-doi-ale-unui-numar-complex-negativ",
+     "name": "rădăcini de ordinul doi ale unui număr complex negativ",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "9bf1a3e2-e7eb-430c-9530-73b48446fc94",
+       "slug": "g12-numar-complex",
+       "name": "număr complex",
+       "grade": 12
+      },
+      {
+       "id": "7c78d919-1e57-4ad9-a18c-a89b60ea8db6",
+       "slug": "g8-ecuatie-de-gradul-ii-cu-o-necunoscuta",
+       "name": "ecuație de gradul II cu o necunoscută",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "9bf1a3e2-e7eb-430c-9530-73b48446fc94",
+     "slug": "g12-numar-complex",
+     "name": "număr complex",
+     "grade": 12,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "235b93f1-9ba3-4b9a-adbc-d2bf6d66a32d",
+       "slug": "g11-numar-complex",
+       "name": "număr complex",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "9ecd8a6a-60ef-454f-9f68-be49fdceb697",
+     "slug": "g12-conjugatul-numarului-complex",
+     "name": "conjugatul numărului complex",
+     "grade": 12,
+     "x": 494,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "670819a5-6f86-4f2a-836f-ed0c11dabac7",
+       "slug": "g11-conjugatul-unui-numar-complex",
+       "name": "conjugatul unui număr complex",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "d0e8f3d6-4d45-44db-acbc-9078551317d2",
+     "slug": "g12-modulul-numarului-complex",
+     "name": "modulul numărului complex",
+     "grade": 12,
+     "x": 690,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1e35f3e9-e03f-4ad0-86c7-709ea3bfae16",
+       "slug": "g11-modulul-unui-numar-complex",
+       "name": "modulul unui număr complex",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "38d146e4-9ebf-45d2-90f6-0bd17429eb85",
+     "to": "9bf1a3e2-e7eb-430c-9530-73b48446fc94"
+    }
+   ]
+  },
+  {
+   "key": "g12:modulul-1-functii-derivabile-recapitulare",
+   "label": "Modulul 1. Funcții derivabile. Recapitulare",
+   "width": 792,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "48100e27-c4e8-44a4-bdd1-cf68d9e8feec",
+     "slug": "g12-derivata-unei-functii-in-punct",
+     "name": "derivata unei funcții în punct",
+     "grade": 12,
+     "x": 396,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "37ca2e50-119a-4298-bf9b-2b9323efa655",
+       "slug": "g11-derivata-functiei-intr-un-punct",
+       "name": "derivata funcției într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "1f2fe4b8-d64d-4905-bc1b-b987f2574424",
+     "slug": "g12-reguli-de-calcul-al-derivatelor",
+     "name": "reguli de calcul al derivatelor",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "875c2205-da9f-4195-a24b-03ac18aeb9e9",
+       "slug": "g11-reguli-de-derivare",
+       "name": "reguli de derivare",
+       "grade": 11
+      },
+      {
+       "id": "48100e27-c4e8-44a4-bdd1-cf68d9e8feec",
+       "slug": "g12-derivata-unei-functii-in-punct",
+       "name": "derivata unei funcții în punct",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "b4640a44-0c12-4221-8ef3-1346e9bcce93",
+     "slug": "g12-tabelul-derivatelor-functiilor-elementare",
+     "name": "tabelul derivatelor funcțiilor elementare",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "875c2205-da9f-4195-a24b-03ac18aeb9e9",
+       "slug": "g11-reguli-de-derivare",
+       "name": "reguli de derivare",
+       "grade": 11
+      },
+      {
+       "id": "48100e27-c4e8-44a4-bdd1-cf68d9e8feec",
+       "slug": "g12-derivata-unei-functii-in-punct",
+       "name": "derivata unei funcții în punct",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "1470bd28-1ce5-4031-93d0-3e5aad820445",
+     "slug": "g12-diferentiala-unei-functii",
+     "name": "diferențiala unei funcții",
+     "grade": 12,
+     "x": 690,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "529d141e-dae4-495b-b917-755326c4db14",
+       "slug": "g11-diferentiala-functiei",
+       "name": "diferențiala funcției",
+       "grade": 11
+      },
+      {
+       "id": "48100e27-c4e8-44a4-bdd1-cf68d9e8feec",
+       "slug": "g12-derivata-unei-functii-in-punct",
+       "name": "derivata unei funcții în punct",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "4194c551-4362-4986-b93b-4200a7fd3cd8",
+     "slug": "g12-interpretarea-geometrica-a-derivatei",
+     "name": "interpretarea geometrică a derivatei",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5f2bab22-d31d-4afc-a935-3bc241b7e58e",
+       "slug": "g11-tangenta-la-graficul-unei-functii",
+       "name": "tangenta la graficul unei funcții",
+       "grade": 11
+      },
+      {
+       "id": "48100e27-c4e8-44a4-bdd1-cf68d9e8feec",
+       "slug": "g12-derivata-unei-functii-in-punct",
+       "name": "derivata unei funcții în punct",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "1470bd28-1ce5-4031-93d0-3e5aad820445",
+     "to": "48100e27-c4e8-44a4-bdd1-cf68d9e8feec"
+    },
+    {
+     "from": "4194c551-4362-4986-b93b-4200a7fd3cd8",
+     "to": "48100e27-c4e8-44a4-bdd1-cf68d9e8feec"
+    },
+    {
+     "from": "1f2fe4b8-d64d-4905-bc1b-b987f2574424",
+     "to": "48100e27-c4e8-44a4-bdd1-cf68d9e8feec"
+    },
+    {
+     "from": "b4640a44-0c12-4221-8ef3-1346e9bcce93",
+     "to": "48100e27-c4e8-44a4-bdd1-cf68d9e8feec"
+    }
+   ]
+  },
+  {
+   "key": "g12:modulul-2",
+   "label": "Modulul 2",
+   "width": 792,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "9e518300-b4e8-4e1c-af8b-30f39efe287c",
+     "slug": "g12-tabelul-integralelor-nedefinite-uzuale",
+     "name": "tabelul integralelor nedefinite uzuale",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e790b8b8-5e36-4601-8a17-04fb9f889e84",
+       "slug": "g12-primitiva-a-unei-functii",
+       "name": "primitivă a unei funcții",
+       "grade": 12
+      },
+      {
+       "id": "8d9818ee-07bd-4616-b32b-7e496ea37a24",
+       "slug": "g12-integrala-nedefinita",
+       "name": "integrală nedefinită",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "61f1d043-5bb7-4fe6-ae9f-0d42c5418bfb",
+     "slug": "g12-legea-de-variatie-a-cantitatii-de-sare-din-solutie-omogena",
+     "name": "legea de variație a cantității de sare din soluție omogenă",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e790b8b8-5e36-4601-8a17-04fb9f889e84",
+       "slug": "g12-primitiva-a-unei-functii",
+       "name": "primitivă a unei funcții",
+       "grade": 12
+      },
+      {
+       "id": "8d9818ee-07bd-4616-b32b-7e496ea37a24",
+       "slug": "g12-integrala-nedefinita",
+       "name": "integrală nedefinită",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "871acd05-fb9b-421f-95ad-622820a08b80",
+     "slug": "g12-legea-descompunerii-substantei-radioactive",
+     "name": "legea descompunerii substanței radioactive",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e790b8b8-5e36-4601-8a17-04fb9f889e84",
+       "slug": "g12-primitiva-a-unei-functii",
+       "name": "primitivă a unei funcții",
+       "grade": 12
+      },
+      {
+       "id": "8d9818ee-07bd-4616-b32b-7e496ea37a24",
+       "slug": "g12-integrala-nedefinita",
+       "name": "integrală nedefinită",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "9e4f747c-39ca-4bab-8bff-3cc768fc4a1b",
+     "slug": "g12-proprietatile-integralei-nedefinite",
+     "name": "proprietățile integralei nedefinite",
+     "grade": 12,
+     "x": 690,
+     "y": 74,
+     "servable": 21,
+     "prereqs": [
+      {
+       "id": "e790b8b8-5e36-4601-8a17-04fb9f889e84",
+       "slug": "g12-primitiva-a-unei-functii",
+       "name": "primitivă a unei funcții",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:modulul-5",
+   "label": "Modulul 5",
+   "width": 792,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "6e90d11c-7272-4b15-8ed6-65b5189beb58",
+     "slug": "g12-repartitia-variabilei-aleatoare-discrete",
+     "name": "repartiția variabilei aleatoare discrete",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "6488d043-1f94-4bb6-a254-b5675065920a",
+       "slug": "g12-variabila-aleatoare-discreta",
+       "name": "variabilă aleatoare discretă",
+       "grade": 12
+      },
+      {
+       "id": "07d04cc4-c527-46b9-a006-fea8db678c2f",
+       "slug": "g12-valoarea-medie-a-variabilei-aleatoare-discrete",
+       "name": "valoarea medie a variabilei aleatoare discrete",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "c1c74c70-4e02-4c9a-ac81-e0214a01eb20",
+     "slug": "g12-eveniment-aleator",
+     "name": "eveniment aleator",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "67d6a491-5027-44a7-bcc9-451beb9455bd",
+       "slug": "g6-experiment",
+       "name": "experiment",
+       "grade": 6
+      },
+      {
+       "id": "8bf3e1c3-c38b-4697-85ec-7d254f89db2b",
+       "slug": "g8-eveniment",
+       "name": "eveniment",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "57dc7c35-ae37-4708-af0f-758e8b700b10",
+     "slug": "g12-experiment-aleator",
+     "name": "experiment aleator",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "67d6a491-5027-44a7-bcc9-451beb9455bd",
+       "slug": "g6-experiment",
+       "name": "experiment",
+       "grade": 6
+      },
+      {
+       "id": "8bf3e1c3-c38b-4697-85ec-7d254f89db2b",
+       "slug": "g8-eveniment",
+       "name": "eveniment",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "9e553f9a-7a09-45b5-8237-afc3bd61977a",
+     "slug": "g12-formula-probabilitatii-reuniunii-evenimentelor",
+     "name": "formula probabilității reuniunii evenimentelor",
+     "grade": 12,
+     "x": 690,
+     "y": 74,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "6d3063ec-cf50-413b-8699-8ace9039da34",
+       "slug": "g12-operatii-cu-evenimente-aleatoare",
+       "name": "operații cu evenimente aleatoare",
+       "grade": 12
+      },
+      {
+       "id": "20e14c6c-f7a5-446a-812f-e7a1dd983df3",
+       "slug": "g6-probabilitatea-unui-eveniment",
+       "name": "probabilitatea unui eveniment",
+       "grade": 6
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:modulul-7",
+   "label": "Modulul 7",
+   "width": 792,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "4057214d-40cb-4f75-820d-cd526029c43b",
+     "slug": "g12-volumul-prismei",
+     "name": "volumul prismei",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+       "slug": "g12-prisma",
+       "name": "prismă",
+       "grade": 12
+      },
+      {
+       "id": "126b52d3-9cba-45f3-a2f0-84c4db997037",
+       "slug": "g12-volumul-unui-corp-geometric",
+       "name": "volumul unui corp geometric",
+       "grade": 12
+      },
+      {
+       "id": "5fc87233-a87d-4355-aec8-52cc1775d9e3",
+       "slug": "g12-volumul-paralelipipedului-dreptunghic",
+       "name": "volumul paralelipipedului dreptunghic",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "f465b079-3e12-4d52-926a-dd19243c914a",
+     "slug": "g12-volumul-trunchiului-de-piramida",
+     "name": "volumul trunchiului de piramidă",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "39190f01-9d3a-4363-9e2d-14490228755a",
+       "slug": "g12-trunchi-de-piramida",
+       "name": "trunchi de piramidă",
+       "grade": 12
+      },
+      {
+       "id": "126b52d3-9cba-45f3-a2f0-84c4db997037",
+       "slug": "g12-volumul-unui-corp-geometric",
+       "name": "volumul unui corp geometric",
+       "grade": 12
+      },
+      {
+       "id": "d89b1ff6-949f-4611-8afa-1f8a96e56154",
+       "slug": "g12-volumul-piramidei",
+       "name": "volumul piramidei",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "26871957-43e1-4c65-b4f7-3e3c73975443",
+     "slug": "g12-sectiunea-piramidei-cu-plan-paralel-cu-baza",
+     "name": "secțiunea piramidei cu plan paralel cu baza",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "eac25fcb-a645-4a83-8363-4e9ec5586906",
+       "slug": "g12-piramida",
+       "name": "piramidă",
+       "grade": 12
+      },
+      {
+       "id": "7d0c00ef-2b89-4514-990b-f6b0735c364b",
+       "slug": "g10-teorema-lui-thales",
+       "name": "teorema lui Thales",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "88c9e308-9441-42ef-b8e0-c6905ff9f9c0",
+     "slug": "g12-sectiune-a-poliedrului",
+     "name": "secțiune a poliedrului",
+     "grade": 12,
+     "x": 690,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b96dee57-48a5-4787-9140-769d8a39294c",
+       "slug": "g12-poliedru",
+       "name": "poliedru",
+       "grade": 12
+      },
+      {
+       "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+       "slug": "g12-prisma",
+       "name": "prismă",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:1-notiunea-de-poliedru",
+   "label": "§1 NOȚIUNEA DE POLIEDRU",
+   "width": 792,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "32437e6f-6fc3-4407-a214-295eed9eb8e5",
+     "slug": "g12-bila-corp-sferic",
+     "name": "bilă (corp sferic)",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "dfc3d37e-872c-4f1c-9d65-554cdff0a3f9",
+       "slug": "g9-poliedru",
+       "name": "poliedru",
+       "grade": 9
+      },
+      {
+       "id": "b9953518-b4f6-4c4a-a9dc-1208ce5201d2",
+       "slug": "g9-sfera",
+       "name": "sferă",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "e3b0b5cb-9864-4612-accf-0b27422331b1",
+     "slug": "g12-sfera-suprafata",
+     "name": "sferă (suprafață)",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b9953518-b4f6-4c4a-a9dc-1208ce5201d2",
+       "slug": "g9-sfera",
+       "name": "sferă",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "782ea464-bf05-4140-ac29-2b18b6d632aa",
+     "slug": "g12-tetraedru-transparent-opac",
+     "name": "tetraedru transparent / opac",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "dfc3d37e-872c-4f1c-9d65-554cdff0a3f9",
+       "slug": "g9-poliedru",
+       "name": "poliedru",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "bdc6e442-e927-4e61-a40f-81f05889074f",
+     "slug": "g12-corp-geometric",
+     "name": "corp geometric",
+     "grade": 12,
+     "x": 690,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "dfc3d37e-872c-4f1c-9d65-554cdff0a3f9",
+       "slug": "g9-poliedru",
+       "name": "poliedru",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:3-piramida",
+   "label": "§3. Piramida",
+   "width": 792,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "3582992f-2655-459e-ac7c-6396a3fbac24",
+     "slug": "g12-aria-laterala-a-piramidei",
+     "name": "aria laterală a piramidei",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "82286799-5c6a-4629-8263-186acb370ee6",
+       "slug": "g9-piramida",
+       "name": "piramidă",
+       "grade": 9
+      },
+      {
+       "id": "b2fa9215-1c3e-43f7-b756-e1191ae586e2",
+       "slug": "g9-aria-si-volumul-piramidei",
+       "name": "aria și volumul piramidei",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "eac25fcb-a645-4a83-8363-4e9ec5586906",
+     "slug": "g12-piramida",
+     "name": "piramidă",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 13,
+     "prereqs": [
+      {
+       "id": "82286799-5c6a-4629-8263-186acb370ee6",
+       "slug": "g9-piramida",
+       "name": "piramidă",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "0657cd53-0fa4-42a2-87eb-996698ae5ee3",
+     "slug": "g12-aria-totala-a-piramidei",
+     "name": "aria totală a piramidei",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "82286799-5c6a-4629-8263-186acb370ee6",
+       "slug": "g9-piramida",
+       "name": "piramidă",
+       "grade": 9
+      },
+      {
+       "id": "b2fa9215-1c3e-43f7-b756-e1191ae586e2",
+       "slug": "g9-aria-si-volumul-piramidei",
+       "name": "aria și volumul piramidei",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "66334111-952f-4f50-a422-51bbb2a3fbc8",
+     "slug": "g12-piramida-regulata",
+     "name": "piramidă regulată",
+     "grade": 12,
+     "x": 690,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "82286799-5c6a-4629-8263-186acb370ee6",
+       "slug": "g9-piramida",
+       "name": "piramidă",
+       "grade": 9
+      },
+      {
+       "id": "4418b0ca-791f-4c62-b4f8-9a78688b60a2",
+       "slug": "g9-poligon-regulat",
+       "name": "poligon regulat",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:4-ecuatii-inecuatii-sisteme-totalitati",
+   "label": "§4. Ecuații. Inecuații. Sisteme. Totalități",
+   "width": 792,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "69d69ded-7cd2-4b38-8fac-d0d9de34c927",
+     "slug": "g12-inecuatie",
+     "name": "inecuație",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "048b842e-7799-48ec-88d8-535bbb99745a",
+       "slug": "g10-inecuatie-cu-o-necunoscuta",
+       "name": "inecuație cu o necunoscută",
+       "grade": 10
+      },
+      {
+       "id": "15868d1c-821f-4082-b853-5c122fbbaeee",
+       "slug": "g9-inecuatie-cu-o-necunoscuta",
+       "name": "inecuație cu o necunoscută",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "9bcc4a7b-caf0-4597-a8eb-36309c579167",
+     "slug": "g12-totalitate-de-ecuatii",
+     "name": "totalitate de ecuații",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "dcdf11b6-34da-483d-a247-5200a65bc760",
+       "slug": "g10-totalitate-de-ecuatii",
+       "name": "totalitate de ecuații",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "7379ade1-92dd-43f7-859a-45d55f03e689",
+     "slug": "g12-ecuatie",
+     "name": "ecuație",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ae022770-f0d1-425f-a290-bf63add01143",
+       "slug": "g10-ecuatie-cu-o-necunoscuta",
+       "name": "ecuație cu o necunoscută",
+       "grade": 10
+      },
+      {
+       "id": "45c0e6d3-2c17-451c-b5f1-7bdc34071f17",
+       "slug": "g9-ecuatie-cu-o-necunoscuta",
+       "name": "ecuație cu o necunoscută",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "33ff6c3b-61f4-4b4c-b9a0-1180b4448d3c",
+     "slug": "g12-sistem-de-ecuatii",
+     "name": "sistem de ecuații",
+     "grade": 12,
+     "x": 690,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8859302b-2cad-4e1a-a00e-217443fa5371",
+       "slug": "g10-sistem-de-ecuatii-cu-doua-necunoscute",
+       "name": "sistem de ecuații cu două necunoscute",
+       "grade": 10
+      },
+      {
+       "id": "e068e76c-2778-4b91-b8c3-e26ee67cd672",
+       "slug": "g9-sistem-de-ecuatii-cu-doua-necunoscute",
+       "name": "sistem de ecuații cu două necunoscute",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:5-4-numarul-e",
+   "label": "5.4. Numărul e",
+   "width": 792,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "377f9682-0321-4237-8273-30db9b52bdd9",
+     "slug": "g12-subsir",
+     "name": "subșir",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "cc479b64-8ac9-4646-9723-e1add388352e",
+       "slug": "g11-subsir-al-unui-sir",
+       "name": "subșir al unui șir",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "6b5babe3-ee9c-4b66-b980-908fc7588e52",
+     "slug": "g12-numarul-e",
+     "name": "numărul e",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "46faa8a9-371e-4112-810a-99b0df66d618",
+       "slug": "g11-numarul-e",
+       "name": "numărul e",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "800338fa-2c02-4c92-9f7f-f350431ba6fb",
+     "slug": "g12-sir-divergent",
+     "name": "șir divergent",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "baf18222-11e7-49f1-9b8c-039d28b53a86",
+       "slug": "g11-sir-divergent",
+       "name": "șir divergent",
+       "grade": 11
+      },
+      {
+       "id": "743e03e8-d234-48a9-93ce-0ba0de7b39ec",
+       "slug": "g12-limita-unui-sir",
+       "name": "limita unui șir",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "ec588f81-7f57-4926-8c7c-96f9606c0dfa",
+     "slug": "g12-sir-convergent",
+     "name": "șir convergent",
+     "grade": 12,
+     "x": 690,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "93b6c77a-dae2-4c9d-b745-b909d9e22452",
+       "slug": "g11-sir-convergent",
+       "name": "șir convergent",
+       "grade": 11
+      },
+      {
+       "id": "743e03e8-d234-48a9-93ce-0ba0de7b39ec",
+       "slug": "g12-limita-unui-sir",
+       "name": "limita unui șir",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:4-trunchiul-de-piramida",
+   "label": "§4. Trunchiul de piramidă",
+   "width": 792,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "39190f01-9d3a-4363-9e2d-14490228755a",
+     "slug": "g12-trunchi-de-piramida",
+     "name": "trunchi de piramidă",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 9,
+     "prereqs": [
+      {
+       "id": "e5b9969c-5a54-4410-af2c-d0fad12a18aa",
+       "slug": "g9-trunchi-de-piramida",
+       "name": "trunchi de piramidă",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "eb2380b0-9167-47b2-85b8-89dc8f6fe0df",
+     "slug": "g12-aria-totala-a-trunchiului-de-piramida",
+     "name": "aria totală a trunchiului de piramidă",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e5b9969c-5a54-4410-af2c-d0fad12a18aa",
+       "slug": "g9-trunchi-de-piramida",
+       "name": "trunchi de piramidă",
+       "grade": 9
+      },
+      {
+       "id": "b2fa9215-1c3e-43f7-b756-e1191ae586e2",
+       "slug": "g9-aria-si-volumul-piramidei",
+       "name": "aria și volumul piramidei",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "03816291-f542-484c-af8c-604db814b6ae",
+     "slug": "g12-trunchi-de-piramida-regulata",
+     "name": "trunchi de piramidă regulată",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e5b9969c-5a54-4410-af2c-d0fad12a18aa",
+       "slug": "g9-trunchi-de-piramida",
+       "name": "trunchi de piramidă",
+       "grade": 9
+      },
+      {
+       "id": "66334111-952f-4f50-a422-51bbb2a3fbc8",
+       "slug": "g12-piramida-regulata",
+       "name": "piramidă regulată",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "652f3fa2-068e-4023-98a5-29d55a281229",
+     "slug": "g12-aria-laterala-a-trunchiului-de-piramida",
+     "name": "aria laterală a trunchiului de piramidă",
+     "grade": 12,
+     "x": 690,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e5b9969c-5a54-4410-af2c-d0fad12a18aa",
+       "slug": "g9-trunchi-de-piramida",
+       "name": "trunchi de piramidă",
+       "grade": 9
+      },
+      {
+       "id": "b2fa9215-1c3e-43f7-b756-e1191ae586e2",
+       "slug": "g9-aria-si-volumul-piramidei",
+       "name": "aria și volumul piramidei",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:modulul-4-aplicatii-ale-integralelor-definite",
+   "label": "Modulul 4. Aplicații ale integralelor definite",
+   "width": 596,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "ffab4ca0-4795-4540-833b-29422a09b66f",
+     "slug": "g12-lungimea-graficului-unei-functii-derivabile",
+     "name": "lungimea graficului unei funcții derivabile",
+     "grade": 12,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+       "slug": "g12-integrala-definita",
+       "name": "integrală definită",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "2021e294-9ae4-4166-96b1-30c585f9e2a3",
+     "slug": "g12-aria-suprafetei-de-rotatie",
+     "name": "aria suprafeței de rotație",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 18,
+     "prereqs": [
+      {
+       "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+       "slug": "g12-integrala-definita",
+       "name": "integrală definită",
+       "grade": 12
+      },
+      {
+       "id": "27730b94-e5d3-4ed1-b1aa-a3be5085a9cd",
+       "slug": "g12-volumul-corpului-de-rotatie",
+       "name": "volumul corpului de rotație",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "b2dee2a2-ca25-40ef-afba-9b9833565420",
+     "slug": "g12-aria-subgraficului-unei-functii",
+     "name": "aria subgraficului unei funcții",
+     "grade": 12,
+     "x": 298,
+     "y": 288,
+     "servable": 27,
+     "prereqs": [
+      {
+       "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+       "slug": "g12-integrala-definita",
+       "name": "integrală definită",
+       "grade": 12
+      },
+      {
+       "id": "6c47c3fc-0c73-439b-827c-0f84af677bb8",
+       "slug": "g12-interpretarea-geometrica-a-integralei-definite",
+       "name": "interpretarea geometrică a integralei definite",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "27730b94-e5d3-4ed1-b1aa-a3be5085a9cd",
+     "slug": "g12-volumul-corpului-de-rotatie",
+     "name": "volumul corpului de rotație",
+     "grade": 12,
+     "x": 494,
+     "y": 288,
+     "servable": 12,
+     "prereqs": [
+      {
+       "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+       "slug": "g12-integrala-definita",
+       "name": "integrală definită",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "2021e294-9ae4-4166-96b1-30c585f9e2a3",
+     "to": "27730b94-e5d3-4ed1-b1aa-a3be5085a9cd"
+    }
+   ]
+  },
+  {
+   "key": "g12:modulul-2-primitive-si-integrale-nedefinite",
+   "label": "Modulul 2. Primitive și integrale nedefinite",
+   "width": 400,
+   "height": 576,
+   "nodes": [
+    {
+     "id": "952ce95f-aea8-4696-98ee-1971ab28255b",
+     "slug": "g12-metoda-schimbarii-de-variabila-in-calculul-primitivelor",
+     "name": "metoda schimbării de variabilă în calculul primitivelor",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 18,
+     "prereqs": [
+      {
+       "id": "8d9818ee-07bd-4616-b32b-7e496ea37a24",
+       "slug": "g12-integrala-nedefinita",
+       "name": "integrală nedefinită",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "e790b8b8-5e36-4601-8a17-04fb9f889e84",
+     "slug": "g12-primitiva-a-unei-functii",
+     "name": "primitivă a unei funcții",
+     "grade": 12,
+     "x": 200,
+     "y": 502,
+     "servable": 23,
+     "prereqs": [
+      {
+       "id": "1f2fe4b8-d64d-4905-bc1b-b987f2574424",
+       "slug": "g12-reguli-de-calcul-al-derivatelor",
+       "name": "reguli de calcul al derivatelor",
+       "grade": 12
+      },
+      {
+       "id": "b4640a44-0c12-4221-8ef3-1346e9bcce93",
+       "slug": "g12-tabelul-derivatelor-functiilor-elementare",
+       "name": "tabelul derivatelor funcțiilor elementare",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "fecc9f76-238a-4949-a07c-a715e744c691",
+     "slug": "g12-metoda-integrarii-prin-parti-integrala-nedefinita",
+     "name": "metoda integrării prin părți (integrală nedefinită)",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 40,
+     "prereqs": [
+      {
+       "id": "8d9818ee-07bd-4616-b32b-7e496ea37a24",
+       "slug": "g12-integrala-nedefinita",
+       "name": "integrală nedefinită",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "8d9818ee-07bd-4616-b32b-7e496ea37a24",
+     "slug": "g12-integrala-nedefinita",
+     "name": "integrală nedefinită",
+     "grade": 12,
+     "x": 200,
+     "y": 288,
+     "servable": 35,
+     "prereqs": [
+      {
+       "id": "e790b8b8-5e36-4601-8a17-04fb9f889e84",
+       "slug": "g12-primitiva-a-unei-functii",
+       "name": "primitivă a unei funcții",
+       "grade": 12
+      },
+      {
+       "id": "9e4f747c-39ca-4bab-8bff-3cc768fc4a1b",
+       "slug": "g12-proprietatile-integralei-nedefinite",
+       "name": "proprietățile integralei nedefinite",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "8d9818ee-07bd-4616-b32b-7e496ea37a24",
+     "to": "e790b8b8-5e36-4601-8a17-04fb9f889e84"
+    },
+    {
+     "from": "fecc9f76-238a-4949-a07c-a715e744c691",
+     "to": "8d9818ee-07bd-4616-b32b-7e496ea37a24"
+    },
+    {
+     "from": "952ce95f-aea8-4696-98ee-1971ab28255b",
+     "to": "8d9818ee-07bd-4616-b32b-7e496ea37a24"
+    }
+   ]
+  },
+  {
+   "key": "g12:modulul-5-elemente-de-teoria-probabilitatilor",
+   "label": "Modulul 5. Elemente de teoria probabilităților",
+   "width": 400,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "07d04cc4-c527-46b9-a006-fea8db678c2f",
+     "slug": "g12-valoarea-medie-a-variabilei-aleatoare-discrete",
+     "name": "valoarea medie a variabilei aleatoare discrete",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "6488d043-1f94-4bb6-a254-b5675065920a",
+       "slug": "g12-variabila-aleatoare-discreta",
+       "name": "variabilă aleatoare discretă",
+       "grade": 12
+      },
+      {
+       "id": "5da724c6-f0a5-49fe-baad-30f40dd89782",
+       "slug": "g6-media-aritmetica",
+       "name": "media aritmetică",
+       "grade": 6
+      }
+     ]
+    },
+    {
+     "id": "e98a412f-a0b8-4cb5-9642-94a9217bed68",
+     "slug": "g12-probabilitatea-clasica-a-unui-eveniment",
+     "name": "probabilitatea clasică a unui eveniment",
+     "grade": 12,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "57dc7c35-ae37-4708-af0f-758e8b700b10",
+       "slug": "g12-experiment-aleator",
+       "name": "experiment aleator",
+       "grade": 12
+      },
+      {
+       "id": "20e14c6c-f7a5-446a-812f-e7a1dd983df3",
+       "slug": "g6-probabilitatea-unui-eveniment",
+       "name": "probabilitatea unui eveniment",
+       "grade": 6
+      },
+      {
+       "id": "b53062ea-a38f-4384-ab42-a7bd208b650e",
+       "slug": "g8-probabilitatea-unui-eveniment-aleator",
+       "name": "probabilitatea unui eveniment aleator",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "6488d043-1f94-4bb6-a254-b5675065920a",
+     "slug": "g12-variabila-aleatoare-discreta",
+     "name": "variabilă aleatoare discretă",
+     "grade": 12,
+     "x": 298,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "57dc7c35-ae37-4708-af0f-758e8b700b10",
+       "slug": "g12-experiment-aleator",
+       "name": "experiment aleator",
+       "grade": 12
+      },
+      {
+       "id": "b53062ea-a38f-4384-ab42-a7bd208b650e",
+       "slug": "g8-probabilitatea-unui-eveniment-aleator",
+       "name": "probabilitatea unui eveniment aleator",
+       "grade": 8
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "07d04cc4-c527-46b9-a006-fea8db678c2f",
+     "to": "6488d043-1f94-4bb6-a254-b5675065920a"
+    }
+   ]
+  },
+  {
+   "key": "g12:2-prisma",
+   "label": "§2. Prisma",
+   "width": 596,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "70c3b534-7181-4ac8-831f-9a9a2a98caf8",
+     "slug": "g12-aria-totala-a-prismei",
+     "name": "aria totală a prismei",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "67b595be-7608-4fad-96f5-7e81278cdaea",
+       "slug": "g9-prisma",
+       "name": "prismă",
+       "grade": 9
+      },
+      {
+       "id": "9ddae9c7-d231-4b06-bda6-22a9d172164e",
+       "slug": "g9-aria-si-volumul-prismei",
+       "name": "aria și volumul prismei",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+     "slug": "g12-prisma",
+     "name": "prismă",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 2,
+     "prereqs": [
+      {
+       "id": "67b595be-7608-4fad-96f5-7e81278cdaea",
+       "slug": "g9-prisma",
+       "name": "prismă",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "717f4396-4895-40f7-963a-869429462650",
+     "slug": "g12-aria-laterala-a-prismei",
+     "name": "aria laterală a prismei",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "67b595be-7608-4fad-96f5-7e81278cdaea",
+       "slug": "g9-prisma",
+       "name": "prismă",
+       "grade": 9
+      },
+      {
+       "id": "9ddae9c7-d231-4b06-bda6-22a9d172164e",
+       "slug": "g9-aria-si-volumul-prismei",
+       "name": "aria și volumul prismei",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:7-proprietati-generale-si-aplicatii-ale-functiil",
+   "label": "§7. Proprietăți generale și aplicații ale funcțiilor derivabile / 7.1. Proprietăți generale ale funcțiilor derivabile",
+   "width": 596,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "f4c8fdab-6f8d-4bc1-b441-14ebf3d06656",
+     "slug": "g12-teorema-lui-fermat",
+     "name": "teorema lui Fermat",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "fb736dd0-7dbe-421a-b7ce-7775d9bea046",
+       "slug": "g11-teorema-lui-fermat",
+       "name": "teorema lui Fermat",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "1b4fc350-1b29-4b9b-a020-2e299cbe966a",
+     "slug": "g12-teorema-lui-lagrange-cresterilor-finite",
+     "name": "teorema lui Lagrange (creșterilor finite)",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "6488a8e9-b38c-412d-a759-55e188caf7a6",
+       "slug": "g11-teorema-lui-lagrange",
+       "name": "teorema lui Lagrange",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "0e62f106-9f06-4266-b088-b16ca47df339",
+     "slug": "g12-teorema-lui-rolle",
+     "name": "teorema lui Rolle",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1d0f4484-9cf2-49c2-9fc6-9a7ec1bbc965",
+       "slug": "g11-teorema-lui-rolle",
+       "name": "teorema lui Rolle",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:modulul-8-corpuri-de-rotatie-recapitulare-si-com",
+   "label": "Modulul 8. Corpuri de rotație. Recapitulare și completări",
+   "width": 596,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "187310c8-6f4f-49c3-98c5-0e6ceb08c85a",
+     "slug": "g12-cilindrul-circular-drept",
+     "name": "cilindrul circular drept",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "96b33658-39fa-435d-b638-ba639c5afe6b",
+       "slug": "g9-cilindru-circular",
+       "name": "cilindru circular",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "35226cd5-b770-4cd4-9fa5-e8408746b838",
+     "slug": "g12-conul-circular-drept",
+     "name": "conul circular drept",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 7,
+     "prereqs": [
+      {
+       "id": "5fba43b2-f83f-45e7-abfc-c2b7207c9223",
+       "slug": "g9-con-circular",
+       "name": "con circular",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "2c787bba-74b1-486c-82a0-1d24ae80e0ad",
+     "slug": "g12-trunchiul-de-con-circular-drept",
+     "name": "trunchiul de con circular drept",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 3,
+     "prereqs": [
+      {
+       "id": "e16be11e-edb2-4d6a-add3-00eee8f8a196",
+       "slug": "g9-trunchi-de-con",
+       "name": "trunchi de con",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:modulul-3",
+   "label": "Modulul 3",
+   "width": 400,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "c765e6e6-a237-440a-8308-08103db253e5",
+     "slug": "g12-proprietatile-integralei-definite",
+     "name": "proprietățile integralei definite",
+     "grade": 12,
+     "x": 102,
+     "y": 288,
+     "servable": 186,
+     "prereqs": [
+      {
+       "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+       "slug": "g12-integrala-definita",
+       "name": "integrală definită",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "6c47c3fc-0c73-439b-827c-0f84af677bb8",
+     "slug": "g12-interpretarea-geometrica-a-integralei-definite",
+     "name": "interpretarea geometrică a integralei definite",
+     "grade": 12,
+     "x": 298,
+     "y": 288,
+     "servable": 6,
+     "prereqs": [
+      {
+       "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+       "slug": "g12-integrala-definita",
+       "name": "integrală definită",
+       "grade": 12
+      },
+      {
+       "id": "c622442e-3eae-4c27-918f-7881e5fe5bbf",
+       "slug": "g12-formula-leibniz-newton",
+       "name": "formula Leibniz–Newton",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "5dcd38a5-8ffd-464d-9a2c-b08fefa84c9a",
+     "slug": "g12-teorema-de-medie-pentru-integrala-definita",
+     "name": "teorema de medie pentru integrala definită",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 9,
+     "prereqs": [
+      {
+       "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+       "slug": "g12-integrala-definita",
+       "name": "integrală definită",
+       "grade": 12
+      },
+      {
+       "id": "c765e6e6-a237-440a-8308-08103db253e5",
+       "slug": "g12-proprietatile-integralei-definite",
+       "name": "proprietățile integralei definite",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "5dcd38a5-8ffd-464d-9a2c-b08fefa84c9a",
+     "to": "c765e6e6-a237-440a-8308-08103db253e5"
+    }
+   ]
+  },
+  {
+   "key": "g12:11-elemente-de-algebra-superioara-11-1-operatii-",
+   "label": "§11. Elemente de algebră superioară / 11.1. Operații cu matrice",
+   "width": 596,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "e0fd13a6-dcfb-43cd-9ee2-1f0d140788b1",
+     "slug": "g12-inversa-matricei-patratice",
+     "name": "inversa matricei pătratice",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1f8de49f-f957-454e-ab2d-c1d4aa2c93ef",
+       "slug": "g11-matrice-inversabila",
+       "name": "matrice inversabilă",
+       "grade": 11
+      },
+      {
+       "id": "e9d8aece-0fda-4ba8-a84c-8b6ffec9e1c6",
+       "slug": "g11-inversa-unei-matrice",
+       "name": "inversa unei matrice",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "32e943b4-1ed4-45f4-82f8-7c0079f2aa22",
+     "slug": "g12-operatii-cu-matrice",
+     "name": "operații cu matrice",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "9671d572-d83a-4014-84ec-b9d5751d8857",
+       "slug": "g11-operatii-cu-matrice",
+       "name": "operații cu matrice",
+       "grade": 11
+      },
+      {
+       "id": "e95ae9cd-8e26-4113-ab50-adcbe0ea05f5",
+       "slug": "g11-produsul-matricelor",
+       "name": "produsul matricelor",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "e91be858-5ad9-48b9-a4bf-a485ba51cef9",
+     "slug": "g12-matrice",
+     "name": "matrice",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "1e1ec2e5-5b36-4d4d-bae7-de4af2726e7b",
+       "slug": "g11-matrice",
+       "name": "matrice",
+       "grade": 11
+      },
+      {
+       "id": "9671d572-d83a-4014-84ec-b9d5751d8857",
+       "slug": "g11-operatii-cu-matrice",
+       "name": "operații cu matrice",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:7-3-aplicatii-ale-derivatelor-in-studiul-functii",
+   "label": "7.3. Aplicații ale derivatelor în studiul funcțiilor",
+   "width": 596,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "ef74eaa2-0cc5-431e-8101-83a48278f553",
+     "slug": "g12-functie-concava-convexa",
+     "name": "funcție concavă / convexă",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8e409d46-78da-4c77-b4c5-caa0003615b4",
+       "slug": "g11-functie-concava",
+       "name": "funcție concavă",
+       "grade": 11
+      },
+      {
+       "id": "8242a302-4c2c-445f-a8b8-761b6cfdc161",
+       "slug": "g11-functie-convexa",
+       "name": "funcție convexă",
+       "grade": 11
+      },
+      {
+       "id": "8832c35b-9256-40d9-a82e-16a2a4092ef1",
+       "slug": "g11-derivata-de-ordinul-doi",
+       "name": "derivata de ordinul doi",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "ebcaf232-736c-4ba5-a2ea-49bd9b5120c1",
+     "slug": "g12-puncte-de-extrem-ale-functiei",
+     "name": "puncte de extrem ale funcției",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "cb6b5c26-fe46-4688-aeea-f21d7e3a5465",
+       "slug": "g11-maxim-local",
+       "name": "maxim local",
+       "grade": 11
+      },
+      {
+       "id": "f79ba68c-876d-46f3-bfdc-848d421b4d13",
+       "slug": "g11-minim-local",
+       "name": "minim local",
+       "grade": 11
+      },
+      {
+       "id": "ddf6f4df-8c60-4d8a-99ca-27ab6b66afc0",
+       "slug": "g11-puncte-critice-statonare",
+       "name": "puncte critice (stațonare)",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "5d3e5a3c-44a1-496b-be23-be27e8ceb091",
+     "slug": "g12-functie-monotona-pe-interval",
+     "name": "funcție monotonă pe interval",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "e1c2d6b2-435f-4d7d-9a56-3d23ccb5e3aa",
+       "slug": "g11-intervalele-de-monotonie-ale-unei-functii",
+       "name": "intervalele de monotonie ale unei funcții",
+       "grade": 11
+      },
+      {
+       "id": "31614939-e52c-4f46-b1ec-4b9fa6f6e6eb",
+       "slug": "g9-monotonia-unei-functii",
+       "name": "monotonia unei funcții",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:5-siruri-de-numere-reale-limite-de-siruri",
+   "label": "§5. Șiruri de numere reale. Limite de șiruri",
+   "width": 596,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "6f0fcee4-dc2e-4898-8921-63cef69ec202",
+     "slug": "g12-progresie-aritmetica",
+     "name": "progresie aritmetică",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "d4fdb54e-fc63-47b2-928e-e30656d48b89",
+       "slug": "g11-progresia-aritmetica",
+       "name": "progresia aritmetică",
+       "grade": 11
+      },
+      {
+       "id": "6f3e7713-e5b3-4867-afea-9ba966679558",
+       "slug": "g11-formula-termenului-general-al-progresiei-aritmetice",
+       "name": "formula termenului general al progresiei aritmetice",
+       "grade": 11
+      },
+      {
+       "id": "1c5a61ba-36c9-4db5-8f5d-a2ddf0666e58",
+       "slug": "g11-formula-sumei-primilor-n-termeni-ai-progresiei-aritmetice",
+       "name": "formula sumei primilor n termeni ai progresiei aritmetice",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "50c28918-3ec5-4bf7-bffb-48661b64f76f",
+     "slug": "g12-progresie-geometrica",
+     "name": "progresie geometrică",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "59c86ad1-c00d-44a6-9004-2860ba15ded4",
+       "slug": "g11-progresia-geometrica",
+       "name": "progresia geometrică",
+       "grade": 11
+      },
+      {
+       "id": "c74d0f51-8e0a-46d6-a363-7d2960ae5b13",
+       "slug": "g11-formula-termenului-general-al-progresiei-geometrice",
+       "name": "formula termenului general al progresiei geometrice",
+       "grade": 11
+      },
+      {
+       "id": "458352b1-0f5b-478c-ad07-03949f18f379",
+       "slug": "g11-formula-sumei-primilor-n-termeni-ai-progresiei-geometrice",
+       "name": "formula sumei primilor n termeni ai progresiei geometrice",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "8f1222b3-7a6c-44d7-9c24-b4d3430b27d6",
+     "slug": "g12-sir-de-numere-reale",
+     "name": "șir de numere reale",
+     "grade": 12,
+     "x": 494,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c26f55eb-cc2b-494a-94ff-b90d361650d0",
+       "slug": "g11-sir-de-numere-reale",
+       "name": "șir de numere reale",
+       "grade": 11
+      },
+      {
+       "id": "fc9c1410-b0e1-4b6a-923c-2eebb0099bdb",
+       "slug": "g8-sir-numeric",
+       "name": "șir numeric",
+       "grade": 8
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:1-notiunea-de-integrala-definita-functii-integra",
+   "label": "§1. Noțiunea de integrală definită. Funcții integrabile",
+   "width": 204,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "5425c7a5-4284-4b2b-930c-07e13be2bb33",
+     "slug": "g12-suma-riemann",
+     "name": "sumă Riemann",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "683d6921-7cd9-4832-bc90-5028a780b5c3",
+       "slug": "g12-diviziunea-unui-interval",
+       "name": "diviziunea unui interval",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "683d6921-7cd9-4832-bc90-5028a780b5c3",
+     "slug": "g12-diviziunea-unui-interval",
+     "name": "diviziunea unui interval",
+     "grade": 12,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8d9818ee-07bd-4616-b32b-7e496ea37a24",
+       "slug": "g12-integrala-nedefinita",
+       "name": "integrală nedefinită",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "5425c7a5-4284-4b2b-930c-07e13be2bb33",
+     "to": "683d6921-7cd9-4832-bc90-5028a780b5c3"
+    }
+   ]
+  },
+  {
+   "key": "g12:2-inregistrarea-si-gruparea-datelor",
+   "label": "§2. Înregistrarea și gruparea datelor",
+   "width": 204,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "424572a3-9c7e-4969-8fb4-7c2e431471ca",
+     "slug": "g12-frecventa-absoluta-a-variantei",
+     "name": "frecvența absolută a variantei",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "60c78008-7baa-4fbb-8c85-fb13df8ad6aa",
+       "slug": "g12-serie-statistica",
+       "name": "serie statistică",
+       "grade": 12
+      },
+      {
+       "id": "9e0f32dd-5bb4-4413-9855-b9f502db97ab",
+       "slug": "g8-frecventa-statistica",
+       "name": "frecvență statistică",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "60c78008-7baa-4fbb-8c85-fb13df8ad6aa",
+     "slug": "g12-serie-statistica",
+     "name": "serie statistică",
+     "grade": 12,
+     "x": 102,
+     "y": 288,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ac1d11d1-5b93-4fda-8bbb-206ab528a0f4",
+       "slug": "g12-variabila-statistica",
+       "name": "variabilă statistică",
+       "grade": 12
+      },
+      {
+       "id": "27f40f69-731c-43b2-aec7-0ac682b4e716",
+       "slug": "g12-observare-statistica",
+       "name": "observare statistică",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "424572a3-9c7e-4969-8fb4-7c2e431471ca",
+     "to": "60c78008-7baa-4fbb-8c85-fb13df8ad6aa"
+    }
+   ]
+  },
+  {
+   "key": "g12:4-4-2-sectiuni-conice-ca-locuri-geometrice-de-pu",
+   "label": "4.4.2. Secțiuni conice ca locuri geometrice de puncte",
+   "width": 400,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "7b6595d9-174d-4281-9868-87ddfa0b6ab9",
+     "slug": "g12-cercul-loc-geometric",
+     "name": "cercul (loc geometric)",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ce99d7a7-3dbe-4de3-9364-130963cef3ad",
+       "slug": "g9-cerc",
+       "name": "cerc",
+       "grade": 9
+      },
+      {
+       "id": "8a59fd61-a363-4350-9ee7-2650d564e558",
+       "slug": "g12-sectiuni-conice",
+       "name": "secțiuni conice",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "d0b406b9-7840-4105-8066-a7283f88472f",
+     "slug": "g12-elipsa",
+     "name": "elipsa",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8a59fd61-a363-4350-9ee7-2650d564e558",
+       "slug": "g12-sectiuni-conice",
+       "name": "secțiuni conice",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:8-elemente-de-combinatorica-binomul-lui-newton",
+   "label": "§8. Elemente de combinatorică. Binomul lui Newton",
+   "width": 400,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "b4632476-9e9e-4860-8be3-79a5a84d9704",
+     "slug": "g12-factorial",
+     "name": "factorial",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ca60c9d8-c49e-4abe-9c23-5b64e8e2317a",
+       "slug": "g10-combinatorica",
+       "name": "combinatorică",
+       "grade": 10
+      },
+      {
+       "id": "59a3a417-75a2-4b33-9fa9-f2facd2ee11e",
+       "slug": "g10-aranjamente",
+       "name": "aranjamente",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "f8b4031e-0da9-4542-844c-b36c6c6312f1",
+     "slug": "g12-aranjamente",
+     "name": "aranjamente",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "59a3a417-75a2-4b33-9fa9-f2facd2ee11e",
+       "slug": "g10-aranjamente",
+       "name": "aranjamente",
+       "grade": 10
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:10-3-ecuatii-trigonometrice",
+   "label": "10.3. Ecuații trigonometrice",
+   "width": 400,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "1933b251-7dd4-4020-9d86-1f28770377d8",
+     "slug": "g12-metode-de-rezolvare-a-ecuatiilor-trigonometrice",
+     "name": "metode de rezolvare a ecuațiilor trigonometrice",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "4837a28a-1973-4843-9550-b3b236c80a63",
+       "slug": "g10-ecuatie-trigonometrica",
+       "name": "ecuație trigonometrică",
+       "grade": 10
+      },
+      {
+       "id": "40d8c575-b2e0-49e7-ab22-d443f6b0f3d4",
+       "slug": "g10-ecuatii-trigonometrice-omogene",
+       "name": "ecuații trigonometrice omogene",
+       "grade": 10
+      },
+      {
+       "id": "9e211b2b-e47f-431c-8ee5-e91a210824ba",
+       "slug": "g10-metoda-unghiului-auxiliar",
+       "name": "metoda unghiului auxiliar",
+       "grade": 10
+      }
+     ]
+    },
+    {
+     "id": "6f5b79f9-b847-497a-95b0-6c519bdb7ef6",
+     "slug": "g12-ecuatii-trigonometrice-fundamentale",
+     "name": "ecuații trigonometrice fundamentale",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "da1e324b-07db-4617-87b4-72005615fd51",
+       "slug": "g10-ecuatii-trigonometrice-fundamentale",
+       "name": "ecuații trigonometrice fundamentale",
+       "grade": 10
+      },
+      {
+       "id": "4837a28a-1973-4843-9550-b3b236c80a63",
+       "slug": "g10-ecuatie-trigonometrica",
+       "name": "ecuație trigonometrică",
+       "grade": 10
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:modulul-3-integrale-definite",
+   "label": "Modulul 3. Integrale definite",
+   "width": 204,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "8c31016d-9c1a-4b04-af88-8ae7f98a842f",
+     "slug": "g12-functie-integrabila-in-sens-riemann",
+     "name": "funcție integrabilă (în sens Riemann)",
+     "grade": 12,
+     "x": 102,
+     "y": 288,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "683d6921-7cd9-4832-bc90-5028a780b5c3",
+       "slug": "g12-diviziunea-unui-interval",
+       "name": "diviziunea unui interval",
+       "grade": 12
+      },
+      {
+       "id": "5425c7a5-4284-4b2b-930c-07e13be2bb33",
+       "slug": "g12-suma-riemann",
+       "name": "sumă Riemann",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+     "slug": "g12-integrala-definita",
+     "name": "integrală definită",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 5,
+     "prereqs": [
+      {
+       "id": "8c31016d-9c1a-4b04-af88-8ae7f98a842f",
+       "slug": "g12-functie-integrabila-in-sens-riemann",
+       "name": "funcție integrabilă (în sens Riemann)",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+     "to": "8c31016d-9c1a-4b04-af88-8ae7f98a842f"
+    }
+   ]
+  },
+  {
+   "key": "g12:3-reprezentarea-grafica-a-datelor-statistice",
+   "label": "§3. Reprezentarea grafică a datelor statistice",
+   "width": 400,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "90feb346-6273-47dc-9c39-691410732790",
+     "slug": "g12-histograma-frecventelor",
+     "name": "histograma frecvențelor",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "3c9a0d4d-c9dd-45df-ac7b-9c92148790b2",
+       "slug": "g12-frecventa-absoluta-a-intervalului",
+       "name": "frecvența absolută a intervalului",
+       "grade": 12
+      },
+      {
+       "id": "85a69ea6-28e9-4d10-bd1f-4e206de327de",
+       "slug": "g12-frecventa-relativa",
+       "name": "frecvența relativă",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "1d695710-3044-43de-9053-3e3035bef1bf",
+     "slug": "g12-poligonul-frecventelor",
+     "name": "poligonul frecvențelor",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "424572a3-9c7e-4969-8fb4-7c2e431471ca",
+       "slug": "g12-frecventa-absoluta-a-variantei",
+       "name": "frecvența absolută a variantei",
+       "grade": 12
+      },
+      {
+       "id": "85a69ea6-28e9-4d10-bd1f-4e206de327de",
+       "slug": "g12-frecventa-relativa",
+       "name": "frecvența relativă",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:9-geometrie-in-plan-si-in-spatiu-9-1-elemente-de",
+   "label": "§9. Geometrie în plan și în spațiu / 9.1. Elemente de calcul vectorial",
+   "width": 400,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "f7fe59d5-ee8b-4c49-a7e0-105af05fdfc5",
+     "slug": "g12-operatii-cu-vectori",
+     "name": "operații cu vectori",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "6711964a-2de7-4aae-956e-4c06b4ad99bc",
+       "slug": "g8-suma-vectorilor",
+       "name": "suma vectorilor",
+       "grade": 8
+      },
+      {
+       "id": "1a26b1c0-1842-442d-9ae0-2ab889056d57",
+       "slug": "g8-diferenta-vectorilor",
+       "name": "diferența vectorilor",
+       "grade": 8
+      },
+      {
+       "id": "834d6368-d162-4e35-9335-48414e1f7253",
+       "slug": "g8-inmultirea-vectorului-cu-un-numar-real",
+       "name": "înmulțirea vectorului cu un număr real",
+       "grade": 8
+      }
+     ]
+    },
+    {
+     "id": "59cd3cc6-882a-4abd-bc3a-5b8d6558c006",
+     "slug": "g12-vector",
+     "name": "vector",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "cc68e888-4020-46c7-8d93-654110c6df58",
+       "slug": "g8-vector",
+       "name": "vector",
+       "grade": 8
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:4-marimi-medii-ale-seriilor-statistice",
+   "label": "§4. Mărimi medii ale seriilor statistice",
+   "width": 204,
+   "height": 362,
+   "nodes": [
+    {
+     "id": "01a193c7-37c1-4824-9a6a-f4bcbeec9fbc",
+     "slug": "g12-mediana-seriei-statistice",
+     "name": "mediana seriei statistice",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "60c78008-7baa-4fbb-8c85-fb13df8ad6aa",
+       "slug": "g12-serie-statistica",
+       "name": "serie statistică",
+       "grade": 12
+      },
+      {
+       "id": "5f36c6e1-971d-421c-9e0b-f1353711ab5c",
+       "slug": "g12-media-aritmetica-a-seriei-statistice",
+       "name": "media aritmetică a seriei statistice",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "5f36c6e1-971d-421c-9e0b-f1353711ab5c",
+     "slug": "g12-media-aritmetica-a-seriei-statistice",
+     "name": "media aritmetică a seriei statistice",
+     "grade": 12,
+     "x": 102,
+     "y": 288,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "5da724c6-f0a5-49fe-baad-30f40dd89782",
+       "slug": "g6-media-aritmetica",
+       "name": "media aritmetică",
+       "grade": 6
+      },
+      {
+       "id": "60c78008-7baa-4fbb-8c85-fb13df8ad6aa",
+       "slug": "g12-serie-statistica",
+       "name": "serie statistică",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": [
+    {
+     "from": "01a193c7-37c1-4824-9a6a-f4bcbeec9fbc",
+     "to": "5f36c6e1-971d-421c-9e0b-f1353711ab5c"
+    }
+   ]
+  },
+  {
+   "key": "g12:3-polinoame-3-1-operatii-cu-monoame-polinoame",
+   "label": "§3. Polinoame / 3.1. Operații cu monoame, polinoame",
+   "width": 400,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "ddfea3ca-4762-462d-a75a-cdeb4f4fe72e",
+     "slug": "g12-polinom",
+     "name": "polinom",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "dc3c0791-c772-4ae4-9cea-ee15f7e27d88",
+       "slug": "g9-polinom",
+       "name": "polinom",
+       "grade": 9
+      },
+      {
+       "id": "f861c77d-e718-4a99-aa99-f9359058d07f",
+       "slug": "g9-inmultirea-polinoamelor",
+       "name": "înmulțirea polinoamelor",
+       "grade": 9
+      }
+     ]
+    },
+    {
+     "id": "130ac799-df2e-41bd-b61f-7c4513defe8e",
+     "slug": "g12-monom",
+     "name": "monom",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "2adf28fb-233c-44d8-91bd-1669db59150f",
+       "slug": "g9-monom",
+       "name": "monom",
+       "grade": 9
+      },
+      {
+       "id": "0fef32e7-2852-4dda-916d-ae4694c093db",
+       "slug": "g9-operatii-cu-monoame",
+       "name": "operații cu monoame",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:6-limite-de-functii-functii-continue",
+   "label": "§6. Limite de funcții. Funcții continue",
+   "width": 400,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "9d2d0822-04b7-454d-8584-55a85ec428d4",
+     "slug": "g12-operatii-cu-limite-de-functii",
+     "name": "operații cu limite de funcții",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "bb18d5da-477d-47b4-85e8-dda3ae9676c4",
+       "slug": "g11-operatii-cu-limite-de-functii",
+       "name": "operații cu limite de funcții",
+       "grade": 11
+      },
+      {
+       "id": "76013f67-f4a6-45bb-b66c-0e951ee614ec",
+       "slug": "g11-proprietati-ale-limitelor-de-functii",
+       "name": "proprietăți ale limitelor de funcții",
+       "grade": 11
+      }
+     ]
+    },
+    {
+     "id": "e2cceb8d-ee0d-4f9f-90c3-b2dece33dc31",
+     "slug": "g12-limita-functiei-intr-un-punct",
+     "name": "limita funcției într-un punct",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ba170cf5-a093-4af1-950d-c02018a67da2",
+       "slug": "g11-limita-unei-functii-intr-un-punct",
+       "name": "limita unei funcții într-un punct",
+       "grade": 11
+      },
+      {
+       "id": "6620f382-486d-4f4b-9724-e4347d477297",
+       "slug": "g11-punct-de-acumulare",
+       "name": "punct de acumulare",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:10-2-formule-identitati-trigonometrice",
+   "label": "10.2. Formule (identități) trigonometrice",
+   "width": 400,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "ab786b9f-7cba-4915-be1e-c1030c81983a",
+     "slug": "g12-identitati-trigonometrice-fundamentale",
+     "name": "identități trigonometrice fundamentale",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c3b16ad1-4e26-43d0-b834-a4fefa9501a5",
+       "slug": "g10-identitatile-fundamentale-ale-trigonometriei",
+       "name": "identitățile fundamentale ale trigonometriei",
+       "grade": 10
+      },
+      {
+       "id": "d26bc5aa-2c26-44ab-ac84-79ac860720cf",
+       "slug": "g12-functii-trigonometrice",
+       "name": "funcții trigonometrice",
+       "grade": 12
+      }
+     ]
+    },
+    {
+     "id": "b6f4b441-3d47-4c98-ad51-4fe995b29de6",
+     "slug": "g12-formule-pentru-functii-trigonometrice-ale-sumei-si-diferentei-de-unghiuri",
+     "name": "formule pentru funcții trigonometrice ale sumei și diferenței de unghiuri",
+     "grade": 12,
+     "x": 298,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "fac0fb61-6218-4cd1-8e63-77bb80d805a0",
+       "slug": "g10-formulele-de-adunare-trigonometrica",
+       "name": "formulele de adunare trigonometrică",
+       "grade": 10
+      },
+      {
+       "id": "8d77de22-7162-4931-a78d-68b8d319db7f",
+       "slug": "g10-formulele-de-reducere",
+       "name": "formulele de reducere",
+       "grade": 10
+      },
+      {
+       "id": "dd1d473b-6897-42ed-b0bb-c5aff6c63c02",
+       "slug": "g10-formulele-unghiului-dublu",
+       "name": "formulele unghiului dublu",
+       "grade": 10
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:3-metode-de-calcul-al-integralei-definite-3-1-in",
+   "label": "§3. Metode de calcul al integralei definite / 3.1. Integrarea prin părți",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "741bc38d-b470-4f73-9ee8-97c1f1904c81",
+     "slug": "g12-metoda-integrarii-prin-parti-pentru-integrala-definita",
+     "name": "metoda integrării prin părți pentru integrala definită",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 73,
+     "prereqs": [
+      {
+       "id": "fecc9f76-238a-4949-a07c-a715e744c691",
+       "slug": "g12-metoda-integrarii-prin-parti-integrala-nedefinita",
+       "name": "metoda integrării prin părți (integrală nedefinită)",
+       "grade": 12
+      },
+      {
+       "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+       "slug": "g12-integrala-definita",
+       "name": "integrală definită",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:5-2-volumul-paralelipipedului",
+   "label": "5.2. Volumul paralelipipedului",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "5fc87233-a87d-4355-aec8-52cc1775d9e3",
+     "slug": "g12-volumul-paralelipipedului-dreptunghic",
+     "name": "volumul paralelipipedului dreptunghic",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 9,
+     "prereqs": [
+      {
+       "id": "c7e92210-2692-46a7-ae76-3e5561619102",
+       "slug": "g12-paralelipiped-dreptunghic",
+       "name": "paralelipiped dreptunghic",
+       "grade": 12
+      },
+      {
+       "id": "126b52d3-9cba-45f3-a2f0-84c4db997037",
+       "slug": "g12-volumul-unui-corp-geometric",
+       "name": "volumul unui corp geometric",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:4-3-sfere-inscrise-sfere-circumscrise",
+   "label": "4.3. Sfere înscrise. Sfere circumscrise",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "d2d4ef97-7804-4285-ae90-78694f3b0ab6",
+     "slug": "g12-sfere-inscrise-si-circumscrise-poliedrelor-si-cilindrului",
+     "name": "sfere înscrise și circumscrise poliedrelor și cilindrului",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "b89edf5d-8cad-4b34-a21f-0a3a6f314768",
+       "slug": "g12-sfera-si-corpul-sferic",
+       "name": "sfera și corpul sferic",
+       "grade": 12
+      },
+      {
+       "id": "770a29b4-85a7-413f-b8b8-4fd5d4972341",
+       "slug": "g12-prisma",
+       "name": "prismă",
+       "grade": 12
+      },
+      {
+       "id": "eac25fcb-a645-4a83-8363-4e9ec5586906",
+       "slug": "g12-piramida",
+       "name": "piramidă",
+       "grade": 12
+      },
+      {
+       "id": "187310c8-6f4f-49c3-98c5-0e6ceb08c85a",
+       "slug": "g12-cilindrul-circular-drept",
+       "name": "cilindrul circular drept",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:5-4-volumul-piramidei",
+   "label": "5.4. Volumul piramidei",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "d89b1ff6-949f-4611-8afa-1f8a96e56154",
+     "slug": "g12-volumul-piramidei",
+     "name": "volumul piramidei",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 5,
+     "prereqs": [
+      {
+       "id": "eac25fcb-a645-4a83-8363-4e9ec5586906",
+       "slug": "g12-piramida",
+       "name": "piramidă",
+       "grade": 12
+      },
+      {
+       "id": "126b52d3-9cba-45f3-a2f0-84c4db997037",
+       "slug": "g12-volumul-unui-corp-geometric",
+       "name": "volumul unui corp geometric",
+       "grade": 12
+      },
+      {
+       "id": "4057214d-40cb-4f75-820d-cd526029c43b",
+       "slug": "g12-volumul-prismei",
+       "name": "volumul prismei",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:10-elemente-de-trigonometrie-10-1-functii-trigon",
+   "label": "§10. Elemente de trigonometrie / 10.1. Funcții trigonometrice",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "d26bc5aa-2c26-44ab-ac84-79ac860720cf",
+     "slug": "g12-functii-trigonometrice",
+     "name": "funcții trigonometrice",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "33fa19bd-1780-4cce-9b8f-9e191c504071",
+       "slug": "g10-functiile-trigonometrice-sinus-si-cosinus",
+       "name": "funcțiile trigonometrice sinus și cosinus",
+       "grade": 10
+      },
+      {
+       "id": "bcd83018-b30c-46a8-b131-cb2098026866",
+       "slug": "g10-functiile-trigonometrice-tangenta-si-cotangenta",
+       "name": "funcțiile trigonometrice tangentă și cotangentă",
+       "grade": 10
+      },
+      {
+       "id": "fe5a111e-126e-4ded-ba13-8a1415b1d75c",
+       "slug": "g10-functiile-trigonometrice-ansamblu",
+       "name": "funcțiile trigonometrice (ansamblu)",
+       "grade": 10
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:11-2-determinanti",
+   "label": "11.2. Determinanți",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "0d769461-45bc-4568-be4c-fab02ed0dc19",
+     "slug": "g12-determinantul-matricei",
+     "name": "determinantul matricei",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ac7f70ef-4d03-40c4-a0a6-4029fa1936ac",
+       "slug": "g11-determinant-de-ordinul-2",
+       "name": "determinant de ordinul 2",
+       "grade": 11
+      },
+      {
+       "id": "17361c25-0aeb-4b7d-8515-51920e71dbd3",
+       "slug": "g11-determinant-de-ordinul-3",
+       "name": "determinant de ordinul 3",
+       "grade": 11
+      },
+      {
+       "id": "f45fa6a8-addd-4cd5-9385-e30e5607ab75",
+       "slug": "g11-proprietatile-determinantilor",
+       "name": "proprietățile determinanților",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:iv-parabola",
+   "label": "IV. Parabola",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "ae0c467b-2741-4e80-9b44-c4403c1d97a8",
+     "slug": "g12-parabola",
+     "name": "parabola",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "8a59fd61-a363-4350-9ee7-2650d564e558",
+       "slug": "g12-sectiuni-conice",
+       "name": "secțiuni conice",
+       "grade": 12
+      },
+      {
+       "id": "6be10229-c504-4481-ade4-837b2679ba55",
+       "slug": "g9-functia-de-gradul-ii",
+       "name": "funcția de gradul II",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:5-elemente-de-calcul-financiar-5-1-procente-doba",
+   "label": "§5. Elemente de calcul financiar / 5.1. Procente, dobândă simplă, dobândă compusă",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "598fcae2-4b78-48a8-b006-83eb2911080e",
+     "slug": "g12-procent",
+     "name": "procent",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "062967e4-366e-4de8-b4de-fb74cb38740a",
+       "slug": "g6-procent",
+       "name": "procent",
+       "grade": 6
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:4-4-sectiunea-suprafetei-conice-cu-un-plan",
+   "label": "4.4. Secțiunea suprafeței conice cu un plan",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "8a59fd61-a363-4350-9ee7-2650d564e558",
+     "slug": "g12-sectiuni-conice",
+     "name": "secțiuni conice",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5fba43b2-f83f-45e7-abfc-c2b7207c9223",
+       "slug": "g9-con-circular",
+       "name": "con circular",
+       "grade": 9
+      },
+      {
+       "id": "35226cd5-b770-4cd4-9fa5-e8408746b838",
+       "slug": "g12-conul-circular-drept",
+       "name": "conul circular drept",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:3-2-diagrame-prin-batoane-diagrame-cu-bare",
+   "label": "3.2. Diagrame prin batoane. Diagrame cu bare",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "fb3c5f9f-ab4e-4b85-8636-90949754b65e",
+     "slug": "g12-diagrama-cu-bare",
+     "name": "diagramă cu bare",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "ededf1ba-3ce0-407a-9482-d7f2a2bfc173",
+       "slug": "g6-grafic-in-batoane",
+       "name": "grafic în batoane",
+       "grade": 6
+      },
+      {
+       "id": "424572a3-9c7e-4969-8fb4-7c2e431471ca",
+       "slug": "g12-frecventa-absoluta-a-variantei",
+       "name": "frecvența absolută a variantei",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:2-evenimente-aleatoare-formule-pentru-calculul-u",
+   "label": "§2. Evenimente aleatoare. Formule pentru calculul unor probabilități",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "1e99f41c-503e-465e-8fa6-5ee4c5fe2efc",
+     "slug": "g12-eveniment-elementar",
+     "name": "eveniment elementar",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "57dc7c35-ae37-4708-af0f-758e8b700b10",
+       "slug": "g12-experiment-aleator",
+       "name": "experiment aleator",
+       "grade": 12
+      },
+      {
+       "id": "c1c74c70-4e02-4c9a-ac81-e0214a01eb20",
+       "slug": "g12-eveniment-aleator",
+       "name": "eveniment aleator",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:3-probabilitatea-conditionata",
+   "label": "§3. Probabilitatea condiționată",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "4a1bb226-3954-4976-a785-7fd74c39f1ea",
+     "slug": "g12-probabilitate-conditionata",
+     "name": "probabilitate condiționată",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 3,
+     "prereqs": [
+      {
+       "id": "e98a412f-a0b8-4cb5-9642-94a9217bed68",
+       "slug": "g12-probabilitatea-clasica-a-unui-eveniment",
+       "name": "probabilitatea clasică a unui eveniment",
+       "grade": 12
+      },
+      {
+       "id": "9e553f9a-7a09-45b5-8237-afc3bd61977a",
+       "slug": "g12-formula-probabilitatii-reuniunii-evenimentelor",
+       "name": "formula probabilității reuniunii evenimentelor",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:integrale-definite",
+   "label": "Integrale definite",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "80a931b8-b1d2-4c9b-8019-35116af7282d",
+     "slug": "g12-integrala-riemann-limita-sumei-integrale",
+     "name": "integrala Riemann (limita sumei integrale)",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5425c7a5-4284-4b2b-930c-07e13be2bb33",
+       "slug": "g12-suma-riemann",
+       "name": "sumă Riemann",
+       "grade": 12
+      },
+      {
+       "id": "8c31016d-9c1a-4b04-af88-8ae7f98a842f",
+       "slug": "g12-functie-integrabila-in-sens-riemann",
+       "name": "funcție integrabilă (în sens Riemann)",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:3-2-schimbarea-de-variabila-sau-metoda-substitut",
+   "label": "3.2. Schimbarea de variabilă sau metoda substituției",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "ffc1fd8a-e12b-4d54-8b7d-695556ae64b1",
+     "slug": "g12-metoda-substitutiei-pentru-integrala-definita",
+     "name": "metoda substituției pentru integrala definită",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 117,
+     "prereqs": [
+      {
+       "id": "952ce95f-aea8-4696-98ee-1971ab28255b",
+       "slug": "g12-metoda-schimbarii-de-variabila-in-calculul-primitivelor",
+       "name": "metoda schimbării de variabilă în calculul primitivelor",
+       "grade": 12
+      },
+      {
+       "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+       "slug": "g12-integrala-definita",
+       "name": "integrală definită",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:2-3-operatii-cu-evenimente-aleatoare",
+   "label": "2.3. Operații cu evenimente aleatoare",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "6d3063ec-cf50-413b-8699-8ace9039da34",
+     "slug": "g12-operatii-cu-evenimente-aleatoare",
+     "name": "operații cu evenimente aleatoare",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "c1c74c70-4e02-4c9a-ac81-e0214a01eb20",
+       "slug": "g12-eveniment-aleator",
+       "name": "eveniment aleator",
+       "grade": 12
+      },
+      {
+       "id": "1e99f41c-503e-465e-8fa6-5ee4c5fe2efc",
+       "slug": "g12-eveniment-elementar",
+       "name": "eveniment elementar",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:modulul-4",
+   "label": "Modulul 4",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "2af3de6e-3d4c-4def-96b6-0880d696d5c8",
+     "slug": "g12-centrul-de-greutate-al-placii-omogene",
+     "name": "centrul de greutate al plăcii omogene",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+       "slug": "g12-integrala-definita",
+       "name": "integrală definită",
+       "grade": 12
+      },
+      {
+       "id": "4e8472ea-5a01-4d8d-add1-eadb08519809",
+       "slug": "g12-aria-multimii-delimitate-de-graficele-a-doua-functii",
+       "name": "aria mulțimii delimitate de graficele a două funcții",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:1-2-aria-laterala-aria-totala-si-volumul-cilindr",
+   "label": "1.2. Aria laterală, aria totală și volumul cilindrului",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "43734578-2f31-414d-81fd-c70dba8db4f1",
+     "slug": "g12-aria-totala-si-volumul-cilindrului",
+     "name": "aria totală și volumul cilindrului",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "187310c8-6f4f-49c3-98c5-0e6ceb08c85a",
+       "slug": "g12-cilindrul-circular-drept",
+       "name": "cilindrul circular drept",
+       "grade": 12
+      },
+      {
+       "id": "71335a59-bad3-4545-91eb-8b66aa8b9cff",
+       "slug": "g9-aria-si-volumul-cilindrului",
+       "name": "aria și volumul cilindrului",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:aplicatii-ale-integralelor-definite",
+   "label": "Aplicații ale integralelor definite",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "4e8472ea-5a01-4d8d-add1-eadb08519809",
+     "slug": "g12-aria-multimii-delimitate-de-graficele-a-doua-functii",
+     "name": "aria mulțimii delimitate de graficele a două funcții",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 24,
+     "prereqs": [
+      {
+       "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+       "slug": "g12-integrala-definita",
+       "name": "integrală definită",
+       "grade": 12
+      },
+      {
+       "id": "b2dee2a2-ca25-40ef-afba-9b9833565420",
+       "slug": "g12-aria-subgraficului-unei-functii",
+       "name": "aria subgraficului unei funcții",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:1-2-integrala-definita-a-unei-functii-continue",
+   "label": "1.2. Integrala definită a unei funcții continue",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "c622442e-3eae-4c27-918f-7881e5fe5bbf",
+     "slug": "g12-formula-leibniz-newton",
+     "name": "formula Leibniz–Newton",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 6,
+     "prereqs": [
+      {
+       "id": "e790b8b8-5e36-4601-8a17-04fb9f889e84",
+       "slug": "g12-primitiva-a-unei-functii",
+       "name": "primitivă a unei funcții",
+       "grade": 12
+      },
+      {
+       "id": "77f56d62-99c3-44a2-9eaa-9d71d7dc7224",
+       "slug": "g12-integrala-definita",
+       "name": "integrală definită",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:4-evenimente-aleatoare-independente",
+   "label": "§4. Evenimente aleatoare independente",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "92f43368-487e-401e-82e5-2dfbb79c2633",
+     "slug": "g12-evenimente-independente",
+     "name": "evenimente independente",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "4a1bb226-3954-4976-a785-7fd74c39f1ea",
+       "slug": "g12-probabilitate-conditionata",
+       "name": "probabilitate condiționată",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:9-5-perpendicularitatea-in-spatiu",
+   "label": "9.5. Perpendicularitatea în spațiu",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "f798c30e-f0a9-45fd-bf21-28a924c38c51",
+     "slug": "g12-perpendicularitatea-in-spatiu",
+     "name": "perpendicularitatea în spațiu",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "5be837b5-027c-4d6c-826a-7fdf258d0c4b",
+       "slug": "g11-dreapta-perpendiculara-pe-un-plan",
+       "name": "dreaptă perpendiculară pe un plan",
+       "grade": 11
+      },
+      {
+       "id": "53c6a42a-ecd5-4c00-8b18-15a8e497dbd5",
+       "slug": "g11-teorema-celor-trei-perpendiculare",
+       "name": "teorema celor trei perpendiculare",
+       "grade": 11
+      },
+      {
+       "id": "41a5cb04-a053-4509-9af3-b67f4e3bb2d2",
+       "slug": "g11-unghi-diedru",
+       "name": "unghi diedru",
+       "grade": 11
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:2-transformari-identice-ale-expresiilor",
+   "label": "§2. Transformări identice ale expresiilor",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "6f5e4013-828d-4d28-81fd-b26e05c63896",
+     "slug": "g12-transformare-identica-a-expresiilor",
+     "name": "transformare identică a expresiilor",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "103ace71-a7cb-4cd5-95ee-6bc31bd65072",
+       "slug": "g8-termeni-asemenea",
+       "name": "termeni asemenea",
+       "grade": 8
+      },
+      {
+       "id": "d156f9ac-5078-4f02-b2da-b28abea6201f",
+       "slug": "g8-operatii-cu-expresii-algebrice",
+       "name": "operații cu expresii algebrice",
+       "grade": 8
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:5-volumul-poliedrelor-5-1-notiunea-de-volum-al-c",
+   "label": "§5. Volumul poliedrelor / 5.1. Noțiunea de volum al corpului",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "126b52d3-9cba-45f3-a2f0-84c4db997037",
+     "slug": "g12-volumul-unui-corp-geometric",
+     "name": "volumul unui corp geometric",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "10995383-a0a1-4134-a424-fd1c0f29efe5",
+       "slug": "g5-volum",
+       "name": "volum",
+       "grade": 5
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:4-sfera-corpul-sferic",
+   "label": "§4. Sfera. Corpul sferic",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "b89edf5d-8cad-4b34-a21f-0a3a6f314768",
+     "slug": "g12-sfera-si-corpul-sferic",
+     "name": "sfera și corpul sferic",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "b9953518-b4f6-4c4a-a9dc-1208ce5201d2",
+       "slug": "g9-sfera",
+       "name": "sferă",
+       "grade": 9
+      },
+      {
+       "id": "cb7ea2c5-ab12-412b-97e0-fe40293e108a",
+       "slug": "g9-aria-sferei-si-volumul-corpului-sferic",
+       "name": "aria sferei și volumul corpului sferic",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:6-1-3-limite-remarcabile-limite-uzuale",
+   "label": "6.1.3. Limite remarcabile. Limite uzuale",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "a06b3433-7b88-4207-8467-aa57c59416e1",
+     "slug": "g12-limite-remarcabile",
+     "name": "limite remarcabile",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "6e1a3dea-e0d0-4fd5-878f-10a66f915441",
+       "slug": "g11-limite-remarcabile",
+       "name": "limite remarcabile",
+       "grade": 11
+      },
+      {
+       "id": "9d2d0822-04b7-454d-8584-55a85ec428d4",
+       "slug": "g12-operatii-cu-limite-de-functii",
+       "name": "operații cu limite de funcții",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:elemente-de-teoria-probabilitatilor",
+   "label": "Elemente de teoria probabilităților",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "c2bfd187-f9fe-4c16-9b9b-5e4daafd3c99",
+     "slug": "g12-analiza-combinatorica",
+     "name": "analiza combinatorică",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "59a3a417-75a2-4b33-9fa9-f2facd2ee11e",
+       "slug": "g10-aranjamente",
+       "name": "aranjamente",
+       "grade": 10
+      },
+      {
+       "id": "f5e0a933-0887-4d79-92bf-a9d5987946a6",
+       "slug": "g10-permutari",
+       "name": "permutări",
+       "grade": 10
+      },
+      {
+       "id": "a383883f-9707-4aaa-a46b-00a7019112c6",
+       "slug": "g10-combinari",
+       "name": "combinări",
+       "grade": 10
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:3-3-reprezentarea-structurii-seriilor-calitative",
+   "label": "3.3. Reprezentarea structurii seriilor calitative",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "396e1042-f4b4-4a83-b50f-4aaf3e8d83c0",
+     "slug": "g12-diagrame-structurale",
+     "name": "diagrame structurale",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "85a69ea6-28e9-4d10-bd1f-4e206de327de",
+       "slug": "g12-frecventa-relativa",
+       "name": "frecvența relativă",
+       "grade": 12
+      },
+      {
+       "id": "fb3c5f9f-ab4e-4b85-8636-90949754b65e",
+       "slug": "g12-diagrama-cu-bare",
+       "name": "diagramă cu bare",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:2-2-aria-laterala-aria-totala-si-volumul-conului",
+   "label": "2.2. Aria laterală, aria totală și volumul conului circular drept",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "7a6c4286-e026-4203-9a15-ddf8295ef2de",
+     "slug": "g12-aria-laterala-a-conului-circular-drept",
+     "name": "aria laterală a conului circular drept",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 9,
+     "prereqs": [
+      {
+       "id": "35226cd5-b770-4cd4-9fa5-e8408746b838",
+       "slug": "g12-conul-circular-drept",
+       "name": "conul circular drept",
+       "grade": 12
+      },
+      {
+       "id": "17b1f0e4-238c-4c69-a9d3-b2e5ac142580",
+       "slug": "g9-aria-si-volumul-conului",
+       "name": "aria și volumul conului",
+       "grade": 9
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:1-definitia-clasica-a-probabilitatii-1-1-evenime",
+   "label": "§1. Definiția clasică a probabilității / 1.1. Evenimente egal posibile",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "6b014ac3-bc66-4abf-bebe-80f459398898",
+     "slug": "g12-evenimente-egal-posibile",
+     "name": "evenimente egal posibile",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 0,
+     "prereqs": [
+      {
+       "id": "57dc7c35-ae37-4708-af0f-758e8b700b10",
+       "slug": "g12-experiment-aleator",
+       "name": "experiment aleator",
+       "grade": 12
+      },
+      {
+       "id": "20e14c6c-f7a5-446a-812f-e7a1dd983df3",
+       "slug": "g6-probabilitatea-unui-eveniment",
+       "name": "probabilitatea unui eveniment",
+       "grade": 6
+      }
+     ]
+    }
+   ],
+   "edges": []
+  },
+  {
+   "key": "g12:8-2-binomul-formula-lui-newton",
+   "label": "8.2. Binomul (formula) lui Newton",
+   "width": 204,
+   "height": 148,
+   "nodes": [
+    {
+     "id": "dbec3c22-7f40-4fdd-b60b-8c0170362e00",
+     "slug": "g12-binomul-lui-newton",
+     "name": "binomul lui Newton",
+     "grade": 12,
+     "x": 102,
+     "y": 74,
+     "servable": 1,
+     "prereqs": [
+      {
+       "id": "4c0894d5-63a4-4746-a548-6682762860be",
+       "slug": "g10-binomul-lui-newton",
+       "name": "binomul lui Newton",
+       "grade": 10
+      },
+      {
+       "id": "54c3ee56-1def-4a01-b98d-20422de18b57",
+       "slug": "g12-combinari",
+       "name": "combinări",
+       "grade": 12
+      },
+      {
+       "id": "fc743b07-776c-498c-92a6-c41829e35aea",
+       "slug": "g12-permutari",
+       "name": "permutări",
+       "grade": 12
+      },
+      {
+       "id": "f8b4031e-0da9-4542-844c-b36c6c6312f1",
+       "slug": "g12-aranjamente",
+       "name": "aranjamente",
+       "grade": 12
+      }
+     ]
+    }
+   ],
+   "edges": []
+  }
+ ],
+ "generated": "2026-06-23"
+}

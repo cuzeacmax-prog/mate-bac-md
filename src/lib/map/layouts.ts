@@ -1,18 +1,15 @@
 /**
- * layouts.ts — ETAPA 71 B1 → ETAPA 76 C: layout-urile PRECOMPUTATE ale hărții
- * (dagre la build, JSON static per domeniu — scripts/etapa71/build-map-layouts.ts).
- * v2: layout per DOMENIU × CLASĂ (grades) — selectorul de clasă comută instant,
- * clasele fără noduri pe domeniu nu există în JSON (selector dezactivat onest).
- * Browserul nu calculează nimic; serverul doar le citește.
+ * layouts.ts — ETAPA 71 B1 → 76 C → **ETAPA 84 B**: layout-urile PRECOMPUTATE ale hărții.
+ *
+ * ETAPA 84: sursa s-a mutat de la cele 7 domenii BAC (concept_family_membership) la
+ * `concepts` grupate per CLASĂ (module ?? subtopic ?? „Altele"). Fișiere per clasă:
+ * `layouts/grade-<g>.json` = { grade, groups: [{ key, label, width, height, nodes, edges }] }.
+ * Browserul nu calculează nimic; serverul doar citește (perf 72 sacru).
  */
-import type { DomainColor } from './domain-colors';
-import layoutI from './layouts/i.json';
-import layoutII from './layouts/ii.json';
-import layoutIII from './layouts/iii.json';
-import layoutIV from './layouts/iv.json';
-import layoutV from './layouts/v.json';
-import layoutVI from './layouts/vi.json';
-import layoutVIII from './layouts/viii.json';
+import g9 from './layouts/grade-9.json';
+import g10 from './layouts/grade-10.json';
+import g11 from './layouts/grade-11.json';
+import g12 from './layouts/grade-12.json';
 
 export interface MapLayoutNode {
   id: string;
@@ -22,63 +19,59 @@ export interface MapLayoutNode {
   x: number;
   y: number;
   servable: number;
-  /** ETAPA 76 C2: prereq-urile cară și clasa — portalurile cross-grade */
+  /** prereq-urile cară și clasa — portalurile cross-grade */
   prereqs: Array<{ id: string; slug: string; name: string; grade: number | null }>;
 }
 
-export interface MapGradeLayout {
+export interface MapGroup {
+  /** cheie stabilă unică între clase (ex. „g11:functia-radical") */
+  key: string;
+  /** eticheta umană (modul sau subtopic) */
+  label: string;
+  grade: number;
   width: number;
   height: number;
   nodes: MapLayoutNode[];
   edges: Array<{ from: string; to: string }>;
 }
 
-export interface MapLayout {
-  module: string;
-  label: string;
-  /** cheia = clasa ('10' | '11' | '12'); doar clasele CU noduri există */
-  grades: Record<string, MapGradeLayout>;
+interface GradeFile { grade: number; groups: Array<Omit<MapGroup, 'grade'>> }
+
+function withGrade(f: unknown): MapGroup[] {
+  const gf = f as GradeFile;
+  return (gf.groups ?? []).map((g) => ({ ...g, grade: gf.grade }));
 }
 
-export const MAP_LAYOUTS: Record<DomainColor['key'], MapLayout> = {
-  i: layoutI as unknown as MapLayout,
-  ii: layoutII as unknown as MapLayout,
-  iii: layoutIII as unknown as MapLayout,
-  iv: layoutIV as unknown as MapLayout,
-  v: layoutV as unknown as MapLayout,
-  vi: layoutVI as unknown as MapLayout,
-  viii: layoutVIII as unknown as MapLayout,
+/** grupurile hărții, per clasă (9-12) — TOATE conceptele clasei. */
+export const GRADE_GROUPS: Record<number, MapGroup[]> = {
+  9: withGrade(g9),
+  10: withGrade(g10),
+  11: withGrade(g11),
+  12: withGrade(g12),
 };
 
-// ETAPA 71 FAZA D: slug → cheia domeniului (pentru culoarea care curge prin
-// sait). DOAR server-side — JSON-urile de layout nu intră în bundle-ul client.
-let slugToDomain: Map<string, DomainColor['key']> | null = null;
-export function domainKeyForSlug(slug: string): DomainColor['key'] | null {
-  if (!slugToDomain) {
-    slugToDomain = new Map();
-    for (const [key, layout] of Object.entries(MAP_LAYOUTS) as Array<[DomainColor['key'], MapLayout]>) {
-      for (const gradeLayout of Object.values(layout.grades)) {
-        for (const n of gradeLayout.nodes) {
-          if (!slugToDomain.has(n.slug)) slugToDomain.set(n.slug, key);
-        }
-      }
-    }
-  }
-  return slugToDomain.get(slug) ?? null;
-}
+/** toate grupurile, indiferent de clasă (pentru hărți complete + căutări de loc). */
+export const ALL_GROUPS: MapGroup[] = Object.values(GRADE_GROUPS).flat();
 
-/** ETAPA 76 C2: slug → {domeniu, clasă} — ținta portalurilor cross-grade */
-let slugToPlace: Map<string, { domain: DomainColor['key']; grade: number }> | null = null;
-export function placeForSlug(slug: string): { domain: DomainColor['key']; grade: number } | null {
+/** slug → {grupul (domain), clasa} — ținta portalurilor cross-grade */
+let slugToPlace: Map<string, { domain: string; grade: number }> | null = null;
+export function placeForSlug(slug: string): { domain: string; grade: number } | null {
   if (!slugToPlace) {
     slugToPlace = new Map();
-    for (const [key, layout] of Object.entries(MAP_LAYOUTS) as Array<[DomainColor['key'], MapLayout]>) {
-      for (const [grade, gradeLayout] of Object.entries(layout.grades)) {
-        for (const n of gradeLayout.nodes) {
-          if (!slugToPlace.has(n.slug)) slugToPlace.set(n.slug, { domain: key, grade: Number(grade) });
-        }
+    for (const g of ALL_GROUPS) {
+      for (const n of g.nodes) {
+        if (!slugToPlace.has(n.slug)) slugToPlace.set(n.slug, { domain: g.key, grade: g.grade });
       }
     }
   }
   return slugToPlace.get(slug) ?? null;
+}
+
+/**
+ * ETAPA 84: modelul celor 7 domenii BAC colorate a fost înlocuit cu grupuri per clasă
+ * (culoarea vine din mastery + tentă, nu dintr-un token fix). Păstrat pentru
+ * compatibilitate cu azi/chat (care cad pe culoarea primară când e null).
+ */
+export function domainKeyForSlug(_slug?: string): null {
+  return null;
 }

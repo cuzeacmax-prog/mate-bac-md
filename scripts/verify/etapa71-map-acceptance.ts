@@ -85,11 +85,10 @@ async function main() {
   console.log('✓ toate cele 4 stări prezente');
 
   // ── 2) lentila „test mâine" filtrează daily-ul ────────────────────────────
-  // focus = conceptele servibile de pe frontieră din Modulul V (piramide)
-  const domV = map.domains.find((d) => d.module === 'Modulul V');
-  if (!domV) fail('Modulul V lipsește de pe hartă');
-  const focusConcepts = Object.values(domV.grades).flatMap((g) => g.nodes).filter((n) => n.servable > 0);
-  if (focusConcepts.length === 0) fail('Modulul V nu are concepte servibile');
+  // ETAPA 84: modelul nu mai are cele 7 domenii BAC fixe; focus = conceptele
+  // SERVIBILE de clasa 12 (oricare grup), suficient pentru a testa filtrarea daily.
+  const focusConcepts = allNodes.filter((n) => (n.grade ?? 12) === 12 && n.servable > 0);
+  if (focusConcepts.length === 0) fail('niciun concept servibil de clasa 12 pe hartă');
   await svc.from('user_focus').upsert(
     {
       user_id: user.id,
