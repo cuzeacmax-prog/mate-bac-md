@@ -1,0 +1,861 @@
+[
+  {
+    "grade": 9,
+    "sourceFile": "docs/manuale-source/clasa-09.pdf",
+    "cuprinsLocation": "p. 228 (final, single-page Cuprins; text line 13611 in extracted clasa-09.txt)",
+    "modules": [
+      {
+        "title": "Algebră — Capitolul 1. Recapitulare și completări",
+        "page": 4,
+        "themes": [
+          {
+            "title": "§ 1. Mulțimea numerelor reale",
+            "page": 4
+          },
+          {
+            "title": "§ 2. Operații cu numere reale",
+            "page": 10
+          },
+          {
+            "title": "§ 3. Puteri și radicali",
+            "page": 14
+          }
+        ]
+      },
+      {
+        "title": "Algebră — Capitolul 2. Funcții",
+        "page": 22,
+        "themes": [
+          {
+            "title": "§ 1. Noțiunea de funcție. Recapitulare și completări",
+            "page": 22
+          },
+          {
+            "title": "§ 2. Funcții numerice. Recapitulare și completări",
+            "page": 25
+          },
+          {
+            "title": "§ 3. Funcția de gradul II",
+            "page": 31
+          },
+          {
+            "title": "§ 4. Funcția f : R → R, f (x) = x³",
+            "page": 49
+          }
+        ]
+      },
+      {
+        "title": "Algebră — Capitolul 3. Polinoame și fracții algebrice",
+        "page": 55,
+        "themes": [
+          {
+            "title": "§ 1. Monoame. Operații cu monoame",
+            "page": 55
+          },
+          {
+            "title": "§ 2. Polinoame. Operații cu polinoame",
+            "page": 59
+          },
+          {
+            "title": "§ 3. Împărțirea polinoamelor",
+            "page": 67
+          },
+          {
+            "title": "§ 4. Rădăcinile polinoamelor",
+            "page": 72
+          },
+          {
+            "title": "§ 5. Operații cu fracții algebrice. Recapitulare și completări",
+            "page": 74
+          }
+        ]
+      },
+      {
+        "title": "Algebră — Capitolul 4. Ecuații. Sisteme de ecuații",
+        "page": 81,
+        "themes": [
+          {
+            "title": "§ 1. Ecuații de forma ax + b = 0, a, b ∈ R. Recapitulare și completări",
+            "page": 81
+          },
+          {
+            "title": "§ 2. Ecuații de gradul II cu o necunoscută",
+            "page": 85
+          },
+          {
+            "title": "§ 3. Ecuații raționale",
+            "page": 92
+          },
+          {
+            "title": "§ 4. Sisteme de ecuații",
+            "page": 95
+          },
+          {
+            "title": "§ 5. Rezolvarea problemelor cu ajutorul ecuațiilor și/sau sistemelor de ecuații",
+            "page": 99
+          }
+        ]
+      },
+      {
+        "title": "Algebră — Capitolul 5. Inecuații. Sisteme de inecuații",
+        "page": 107,
+        "themes": [
+          {
+            "title": "§ 1. Inecuații și sisteme de inecuații de gradul I cu o necunoscută. Recapitulare și completări",
+            "page": 107
+          },
+          {
+            "title": "§ 2. Inecuații de gradul II cu o necunoscută. Metoda intervalelor",
+            "page": 114
+          }
+        ]
+      },
+      {
+        "title": "Geometrie — Capitolul 1. Recapitulare și completări",
+        "page": 124,
+        "themes": [
+          {
+            "title": "§ 1. Puncte, linii, plane, unghiuri",
+            "page": 124
+          },
+          {
+            "title": "§ 2. Poligoane",
+            "page": 130
+          }
+        ]
+      },
+      {
+        "title": "Geometrie — Capitolul 2. Cercul",
+        "page": 141,
+        "themes": [
+          {
+            "title": "§ 1. Recapitulare și completări",
+            "page": 141
+          },
+          {
+            "title": "§ 2. Unghiuri înscrise în cerc",
+            "page": 148
+          },
+          {
+            "title": "§ 3. Cercuri înscrise. Cercuri circumscrise",
+            "page": 154
+          }
+        ]
+      },
+      {
+        "title": "Geometrie — Capitolul 3. Arii",
+        "page": 163,
+        "themes": [
+          {
+            "title": "§ 1. Noțiunea de arie",
+            "page": 163
+          },
+          {
+            "title": "§ 2. Aria paralelogramelor",
+            "page": 163
+          },
+          {
+            "title": "§ 3. Aria triunghiului",
+            "page": 166
+          },
+          {
+            "title": "§ 4. Aria trapezului",
+            "page": 167
+          },
+          {
+            "title": "§ 5. Aria poligonului regulat. Lungimea cercului și aria discului",
+            "page": 168
+          }
+        ]
+      },
+      {
+        "title": "Geometrie — Capitolul 4. Poliedre",
+        "page": 174,
+        "themes": [
+          {
+            "title": "§ 1. Poliedre",
+            "page": 174
+          },
+          {
+            "title": "§ 2. Prisma",
+            "page": 177
+          },
+          {
+            "title": "§ 3. Piramida",
+            "page": 185
+          },
+          {
+            "title": "§ 4. Trunchiul de piramidă",
+            "page": 191
+          }
+        ]
+      },
+      {
+        "title": "Geometrie — Capitolul 5. Corpuri rotunde",
+        "page": 198,
+        "themes": [
+          {
+            "title": "§ 1. Cilindrul (circular drept)",
+            "page": 198
+          },
+          {
+            "title": "§ 2. Conul (circular drept)",
+            "page": 204
+          },
+          {
+            "title": "§ 3. Trunchiul de con (circular drept)",
+            "page": 208
+          },
+          {
+            "title": "§ 4. Sfera",
+            "page": 212
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "grade": 10,
+    "sourceFile": "docs/manuale-source/clasa-10.pdf",
+    "cuprinsLocation": "p. 281 (PDF) = printed p. 280, single full page titled \"Cuprins\"",
+    "modules": [
+      {
+        "title": "Modulul 1. Numere reale. Recapitulare și completări",
+        "page": 4,
+        "themes": [
+          {
+            "title": "§ 1. Numere raţionale, iraţionale, reale",
+            "page": 4
+          },
+          {
+            "title": "§ 2. Reprezentarea numerelor reale pe axa numerelor. Compararea numerelor reale",
+            "page": 6
+          },
+          {
+            "title": "§ 3. Operaţii aritmetice cu numere reale",
+            "page": 7
+          }
+        ]
+      },
+      {
+        "title": "Modulul 2. Elemente de logică matematică și de teoria mulţimilor",
+        "page": 13,
+        "themes": [
+          {
+            "title": "§ 1. Elemente de teoria mulţimilor. Recapitulare și completări",
+            "page": 13
+          },
+          {
+            "title": "§ 2. Elemente de logică matematică",
+            "page": 18
+          }
+        ]
+      },
+      {
+        "title": "Modulul 3. Radicali. Puteri. Logaritmi",
+        "page": 27,
+        "themes": [
+          {
+            "title": "§ 1. Radicali",
+            "page": 27
+          },
+          {
+            "title": "§ 2. Puterea cu exponent real",
+            "page": 32
+          },
+          {
+            "title": "§ 3. Logaritmi",
+            "page": 38
+          }
+        ]
+      },
+      {
+        "title": "Modulul 4. Elemente de combinatorică. Binomul lui Newton",
+        "page": 46,
+        "themes": [
+          {
+            "title": "§ 1. Elemente de combinatorică",
+            "page": 46
+          },
+          {
+            "title": "§ 2. Binomul lui Newton",
+            "page": 57
+          }
+        ]
+      },
+      {
+        "title": "Modulul 5. Funcţii reale. Proprietăţi fundamentale",
+        "page": 66,
+        "themes": [
+          {
+            "title": "§ 1. Noţiunea de funcţie. Recapitulare și completări",
+            "page": 66
+          },
+          {
+            "title": "§ 2. Proprietăţile fundamentale ale funcţiilor reale",
+            "page": 71
+          }
+        ]
+      },
+      {
+        "title": "Modulul 6. Ecuaţii. Inecuaţii. Sisteme. Totalităţi",
+        "page": 85,
+        "themes": [
+          {
+            "title": "§ 1. Ecuaţii. Recapitulare și completări",
+            "page": 85
+          },
+          {
+            "title": "§ 2. Sisteme, totalităţi de ecuaţii",
+            "page": 88
+          },
+          {
+            "title": "§ 3. Inecuaţii cu o necunoscută. Recapitulare și completări",
+            "page": 94
+          },
+          {
+            "title": "§ 4. Sisteme, totalităţi de inecuaţii cu o necunoscută. Recapitulare și completări",
+            "page": 99
+          }
+        ]
+      },
+      {
+        "title": "Modulul 7. Funcţii elementare. Ecuaţii. Inecuaţii",
+        "page": 106,
+        "themes": [
+          {
+            "title": "§ 1. Funcţia de gradul I. Ecuaţii de gradul I. Inecuaţii de gradul I",
+            "page": 106
+          },
+          {
+            "title": "§ 2. Funcţia de gradul II. Ecuaţii de gradul II. Inecuaţii de gradul II",
+            "page": 111
+          },
+          {
+            "title": "§ 3. Funcţia radical. Funcţia putere. Ecuaţii iraţionale. Inecuaţii iraţionale",
+            "page": 120
+          },
+          {
+            "title": "§ 4. Funcţia exponenţială. Ecuaţii exponenţiale. Inecuaţii exponenţiale",
+            "page": 138
+          },
+          {
+            "title": "§ 5. Funcţia logaritmică. Ecuaţii logaritmice. Inecuaţii logaritmice",
+            "page": 146
+          }
+        ]
+      },
+      {
+        "title": "Modulul 8. Elemente de trigonometrie",
+        "page": 163,
+        "themes": [
+          {
+            "title": "§ 1. Funcţii trigonometrice",
+            "page": 163
+          },
+          {
+            "title": "§ 2. Transformări ale expresiilor trigonometrice",
+            "page": 175
+          },
+          {
+            "title": "§ 3. Ecuaţii trigonometrice",
+            "page": 181
+          },
+          {
+            "title": "§ 4. Inecuaţii trigonometrice",
+            "page": 195
+          }
+        ]
+      },
+      {
+        "title": "Modulul 9. Figuri geometrice în plan",
+        "page": 209,
+        "themes": [
+          {
+            "title": "§ 1. Elemente de geometrie deductivă",
+            "page": 209
+          },
+          {
+            "title": "§ 2. Triunghiuri. Congruenţa triunghiurilor. Clasificări",
+            "page": 219
+          },
+          {
+            "title": "§ 3. Paralelogramul și proprietăţile lui. Trapezul",
+            "page": 225
+          },
+          {
+            "title": "§ 4. Asemănarea figurilor. Asemănarea triunghiurilor. Teorema lui Thales",
+            "page": 229
+          },
+          {
+            "title": "§ 5. Linii și puncte remarcabile ale triunghiului",
+            "page": 233
+          },
+          {
+            "title": "§ 6. Relaţii metrice în triunghiuri și cercuri",
+            "page": 237
+          },
+          {
+            "title": "§ 7. Poligoane. Poligoane regulate",
+            "page": 250
+          },
+          {
+            "title": "§ 8. Ariile figurilor plane",
+            "page": 254
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "grade": 11,
+    "sourceFile": "C:/Users/wotma/Documents/mate-bac-md/docs/manuale-source/clasa-11.pdf",
+    "cuprinsLocation": "pp. 303-304 (final; \"Cuprins\" heading printed on p. 304, two-column layout)",
+    "modules": [
+      {
+        "title": "Modulul 1. Şiruri de numere reale",
+        "page": 5,
+        "themes": [
+          {
+            "title": "§ 1. Şiruri numerice. Recapitulare şi completări",
+            "page": 5
+          },
+          {
+            "title": "§ 2. Progresii aritmetice. Progresii geometrice",
+            "page": 13
+          },
+          {
+            "title": "§ 3. Limita unui şir. Şiruri convergente, şiruri divergente",
+            "page": 22
+          }
+        ]
+      },
+      {
+        "title": "Modulul 2. Limite de funcţii",
+        "page": 34,
+        "themes": [
+          {
+            "title": "§ 1. Limita unei funcţii într-un punct",
+            "page": 34
+          },
+          {
+            "title": "§ 2. Operaţii cu limite de funcţii. Limitele unor funcţii elementare",
+            "page": 44
+          },
+          {
+            "title": "§ 3. Calculul limitelor de funcţii",
+            "page": 54
+          },
+          {
+            "title": "§ 4. Cazuri exceptate la operaţii cu limite de funcţii",
+            "page": 60
+          }
+        ]
+      },
+      {
+        "title": "Modulul 3. Funcţii continue",
+        "page": 68,
+        "themes": [
+          {
+            "title": "§ 1. Funcţii continue într-un punct. Funcţii continue pe o mulţime",
+            "page": 68
+          },
+          {
+            "title": "§ 2. Operaţii cu funcţii continue",
+            "page": 76
+          },
+          {
+            "title": "§ 3. Proprietăţi ale funcţiilor continue",
+            "page": 79
+          }
+        ]
+      },
+      {
+        "title": "Modulul 4. Funcţii derivabile",
+        "page": 88,
+        "themes": [
+          {
+            "title": "§ 1. Noţiunea de derivată",
+            "page": 89
+          },
+          {
+            "title": "§ 2. Interpretarea geometrică a derivatei",
+            "page": 96
+          },
+          {
+            "title": "§ 3. Derivatele unor funcţii elementare",
+            "page": 101
+          },
+          {
+            "title": "§ 4. Operaţii cu funcţii derivabile",
+            "page": 105
+          },
+          {
+            "title": "§ 5. Diferenţiala unei funcţii",
+            "page": 115
+          },
+          {
+            "title": "§ 6. Proprietăţi generale ale funcţiilor derivabile",
+            "page": 118
+          }
+        ]
+      },
+      {
+        "title": "Modulul 5. Aplicaţii ale derivatelor",
+        "page": 131,
+        "themes": [
+          {
+            "title": "§ 1. Rolul derivatei întâi în studiul funcţiilor",
+            "page": 131
+          },
+          {
+            "title": "§ 2. Rolul derivatei a doua în studiul funcţiilor. Asimptote",
+            "page": 139
+          },
+          {
+            "title": "§ 3. Reprezentarea grafică a funcţiilor",
+            "page": 148
+          },
+          {
+            "title": "§ 4. Aplicaţii ale derivatelor în fizică, geometrie şi economie. Probleme de maxim şi minim",
+            "page": 154
+          }
+        ]
+      },
+      {
+        "title": "Modulul 6. Numere complexe",
+        "page": 164,
+        "themes": [
+          {
+            "title": "§ 1. Operaţii cu numere complexe reprezentate sub formă algebrică",
+            "page": 164
+          },
+          {
+            "title": "§ 2. Reprezentarea geometrică a numerelor complexe. Forma trigonometrică a unui număr complex",
+            "page": 170
+          },
+          {
+            "title": "§ 3. Aplicaţii ale numerelor complexe",
+            "page": 178
+          }
+        ]
+      },
+      {
+        "title": "Modulul 7. Elemente de algebră superioară",
+        "page": 185,
+        "themes": [
+          {
+            "title": "§ 1. Matrice",
+            "page": 185
+          },
+          {
+            "title": "§ 2. Determinanţi",
+            "page": 199
+          },
+          {
+            "title": "§ 3. Sisteme de ecuaţii liniare",
+            "page": 215
+          }
+        ]
+      },
+      {
+        "title": "Modulul 8. Paralelismul dreptelor şi planelor",
+        "page": 232,
+        "themes": [
+          {
+            "title": "§ 1. Axiomele geometriei în spaţiu",
+            "page": 232
+          },
+          {
+            "title": "§ 2. Poziţiile relative a două drepte în spaţiu",
+            "page": 235
+          },
+          {
+            "title": "§ 3. Drepte şi plane",
+            "page": 238
+          },
+          {
+            "title": "§ 4. Plane paralele",
+            "page": 241
+          }
+        ]
+      },
+      {
+        "title": "Modulul 9. Perpendicularitatea în spaţiu",
+        "page": 250,
+        "themes": [
+          {
+            "title": "§ 1. Drepte şi plane perpendiculare",
+            "page": 250
+          },
+          {
+            "title": "§ 2. Proiecţii ortogonale. Unghi format de o dreaptă şi un plan",
+            "page": 254
+          },
+          {
+            "title": "§ 3. Unghi format de două plane (unghi diedru)",
+            "page": 259
+          }
+        ]
+      },
+      {
+        "title": "Modulul 10. Transformări geometrice",
+        "page": 268,
+        "themes": [
+          {
+            "title": "§ 1. Noţiunea de transformare geometrică. Transformări izometrice",
+            "page": 268
+          },
+          {
+            "title": "§ 2. Simetria centrală",
+            "page": 271
+          },
+          {
+            "title": "§ 3. Simetria axială",
+            "page": 273
+          },
+          {
+            "title": "§ 4. Simetria faţă de un plan",
+            "page": 275
+          },
+          {
+            "title": "§ 5. Translaţia",
+            "page": 276
+          },
+          {
+            "title": "§ 6. Transformarea de asemănare. Omotetia",
+            "page": 278
+          },
+          {
+            "title": "§ 7. Rotaţia în jurul unei drepte (rotaţia axială)",
+            "page": 280
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "grade": 12,
+    "sourceFile": "C:\\Users\\wotma\\Documents\\mate-bac-md\\docs\\manuale-source\\clasa-12.pdf",
+    "cuprinsLocation": "p. 264 (final page with text; single-page CUPRINS, two-column layout)",
+    "modules": [
+      {
+        "title": "Modulul 1. FUNCȚII DERIVABILE. RECAPITULARE",
+        "page": 5,
+        "themes": []
+      },
+      {
+        "title": "Modulul 2. PRIMITIVE ȘI INTEGRALE NEDEFINITE",
+        "page": 11,
+        "themes": [
+          {
+            "title": "§ 1. Noțiunea de primitivă a unei funcții. Noțiunea de integrală nedefinită",
+            "page": 12
+          },
+          {
+            "title": "§ 2. Schimbarea de variabilă în calculul primitivelor",
+            "page": 20
+          },
+          {
+            "title": "§ 3. Integrarea prin părți",
+            "page": 22
+          }
+        ]
+      },
+      {
+        "title": "Modulul 3. INTEGRALE DEFINITE",
+        "page": 27,
+        "themes": [
+          {
+            "title": "§ 1. Noțiunea de integrală definită. Funcții integrabile",
+            "page": 28
+          },
+          {
+            "title": "§ 2. Proprietățile principale ale integralelor definite",
+            "page": 42
+          },
+          {
+            "title": "§ 3. Metode de calcul al integralei definite",
+            "page": 49
+          }
+        ]
+      },
+      {
+        "title": "Modulul 4. APLICAȚII ALE INTEGRALELOR DEFINITE",
+        "page": 59,
+        "themes": [
+          {
+            "title": "§ 1. Aria subgraficului unei funcții",
+            "page": 60
+          },
+          {
+            "title": "§ 2. Volumul unui corp de rotație",
+            "page": 66
+          },
+          {
+            "title": "§ 3. Calculul lungimii graficului unei funcții și al ariei unei suprafețe de rotație (opțional)",
+            "page": 69
+          }
+        ]
+      },
+      {
+        "title": "Modulul 5. ELEMENTE DE TEORIA PROBABILITĂȚILOR",
+        "page": 75,
+        "themes": [
+          {
+            "title": "Generalități",
+            "page": 76
+          },
+          {
+            "title": "§ 1. Definiția clasică a probabilității",
+            "page": 77
+          },
+          {
+            "title": "§ 2. Evenimente aleatoare. Formule pentru calculul unor probabilități",
+            "page": 82
+          },
+          {
+            "title": "§ 3. Probabilitatea condiționată",
+            "page": 87
+          },
+          {
+            "title": "§ 4. Evenimente aleatoare independente",
+            "page": 89
+          },
+          {
+            "title": "§ 5. Variabile aleatoare discrete",
+            "page": 91
+          }
+        ]
+      },
+      {
+        "title": "Modulul 6. ELEMENTE DE STATISTICĂ MATEMATICĂ ȘI DE CALCUL FINANCIAR",
+        "page": 97,
+        "themes": [
+          {
+            "title": "§ 1. Noțiuni fundamentale",
+            "page": 98
+          },
+          {
+            "title": "§ 2. Înregistrarea și gruparea datelor",
+            "page": 99
+          },
+          {
+            "title": "§ 3. Reprezentarea grafică a datelor statistice",
+            "page": 104
+          },
+          {
+            "title": "§ 4. Mărimi medii ale seriilor statistice",
+            "page": 110
+          },
+          {
+            "title": "§ 5. Elemente de calcul financiar",
+            "page": 115
+          }
+        ]
+      },
+      {
+        "title": "Modulul 7. POLIEDRE. RECAPITULARE ȘI COMPLETĂRI",
+        "page": 127,
+        "themes": [
+          {
+            "title": "§ 1. Noțiunea de poliedru",
+            "page": 128
+          },
+          {
+            "title": "§ 2. Prisma",
+            "page": 130
+          },
+          {
+            "title": "§ 3. Piramida",
+            "page": 136
+          },
+          {
+            "title": "§ 4. Trunchiul de piramidă",
+            "page": 140
+          },
+          {
+            "title": "§ 5. Volumul poliedrelor",
+            "page": 142
+          }
+        ]
+      },
+      {
+        "title": "Modulul 8. CORPURI DE ROTAȚIE. RECAPITULARE ȘI COMPLETĂRI",
+        "page": 151,
+        "themes": [
+          {
+            "title": "§ 1. Cilindrul",
+            "page": 152
+          },
+          {
+            "title": "§ 2. Conul",
+            "page": 156
+          },
+          {
+            "title": "§ 3. Trunchiul de con",
+            "page": 161
+          },
+          {
+            "title": "§ 4. Sfera. Corpul sferic",
+            "page": 166
+          }
+        ]
+      },
+      {
+        "title": "Modulul 9. RECAPITULARE FINALĂ",
+        "page": 181,
+        "themes": [
+          {
+            "title": "§ 1. Numere complexe. Mulțimi. Elemente de logică matematică",
+            "page": 182
+          },
+          {
+            "title": "§ 2. Transformări identice ale expresiilor",
+            "page": 188
+          },
+          {
+            "title": "§ 3. Polinoame",
+            "page": 192
+          },
+          {
+            "title": "§ 4. Ecuații. Inecuații. Sisteme. Totalități",
+            "page": 196
+          },
+          {
+            "title": "§ 5. Șiruri de numere reale. Limite de șiruri",
+            "page": 201
+          },
+          {
+            "title": "§ 6. Limite de funcții. Funcții continue",
+            "page": 204
+          },
+          {
+            "title": "§ 7. Proprietăți generale și aplicații ale funcțiilor derivabile",
+            "page": 213
+          },
+          {
+            "title": "§ 8. Elemente de combinatorică. Binomul lui Newton",
+            "page": 219
+          },
+          {
+            "title": "§ 9. Geometrie în plan și în spațiu",
+            "page": 223
+          },
+          {
+            "title": "§ 10. Elemente de trigonometrie",
+            "page": 229
+          },
+          {
+            "title": "§ 11. Elemente de algebră superioară",
+            "page": 235
+          },
+          {
+            "title": "§ 12. Exerciții și probleme recapitulative",
+            "page": 241
+          }
+        ]
+      }
+    ]
+  }
+]
