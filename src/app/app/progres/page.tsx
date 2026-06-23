@@ -48,7 +48,7 @@ export default async function ProgresPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-8 space-y-6">
+    <div className="max-w-3xl mx-auto px-6 py-8 space-y-6 stagger-children">
       <div>
         <h1 className="fluid-h1 font-semibold">Progresul tău</h1>
         <p className="text-sm text-muted-foreground mt-1">

@@ -14,6 +14,22 @@ describe('ETAPA 81 FAZA C3 — comutator: override bate mastery', () => {
   it('fără override → nivelul din mastery', () => { expect(activeRegister('punte', null)).toBe('punte'); });
 });
 
+// ETAPA 83 FAZA E — registrul IMPLICIT = comun/punte (elevul mediu), NU barem.
+describe('ETAPA 83 E — implicit comun/punte, nu barem', () => {
+  it('elev nou / fără evidență (mastery 0) → comun (nu barem)', () => {
+    expect(masteryToRegister(0)).toBe('comun');
+    expect(masteryToRegister(0)).not.toBe('barem');
+  });
+  it('barem DOAR la concept stăpânit (mastery ≥ 0.6)', () => {
+    expect(masteryToRegister(0.59)).not.toBe('barem');
+    expect(masteryToRegister(0.6)).toBe('barem');
+  });
+  // playerul pornește pe „punte" (LessonPlayer.tsx) — registru de punte, nu de examen
+  it('fără override, registrul de start „punte" rămâne punte', () => {
+    expect(activeRegister('punte', null)).toBe('punte');
+  });
+});
+
 describe('ETAPA 81 FAZA C — resolveProse (variante co-generate)', () => {
   it('fără variante → textul de bază', () => { expect(resolveProse('baza', undefined, 'barem')).toBe('baza'); });
   it('cu variantă → varianta registrului', () => {
