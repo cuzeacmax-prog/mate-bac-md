@@ -374,7 +374,8 @@ function solveRegularPyramid(s: string): SolveOutput {
   // geometrie bază regulată: ρ = inradius, R = circumradius
   const rho = (a: number) => tri ? a / (2 * Math.sqrt(3)) : a / 2;
   const Rc = (a: number) => tri ? a / Math.sqrt(3) : a * Math.SQRT2 / 2;
-  let a = a0, h = h0;
+  const a = a0;
+  let h = h0;
   if (a != null && h == null) {
     if (m0 != null) { const r = Rc(a); const v = m0 * m0 - r * r; if (v > 0) h = Math.sqrt(v); }
     else if (ap0 != null) { const r = rho(a); const v = ap0 * ap0 - r * r; if (v > 0) h = Math.sqrt(v); }

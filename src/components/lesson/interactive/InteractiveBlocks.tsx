@@ -233,6 +233,7 @@ export function ParameterSliderView({ block }: { block: Any }) {
   const domain = (block.domain as [number, number]) ?? [-5, 5];
   const [val, setVal] = useState<number>(Math.round(((min + max) / 2) / step) * step);
   const [svg, setSvg] = useState<string>("");
+  const [obs, setObs] = useState<{ roots: number; vertex: { x: number; y: number } | null }>({ roots: 0, vertex: null });
   const reduce = useReducedMotion();
 
   const render = useCallback((v: number) => {
@@ -249,7 +250,6 @@ export function ParameterSliderView({ block }: { block: Any }) {
     }
   }, [template, param, domain]);
 
-  const [obs, setObs] = useState<{ roots: number; vertex: { x: number; y: number } | null }>({ roots: 0, vertex: null });
   // debounce re-randarea
   const tmr = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {

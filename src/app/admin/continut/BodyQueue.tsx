@@ -64,9 +64,13 @@ export default function BodyQueue() {
     } catch (e) { setErr(e instanceof Error ? e.message : String(e)); }
     finally { setLoading(false); }
   }
+  // mount-fetch (setState după await, nu sincron) — pattern intenționat de admin
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { void load(); }, []);
 
   const current = items[idx] ?? null;
+  // resetează draftul editabil când se schimbă item-ul (sync intenționat, admin)
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setDraft(current?.statement ?? ""); }, [current?.id]);
 
   const liveErrors = useMemo(() => {
@@ -148,7 +152,7 @@ export default function BodyQueue() {
                   <span className="text-red-700">{e.message}</span> — <code className="bg-red-100 text-red-900 px-1 rounded break-all">{e.raw.slice(0, 120)}</code>
                 </div>
               ))}
-              {liveErrors.length === 0 && <div className="text-xs text-green-700">✓ nicio eroare în textul curent — „Salvează & Următorul" îl marchează rezolvat.</div>}
+              {liveErrors.length === 0 && <div className="text-xs text-green-700">✓ nicio eroare în textul curent — „Salvează &amp; Următorul&rdquo; îl marchează rezolvat.</div>}
             </div>
 
             {/* editare inline */}
