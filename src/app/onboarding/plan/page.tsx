@@ -33,10 +33,11 @@ const TOPIC_LABELS: Record<string, string> = {
   probabilitati: 'Probabilități',
 };
 
+// ETAPA 83 B: nivelurile de prioritate ca tokeni semantici (nu tailwind hardcodat)
 const STRENGTH_COLORS = [
-  { bg: 'bg-red-100', fill: 'bg-red-400', text: 'text-red-700', label: 'Prioritate mare' },
-  { bg: 'bg-amber-100', fill: 'bg-amber-400', text: 'text-amber-700', label: 'Necesită practică' },
-  { bg: 'bg-yellow-100', fill: 'bg-yellow-400', text: 'text-yellow-700', label: 'De consolidat' },
+  { bg: 'bg-danger-bg', fill: 'bg-danger-foreground', text: 'text-danger-foreground', label: 'Prioritate mare' },
+  { bg: 'bg-warning-bg', fill: 'bg-warning-foreground', text: 'text-warning-foreground', label: 'Necesită practică' },
+  { bg: 'bg-secondary', fill: 'bg-primary', text: 'text-secondary-foreground', label: 'De consolidat' },
 ];
 
 export default function PlanPage() {

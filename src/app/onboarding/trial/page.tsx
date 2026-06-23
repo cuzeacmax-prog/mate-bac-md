@@ -87,9 +87,9 @@ export default function TrialPage() {
         </div>
 
         {/* Streak note */}
-        <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 flex items-center gap-3">
+        <div className="rounded-xl bg-warning-bg border border-warning-foreground/20 px-4 py-3 flex items-center gap-3">
           <span className="text-2xl">🔥</span>
-          <p className="text-sm text-amber-800 font-medium text-left">
+          <p className="text-sm text-warning-foreground font-medium text-left">
             Ai început streak-ul azi! Continuă mâine să nu-l pierzi.
           </p>
         </div>

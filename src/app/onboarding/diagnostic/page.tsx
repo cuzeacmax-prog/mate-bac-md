@@ -208,7 +208,7 @@ export default function DiagnosticPage() {
               <div className="rounded-2xl bg-muted/50 p-5">
                 <p className="text-base font-medium leading-relaxed"><MathText text={exercise.prompt} /></p>
                 {exercise.difficulty >= 4 && (
-                  <span className="mt-2 inline-block rounded-full bg-amber-100 text-amber-700 text-xs font-medium px-2 py-0.5">
+                  <span className="mt-2 inline-block rounded-full bg-warning-bg text-warning-foreground text-xs font-medium px-2 py-0.5">
                     Dificil
                   </span>
                 )}
@@ -279,8 +279,8 @@ export default function DiagnosticPage() {
                     exit={{ opacity: 0 }}
                     className={`rounded-xl px-4 py-3 text-center font-medium text-sm ${
                       answerState === 'correct'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-50 text-red-700'
+                        ? 'bg-success-bg text-success-foreground'
+                        : 'bg-danger-bg text-danger-foreground'
                     }`}
                   >
                     {answerState === 'correct'

@@ -56,11 +56,14 @@
   --color-success-foreground: var(--success-foreground);
   --color-danger-bg: var(--danger-bg);
   --color-danger-foreground: var(--danger-foreground);
+  --color-warning-bg: var(--warning-bg);
+  --color-warning-foreground: var(--warning-foreground);
   /* ETAPA 82 D: paleta albastru-negru ca utilitare Tailwind (bg-bg-deep etc.).
    * Ancorare pentru ETAPA 83 — aici doar definite + probate pe hartă+onboarding. */
   --color-bg-deep: var(--bg-deep);
   --color-bg-night: var(--bg-night);
   --color-bg-black: var(--bg-black);
+  --color-bg-electric: var(--bg-electric);
   --color-text-on-deep: var(--text-on-deep);
 }
 
@@ -75,48 +78,53 @@
  * Contrastul: scripts/verify/etapa70-contrast.ts citește valorile de AICI.
  */
 :root, .dark {
-  --background: oklch(0.16 0.025 260);
+  /* ETAPA 83 FAZA B — paleta ALBASTRU-NEGRU pe tot saitul (un singur sistem de tokeni).
+   * Fundaluri: night #131936 / deep #001D51 / negru de bază #05060c.
+   * Accent: albastru ELECTRIC #3B82F6. Text deschis pentru contrast AA (verificat). */
+  --background: oklch(0.19 0.05 268);
   --foreground: oklch(0.95 0.01 260);
-  --card: oklch(0.205 0.03 260);
+  --card: oklch(0.235 0.055 266);
   --card-foreground: oklch(0.95 0.01 260);
-  --popover: oklch(0.22 0.03 260);
-  --popover-foreground: oklch(0.95 0.01 260);
-  --primary: oklch(0.66 0.20 295);
-  /* pe nuanțele luminoase din dark, textul e ÎNCHIS (AA verificat de poartă) */
-  --primary-foreground: oklch(0.13 0.02 260);
-  --secondary: oklch(0.28 0.05 285);
-  --secondary-foreground: oklch(0.92 0.03 290);
-  --muted: oklch(0.25 0.03 260);
-  --muted-foreground: oklch(0.74 0.02 260);
-  --accent: oklch(0.80 0.18 128);
-  --accent-foreground: oklch(0.20 0.06 130);
+  --popover: oklch(0.255 0.055 266);
+  --popover-foreground: oklch(0.96 0.01 260);
+  --primary: oklch(0.62 0.18 258);
+  /* pe albastrul electric, textul e ÎNCHIS (AA verificat de poartă) */
+  --primary-foreground: oklch(0.15 0.03 264);
+  --secondary: oklch(0.30 0.08 262);
+  --secondary-foreground: oklch(0.93 0.03 264);
+  --muted: oklch(0.30 0.05 266);
+  --muted-foreground: oklch(0.76 0.03 262);
+  --accent: oklch(0.72 0.15 232);
+  --accent-foreground: oklch(0.17 0.04 250);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.68 0.18 295);
-  --chart-1: oklch(0.68 0.18 295);
-  --chart-2: oklch(0.80 0.18 128);
-  --chart-3: oklch(0.65 0.24 350);
-  --chart-4: oklch(0.70 0.11 220);
-  --chart-5: oklch(0.70 0.10 180);
+  --ring: oklch(0.62 0.18 258);
+  --chart-1: oklch(0.62 0.18 258);
+  --chart-2: oklch(0.72 0.15 232);
+  --chart-3: oklch(0.55 0.16 270);
+  --chart-4: oklch(0.76 0.12 220);
+  --chart-5: oklch(0.50 0.14 250);
   --radius: 0.875rem;
-  --sidebar: oklch(0.19 0.028 260);
+  --sidebar: oklch(0.165 0.045 268);
   --sidebar-foreground: oklch(0.95 0.01 260);
-  --sidebar-primary: oklch(0.66 0.20 295);
-  --sidebar-primary-foreground: oklch(0.13 0.02 260);
-  --sidebar-accent: oklch(0.28 0.05 285);
-  --sidebar-accent-foreground: oklch(0.92 0.03 290);
+  --sidebar-primary: oklch(0.62 0.18 258);
+  --sidebar-primary-foreground: oklch(0.15 0.03 264);
+  --sidebar-accent: oklch(0.30 0.08 262);
+  --sidebar-accent-foreground: oklch(0.93 0.03 264);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.68 0.18 295);
+  --sidebar-ring: oklch(0.62 0.18 258);
   /* REGULA SACRĂ: matematica aproape-albă, pe suprafață SOLIDĂ */
   --math-fg: oklch(0.97 0.005 260);
-  --math-surface: oklch(0.14 0.02 260);
+  --math-surface: oklch(0.155 0.04 266);
   /* ETAPA 82 D: paleta albastru-negru cerută de owner (ancorare pentru ETAPA 83).
    * Definite ca VARIABILE; probate pe fundalul hărții (--bg-deep) și onboarding
    * (--bg-night). Text deschis --text-on-deep pentru contrast AA pe ele. */
   --bg-deep: #001D51;
   --bg-night: #131936;
   --bg-black: #05060c;
+  /* al treilea albastru: ELECTRIC luminos (accente + gradiente, ETAPA 83 B/C) */
+  --bg-electric: #3B82F6;
   --text-on-deep: oklch(0.97 0.005 260);
   /* glass: 3 niveluri de elevație (folosite prin clasele .glass-1/2/3) */
   --glass-1: rgba(255, 255, 255, 0.04);
@@ -125,14 +133,15 @@
   --glass-2-border: rgba(255, 255, 255, 0.12);
   --glass-3: rgba(255, 255, 255, 0.11);
   --glass-3-border: rgba(255, 255, 255, 0.16);
-  /* orbii gradient (LivingBackdrop, ETAPA 74 A1): violet → roz / lime → teal */
-  --orb-1: oklch(0.55 0.25 295);
-  --orb-2: oklch(0.65 0.24 350);
-  --orb-3: oklch(0.85 0.20 130);
-  --orb-4: oklch(0.72 0.12 200);
+  /* orbii gradient (LivingBackdrop) — ETAPA 83 B: familia ALBASTRĂ (electric →
+   * indigo → cyan → navy), nu violet/roz/lime */
+  --orb-1: oklch(0.58 0.19 258);
+  --orb-2: oklch(0.46 0.16 270);
+  --orb-3: oklch(0.72 0.13 225);
+  --orb-4: oklch(0.40 0.12 264);
   /* ETAPA 74 A3: etichetele nodurilor de pe hartă — pill subtil, alb 70% */
   --map-label-fg: oklch(1 0 0 / 0.72);
-  --map-label-bg: oklch(0.13 0.02 260 / 0.62);
+  --map-label-bg: oklch(0.13 0.04 266 / 0.62);
   /* ETAPA 74 A4: ambra indiciului (pulsația chip-ului) */
   --hint-amber: oklch(0.78 0.14 80);
   /* cele 7 culori de DOMENIU — recalibrate pentru dark (ETAPA 71 → 73) */
@@ -163,6 +172,9 @@
   --success-foreground: oklch(0.90 0.08 150);
   --danger-bg: oklch(0.28 0.05 25);
   --danger-foreground: oklch(0.85 0.10 25);
+  /* ETAPA 83 B: avertisment/indiciu (ambră) ca TOKEN, nu tailwind hardcodat */
+  --warning-bg: oklch(0.30 0.07 75);
+  --warning-foreground: oklch(0.90 0.10 85);
 }
 
 @layer base {
