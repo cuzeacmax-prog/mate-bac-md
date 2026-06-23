@@ -1035,7 +1035,8 @@ function TheoryFigure({ slug }: { slug: string }) {
   }
   return (
     <div
-      className="figura-bac w-full [&_svg]:w-full [&_svg]:h-auto"
+      // ETAPA 83 H: stil constelație pentru figura de teorie (geometrie neatinsă)
+      className="figura-bac figura-constelatie rounded-2xl p-3 w-full [&_svg]:w-full [&_svg]:h-auto"
       // SVG-ul vine exclusiv din registrul theory-figures (cod determinist) — trusted
       dangerouslySetInnerHTML={{ __html: svg }}
     />

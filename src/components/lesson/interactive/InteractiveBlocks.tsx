@@ -69,7 +69,8 @@ function TheorySVG({ slug }: { slug: string }) {
     return () => { off = true; };
   }, [slug]);
   if (!svg) return <div className="h-32 flex items-center justify-center text-xs text-muted-foreground">…</div>;
-  return <div className="figura-bac w-full [&_svg]:w-full [&_svg]:h-auto" dangerouslySetInnerHTML={{ __html: svg }} />;
+  // ETAPA 83 H: figura de teorie în stil constelație (geometrie neatinsă, doar stil)
+  return <div className="figura-bac figura-constelatie rounded-2xl p-3 w-full [&_svg]:w-full [&_svg]:h-auto" dangerouslySetInnerHTML={{ __html: svg }} />;
 }
 
 // ───────────────────────── progressive_table ─────────────────────────

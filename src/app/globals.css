@@ -222,6 +222,23 @@
 .figura-bac svg {
   color: oklch(0.16 0.01 260);
 }
+/* ETAPA 83 FAZA H: figurile de TEORIE în stil CONSTELAȚIE — linii luminoase pe fund
+ * închis, glow subtil albastru. Geometria e NEATINSĂ (doar filtru vizual peste
+ * desenul monocrom persistat: invert + virează spre albastru). Corectitudinea =
+ * SACRĂ. Exercițiile rămân „foaie de hârtie" (.figura-bac simplu) pentru fidelitate BAC. */
+.figura-constelatie {
+  background: linear-gradient(160deg, var(--bg-deep), var(--bg-night));
+  border: 1px solid color-mix(in oklab, var(--bg-electric) 35%, transparent);
+  box-shadow: 0 0 26px -8px color-mix(in oklab, var(--bg-electric) 55%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.figura-constelatie svg {
+  /* desenul monocrom închis devine luminos-albastru; pozițiile/unghiurile identice */
+  filter: invert(0.92) sepia(0.45) hue-rotate(178deg) saturate(1.5) brightness(1.06);
+}
+@media (prefers-reduced-motion: reduce) {
+  .figura-constelatie { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06); }
+}
 /* formulele display pe suprafață SOLIDĂ închisă (nu glass) */
 .katex-display {
   background: var(--math-surface);
