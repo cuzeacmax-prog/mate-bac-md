@@ -77,6 +77,14 @@ export function SimularePlayer({ audit }: {
     }
   }, [attempt, answers]);
 
+  // ETAPA 83 G: FOCUS MODE pe durata simulării (scenă, fără distrageri laterale,
+  // ca lecția-scenă din 77) — reutilizează CSS-ul body[data-focus-lesson].
+  useEffect(() => {
+    if (phase !== "running") return;
+    document.body.dataset.focusLesson = "1";
+    return () => { delete document.body.dataset.focusLesson; };
+  }, [phase]);
+
   // ceasul + auto-submit la expirare trăiesc în ACELAȘI timer (sistem extern);
   // serverul oricum respinge submit-urile după deadline + grație
   useEffect(() => {
@@ -95,7 +103,7 @@ export function SimularePlayer({ audit }: {
   if (phase === "intro") {
     return (
       <div className="relative max-w-2xl mx-auto px-6 py-10 space-y-5">
-        <h1 className="text-2xl font-bold">Simulare BAC — variantă parțială</h1>
+        <h1 className="fluid-h1 font-bold">Simulare BAC — variantă parțială</h1>
         <div className="glass-2 rounded-3xl p-5 space-y-3 text-sm leading-relaxed">
           <p><strong>{plannedCount} exerciții</strong> din culegerea oficială, cu răspuns verificabil · <strong>90 de minute</strong>, cronometru pe server.</p>
           <p>Acoperă onest: {coveredModules.join(", ")}.</p>
@@ -108,7 +116,7 @@ export function SimularePlayer({ audit }: {
           <p className="text-muted-foreground">Navighezi liber între exerciții, poți marca «revin». Nota e estimată DOAR pe ce s-a testat, ca interval.</p>
         </div>
         {error && <p className="text-sm text-destructive">{error}</p>}
-        <motion.button whileTap={buttonTap} onClick={start} className="w-full rounded-2xl bg-primary text-primary-foreground py-3.5 font-semibold">
+        <motion.button whileTap={buttonTap} onClick={start} className="w-full rounded-2xl bg-[var(--bg-electric)] text-primary-foreground py-4 font-semibold text-base">
           Începe simularea →
         </motion.button>
       </div>
@@ -186,64 +194,97 @@ export function SimularePlayer({ audit }: {
     );
   }
 
-  // ── running ────────────────────────────────────────────────────────────────
+  // ── running — SCENĂ ALBASTRĂ (ETAPA 83 G) ───────────────────────────────────
   const item = attempt.items[idx];
   const answered = Object.keys(answers).filter((k) => answers[k]?.trim()).length;
+  const isLast = idx === attempt.items.length - 1;
+  const lowTime = remaining < 5 * 60_000;
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-medium">Exercițiul {idx + 1} din {attempt.items.length} · {item.module}</p>
-        <p className={`font-mono font-bold ${remaining < 5 * 60_000 ? "text-danger-foreground" : ""}`}>
-          {String(mm).padStart(2, "0")}:{String(ss).padStart(2, "0")}
-        </p>
+    // scenă albastră dedicată: fundal deep→night, focus, fără distrageri laterale
+    <div
+      className="relative min-h-full flex flex-col"
+      style={{ background: "linear-gradient(180deg, var(--bg-deep), var(--bg-night) 70%, var(--bg-black))" }}
+    >
+      {/* bară de sus: progres + CRONOMETRU serios (69) */}
+      <div className="sticky top-0 z-20 px-4 pt-4 pb-3 backdrop-blur-sm">
+        <div className="max-w-2xl mx-auto flex items-center justify-between gap-3">
+          <p className="text-sm font-medium text-[var(--text-on-deep)]">
+            Exercițiul {idx + 1} din {attempt.items.length} · {item.module}
+          </p>
+          <p className={`font-mono font-bold tabular-nums text-lg ${lowTime ? "text-danger-foreground" : "text-[var(--bg-electric)]"}`}>
+            {String(mm).padStart(2, "0")}:{String(ss).padStart(2, "0")}
+          </p>
+        </div>
+        {/* navigare liberă (puncte de exercițiu) */}
+        <div className="max-w-2xl mx-auto mt-2 flex flex-wrap gap-1.5">
+          {attempt.items.map((it, i) => (
+            <button
+              key={it.exercise_id}
+              onClick={() => setIdx(i)}
+              className={`w-7 h-7 rounded-lg border text-[11px] font-semibold transition-colors ${
+                i === idx ? "border-[var(--bg-electric)] bg-[var(--bg-electric)] text-primary-foreground"
+                : flagged.has(it.exercise_id) ? "border-warning-foreground/40 bg-warning-bg text-warning-foreground"
+                : answers[it.exercise_id]?.trim() ? "border-success/40 bg-success-bg text-success-foreground"
+                : "border-white/15 bg-white/5 text-[var(--text-on-deep)]/70"
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* navigare liberă */}
-      <div className="flex flex-wrap gap-1.5">
-        {attempt.items.map((it, i) => (
+      {/* PROBLEMA — bulă care intră GLISÂND lateral, una câte una */}
+      <div className="flex-1 px-4 pb-32 pt-2">
+        <motion.div
+          key={item.exercise_id}
+          initial={{ opacity: 0, x: 48 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ type: "spring", stiffness: 320, damping: 30 }}
+          className="max-w-2xl mx-auto rounded-3xl bg-card/90 border border-white/10 shadow-2xl p-6 space-y-4"
+        >
+          <p className="leading-relaxed text-[var(--text-on-deep)]"><StatementText text={item.statement} /></p>
+          {item.has_figure && <LayeredFigure exerciseId={item.exercise_id} />}
+          <input
+            value={answers[item.exercise_id] ?? ""}
+            onChange={(e) => setAnswers((prev) => ({ ...prev, [item.exercise_id]: e.target.value }))}
+            placeholder="Răspunsul tău final"
+            className="w-full rounded-xl border border-white/15 px-4 py-3 text-sm bg-bg-night/60 text-[var(--text-on-deep)] focus:outline-none focus:ring-2 focus:ring-[var(--bg-electric)]/50"
+          />
           <button
-            key={it.exercise_id}
-            onClick={() => setIdx(i)}
-            className={`w-8 h-8 rounded-lg border text-xs font-semibold transition-colors ${
-              i === idx ? "border-primary bg-primary text-primary-foreground"
-              : flagged.has(it.exercise_id) ? "border-[var(--domain-iv)] bg-[var(--domain-iv-bg)] text-[var(--domain-iv-fg)]"
-              : answers[it.exercise_id]?.trim() ? "border-success/40 bg-success-bg text-success-foreground"
-              : "border-border bg-card"
-            }`}
+            onClick={() => setFlagged((prev) => { const n = new Set(prev); if (n.has(item.exercise_id)) n.delete(item.exercise_id); else n.add(item.exercise_id); return n; })}
+            className={`flex items-center gap-1.5 text-xs font-medium ${flagged.has(item.exercise_id) ? "text-warning-foreground" : "text-[var(--text-on-deep)]/60"}`}
           >
-            {i + 1}
+            <Flag className="h-3.5 w-3.5" />
+            {flagged.has(item.exercise_id) ? "Marcat — revin" : "Marchează «revin»"}
           </button>
-        ))}
+        </motion.div>
       </div>
 
-      <div className="rounded-2xl border bg-card p-5 space-y-4">
-        <p className="leading-relaxed"><StatementText text={item.statement} /></p>
-        {item.has_figure && <LayeredFigure exerciseId={item.exercise_id} />}
-        <input
-          value={answers[item.exercise_id] ?? ""}
-          onChange={(e) => setAnswers((prev) => ({ ...prev, [item.exercise_id]: e.target.value }))}
-          placeholder="Răspunsul tău final"
-          className="w-full rounded-xl border px-4 py-3 text-sm bg-background focus:outline-none focus:ring-2 focus:ring-primary/40"
-        />
-        <button
-          onClick={() => setFlagged((prev) => { const n = new Set(prev); if (n.has(item.exercise_id)) n.delete(item.exercise_id); else n.add(item.exercise_id); return n; })}
-          className={`flex items-center gap-1.5 text-xs font-medium ${flagged.has(item.exercise_id) ? "text-[var(--domain-iv)]" : "text-muted-foreground"}`}
-        >
-          <Flag className="h-3.5 w-3.5" />
-          {flagged.has(item.exercise_id) ? "Marcat — revin" : "Marchează «revin»"}
-        </button>
+      {/* BUTON MARE FIX JOS: Următoarea → / Predă (senzație de examen care curge) */}
+      <div className="fixed bottom-0 inset-x-0 z-30 border-t border-white/10 bg-bg-night/90 backdrop-blur px-4 py-3">
+        <div className="max-w-2xl mx-auto flex items-center gap-3">
+          <span className="text-xs text-[var(--text-on-deep)]/60 shrink-0">{answered}/{attempt.items.length}</span>
+          {isLast ? (
+            <motion.button
+              whileTap={buttonTap}
+              onClick={() => { if (confirm(`Trimiți simularea? ${answered}/${attempt.items.length} răspunse.`)) void submit(); }}
+              className="flex-1 rounded-2xl bg-success text-primary-foreground py-3.5 font-semibold text-base"
+            >
+              Predă simularea
+            </motion.button>
+          ) : (
+            <motion.button
+              whileTap={buttonTap}
+              onClick={() => setIdx((i) => Math.min(attempt.items.length - 1, i + 1))}
+              className="flex-1 rounded-2xl bg-[var(--bg-electric)] text-primary-foreground py-3.5 font-semibold text-base"
+            >
+              Următoarea →
+            </motion.button>
+          )}
+        </div>
+        {error && <p className="max-w-2xl mx-auto text-sm text-destructive mt-2">{error}</p>}
       </div>
-
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-xs text-muted-foreground">{answered}/{attempt.items.length} răspunse</p>
-        <button
-          onClick={() => { if (confirm(`Trimiți simularea? ${answered}/${attempt.items.length} răspunse.`)) void submit(); }}
-          className="rounded-xl bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold"
-        >
-          Predă simularea
-        </button>
-      </div>
-      {error && <p className="text-sm text-destructive">{error}</p>}
     </div>
   );
 }
