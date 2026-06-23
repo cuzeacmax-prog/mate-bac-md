@@ -387,12 +387,13 @@ export function MapView({ map, tinta }: { map: KnowledgeMap; tinta?: string | nu
                 setGradeKey(g);
                 setShowAll(false);
                 setSelected(null);
-                // dacă domeniul curent nu are clasa g, sari pe primul care o are
-                const here = map.domains.find((d) => d.key === domainKey)?.grades[String(g)];
-                if (!here) {
-                  const k = map.domains.find((d) => d.grades[String(g)])?.key;
-                  if (k) setDomainKey(k);
-                }
+                // Sincronizăm domainKey cu domeniul AFIȘAT (nu cu state-ul vechi,
+                // care poate diverge după "Harta completă"): păstrăm domeniul curent
+                // dacă are clasa g, altfel sărim pe primul care o are.
+                const next = domain.grades[String(g)]
+                  ? domain.key
+                  : map.domains.find((d) => d.grades[String(g)])?.key;
+                if (next) setDomainKey(next);
               }}
               disabled={!enabled}
               title={

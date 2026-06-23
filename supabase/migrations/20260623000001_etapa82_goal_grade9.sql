@@ -36,7 +36,18 @@ ALTER TABLE public.user_profiles
   ADD CONSTRAINT user_profiles_grade_level_check
   CHECK (grade_level IS NULL OR grade_level IN (9, 10, 11, 12));
 
--- 3) Index parțial pe elevii care încă nu și-au confirmat obiectivul (gate A3).
+-- 3) Backfill: conturi vechi (2026-05-19..06-09) au rând DOAR în public.profiles,
+--    nu și în user_profiles (trigger-ul a fost extins abia pe 06-09). Fără rând,
+--    gate-ul A3 (goal NULL → confirmare) ar bucla la nesfârșit. Creăm rândul lipsă.
+--    referral_code se completează de trigger-ul BEFORE INSERT existent.
+INSERT INTO public.user_profiles (id, email, full_name)
+SELECT u.id, u.email, u.raw_user_meta_data->>'full_name'
+FROM auth.users u
+LEFT JOIN public.user_profiles p ON p.id = u.id
+WHERE p.id IS NULL
+ON CONFLICT (id) DO NOTHING;
+
+-- 4) Index parțial pe elevii care încă nu și-au confirmat obiectivul (gate A3).
 CREATE INDEX IF NOT EXISTS idx_user_profiles_goal_null
   ON public.user_profiles (id)
   WHERE goal IS NULL;

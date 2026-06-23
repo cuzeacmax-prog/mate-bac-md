@@ -55,7 +55,12 @@ export async function POST(req: NextRequest) {
   }
 
   const svc = createServiceClient();
-  const { error } = await svc.from('user_profiles').update(patch).eq('id', user.id);
+  // UPSERT, nu UPDATE: unii elevi existenți (conturi 2026-05..06) încă n-au rând
+  // în user_profiles; un UPDATE ar afecta 0 rânduri în tăcere → gate-ul A3 (goal
+  // NULL → /onboarding/confirma) ar bucla la nesfârșit. Upsert garantează rândul.
+  const { error } = await svc
+    .from('user_profiles')
+    .upsert({ id: user.id, ...patch }, { onConflict: 'id' });
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   return NextResponse.json({ ok: true, ...patch });
