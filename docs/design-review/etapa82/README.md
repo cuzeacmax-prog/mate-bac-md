@@ -38,11 +38,20 @@ nu toți dau BAC. BAC-ul devine **mod**, nu cadru.
 `user_profiles.goal` (bac|note_clasa|explorare) + `grade_level` CHECK relaxat la 9–12
 + index parțial pe goal NULL.
 
-## Checklist bucla vizuală (max 3 runde) — după screenshots
+## Checklist bucla vizuală (max 3 runde)
 
-- [ ] Onboarding: clasă (9–12) tappable, obiectiv (3 carduri) cald, welcome neutru.
+### Runda 1 — onboarding (desktop + mobil) ✅ capturat & verificat
+- [x] **Welcome** neutru — „Tutorul AI de matematică pentru liceenii din Moldova",
+  fără presupunerea BAC; fundal albastru-noapte (`--bg-night`), text deschis lizibil.
+- [x] **Clasă (Pasul 1/3)** — 4 carduri tappable **9–12** (clasa a 9-a NOUĂ), pe brand.
+- [x] **Obiectiv (Pasul 2/3)** — 3 carduri calde cu emoji: „Mă pregătesc de BAC" /
+  „Vreau note mai bune la clasă" / „Explorez"; o întrebare pe ecran.
+- [x] Mobil (390px) — carduri full-width, glife vii în fundal, bară de progres OK.
+- Verdict rundă 1: fără defecte. (`onboarding-{welcome,grade,obiectiv}-{desktop,mobil}.png`)
+
+### Pendinte (după migrație — server live + login)
 - [ ] Harta clasei 10 vs 12 — **vizibil diferite, mai curate**.
 - [ ] Comutatorul de clasă (9–12) + „clasa ta" inelată; „Harta completă" funcționează.
 - [ ] Cont `note_clasa` — **zero** limbaj de BAC pe hartă + azi.
-- [ ] Fundal albastru-noapte (tokeni) pe onboarding + hartă; text deschis lizibil (AA).
+- [ ] Fundal albastru-profund (token `--bg-deep`) pe hartă; text lizibil (AA).
 - [ ] Confirmarea A3 (clasă + obiectiv) caldă, cu skip sigur.

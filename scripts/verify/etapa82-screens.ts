@@ -45,30 +45,42 @@ async function setGoal(page: Page, goal: string, grade: number) {
 }
 
 async function main() {
+  // ONBOARDING_ONLY=1 → doar ecranele de onboarding (fără DB/login) — util cât
+  // timp migrația nu e încă aplicată în producție.
+  const onboardingOnly = !!process.env.ONBOARDING_ONLY;
   const svc = createServiceClient();
-  const { data: list } = await svc.auth.admin.listUsers({ page: 1, perPage: 1000 });
-  const user = list?.users.find((u) => u.email === EMAIL);
-  if (!user) fail('userul de audit lipsește');
-  await svc.auth.admin.updateUserById(user.id, { password: PASSWORD });
-  // pornim în modul BAC, clasa 12 (harta plină)
-  const { error: prepErr } = await svc
-    .from('user_profiles')
-    .update({ goal: 'bac', grade_level: 12, target_bac_score: 9 })
-    .eq('id', user.id);
-  if (prepErr) fail(`prep profil (migrația aplicată?): ${prepErr.message}`);
+  let session: Session | null = null;
+  let userId: string | null = null;
 
-  const anon = createSbClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-  const { data: signIn, error } = await anon.auth.signInWithPassword({ email: EMAIL, password: PASSWORD });
-  if (error || !signIn.session) fail(`signIn: ${error?.message}`);
+  if (!onboardingOnly) {
+    const { data: list } = await svc.auth.admin.listUsers({ page: 1, perPage: 1000 });
+    const user = list?.users.find((u) => u.email === EMAIL);
+    if (!user) fail('userul de audit lipsește');
+    userId = user.id;
+    await svc.auth.admin.updateUserById(user.id, { password: PASSWORD });
+    // pornim în modul BAC, clasa 12 (harta plină)
+    const { error: prepErr } = await svc
+      .from('user_profiles')
+      .update({ goal: 'bac', grade_level: 12, target_bac_score: 9 })
+      .eq('id', user.id);
+    if (prepErr) fail(`prep profil (migrația aplicată?): ${prepErr.message}`);
+
+    const anon = createSbClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+    const { data: signIn, error } = await anon.auth.signInWithPassword({ email: EMAIL, password: PASSWORD });
+    if (error || !signIn.session) fail(`signIn: ${error?.message}`);
+    session = signIn.session;
+  }
 
   mkdirSync(OUT, { recursive: true });
   const browser = await chromium.launch({ headless: true });
 
   const newCtx = async (width: number, height: number): Promise<BrowserContext> => {
     const ctx = await browser.newContext({ viewport: { width, height } });
-    await ctx.addCookies(
-      authCookieParts(signIn.session).map((c) => ({ ...c, url: BASE, httpOnly: false, secure: false }))
-    );
+    if (session) {
+      await ctx.addCookies(
+        authCookieParts(session).map((c) => ({ ...c, url: BASE, httpOnly: false, secure: false }))
+      );
+    }
     return ctx;
   };
 
@@ -90,6 +102,8 @@ async function main() {
       await page.waitForTimeout(settle);
       await shoot(page, name, vp.suffix);
     }
+
+    if (onboardingOnly) { await ctx.close(); continue; }
 
     // ── HARTA (BAC, clasa 12 implicit) ─────────────────────────────────────
     await setGoal(page, 'bac', 12);
@@ -123,15 +137,15 @@ async function main() {
     await shoot(page, 'azi-note-clasa', vp.suffix);
 
     // confirmare A3 (doar desktop): flip goal NULL prin service, apoi revine
-    if (vp.suffix === 'desktop') {
-      await svc.from('user_profiles').update({ goal: null }).eq('id', user.id);
+    if (vp.suffix === 'desktop' && userId) {
+      await svc.from('user_profiles').update({ goal: null }).eq('id', userId);
       await page.goto(`${BASE}/onboarding/confirma`, { waitUntil: 'networkidle', timeout: 60_000 }).catch(() => {});
       await page.waitForTimeout(900);
       await shoot(page, 'onboarding-confirma', vp.suffix);
     }
 
     // revenim la modul BAC, clasa 12
-    await svc.from('user_profiles').update({ goal: 'bac', grade_level: 12 }).eq('id', user.id);
+    if (userId) await svc.from('user_profiles').update({ goal: 'bac', grade_level: 12 }).eq('id', userId);
     await ctx.close();
   }
 
