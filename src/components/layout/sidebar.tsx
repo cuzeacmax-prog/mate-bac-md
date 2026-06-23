@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MessageSquare, Dumbbell, ClipboardList, BarChart2, Camera, CalendarCheck, Map } from "lucide-react";
+import { MessageSquare, Dumbbell, ClipboardList, BarChart2, Camera, CalendarCheck, Map, FileText } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -13,6 +13,8 @@ const NAV_ITEMS = [
   // ETAPA 78 E: biblioteca servibilă se naște — ultimul „Curând" moare
   { href: "/app/exercitii", label: "Exerciții",  icon: Dumbbell,      disabled: false },
   { href: "/app/simulare",  label: "Simulare",   icon: ClipboardList, disabled: false },
+  // ETAPA 83 I: foaia de formule servabilă (anexă BAC)
+  { href: "/app/formule",   label: "Formule",    icon: FileText,      disabled: false },
   // ETAPA 77 F: foto→rezolvare se naște — „Curând" moare
   { href: "/app/foto",      label: "Foto",        icon: Camera,        disabled: false },
   { href: "/app/progres",   label: "Progres",    icon: BarChart2,     disabled: false },
